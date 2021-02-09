@@ -1,0 +1,4 @@
+Host hydra
+    User aakotov
+    HostName hydra.jinr.ru
+    

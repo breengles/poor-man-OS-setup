@@ -1,0 +1,20 @@
+[user]
+	name = Artem Kotov
+	email = breengles@gmail.com
+[core]
+	autocrlf = false
+	safecrlf = false
+	excludesfile = /home/breengles/.gitignore_global
+[alias]
+	co = checkout
+	ci = commit -m
+	reci = commit --amend -m
+	st = status
+	br = branch
+	hist = log --pretty=format:\"%h %cd | %s%d\" --graph
+	lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+	lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+	lg = !"git lg2"
+	type = cat-file -t
+	dump = cat-file -p
+	reci = commit --amend -m
