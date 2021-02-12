@@ -75,7 +75,6 @@ plugins=(git docker docker-compose)
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-source /opt/intel/bin/compilervars.sh intel64
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -97,7 +96,7 @@ source /opt/intel/bin/compilervars.sh intel64
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-alias zshconfig="code ~/.zshrc"
+alias zshconfig="vim ~/.zshrc"
 # alias ohmyzsh="code ~/.oh-my-zsh"
 
 alias c="clear"
@@ -107,8 +106,6 @@ alias py="python3"
 alias pip="pip3"
 alias ipy="ipython3"
 
-# alias condaa="conda activate"
-# alias condad="conda deactivate"
-
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
+
