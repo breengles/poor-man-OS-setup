@@ -2,6 +2,8 @@
 export PATH=$HOME/bin:/usr/local/bin:/home/breengles/.local/bin:$PATH
 export PATH=/home/breengles/.pyenv/bin:$PATH
 
+. /opt/intel/oneapi/setvars.sh >/dev/null
+
 # Path to your oh-my-zsh installation.
 export ZSH="/home/breengles/.oh-my-zsh"
 

@@ -4,7 +4,7 @@
 sudo apt update
 sudo apt install -y python3 python3-pip nvidia-cuda-toolkit \
 gfortran gcc g++ texlive-full \ 
-wget curl git vim tmux \
+wget curl git vim tmux cmake \
 xz-utils tk-dev libffi-dev liblzma-dev python-openssl apt-transport-https \
 ca-certificates gnupg-agent software-properties-common
 ```
