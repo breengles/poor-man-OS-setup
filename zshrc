@@ -108,6 +108,10 @@ alias py="python3"
 alias pip="pip3"
 alias ipy="ipython3"
 
+alias sshstart="sudo service sshd start"
+alias sshstop="sudo service sshd stop"
+alias sshstatus="sudo service sshd status"
+
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
