@@ -30,6 +30,8 @@ curl https://pyenv.run | bash
 
 * [Sporify](https://www.spotify.com/ru-ru/download/linux/)
 
+* [Intel OneAPI](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
+
 * [Docker](https://docs.docker.com/engine/install/ubuntu/)
 ```
 sudo apt update
