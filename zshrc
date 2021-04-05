@@ -1,6 +1,7 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:/home/breengles/.local/bin:$PATH
 export PATH=/home/breengles/.pyenv/bin:$PATH
+export PATH=/usr/local/cuda-11.2/bin${PATH:+:${PATH}}
 
 . /opt/intel/oneapi/setvars.sh >/dev/null
 
@@ -72,7 +73,7 @@ PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git docker docker-compose)
+# plugins=(git docker docker-compose)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -112,6 +113,28 @@ alias sshstart="sudo service sshd start"
 alias sshstop="sudo service sshd stop"
 alias sshstatus="sudo service sshd status"
 
+
+
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/breengles/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/breengles/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/breengles/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/breengles/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+CONDA_ROOT=/home/breengles/miniconda3   # <- set to your Anaconda/Miniconda installation directory
+if [[ -r $CONDA_ROOT/etc/profile.d/bash_completion.sh ]]; then
+    source $CONDA_ROOT/etc/profile.d/bash_completion.sh
+fi
