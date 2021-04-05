@@ -14,8 +14,7 @@ ca-certificates gnupg-agent software-properties-common
 2. `sudo usermod -s /usr/bin/zsh $(whoami)`
 3. logout
 4. (optional) `sudo apt install powerline fonts-powerline`
-5. [Oh My Zsh](https://github.com/ohmyzsh/ohmyzsh) `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
-6. [Antigen](https://github.com/zsh-users/antigen) --> `antigen bundle esc/conda-zsh-completion`
+5. [Antigen](https://github.com/zsh-users/antigen) --> `antigen bundle esc/conda-zsh-completion`
 
 * [conda](https://conda.io/projects/conda/en/latest/user-guide/install/linux.html)
 
