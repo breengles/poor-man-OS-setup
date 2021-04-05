@@ -1,4 +1,5 @@
-# zsh_config
+Ubuntu specifics
+================
 
 ```
 sudo apt update
@@ -9,23 +10,13 @@ xz-utils tk-dev libffi-dev liblzma-dev python-openssl apt-transport-https \
 ca-certificates gnupg-agent software-properties-common
 ```
 
-* ZSH
+# ZSH
 1. `sudo apt install zsh`
 2. `sudo usermod -s /usr/bin/zsh $(whoami)`
 3. logout
 4. (optional) `sudo apt install powerline fonts-powerline`
-5. [Antigen](https://github.com/zsh-users/antigen) --> `antigen bundle esc/conda-zsh-completion`
 
-* [conda](https://conda.io/projects/conda/en/latest/user-guide/install/linux.html)
-
-* [PyTorch](https://pytorch.org/get-started/locally/)
-
-* [Sporify](https://www.spotify.com/ru-ru/download/linux/)
-
-* [Intel OneAPI](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
-
-* [Docker](https://docs.docker.com/engine/install/ubuntu/)
-
+# Docker
 ```
 sudo apt update
 
