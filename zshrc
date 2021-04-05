@@ -1,18 +1,38 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:/home/breengles/.local/bin:$PATH
-export PATH=/home/breengles/.pyenv/bin:$PATH
 export PATH=/usr/local/cuda-11.2/bin${PATH:+:${PATH}}
 
+source /home/breengles/antigen.zsh
+
+# Oh-my-zsh
+antigen use oh-my-zsh
+
+# Bundles
+antigen bundle git
+antigen bundle heroku
+antigen bundle pip
+antigen bundle lein
+antigen bundle command-not-found
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle esc/conda-zsh-completion
+
+# Theme
+antigen theme robbyrussell
+
+# We are done
+antigen apply
+
+# From intel's OneAPI
 . /opt/intel/oneapi/setvars.sh >/dev/null
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/breengles/.oh-my-zsh"
+# export ZSH="/home/breengles/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+# ZSH_THEME="robbyrussell"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -75,7 +95,7 @@ PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
 # Add wisely, as too many plugins slow down shell startup.
 # plugins=(git docker docker-compose)
 
-source $ZSH/oh-my-zsh.sh
+# source $ZSH/oh-my-zsh.sh
 
 # User configuration
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -113,10 +133,24 @@ alias sshstart="sudo service sshd start"
 alias sshstop="sudo service sshd stop"
 alias sshstatus="sudo service sshd status"
 
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/breengles/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/breengles/miniconda3/etc/profile.d/conda.sh" ]; then
+# . "/home/breengles/miniconda3/etc/profile.d/conda.sh"  # commented out by conda initialize
+    else
+# export PATH="/home/breengles/miniconda3/bin:$PATH"  # commented out by conda initialize
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
 
-
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+# CONDA_ROOT=/home/breengles/miniconda3   # <- set to your Anaconda/Miniconda installation directory
+# if [[ -r $CONDA_ROOT/etc/profile.d/bash_completion.sh ]]; then
+#     source $CONDA_ROOT/etc/profile.d/bash_completion.sh
+# fi
 
 
 # >>> conda initialize >>>
@@ -134,7 +168,3 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-CONDA_ROOT=/home/breengles/miniconda3   # <- set to your Anaconda/Miniconda installation directory
-if [[ -r $CONDA_ROOT/etc/profile.d/bash_completion.sh ]]; then
-    source $CONDA_ROOT/etc/profile.d/bash_completion.sh
-fi
