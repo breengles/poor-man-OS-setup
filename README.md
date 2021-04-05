@@ -26,6 +26,8 @@ xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
 curl https://pyenv.run | bash
 ```
 
+* [conda](https://conda.io/projects/conda/en/latest/user-guide/install/linux.html)
+
 * [PyTorch](https://pytorch.org/get-started/locally/)
 
 * [Sporify](https://www.spotify.com/ru-ru/download/linux/)
@@ -33,6 +35,9 @@ curl https://pyenv.run | bash
 * [Intel OneAPI](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
 
 * [Docker](https://docs.docker.com/engine/install/ubuntu/)
+
+* [Antigen](https://github.com/zsh-users/antigen) --> `antigen bundle esc/conda-zsh-completion`
+
 ```
 sudo apt update
 
