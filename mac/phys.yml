@@ -1,0 +1,12 @@
+name: phys
+channels:
+  - defaults
+dependencies:
+  - numpy
+  - scipy
+  - seaborn
+  - matplotlib
+  - pandas
+  - tqdm
+  - ipykernel
+prefix: /Users/breengles/miniconda3/envs/phys
