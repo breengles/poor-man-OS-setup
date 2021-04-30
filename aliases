@@ -12,3 +12,7 @@ alias py="python3"
 alias pip="pip3"
 alias ipy="ipython3"
 
+alias sshstop="sudo service sshd stop"
+alias sshstart="sudo service sshd start"
+alias sshstatus="sudo service sshd status"
+
