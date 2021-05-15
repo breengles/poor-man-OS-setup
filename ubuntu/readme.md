@@ -48,3 +48,4 @@ sudo usermod -aG docker $USER
 
 newgrp docker
 ```
+# [VSCode long delete time](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
