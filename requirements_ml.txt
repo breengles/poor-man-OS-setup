@@ -1,15 +1,11 @@
-detectron2
 gym
 inflect
 ipywidgets
 jupyterlab
 langdetect
-natasha
 nltk
 opencv-python
 pip-chill
-pygame
-python-telegram-bot
 seaborn
 sklearn
 torchaudio
@@ -18,132 +14,3 @@ torchvision
 transformers
 umap-learn
 xgboost
-# absl-py # Installed as dependency for tensorboard
-# anyio # Installed as dependency for jupyter-server
-# apscheduler # Installed as dependency for python-telegram-bot
-# argon2-cffi # Installed as dependency for notebook, jupyter-server
-# async-generator # Installed as dependency for nbclient
-# attrs # Installed as dependency for jsonschema
-# babel # Installed as dependency for jupyterlab-server
-# backcall # Installed as dependency for ipython
-# bleach # Installed as dependency for nbconvert
-# cachetools # Installed as dependency for google-auth, python-telegram-bot
-# certifi # Installed as dependency for requests, python-telegram-bot
-# cffi # Installed as dependency for argon2-cffi
-# chardet # Installed as dependency for requests
-# click # Installed as dependency for nltk, sacremoses
-# cloudpickle # Installed as dependency for detectron2, gym
-# cycler # Installed as dependency for matplotlib
-# cython # Installed as dependency for pycocotools
-# dawg-python # Installed as dependency for pymorphy2
-# decorator # Installed as dependency for ipython
-# defusedxml # Installed as dependency for nbconvert
-# docopt # Installed as dependency for pymorphy2
-# entrypoints # Installed as dependency for nbconvert
-# filelock # Installed as dependency for huggingface-hub, transformers
-# future # Installed as dependency for detectron2
-# fvcore # Installed as dependency for detectron2
-# google-auth # Installed as dependency for tensorboard, google-auth-oauthlib
-# google-auth-oauthlib # Installed as dependency for tensorboard
-# grpcio # Installed as dependency for tensorboard
-# huggingface-hub # Installed as dependency for transformers
-# idna # Installed as dependency for requests, anyio
-# intervaltree # Installed as dependency for ipymarkup
-# iopath # Installed as dependency for detectron2, fvcore
-# ipykernel # Installed as dependency for notebook, ipywidgets
-# ipymarkup # Installed as dependency for natasha
-# ipython # Installed as dependency for jupyterlab, ipywidgets, ipykernel
-# ipython-genutils # Installed as dependency for notebook, nbformat, traitlets, jupyter-server
-# jedi # Installed as dependency for ipython
-# jinja2 # Installed as dependency for jupyterlab, nbconvert, jupyterlab-server, notebook, jupyter-server
-# joblib # Installed as dependency for scikit-learn, nltk, pynndescent, sacremoses
-# json5 # Installed as dependency for jupyterlab-server
-# jsonschema # Installed as dependency for nbformat, jupyterlab-server
-# jupyter-client # Installed as dependency for notebook, nbclient, ipykernel, jupyter-server
-# jupyter-core # Installed as dependency for jupyterlab, nbconvert, nbformat, notebook, jupyter-client, jupyter-server
-# jupyter-server # Installed as dependency for jupyterlab, jupyterlab-server, nbclassic
-# jupyterlab-pygments # Installed as dependency for nbconvert
-# jupyterlab-server # Installed as dependency for jupyterlab
-# jupyterlab-widgets # Installed as dependency for ipywidgets
-# kiwisolver # Installed as dependency for matplotlib
-# llvmlite # Installed as dependency for numba, pynndescent
-# markdown # Installed as dependency for tensorboard
-# markupsafe # Installed as dependency for jinja2
-# matplotlib # Installed as dependency for detectron2, pycocotools, seaborn
-# matplotlib-inline # Installed as dependency for ipython
-# mistune # Installed as dependency for nbconvert
-# navec # Installed as dependency for natasha, slovnet
-# nbclassic # Installed as dependency for jupyterlab
-# nbclient # Installed as dependency for nbconvert
-# nbconvert # Installed as dependency for notebook, jupyter-server
-# nbformat # Installed as dependency for ipywidgets, nbconvert, nbclient, notebook, jupyter-server
-# nest-asyncio # Installed as dependency for nbclient
-# notebook # Installed as dependency for widgetsnbextension, nbclassic
-# numba # Installed as dependency for umap-learn, pynndescent
-# numpy # Installed as dependency for umap-learn, opencv-python, pandas, navec, torchvision, xgboost, transformers, torch, fvcore, gym, numba, seaborn, matplotlib, tensorboard, scikit-learn, scipy, torchtext, slovnet
-# oauthlib # Installed as dependency for requests-oauthlib
-# omegaconf # Installed as dependency for detectron2
-# packaging # Installed as dependency for jupyterlab, bleach, transformers, jupyterlab-server
-# pandas # Installed as dependency for seaborn
-# pandocfilters # Installed as dependency for nbconvert
-# parso # Installed as dependency for jedi
-# pexpect # Installed as dependency for ipython
-# pickleshare # Installed as dependency for ipython
-# pillow # Installed as dependency for fvcore, torchvision, gym, matplotlib, detectron2
-# portalocker # Installed as dependency for iopath
-# prometheus-client # Installed as dependency for notebook, jupyter-server
-# prompt-toolkit # Installed as dependency for ipython
-# protobuf # Installed as dependency for tensorboard
-# ptyprocess # Installed as dependency for terminado, pexpect
-# pyasn1 # Installed as dependency for rsa, pyasn1-modules
-# pyasn1-modules # Installed as dependency for google-auth
-# pycocotools # Installed as dependency for detectron2
-# pycparser # Installed as dependency for cffi
-# pydot # Installed as dependency for detectron2
-# pyglet # Installed as dependency for gym
-# pygments # Installed as dependency for ipython, nbconvert, jupyterlab-pygments
-# pymorphy2 # Installed as dependency for natasha, yargy
-# pymorphy2-dicts-ru # Installed as dependency for pymorphy2
-# pynndescent # Installed as dependency for umap-learn
-# pyparsing # Installed as dependency for packaging, pydot, matplotlib
-# pyrsistent # Installed as dependency for jsonschema
-# python-dateutil # Installed as dependency for pandas, jupyter-client, matplotlib
-# pytz # Installed as dependency for apscheduler, babel, python-telegram-bot, tzlocal, pandas
-# pyyaml # Installed as dependency for omegaconf, fvcore, yacs
-# pyzmq # Installed as dependency for notebook, jupyter-client, jupyter-server
-# razdel # Installed as dependency for natasha, slovnet
-# regex # Installed as dependency for nltk, transformers, sacremoses
-# requests # Installed as dependency for transformers, jupyterlab-server, requests-oauthlib, tensorboard, huggingface-hub, torchtext
-# requests-oauthlib # Installed as dependency for google-auth-oauthlib
-# rsa # Installed as dependency for google-auth
-# sacremoses # Installed as dependency for transformers
-# scikit-learn # Installed as dependency for pynndescent, umap-learn, sklearn
-# scipy # Installed as dependency for umap-learn, xgboost, pynndescent, gym, seaborn, scikit-learn
-# send2trash # Installed as dependency for notebook, jupyter-server
-# six # Installed as dependency for grpcio, absl-py, protobuf, python-dateutil, argon2-cffi, apscheduler, google-auth, cycler, bleach, websocket-client, langdetect, jsonschema, sacremoses
-# slovnet # Installed as dependency for natasha
-# sniffio # Installed as dependency for anyio
-# sortedcontainers # Installed as dependency for intervaltree
-# tabulate # Installed as dependency for detectron2, fvcore
-# tensorboard # Installed as dependency for detectron2
-# tensorboard-data-server # Installed as dependency for tensorboard
-# tensorboard-plugin-wit # Installed as dependency for tensorboard
-# termcolor # Installed as dependency for detectron2, fvcore
-# terminado # Installed as dependency for notebook, jupyter-server
-# testpath # Installed as dependency for nbconvert
-# threadpoolctl # Installed as dependency for scikit-learn
-# tokenizers # Installed as dependency for transformers
-# torch # Installed as dependency for torchaudio, torchvision, torchtext
-# tornado # Installed as dependency for jupyterlab, ipykernel, terminado, python-telegram-bot, notebook, jupyter-client, jupyter-server
-# tqdm # Installed as dependency for nltk, fvcore, transformers, iopath, detectron2, huggingface-hub, torchtext, sacremoses
-# traitlets # Installed as dependency for ipywidgets, nbconvert, jupyter-core, ipython, ipykernel, nbformat, nbclient, jupyter-client, notebook, matplotlib-inline, jupyter-server
-# typing-extensions # Installed as dependency for omegaconf, torch
-# tzlocal # Installed as dependency for apscheduler
-# urllib3 # Installed as dependency for requests
-# wcwidth # Installed as dependency for prompt-toolkit
-# webencodings # Installed as dependency for bleach
-# websocket-client # Installed as dependency for jupyter-server
-# werkzeug # Installed as dependency for tensorboard
-# widgetsnbextension # Installed as dependency for ipywidgets
-# yacs # Installed as dependency for detectron2, fvcore
-# yargy # Installed as dependency for natasha
