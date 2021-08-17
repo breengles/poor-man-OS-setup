@@ -1,8 +1,8 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:/home/breengles/.local/bin:$PATH
 
-source ~/.aliases
-source /Users/breengles/antigen.zsh
+source $HOME/.aliases
+source $HOME/antigen.zsh
 
 # # Oh-my-zsh
 antigen use oh-my-zsh
@@ -14,6 +14,7 @@ antigen bundle pip
 antigen bundle lein
 antigen bundle command-not-found
 antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-completions
 antigen bundle esc/conda-zsh-completion
 
 # # Theme
@@ -23,7 +24,7 @@ antigen theme robbyrussell
 antigen apply
 
 # From intel's OneAPI
-. /opt/intel/oneapi/setvars.sh >/dev/null
+#. /opt/intel/oneapi/setvars.sh >/dev/null
 
 # Path to your oh-my-zsh installation.
 # export ZSH="/home/breengles/.oh-my-zsh"
@@ -114,18 +115,5 @@ antigen apply
 # export ARCHFLAGS="-arch x86_64"
 
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/breengles/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/Users/breengles/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/breengles/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/breengles/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
