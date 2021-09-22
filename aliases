@@ -1,3 +1,7 @@
+alias aptupd="sudo apt update"
+alias aptlist="sudo apt list --upgradable"
+alias aptupg="sudo apt upgrade"
+
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 
