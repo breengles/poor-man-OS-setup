@@ -1,0 +1,14 @@
+name: phys
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - jupyterlab
+  - scipy
+  - numpy
+  - black
+  - pandas
+  - ipython
+  - matplotlib
+  - fortran-language-server
+  - fprettify

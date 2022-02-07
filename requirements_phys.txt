@@ -1,8 +1,0 @@
-black
-fortran-language-server
-jupyterlab
-manim
-pylint
-pyyaml
-seaborn
-tabulate
