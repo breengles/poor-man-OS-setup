@@ -1,0 +1,22 @@
+name: ml
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pytorch
+  - torchaudio
+  - torchvision
+  - plotly
+  - opencv
+  - jupyterlab
+  - pytorch-lightning
+  - scikit-learn
+  - scipy
+  - ipython
+  - catboost
+  - matplotlib
+  - pandas
+  - numpy
+  - pillow
+
