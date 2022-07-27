@@ -1,0 +1,24 @@
+name: ml
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.9
+  - jupyterlab
+  - ipython
+  - matplotlib
+  - pandas
+  - catboost
+  - scikit-learn
+  - scipy
+  - seaborn
+  - numpy
+  - black
+  - torchvision
+  - pytorch
+  - cudatoolkit=11.3
+  - torchaudio
+  - pytorch-lightning
+  - wandb
+prefix: /home/breengles/miniconda3/envs/ml
