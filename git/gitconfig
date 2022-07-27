@@ -4,7 +4,7 @@
 [core]
 	autocrlf = false
 	safecrlf = false
-	excludesfile = /home/breengles/.gitignore_global
+	excludesfile = ~/.gitignore_global
 	editor = vim
 [alias]
 	co = checkout
