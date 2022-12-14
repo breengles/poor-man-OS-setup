@@ -21,4 +21,3 @@ dependencies:
   - torchaudio
   - pytorch-lightning
   - wandb
-prefix: /home/breengles/miniconda3/envs/ml
