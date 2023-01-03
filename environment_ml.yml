@@ -3,21 +3,26 @@ channels:
   - defaults
   - conda-forge
   - pytorch
+  - nvidia
 dependencies:
   - python=3.9
   - jupyterlab
   - ipython
   - matplotlib
   - pandas
-  - catboost
   - scikit-learn
   - scipy
   - seaborn
   - numpy
-  - black
-  - torchvision
-  - pytorch
-  - cudatoolkit=11.3
+  - pytorch 
+  - torchvision 
   - torchaudio
-  - pytorch-lightning
-  - wandb
+  - pytorch-cuda=11.6
+  - pip
+  pip:
+    - opencv-python
+    - click
+    - pyrallis
+    - streamlit
+    - gradio
+    - aim
