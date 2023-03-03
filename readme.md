@@ -1,13 +1,24 @@
 Common installations
 ====================
 
-* [Antigen](https://github.com/zsh-users/antigen)
-* [conda](https://conda.io/projects/conda/en/latest/user-guide/install/)
+# [ZSH](https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH)
+## ubuntu
+1. `sudo apt install zsh`
+2. `chsh -s $(which zsh)` or ?`sudo usermod -s /usr/bin/zsh $(whoami)`
+3. logout
+4. (optional) `sudo apt install powerline fonts-powerline`
+
+## macos
+1. `brew install zsh`
+2. `chsh -s $(which zsh)`
+
+# [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh#basic-installation)
+* `git clone https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions`
+* `git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting`
+
+* [pyenv](https://github.com/pyenv/pyenv#installation)
+* [poetry](https://python-poetry.org/docs/#installation)
+
 * [Intel OneAPI](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
-* [PyTorch](https://pytorch.org/get-started/locally/)
-* [Docker](https://docs.docker.com/engine/install/)
-* [Sporify](https://www.spotify.com/ru-ru/download/)
-* [Dropbox](https://www.dropbox.com)
 * [VSCode](https://code.visualstudio.com)
     1. [CascadiaCode](https://github.com/microsoft/cascadia-code)
-* [1PassWord](https://1password.com)
