@@ -1,13 +1,5 @@
 export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
 
-# if using pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
 ### nvidia cuda if u need it ###
 # export PATH=/usr/local/cuda-11.2/bin${PATH:+:${PATH}}
 # export PATH=/usr/local/cuda/bin/:$PATH
@@ -38,16 +30,25 @@ plugins=(
   command-not-found
   zsh-syntax-highlighting
   zsh-autosuggestions
-  poetry
+  conda-zsh-completion
 )
 
 source $ZSH/oh-my-zsh.sh
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/breengles/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/breengles/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/breengles/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/breengles/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<

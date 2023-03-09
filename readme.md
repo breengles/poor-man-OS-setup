@@ -13,8 +13,18 @@ Common installations
 2. `chsh -s $(which zsh)`
 
 # [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh#basic-installation)
-* `git clone https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions`
-* `git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting`
+```
+git clone https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+```
+
+```
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+```
+
+```
+git clone git@github.com:conda-incubator/conda-zsh-completion.git $HOME/.oh-my-zsh/custom/plugins/conda-zsh-completion
+```
+
 
 * [pyenv](https://github.com/pyenv/pyenv#installation)
 * [poetry](https://python-poetry.org/docs/#installation)
