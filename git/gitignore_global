@@ -1,12 +1,14 @@
-.DS_Store/
+.DS_Store
 
-__pycache__/
+.idea
+.vscode
 
-.vscode/*
-.vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
-.idea/
+__pycache__
+
+slurm
+slurm-output
+slurm-error
+
+slurm_run*.sh
+run_slurm*.sh
+run-slurm*.sh
