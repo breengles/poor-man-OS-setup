@@ -3,86 +3,9 @@ function q {
     echo -e "\nTotal number of jobs: $(squeue --user=$(whoami) -h | wc -l)"
 }
 
-function swatch {
+function qq {
     watch -n 10 "squeue --user=$(whoami) --format='%.8i %.5P %40j %.1T %.12M %8N'; echo -e '\nTotal number of jobs: '; squeue --user=$(whoami) -h | wc -l"
 }
 
-
-function sizeof {
-    du -shc -- $@ | sort -h
-}
-
-function lscratch {
-    ls -ltr ~/dscratch/aakotov
-    echo -e "\n--- SIZE ---"
-    du -shc ~/dscratch/aakotov/*
-    echo -e "\n--- FREE ---"
-    df -h ~/
-    echo ""
-}
-
-function lsflnr {
-    ls -ltr /nfs/flnr/aakotov/dscratch/aakotov
-    echo -e "\n--- SIZE ---"
-    du -shc /nfs/flnr/aakotov/dscratch/aakotov/*
-    echo -e "\n--- FREE ---"
-    df -h /nfs/flnr/aakotov
-    echo ""
-}
-
-function lsmpd {
-    ls -ltr /nfs/mpd/aakotov/aakotov
-    echo -e "\n--- SIZE ---"
-    du -shc /nfs/mpd/aakotov/aakotov/*
-    echo -e "\n--- FREE ---"
-    df -h /nfs/mpd/aakotov
-    echo ""
-}
-
-function lslustre {
-    ls -ltr /lustre/stor1/aakotov/dscratch/aakotov/
-    echo -e "\n--- SIZE ---"
-    du -shc /lustre/stor1/aakotov/dscratch/aakotov/*
-    echo -e "\n--- FREE ---"
-    df -h /lustre/stor1/aakotov/dscratch/aakotov/
-    echo ""
-}
-
-function sq {
-    echo -e "\n=== NODES ==="
-    sinfo
-    echo -e "\n\n=== JOBS ==="
-    q
-    echo ""
-}
-
-function si {
-    sq
-    echo -e "\n=== SCRATCH ON STORE5 ==="
-    lscratch
-    echo -e "\n=== SCRATCH ON MPD ==="
-    lsmpd
-}
-
-function gitpub {
-    git add $1
-    git ci $2
-    git push
-}
-
-alias zshconfig="vim ~/.zshrc"
-alias bashconfig="vim ~/.bashrc"
-alias aliasconfig="vim ~/.aliases"
-
-alias rmscratch="rm -rf ~/dscratch/aakotov/*"
-alias rmpd="rm -rf /nfs/mpd/aakotov/aakotov/*"
-alias rmout="rm *out*"
-
-alias gon="module load GVR/V1.0-1"
-alias goff="module rm GVR/V1.0-1"
-
-alias cdmol="cd ~/projects/molecules"
-
 alias c="clear"
 alias ll="ls -ltr"
-alias ..="cd .."

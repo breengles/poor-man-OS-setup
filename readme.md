@@ -26,9 +26,8 @@ git clone git@github.com:conda-incubator/conda-zsh-completion.git $HOME/.oh-my-z
 ```
 
 
-* [pyenv](https://github.com/pyenv/pyenv#installation)
-* [poetry](https://python-poetry.org/docs/#installation)
+* [mambaforge](https://github.com/conda-forge/miniforge#mambaforge)
+* [VSCode](https://code.visualstudio.com)
+    * [CascadiaCode](https://github.com/microsoft/cascadia-code)
 
 * [Intel OneAPI](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
-* [VSCode](https://code.visualstudio.com)
-    1. [CascadiaCode](https://github.com/microsoft/cascadia-code)

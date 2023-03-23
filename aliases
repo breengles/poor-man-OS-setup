@@ -1,6 +1,3 @@
-alias zshconfig="vim ~/.zshrc"
-alias ohmyzsh="vim ~/.oh-my-zsh"
-
 alias c="clear"
 
 function sizeof {

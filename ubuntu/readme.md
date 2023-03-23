@@ -7,14 +7,6 @@ sudo apt update
 sudo apt install -y gfortran gcc g++ texlive-full wget curl git vim tmux cmake
 ```
 
-
-# ZSH
-1. `sudo apt install zsh`
-2. `sudo usermod -s /usr/bin/zsh $(whoami)`
-3. logout
-4. (optional) `sudo apt install powerline fonts-powerline`
-
-
 # Docker
 ```
 sudo apt update
