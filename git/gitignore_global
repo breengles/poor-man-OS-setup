@@ -3,6 +3,8 @@
 .idea
 .vscode
 
+.aim
+
 __pycache__
 
 slurm
