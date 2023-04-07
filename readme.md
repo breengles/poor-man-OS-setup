@@ -22,7 +22,7 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-
 ```
 
 ```
-git clone git@github.com:conda-incubator/conda-zsh-completion.git $HOME/.oh-my-zsh/custom/plugins/conda-zsh-completion
+git clone https://github.com/conda-incubator/conda-zsh-completion.git $HOME/.oh-my-zsh/custom/plugins/conda-zsh-completion
 ```
 
 
