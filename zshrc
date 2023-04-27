@@ -32,6 +32,8 @@ ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 plugins=(
   git
   pip
+  rsync
+  vi-mode
   command-not-found
   zsh-syntax-highlighting
   zsh-autosuggestions
@@ -44,10 +46,6 @@ source $ZSH/oh-my-zsh.sh
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias c="clear"
-
-function rcp() {
-  rsync -azhP "$@"
-}
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
