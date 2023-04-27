@@ -19,6 +19,10 @@
    1. (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
 5. logout
 6. (optional) `sudo apt install -y powerline fonts-powerline gfortran gcc g++ texlive-full`
+7. to apply terminal theme (check profile path):
+```
+dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ < terminal_themes/breeze.dconf
+```
 
 
 # [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh#basic-installation)
