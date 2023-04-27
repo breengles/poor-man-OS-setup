@@ -42,7 +42,7 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$
   * if you going to copy cfg files then do not initialize mamba/conda right now --- we will do it later
 * [tpm](https://github.com/tmux-plugins/tpm)
 ```
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+git clone https://github.com/tmux-plugins/tpm {$HOME}/.tmux/plugins/tpm
 ```  
 * [vscode](https://code.visualstudio.com)
   * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
