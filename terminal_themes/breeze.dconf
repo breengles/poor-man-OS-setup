@@ -1,0 +1,14 @@
+[/]
+background-color='rgb(22,24,26)'
+background_color='#16181A'
+bold-color-same-as-fg=true
+bold-is-bright=true
+bold_color='#FCFCFC'
+default-size-columns=120
+default-size-rows=36
+font='CaskaydiaCove Nerd Font 16'
+foreground_color='#EFF0F1'
+palette=['#31363B', '#ED1515', '#11D116', '#F67400', '#1D99F3', '#9B59B6', '#1ABC9C', '#EFF0F1', '#7F8C8D', '#C0392B', '#1CDC9A', '#FDBC4B', '#3DAEE9', '#8E44AD', '#16A085', '#FCFCFC']
+use-system-font=false
+use-theme-colors=false
+visible-name='breeze'
