@@ -46,9 +46,10 @@ git clone https://github.com/conda-incubator/conda-zsh-completion.git $HOME/.oh-
 
 # copy cfgs
 ```
-cp zshrc $HOME/test/.zshrc ; \
-cp vimrc $HOME/test/.vimrc ; \
-cp tmux.conf $HOME/test/.tmux.conf ; \
-cp gitconfig $HOME/test/.gitconfig ; \
-cp gitignore $HOME/test/.gitignore
+cp zshrc $HOME/.zshrc ; \
+cp p10k.zsh $HOME/.p10k.zsh ; \
+cp vimrc $HOME/.vimrc ; \
+cp tmux.conf $HOME/.tmux.conf ; \
+cp gitconfig $HOME/.gitconfig ; \
+cp gitignore $HOME/.gitignore
 ```
