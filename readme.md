@@ -25,9 +25,12 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-
 git clone https://github.com/conda-incubator/conda-zsh-completion.git $HOME/.oh-my-zsh/custom/plugins/conda-zsh-completion
 ```
 
-
+# things
 * [mambaforge](https://github.com/conda-forge/miniforge#mambaforge)
 * [VSCode](https://code.visualstudio.com)
-    * [CascadiaCode](https://github.com/microsoft/cascadia-code)
-
 * [Intel OneAPI](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
+
+# fonts
+* [CascadiaCode](https://github.com/microsoft/cascadia-code)
+* [NerdFont (patched version of fonts, required for tmux theme)](https://github.com/ryanoasis/nerd-fonts)
+  * For CascadiaCode version: [archive](https://github.com/ryanoasis/nerd-fonts/releases/latest) and [repo link](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/CascadiaCode)
