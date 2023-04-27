@@ -33,11 +33,14 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$
 
 
 # things
-* [mambaforge](https://github.com/conda-forge/miniforge#mambaforge)
-* tpm: `git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm`
-* [vscode](https://code.visualstudio.com)
-  * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
-* [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
+* [mambaforge](https://github.com/conda-forge/miniforge#mambaforge)  
+* [tpm](https://github.com/tmux-plugins/tpm)  
+```
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```  
+* [vscode](https://code.visualstudio.com)  
+  * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)  
+* [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)  
 
 
 # fonts
