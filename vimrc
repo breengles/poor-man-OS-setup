@@ -11,8 +11,7 @@ call plug#begin()
   Plug 'preservim/nerdtree'
   Plug 'Xuyuanp/nerdtree-git-plugin'
 
-  Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
-
+  Plug 'dunstontc/vim-vscode-theme'
 
   " Autocompletion and refactor with jedi
   Plug 'davidhalter/jedi-vim'
@@ -26,7 +25,6 @@ call plug#begin()
 call plug#end()
 
 
-colorscheme catppuccin-mocha
 
 
 " I love linters
@@ -48,8 +46,15 @@ let g:ale_fixers = [
   \   'yapf',
   \]
 
+if (has("termguicolors"))
+ set termguicolors
+endif
+
 syntax on
 filetype plugin indent on
+
+colorscheme dark_plus
+
 set modelines=0
 set number
 set ttyfast
