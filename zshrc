@@ -30,12 +30,13 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+## aliases and functions
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias c="clear"
+alias ll="ls -ltr"
 
 function rcp() {
   rsync -azhP "$@"
 }
-
 

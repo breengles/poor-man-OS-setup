@@ -14,15 +14,15 @@ dependencies:
   - scipy
   - seaborn
   - numpy
-  - pytorch 
-  - torchvision 
+  - pytorch
+  - torchvision
   - torchaudio
-  - pytorch-cuda=11.6
+  - pytorch-cuda=11.8
   - opencv
   - click
   - pip
-  pip:
-    - pyrallis
-    - streamlit
-    - gradio
-    - aim
+  - pip:
+      - pyrallis
+      - streamlit
+      - gradio
+      - aim

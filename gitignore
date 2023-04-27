@@ -1,0 +1,11 @@
+.DS_Store
+
+.idea
+.vscode
+
+__pycache__
+
+.aim
+
+slurm*run*.sh
+run*slurm*.sh

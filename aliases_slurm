@@ -1,11 +1,8 @@
 function q {
-    squeue --user=$(whoami) --format="%.8i %.9P %45j %.8T %.12M %9N"
-    echo -e "\nTotal number of jobs: $(squeue --user=$(whoami) -h | wc -l)"
+    squeue --user="$(whoami)" --format="%.8i %.9P %45j %.8T %.12M %9N"
+    echo -e "\nTotal number of jobs: $(squeue --user="$(whoami)" -h | wc -l)"
 }
 
 function qq {
-    watch -n 10 "squeue --user=$(whoami) --format='%.8i %.5P %40j %.1T %.12M %8N'; echo -e '\nTotal number of jobs: '; squeue --user=$(whoami) -h | wc -l"
+    watch -n 1 "squeue --user=$(whoami) --format='%.8i %.5P %40j %.1T %.12M %8N'; echo -e '\nTotal number of jobs: '; squeue --user=$(whoami) -h | wc -l"
 }
-
-alias c="clear"
-alias ll="ls -ltr"

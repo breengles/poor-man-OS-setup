@@ -11,5 +11,5 @@ dependencies:
   - pandas
   - ipython
   - matplotlib
-  - fortran-language-server
+  - fortls
   - fprettify
