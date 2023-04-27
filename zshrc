@@ -19,7 +19,10 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 ## just remind me to update when it's time
-zstyle ':omz:update' mode reminder
+# zstyle ':omz:update' mode reminder
+
+export UPDATE_ZSH_DAYS=13
+ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 
 ## Which plugins would you like to load?
 ## Standard plugins can be found in $ZSH/plugins/
@@ -33,6 +36,7 @@ plugins=(
   zsh-syntax-highlighting
   zsh-autosuggestions
   conda-zsh-completion
+  autoupdate
 )
 
 source $ZSH/oh-my-zsh.sh
