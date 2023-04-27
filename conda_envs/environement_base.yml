@@ -1,0 +1,12 @@
+name: base
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - jupyterlab
+  - numpy
+  - black
+  - ipython
+  - matplotlib
+  - autoflake
+  - isort

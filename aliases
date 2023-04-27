@@ -1,9 +1,0 @@
-alias c="clear"
-
-function sizeof {
-        du -shc -- $@ | sort -h
-}
-
-alias sshstop="sudo service sshd stop"
-alias sshstart="sudo service sshd start"
-alias sshstatus="sudo service sshd status"
