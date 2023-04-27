@@ -5,19 +5,29 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
 endif
 
 " Install vim-plug to use plugins
-call plug#begin('~/.vim/plugged')
-	" NERDTree is used to navigate in project
-	" Comes with fancy plugins
-	Plug 'preservim/nerdtree' |
-            \ Plug 'Xuyuanp/nerdtree-git-plugin'
-	Plug 'ryanoasis/vim-devicons'
+call plug#begin()
+  " NERDTree is used to navigate in project
+  " Comes with fancy plugins
+  Plug 'preservim/nerdtree'
+  Plug 'Xuyuanp/nerdtree-git-plugin'
 
-	" Autocompletion and refactor with jedi
-	Plug 'davidhalter/jedi-vim'
+  Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 
-	" ALE is used in refactoring too
-	Plug 'dense-analysis/ale'
+
+  " Autocompletion and refactor with jedi
+  Plug 'davidhalter/jedi-vim'
+
+  " ALE is used in refactoring too
+  Plug 'dense-analysis/ale'
+
+  Plug 'tpope/vim-fugitive'
+
+  Plug 'ryanoasis/vim-devicons'
 call plug#end()
+
+
+colorscheme catppuccin-mocha
+
 
 " I love linters
 " I would even say it's not enough linters T_T
@@ -37,7 +47,6 @@ let g:ale_fixers = [
   \   'ale#fixers#generic_python#BreakUpLongLines',
   \   'yapf',
   \]
-
 
 syntax on
 filetype plugin indent on
@@ -62,4 +71,19 @@ set laststatus=2
 set showmode
 set showcmd
 set matchpairs+=<:>
+set expandtab
+set mouse=a
+
+let NERDTreeMouseMode=3
+
+" Start NERDTree and put the cursor back in the other window.
+autocmd VimEnter * NERDTree | wincmd p
+
+" Start NERDTree when Vim starts with a directory argument.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+  \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
