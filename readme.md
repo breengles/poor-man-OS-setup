@@ -38,14 +38,15 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$
 
 
 # things
-* [mambaforge](https://github.com/conda-forge/miniforge#mambaforge)  
-* [tpm](https://github.com/tmux-plugins/tpm)  
+* [mambaforge](https://github.com/conda-forge/miniforge#mambaforge)
+  * if you going to copy cfg files then do not initialize mamba/conda right now --- we will do it later
+* [tpm](https://github.com/tmux-plugins/tpm)
 ```
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```  
-* [vscode](https://code.visualstudio.com)  
-  * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)  
-* [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)  
+* [vscode](https://code.visualstudio.com)
+  * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
+* [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
 
 
 # fonts
@@ -55,10 +56,11 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # copy cfgs
 ```
-cp zshrc $HOME/.zshrc ; \
-cp p10k.zsh $HOME/.p10k.zsh ; \
-cp vimrc $HOME/.vimrc ; \
-cp tmux.conf $HOME/.tmux.conf ; \
-cp gitconfig $HOME/.gitconfig ; \
-cp gitignore $HOME/.gitignore
+cp zshrc {$HOME}/.zshrc ; \
+cp p10k.zsh {$HOME}/.p10k.zsh ; \
+cp vimrc {$HOME}/.vimrc ; \
+cp tmux.conf {$HOME}/.tmux.conf ; \
+cp gitconfig {$HOME}/.gitconfig ; \
+cp gitignore {$HOME}/.gitignore ; \
+{$HOME}/mambaforge/bin/mamba init zsh
 ```
