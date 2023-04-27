@@ -21,7 +21,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 ## just remind me to update when it's time
 # zstyle ':omz:update' mode reminder
 
-export UPDATE_ZSH_DAYS=13
+export UPDATE_ZSH_DAYS=7
 ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 
 ## Which plugins would you like to load?
