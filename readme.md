@@ -43,7 +43,18 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$
 * [tpm](https://github.com/tmux-plugins/tpm)
 ```
 git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
-```  
+```
+* [neovim](https://github.com/neovim/neovim)
+```
+sudo snap install nvim --classic
+```
+
+or
+
+```
+mkdir -p ${HOME}/.local/bin ; \
+curl -o ${HOME}/.local/bin/nvim -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+```
 * [vscode](https://code.visualstudio.com)
   * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
 * [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
@@ -66,7 +77,9 @@ mkdir -p ${HOME}/.config/nvim ; cp vimrc ${HOME}/.config/nvim/init.vim  # for ne
 ```
 
 ## vim
-if you prefer vim instead of neovim change last line to
+if you are using vim instead of neovim change last line to
 ```
 cp vimrc ${HOME}/.vimrc
 ```
+
+> do not forget to call `:PlugInstall` for (n)vim
