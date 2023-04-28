@@ -61,7 +61,7 @@ cp p10k.zsh ${HOME}/.p10k.zsh ; \
 cp tmux.conf ${HOME}/.tmux.conf ; \
 cp gitconfig ${HOME}/.gitconfig ; \
 cp gitignore ${HOME}/.gitignore ; \
-${HOME}/mambaforge/bin/mamba init zsh \
+${HOME}/mambaforge/bin/mamba init zsh ; \
 mkdir -p ${HOME}/.config/nvim ; cp vimrc ${HOME}/.config/nvim/init.vim  # for neovim
 ```
 
@@ -70,6 +70,3 @@ if you prefer vim instead of neovim change last line to
 ```
 cp vimrc ${HOME}/.vimrc
 ```
-
-
-
