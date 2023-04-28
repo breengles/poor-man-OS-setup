@@ -78,8 +78,15 @@ set showcmd
 set matchpairs+=<:>
 set expandtab
 set mouse=a
+set clipboard+=unnamedplus
 
 let NERDTreeMouseMode=3
+
+let g:python3_host_prog = '~/mambaforge/bin/python'
+let g:loaded_ruby_provider = 0
+let g:loaded_perl_provider = 0
+let g:loaded_node_provider = 0
+
 
 " Start NERDTree and put the cursor back in the other window.
 autocmd VimEnter * NERDTree | wincmd p
