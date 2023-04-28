@@ -16,7 +16,11 @@ fi
 
 export ZSH="$HOME/.oh-my-zsh"
 
-ZSH_THEME="powerlevel10k/powerlevel10k"
+if [ -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ]; then
+  ZSH_THEME="powerlevel10k/powerlevel10k"
+else
+  ZSH_THEME="robbyrussell"
+fi
 
 ## just remind me to update when it's time
 # zstyle ':omz:update' mode reminder
@@ -42,6 +46,10 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
+
+if [ -x "$(command -v nvim)" ]; then
+  alias vim=nvim
+fi
 
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
