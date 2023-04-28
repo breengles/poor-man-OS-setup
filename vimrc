@@ -13,6 +13,8 @@ call plug#begin()
 
   Plug 'dunstontc/vim-vscode-theme'
 
+  Plug 'dhruvasagar/vim-table-mode'
+
   " Autocompletion and refactor with jedi
   Plug 'davidhalter/jedi-vim'
 
@@ -87,6 +89,7 @@ let g:loaded_ruby_provider = 0
 let g:loaded_perl_provider = 0
 let g:loaded_node_provider = 0
 
+let mapleader = ' '
 
 " Start NERDTree and put the cursor back in the other window.
 autocmd VimEnter * NERDTree | wincmd p
@@ -98,4 +101,18 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in
 
 " Exit Vim if NERDTree is the only window remaining in the only tab.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+function! s:isAtStartOfLine(mapping)
+    let text_before_cursor = getline('.')[0 : col('.')-1]
+    let mapping_pattern = '\V' . escape(a:mapping, '\')
+    let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
+    return (text_before_cursor =~? '^' . ('\v(' . comment_pattern . '\v)?') . '\s*\v' . mapping_pattern . '\v$')
+endfunction
+  
+inoreabbrev <expr> <bar><bar>
+        \ <SID>isAtStartOfLine('\|\|') ?
+        \ '<c-o>:TableModeEnable<cr><bar><space><bar><left><left>' : '<bar><bar>'
+inoreabbrev <expr> __
+        \ <SID>isAtStartOfLine('__') ?
+        \ '<c-o>:silent! TableModeDisable<cr>' : '__'
 
