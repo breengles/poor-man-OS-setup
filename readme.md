@@ -82,5 +82,5 @@ cp vimrc ${HOME}/.vimrc  # for vim
 # mamba base
 ```
 mamba update --all -y
-mamba install -y ipython black isort autoflake pynvim aim
+mamba install -y ipython black isort autoflake pynvim aim jupyterlab
 ```
