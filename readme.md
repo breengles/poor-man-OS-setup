@@ -14,11 +14,11 @@
 # ubuntu 
 1. `sudo apt update`
 2. `sudo apt upgrade`
-3. `sudo apt install -y zsh wget curl git vim tmux make cmake`
+3. `sudo apt install -y zsh wget curl git vim tmux make cmake gcc g++`
 4. `chsh -s $(which zsh)`
    1. (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
 5. logout
-6. (optional) `sudo apt install -y powerline fonts-powerline gfortran gcc g++ texlive-full`
+6. (optional) `sudo apt install -y powerline fonts-powerline gfortran texlive-full`
 7. to apply terminal theme (check profile path):
 ```
 dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ < terminal_themes/breeze.dconf
@@ -71,13 +71,13 @@ chmod u+x ${HOME}/.local/bin/nvim
 cp zshrc ${HOME}/.zshrc
 cp p10k.zsh ${HOME}/.p10k.zsh
 cp tmux.conf ${HOME}/.tmux.conf
-cp gitconfig ${HOME}/.gitconfig
-cp gitignore ${HOME}/.gitignore
+cp gitconfig ${HOME}/.gitconfig ; cp gitignore ${HOME}/.gitignore
 ${HOME}/mambaforge/bin/mamba init zsh
 mkdir -p ${HOME}/.config/nvim ; cp vimrc ${HOME}/.config/nvim/init.vim  # for neovim
 cp vimrc ${HOME}/.vimrc  # for vim
 ```
 > do not forget to call `:PlugInstall` for (n)vim
+> and `<prefix> I` for `tmux`
 
 # mamba base
 ```
