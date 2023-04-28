@@ -28,11 +28,11 @@ dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d
 # [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh#basic-installation)
 see [zsh](https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH) for `zsh` if you lost.
 ```
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" ; \
-git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ; \
-git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ; \
-git clone --depth=1 https://github.com/conda-incubator/conda-zsh-completion.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/conda-zsh-completion ; \
-git clone --depth=1 https://github.com/TamCore/autoupdate-oh-my-zsh-plugins ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autoupdate ; \
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+git clone --depth=1 https://github.com/conda-incubator/conda-zsh-completion.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/conda-zsh-completion
+git clone --depth=1 https://github.com/TamCore/autoupdate-oh-my-zsh-plugins ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autoupdate
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 ```
 
@@ -52,8 +52,9 @@ sudo snap install nvim --classic
 or
 
 ```
-mkdir -p ${HOME}/.local/bin ; \
+mkdir -p ${HOME}/.local/bin
 curl -o ${HOME}/.local/bin/nvim -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+chmod u+x ${HOME}/.local/bin/nvim
 ```
 * [vscode](https://code.visualstudio.com)
   * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
@@ -67,19 +68,19 @@ curl -o ${HOME}/.local/bin/nvim -LO https://github.com/neovim/neovim/releases/la
 
 # copy cfgs
 ```
-cp zshrc ${HOME}/.zshrc ; \
-cp p10k.zsh ${HOME}/.p10k.zsh ; \
-cp tmux.conf ${HOME}/.tmux.conf ; \
-cp gitconfig ${HOME}/.gitconfig ; \
-cp gitignore ${HOME}/.gitignore ; \
-${HOME}/mambaforge/bin/mamba init zsh ; \
+cp zshrc ${HOME}/.zshrc
+cp p10k.zsh ${HOME}/.p10k.zsh
+cp tmux.conf ${HOME}/.tmux.conf
+cp gitconfig ${HOME}/.gitconfig
+cp gitignore ${HOME}/.gitignore
+${HOME}/mambaforge/bin/mamba init zsh
 mkdir -p ${HOME}/.config/nvim ; cp vimrc ${HOME}/.config/nvim/init.vim  # for neovim
+cp vimrc ${HOME}/.vimrc  # for vim
 ```
-
-## vim
-if you are using vim instead of neovim change last line to
-```
-cp vimrc ${HOME}/.vimrc
-```
-
 > do not forget to call `:PlugInstall` for (n)vim
+
+# mamba base
+```
+mamba update --all -y
+mamba install -y ipython black isort autoflake pynvim aim
+```
