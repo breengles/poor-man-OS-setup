@@ -53,6 +53,9 @@ fi
 
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
+alias nvimconfig="nvim ~/.config/nvim/init.vim"
+alias vimconfig="vim ~/.vimrc"
+
 alias c="clear"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
