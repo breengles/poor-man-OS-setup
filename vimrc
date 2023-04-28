@@ -82,7 +82,7 @@ set expandtab
 set mouse=a
 set clipboard+=unnamedplus
 
-let NERDTreeMouseMode=3
+" let NERDTreeMouseMode=3
 
 let g:python3_host_prog = '~/mambaforge/bin/python'
 let g:loaded_ruby_provider = 0
