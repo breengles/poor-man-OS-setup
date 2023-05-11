@@ -1,0 +1,19 @@
+if [ -x "$(command -v nvim)" ]; then
+  alias vim=nvim
+fi
+
+alias zshconfig="vim ~/.zshrc"
+alias ohmyzsh="vim ~/.oh-my-zsh"
+alias nvimconfig="nvim ~/.config/nvim/init.vim"
+alias vimconfig="vim ~/.vimrc"
+
+alias c="clear"
+
+alias rsync-copy="rsync -avz --progress -h"
+alias rsync-move="rsync -avz --progress -h --remove-source-files"
+alias rsync-update="rsync -avzu --progress -h"
+alias rsync-synchronize="rsync -avzu --delete --progress -h"
+
+alias rcopy="rsync-copy"
+alias rmove="rsync-move"
+alias rupd="rsync-update"

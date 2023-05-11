@@ -23,9 +23,6 @@ else
   ZSH_THEME="robbyrussell"
 fi
 
-## just remind me to update when it's time
-# zstyle ':omz:update' mode reminder
-
 export UPDATE_ZSH_DAYS=7
 ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 
@@ -37,7 +34,6 @@ ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 plugins=(
   git
   pip
-  rsync
   vi-mode
   command-not-found
   zsh-syntax-highlighting
@@ -47,17 +43,6 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
-
-if [ -x "$(command -v nvim)" ]; then
-  alias vim=nvim
-fi
-
-alias zshconfig="vim ~/.zshrc"
-alias ohmyzsh="vim ~/.oh-my-zsh"
-alias nvimconfig="nvim ~/.config/nvim/init.vim"
-alias vimconfig="vim ~/.vimrc"
-
-alias c="clear"
 
 if [ -f "$HOME/.aliases" ]; then
   source $HOME/.aliases
