@@ -69,6 +69,7 @@ chmod u+x ${HOME}/.local/bin/nvim
 # copy cfgs
 ```
 cp zshrc ${HOME}/.zshrc
+cp aliases ${HOME}/.aliases
 cp p10k.zsh ${HOME}/.p10k.zsh
 cp tmux.conf ${HOME}/.tmux.conf
 cp gitconfig ${HOME}/.gitconfig ; cp gitignore ${HOME}/.gitignore
