@@ -1,3 +1,5 @@
+alias init_ifort="source /opt/intel/oneapi/setvars.sh >/dev/null"
+
 if [ -x "$(command -v nvim)" ]; then
   alias vim=nvim
 fi

@@ -12,9 +12,6 @@ export PATH=$HOME/.local/bin:$PATH
 # export PATH=/usr/local/cuda-11.2/bin${PATH:+:${PATH}}
 # export PATH=/usr/local/cuda/bin/:$PATH
 
-## intel's OneAPI
-# source /opt/intel/oneapi/setvars.sh >/dev/null
-
 export ZSH="$HOME/.oh-my-zsh"
 
 if [ -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ]; then
