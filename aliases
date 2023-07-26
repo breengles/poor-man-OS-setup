@@ -4,6 +4,12 @@ if [ -x "$(command -v nvim)" ]; then
   alias vim=nvim
 fi
 
+if [ -x "$(command -v exa)" ]; then
+  alias ls=exa
+  alias l="exa -l"
+  alias ll="exa -abghHlS"
+fi
+
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias nvimconfig="nvim ~/.config/nvim/init.vim"

@@ -4,21 +4,19 @@
 3. [Brew](https://brew.sh)
 4. `brew update`
 5. `brew upgrade`
-6. `brew install zsh wget curl git vim tmux make cmake`
+6. `brew install zsh wget curl git vim tmux make cmake exa gfortran gcc g++`
 7. `chsh -s $(which zsh)`
 8. kill the terminal app
 9.  [LaTeX](http://www.tug.org/mactex/)
-10. [optional] `brew install gfortran gcc`
 
 
 # ubuntu 
 1. `sudo apt update`
 2. `sudo apt upgrade`
-3. `sudo apt install -y zsh wget curl git vim tmux make cmake gcc g++`
+3. `sudo apt install -y zsh wget curl git vim tmux make cmake exa gcc g++ powerline fonts-powerline gfortran texlive-full`
 4. `chsh -s $(which zsh)`
    1. (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
 5. logout
-6. (optional) `sudo apt install -y powerline fonts-powerline gfortran texlive-full`
 7. to apply terminal theme (check profile path):
 ```
 dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ < terminal_themes/breeze.dconf
@@ -47,14 +45,6 @@ git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
 * [neovim](https://github.com/neovim/neovim)
 ```
 sudo snap install nvim --classic
-```
-
-or
-
-```
-mkdir -p ${HOME}/.local/bin
-curl -o ${HOME}/.local/bin/nvim -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-chmod u+x ${HOME}/.local/bin/nvim
 ```
 * [vscode](https://code.visualstudio.com)
   * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
