@@ -13,7 +13,7 @@
 # ubuntu 
 1. `sudo apt update`
 2. `sudo apt upgrade`
-3. `sudo apt install -y zsh wget curl git vim tmux make cmake exa gcc g++ powerline fonts-powerline gfortran texlive-full`
+3. `sudo apt install -y zsh wget curl git vim tmux make cmake exa gcc g++ powerline fonts-powerline gfortran gnome-tweaks texlive-full`
 4. `chsh -s $(which zsh)`
    1. (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
 5. logout
