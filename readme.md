@@ -15,16 +15,15 @@
 2. `sudo apt upgrade`
 3. `sudo apt install -y zsh wget curl git vim tmux make cmake exa gcc g++ powerline fonts-powerline gfortran gnome-tweaks texlive-full`
 4. `chsh -s $(which zsh)`
-  1. (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
+  * (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
 5. logout
 7. to apply terminal theme (check profile path):
 ```
 dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ < terminal_themes/breeze.dconf
 ```
-8. snap: 
-  1. `sudo snap refresh`
-  2. `sudo snap install telegram-desktop slack`
-  3. `sudo snap install code --classic`
+8. `sudo snap refresh`
+9. `sudo snap install telegram-desktop slack`
+10. `sudo snap install code --classic`
 
 
 # [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh#basic-installation)
