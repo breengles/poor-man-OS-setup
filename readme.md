@@ -77,4 +77,5 @@ cp vimrc ${HOME}/.vimrc  # for vim
 ```
 mamba update --all -y
 mamba install -y ipython aim jupyterlab numpy pillow opencv
+mamba clean --all -y
 ```
