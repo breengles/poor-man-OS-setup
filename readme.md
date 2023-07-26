@@ -79,3 +79,14 @@ mamba update --all -y
 mamba install -y ipython aim jupyterlab numpy pillow opencv
 mamba clean --all -y
 ```
+
+# [dropbox ubuntu app fix deprecated key](https://itsfoss.com/key-is-stored-in-legacy-trusted-gpg/)
+`sudo apt-key list`
+
+```
+sudo apt-key export 5044912E | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/dropbox.gpg
+#      recheck that ^^^^^^^^
+```
+
+
+
