@@ -58,6 +58,15 @@ sudo snap install nvim --classic
 * [CascadiaCode](https://github.com/microsoft/cascadia-code)
 * [NerdFont (patched version of fonts, required for tmux theme)](https://github.com/ryanoasis/nerd-fonts)
   * For CascadiaCode version: [archive](https://github.com/ryanoasis/nerd-fonts/releases/latest) / [repo link](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/CascadiaCode)
+  * or run the following:
+  ```
+  mkdir -p ${HOME}/.local/share/fonts
+  curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip
+  unzip CascadiaCode.zip -d cascadiacode_tmp
+  mv cascadiacode_tmp/*.ttf ${HOME}/.local/share/fonts
+  rm -rf cascadiacode_tmp CascadiaCode.zip
+  sudo fc-cache -fv
+  ```
 
 # copy cfgs
 ```
