@@ -1,28 +1,26 @@
 name: ml
 channels:
-  - defaults
-  - conda-forge
   - pytorch
   - nvidia
+  - conda-forge
+  - defaults
 dependencies:
   - python>=3.10
-  - jupyterlab
-  - ipython
-  - matplotlib
-  - pandas
-  - scikit-learn
-  - scipy
-  - seaborn
-  - numpy
   - pytorch
   - torchvision
-  - torchaudio
+  # - torchaudio
   - pytorch-cuda=11.8
   - opencv
-  - click
+  - numpy
+  - scipy
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - seaborn
+  - jupyterlab
+  - ipython
   - pip
   - pip:
       - pyrallis
-      - streamlit
       - gradio
       - aim
