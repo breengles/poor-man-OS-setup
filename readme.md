@@ -11,19 +11,29 @@
 
 
 # ubuntu 
-1. `sudo apt update`
-2. `sudo apt upgrade`
-3. `sudo apt install -y zsh wget curl git vim tmux make cmake exa gcc g++ powerline fonts-powerline gfortran gnome-tweaks gdu texlive-full`
-4. `chsh -s $(which zsh)`
-  * (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
-5. logout
-7. to apply terminal theme (check profile path):
+```
+sudo apt update
+sudo apt upgrade
+sudo apt install -y zsh wget curl git vim tmux make cmake exa gcc g++ powerline fonts-powerline gfortran \
+gnome-tweaks gdu texlive-full build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl \
+libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+```
+
+```chsh -s $(which zsh)```
+> (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
+
+logout
+
+to apply terminal theme (check profile path):
 ```
 dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ < terminal_themes/breeze.dconf
 ```
-8. `sudo snap refresh`
-9. `sudo snap install telegram-desktop slack`
-10. `sudo snap install code --classic`
+
+```
+sudo snap refresh
+sudo snap install telegram-desktop slack
+sudo snap install code --classic
+```
 
 
 # [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh#basic-installation)
@@ -41,6 +51,10 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$
 # things
 * [mambaforge](https://github.com/conda-forge/miniforge#mambaforge)
   * if you going to copy cfg files then do not initialize mamba/conda right now --- we will do it later
+* [pyenv](https://github.com/pyenv/pyenv)
+```
+curl https://pyenv.run | bash
+```
 * [tpm](https://github.com/tmux-plugins/tpm)
 ```
 git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
@@ -68,9 +82,12 @@ sudo snap install nvim --classic
   sudo fc-cache -fv
   ```
 
+
 # copy cfgs
 ```
 cp zshrc ${HOME}/.zshrc
+cp profile ${HOME}/.profile
+cp zprofile ${HOME}/.zprofile
 cp aliases ${HOME}/.aliases
 cp p10k.zsh ${HOME}/.p10k.zsh
 cp tmux.conf ${HOME}/.tmux.conf
@@ -82,12 +99,12 @@ cp vimrc ${HOME}/.vimrc  # for vim
 > do not forget to call `:PlugInstall` for (n)vim
 > and `<prefix> I` for `tmux`
 
+
 # mamba base
 ```
-mamba update --all -y
-mamba install -y ipython aim jupyterlab numpy pillow opencv
-mamba clean --all -y
+mamba update --all -y && mamba clean --all -y
 ```
+
 
 # [dropbox ubuntu app fix deprecated key](https://itsfoss.com/key-is-stored-in-legacy-trusted-gpg/)
 `sudo apt-key list`
