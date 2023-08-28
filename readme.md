@@ -2,12 +2,11 @@
 1. [iTerm2](https://iterm2.com)
 2. `xcode-select --install`
 3. [Brew](https://brew.sh)
-4. `brew update`
-5. `brew upgrade`
-6. `brew install zsh wget curl git vim tmux make cmake exa gfortran gcc g++`
-7. `chsh -s $(which zsh)`
-8. kill the terminal app
-9.  [LaTeX](http://www.tug.org/mactex/)
+4. 
+```brew update && brew upgrade && brew install zsh wget curl git vim tmux make cmake exa gfortran gcc g++ openssl readline sqlite3 xz zlib tcl-tk```
+5. `chsh -s $(which zsh)`
+6. kill the terminal app
+7. [LaTeX](http://www.tug.org/mactex/)
 
 
 # ubuntu 
