@@ -37,6 +37,7 @@ plugins=(
   zsh-autosuggestions
   conda-zsh-completion
   autoupdate
+  pyenv
 )
 
 source $ZSH/oh-my-zsh.sh
