@@ -13,8 +13,9 @@
 ```
 sudo apt update
 sudo apt upgrade
+sudo apt install -y texlive-full
 sudo apt install -y zsh wget curl git vim tmux make cmake exa gcc g++ powerline fonts-powerline gfortran \
-gnome-tweaks gdu texlive-full build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl \
+gnome-tweaks gdu build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl \
 libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
 ```
 
