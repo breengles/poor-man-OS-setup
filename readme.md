@@ -64,7 +64,7 @@ git clone --depth=1 https://github.com/eza-community/eza.git ${ZSH_CUSTOM:-$HOME
 
 
 # things
-* [mambaforge](https://github.com/conda-forge/miniforge#mambaforge)
+* [miniforge3](https://github.com/conda-forge/miniforge#miniforge3)
   * if you going to copy cfg files then do not initialize mamba/conda right now --- we will do it later
 * [pyenv](https://github.com/pyenv/pyenv)
 ```
