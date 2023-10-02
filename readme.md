@@ -1,9 +1,10 @@
 # macos
 1. [iTerm2](https://iterm2.com)
-2. `xcode-select --install`
-3. [Brew](https://brew.sh)
-4. ```brew update && brew upgrade && brew install zsh wget curl git vim tmux make cmake exa gfortran gcc g++ openssl readline sqlite3 xz zlib tcl-tk```
-5. `chsh -s $(which zsh)`
+2. ```xcode-select --install```
+3. [Brew](https://brew.sh):  
+   ```/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"```
+4. ```brew update && brew upgrade && brew install zsh wget curl git vim tmux make cmake eza gfortran gcc g++ openssl readline sqlite3 xz zlib tcl-tk```
+5. ```chsh -s $(which zsh)```
 6. kill the terminal app
 7. [LaTeX](http://www.tug.org/mactex/)
 
@@ -21,7 +22,7 @@ sudo snap install code --classic
 ```chsh -s $(which zsh)```
 > (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
 
-logout
+**logout**
 
 to apply terminal theme (check profile path):
 ```
@@ -38,6 +39,15 @@ sudo apt update
 sudo apt install -y eza
 ```
 
+## [dropbox ubuntu app fix deprecated key](https://itsfoss.com/key-is-stored-in-legacy-trusted-gpg/)
+`sudo apt-key list`
+```
+sudo apt-key export 5044912E | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/dropbox.gpg
+#      recheck that ^^^^^^^^
+```
+
+## latex
+```sudo apt install -y texlive-full```
 
 
 # [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh#basic-installation)
