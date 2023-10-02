@@ -1,5 +1,3 @@
-alias init_ifort="source /opt/intel/oneapi/setvars.sh >/dev/null"
-
 if [ -x "$(command -v nvim)" ]; then
   alias vim=nvim
 fi
@@ -10,12 +8,15 @@ if [ -x "$(command -v exa)" ]; then
   alias ll="exa -abghHlS"
 fi
 
+
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias nvimconfig="nvim ~/.config/nvim/init.vim"
 alias vimconfig="vim ~/.vimrc"
 
 alias c="clear"
+
+alias init_ifort="source /opt/intel/oneapi/setvars.sh >/dev/null"
 
 alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"
