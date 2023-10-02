@@ -2,10 +2,10 @@ if [ -x "$(command -v nvim)" ]; then
   alias vim=nvim
 fi
 
-if [ -x "$(command -v exa)" ]; then
-  alias ls=exa
-  alias l="exa -l"
-  alias ll="exa -abghHlS"
+if [ -x "$(command -v eza)" ]; then
+  alias ls=eza
+  alias l="eza -l"
+  alias ll="eza -abghHlS"
 fi
 
 

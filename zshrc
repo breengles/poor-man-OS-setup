@@ -8,6 +8,8 @@ fi
 export PATH=$HOME/.local/bin:$PATH
 # export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
 
+export FPATH="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/eza/completions/zsh:$FPATH"
+
 ## nvidia cuda if u need it
 # export PATH=/usr/local/cuda-11.2/bin${PATH:+:${PATH}}
 # export PATH=/usr/local/cuda/bin/:$PATH
