@@ -5,8 +5,8 @@ function s {
 function q {
     sinfo
     echo ""
-    squeue --user=$(whoami) --format="%.11i %.11P %45j %.8T %.12M %18N"
-    echo -e "\nTotal number of jobs: $(squeue --user=$(whoami) -h | wc -l)"
+    squeue --user="$(whoami)" --format="%.11i %.11P %45j %.8T %.12M %18N"
+    echo -e "\nTotal number of jobs: $(squeue --user="$(whoami)" -h | wc -l)"
 }
 
 function qq {
@@ -14,7 +14,7 @@ function qq {
 }
 
 function gpu {
-  ssh "$@" -t $(which nvitop)
+  ssh "$@" -t "$(which nvitop)"
 }
 
 alias rsync-copy="rsync -avz --progress -h"
