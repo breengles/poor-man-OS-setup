@@ -66,8 +66,8 @@ git clone --depth=1 https://github.com/eza-community/eza.git ${ZSH_CUSTOM:-$HOME
     * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
 * [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
 * [Rust](https://doc.rust-lang.org/cargo/getting-started/installation.html)
-```curl https://sh.rustup.rs -sSf | sh```
-    * [eza](https://github.com/eza-community/eza#cargo-cratesio): ```cargo install eza```
+    * ```curl https://sh.rustup.rs -sSf | sh```
+    * ```cargo install eza cargo-update```
 
 
 # configs
