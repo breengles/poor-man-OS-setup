@@ -12,7 +12,8 @@
 
 # ubuntu
 1. 
-```sudo apt update
+```
+sudo apt update
 sudo apt upgrade
 sudo apt install -y zsh wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks gdu build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev gpg
 sudo snap refresh
@@ -40,9 +41,6 @@ sudo apt-key export 5044912E | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/dro
 
 ## latex
 ```sudo apt install -y texlive-full```
-
-
-
 
 
 # [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh#basic-installation)
