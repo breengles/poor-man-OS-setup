@@ -4,40 +4,31 @@
 3. [Brew](https://brew.sh):  
    ```/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"```
 4. ```brew update && brew upgrade```
-5. ```brew install zsh wget curl git vim tmux make cmake gfortran gcc g++ openssl readline eza sqlite3 xz zlib tcl-tk```
+5. ```brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++ openssl readline sqlite3 xz zlib tcl-tk```
 6. ```chsh -s $(which zsh)```
 7. kill the terminal app
 8. [LaTeX](http://www.tug.org/mactex/)
 
 
-# ubuntu 
-```
-sudo apt update
+# ubuntu
+1. 
+```sudo apt update
 sudo apt upgrade
 sudo apt install -y zsh wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks gdu build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev gpg
 sudo snap refresh
 sudo snap install telegram-desktop slack
 sudo snap install code --classic
+sudo snap install nvim --classic
 ```
 
-```chsh -s $(which zsh)```
+2. ```chsh -s $(which zsh)```
 > (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
 
-**logout**
+3. **logout**
 
-to apply terminal theme (check profile path):
+4. to apply terminal theme (check profile path):
 ```
 dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ < terminal_themes/breeze.dconf
-```
-
-## [eza](https://github.com/eza-community/eza#debian-and-ubuntu)
-```
-sudo mkdir -p /etc/apt/keyrings
-wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
-echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
-sudo apt update
-sudo apt install -y eza
 ```
 
 ## [dropbox ubuntu app fix deprecated key](https://itsfoss.com/key-is-stored-in-legacy-trusted-gpg/)
@@ -49,6 +40,9 @@ sudo apt-key export 5044912E | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/dro
 
 ## latex
 ```sudo apt install -y texlive-full```
+
+
+
 
 
 # [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh#basic-installation)
@@ -66,25 +60,17 @@ git clone --depth=1 https://github.com/eza-community/eza.git ${ZSH_CUSTOM:-$HOME
 
 # things
 * [miniforge3](https://github.com/conda-forge/miniforge#miniforge3)
-  * if you going to copy cfg files then do not initialize mamba/conda right now --- we will do it later
-* [pyenv](https://github.com/pyenv/pyenv)
-```
-curl https://pyenv.run | bash
-```
-* [tpm](https://github.com/tmux-plugins/tpm)
-```
-git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
-```
-* [neovim](https://github.com/neovim/neovim)
-```
-sudo snap install nvim --classic
-```
+* [pyenv](https://github.com/pyenv/pyenv): ```curl https://pyenv.run | bash```
+* [tpm](https://github.com/tmux-plugins/tpm): ```git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm```
 * [vscode](https://code.visualstudio.com)
-  * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
+    * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
 * [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
+* [Rust](https://doc.rust-lang.org/cargo/getting-started/installation.html)
+```curl https://sh.rustup.rs -sSf | sh```
+    * [eza](https://github.com/eza-community/eza#cargo-cratesio): ```cargo install eza```
 
 
-# copy cfgs
+# configs
 ```
 cp zshrc ${HOME}/.zshrc
 cp profile ${HOME}/.profile
