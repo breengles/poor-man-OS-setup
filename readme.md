@@ -14,7 +14,7 @@
 ```
 sudo apt update
 sudo apt upgrade
-sudo apt install -y zsh wget curl git vim tmux make cmake exa gcc g++ powerline fonts-powerline gfortran gnome-tweaks gdu build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev gpg
+sudo apt install -y zsh wget curl git vim tmux make cmake eza gcc g++ powerline fonts-powerline gfortran gnome-tweaks gdu build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev gpg
 sudo snap refresh
 sudo snap install telegram-desktop slack
 sudo snap install code --classic
