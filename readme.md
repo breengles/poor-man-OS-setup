@@ -3,10 +3,11 @@
 2. ```xcode-select --install```
 3. [Brew](https://brew.sh):  
    ```/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"```
-4. ```brew update && brew upgrade && brew install zsh wget curl git vim tmux make cmake eza gfortran gcc g++ openssl readline sqlite3 xz zlib tcl-tk```
-5. ```chsh -s $(which zsh)```
-6. kill the terminal app
-7. [LaTeX](http://www.tug.org/mactex/)
+4. ```brew update && brew upgrade```
+5. ```brew install zsh wget curl git vim tmux make cmake gfortran gcc g++ openssl readline eza sqlite3 xz zlib tcl-tk```
+6. ```chsh -s $(which zsh)```
+7. kill the terminal app
+8. [LaTeX](http://www.tug.org/mactex/)
 
 
 # ubuntu 
@@ -105,7 +106,7 @@ cp vimrc ${HOME}/.vimrc  # for vim
 * [CascadiaCode](https://github.com/microsoft/cascadia-code)
 * [NerdFont (patched version of fonts, required for tmux theme)](https://github.com/ryanoasis/nerd-fonts)
   * For CascadiaCode version: [archive](https://github.com/ryanoasis/nerd-fonts/releases/latest) / [repo link](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/CascadiaCode)
-  * or run the following:
+  * (ubuntu) or run the following:
   ```
   mkdir -p ${HOME}/.local/share/fonts
   curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip
