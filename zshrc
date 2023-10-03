@@ -40,6 +40,7 @@ plugins=(
   conda-zsh-completion
   autoupdate
   pyenv
+  rust
 )
 
 source $ZSH/oh-my-zsh.sh
