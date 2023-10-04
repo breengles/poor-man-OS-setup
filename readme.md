@@ -4,7 +4,7 @@
 3. [Brew](https://brew.sh):  
    ```/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"```
 4. ```brew update && brew upgrade```
-5. ```brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++ openssl readline sqlite3 xz zlib tcl-tk```
+5. ```brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++```
 6. ```chsh -s $(which zsh)```
 7. kill the terminal app
 8. [LaTeX](http://www.tug.org/mactex/)
@@ -12,10 +12,10 @@
 
 # ubuntu
 1. 
-```
+```bash
 sudo apt update
 sudo apt upgrade
-sudo apt install -y zsh wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks gdu build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev gpg
+sudo apt install -y zsh wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks gdu
 sudo snap refresh
 sudo snap install telegram-desktop slack
 sudo snap install code --classic
@@ -45,7 +45,7 @@ sudo apt-key export 5044912E | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/dro
 
 # [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh#basic-installation)
 see [zsh](https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH) for `zsh` if you lost.
-```
+```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
@@ -58,7 +58,8 @@ git clone --depth=1 https://github.com/eza-community/eza.git ${ZSH_CUSTOM:-$HOME
 
 # things
 * [miniforge3](https://github.com/conda-forge/miniforge#miniforge3)
-* [pyenv](https://github.com/pyenv/pyenv): ```curl https://pyenv.run | bash```
+  * linux: `wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh`
+  * macos: `wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh`
 * [tpm](https://github.com/tmux-plugins/tpm): ```git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm```
 * [vscode](https://code.visualstudio.com)
     * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
@@ -69,10 +70,9 @@ git clone --depth=1 https://github.com/eza-community/eza.git ${ZSH_CUSTOM:-$HOME
 
 
 # configs
-```
+```bash
 cp zshrc ${HOME}/.zshrc
 cp profile ${HOME}/.profile
-cp zprofile ${HOME}/.zprofile
 cp aliases ${HOME}/.aliases
 cp p10k.zsh ${HOME}/.p10k.zsh
 cp tmux.conf ${HOME}/.tmux.conf

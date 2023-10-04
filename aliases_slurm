@@ -10,18 +10,9 @@ function q {
 }
 
 function qq {
-    watch -n 1 "sinfo; echo ""; squeue --user=$(whoami) --format='%.11i %.11P %45j %.1T %.12M %18N'; echo -e '\nTotal number of jobs: '; squeue --user=$(whoami)  -h | wc -l"
+    watch -n 1 "squeue --user=$(whoami) --format='%.11i %.11P %45j %.1T %.12M %18N'; echo -e '\nTotal number of jobs: '; squeue --user=$(whoami)  -h | wc -l"
 }
 
 function gpu {
   ssh "$@" -t "$(which nvitop)"
 }
-
-alias rsync-copy="rsync -avz --progress -h"
-alias rsync-move="rsync -avz --progress -h --remove-source-files"
-alias rsync-update="rsync -avzu --progress -h"
-alias rsync-synchronize="rsync -avzu --delete --progress -h"
-
-alias rcopy="rsync-copy"
-alias rmove="rsync-move"
-alias rupd="rsync-update"
