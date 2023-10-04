@@ -39,7 +39,6 @@ plugins=(
   zsh-autosuggestions
   conda-zsh-completion
   autoupdate
-  pyenv
   rust
 )
 

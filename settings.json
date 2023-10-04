@@ -1,17 +1,67 @@
 {
-    "debug.onTaskErrors": "abort",
-    "terminal.integrated.inheritEnv": true,
-    "security.workspace.trust.untrustedFiles": "open",
-    "remote.SSH.localServerDownload": "always",
+    "extensions.ignoreRecommendations": true,
+    "redhat.telemetry.enabled": false,
     "files.autoSave": "onWindowChange",
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.aim/*/**": true,
+        "**/logs/*/**": true,
+        "**/output/*/**": true
+    },
+    "settingsSync.ignoredSettings": [
+        "-python.formatting.blackPath",
+        "-window.zoomLevel"
+    ],
+    "yaml.format.printWidth": 120,
+    "[yaml]": {
+        "editor.tabSize": 2
+    },
+    "ruff.lint.args": [
+        "--line-length=120"
+    ],
+    "ruff.importStrategy": "useBundled",
+    "debug.onTaskErrors": "abort",
+    "security.workspace.trust.untrustedFiles": "open",
+    // "remote.SSH.localServerDownload": "always",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook",
         "*.pdf": "default"
     },
+    "window.zoomLevel": 1.2,
     "window.openFilesInNewWindow": "on",
     "window.openFoldersInNewWindow": "on",
+    // terminal
+    "terminal.integrated.profiles.linux": {
+        "bash": null,
+        "tmux": {
+            "path": "bash",
+            "args": [
+                "-c",
+                "ses_id=$(tmux new -dPF '#{session_id}') && new_name=${PWD##*/}-${ses_id:1} && tmux rename ${new_name/[.:]/_} && tmux split-window -h && tmux attach"
+            ],
+            "icon": "terminal-tmux",
+        },
+    },
+    "terminal.integrated.profiles.osx": {
+        "bash": null,
+        "tmux": {
+            "path": "zsh",
+            "args": [
+                "-c",
+                "ses_id=$(tmux new -dPF '#{session_id}') && new_name=${PWD##*/}-${ses_id:1} && tmux rename ${new_name/[.:\\ ]/_} && tmux split-window -h && tmux attach"
+            ],
+            "icon": "terminal-tmux",
+        },
+    },
+    "terminal.integrated.defaultProfile.linux": "tmux",
+    "terminal.integrated.defaultProfile.osx": "tmux",
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "terminal.integrated.inheritEnv": true,
     // editor
+    "editor.minimap.showSlider": "always",
     "editor.fontFamily": "'CaskaydiaCove Nerd Font', 'Cascadia Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 18,
     "editor.rulers": [
@@ -27,10 +77,12 @@
     "editor.tabSize": 4,
     "editor.unicodeHighlight.ambiguousCharacters": true,
     // explorer
+    "explorer.autoReveal": false,
     "explorer.confirmDelete": false,
     "explorer.openEditors.visible": 10,
     "explorer.confirmDragAndDrop": false,
     // git
+    "git.openRepositoryInParentFolders": "never",
     "git.ignoreMissingGitWarning": true,
     "git.enableSmartCommit": true,
     "git.autofetch": true,
@@ -39,11 +91,12 @@
     "git.confirmForcePush": true,
     "diffEditor.ignoreTrimWhitespace": false,
     // python
+    "python.analysis.typeCheckingMode": "off",
+    "jupyter.interactiveWindow.textEditor.executeSelection": true,
     "python.analysis.diagnosticSeverityOverrides": {
         "reportMissingImports": "none"
     },
     "python.terminal.executeInFileDir": true,
-    "python.formatting.provider": "none",
     "black-formatter.args": [
         "--line-length",
         "120"
@@ -59,20 +112,6 @@
         },
         "editor.formatOnType": true
     },
-    // "isort.args": [
-    //     "--profile",
-    //     "black",
-    //     "--line-length",
-    //     "120"
-    // ],
-    // "python.autoComplete.extraPaths": [
-    //     "/home/<pc-name>/<ws-name>/devel/lib/python3/dist-packages",
-    //     "/opt/ros/noetic/lib/python3/dist-packages"
-    // ],
-    // "python.analysis.extraPaths": [
-    //     "/home/<pc-name>/<ws-name>/devel/lib/python3/dist-packages",
-    //     "/opt/ros/noetic/lib/python3/dist-packages"
-    // ],
     "jupyter.askForKernelRestart": false,
     "python.analysis.completeFunctionParens": true,
     "notebook.cellToolbarLocation": {
@@ -80,6 +119,9 @@
         "jupyter-notebook": "left"
     },
     // fortran
+    "fortran.notifications.releaseNotes": false,
+    "fortran.formatting.formatter": "Disabled",
+    "fortran.fortls.notifyInit": true,
     "[FortranFreeForm]": {
         "editor.tabSize": 2
     },
@@ -228,9 +270,11 @@
         "alessio",
         "alexnet",
         "AlgoType",
+        "allclose",
         "allenai",
         "alphacums",
         "alwayson",
+        "amax",
         "AMFI",
         "AMFICH",
         "animatediff",
@@ -276,6 +320,7 @@
         "bitsandbytes",
         "bkgd",
         "blendmodes",
+        "blendshapes",
         "bodyface",
         "breengles",
         "breit",
@@ -324,6 +369,7 @@
         "croper",
         "croproot",
         "crossattn",
+        "crossattndim",
         "crossentropy",
         "cstride",
         "csvfile",
@@ -393,6 +439,7 @@
         "expit",
         "facebookresearch",
         "facedet",
+        "FACEMESH",
         "facenet",
         "faceonly",
         "faceparsing",
@@ -533,9 +580,11 @@
         "ksize",
         "kubeflow",
         "kuvshinov",
+        "kwargs",
         "laion",
         "lambdalabs",
         "LANCZOS",
+        "Landmarker",
         "landmarkpredictor",
         "latexindent",
         "latexmk",
@@ -599,7 +648,10 @@
         "mimsave",
         "miniapp",
         "miniconda",
+        "miniforge",
+        "minmax",
         "Mironova",
+        "mish",
         "mlsd",
         "mmcv",
         "mmdet",
@@ -633,6 +685,7 @@
         "nextafter",
         "ngpu",
         "nhwc",
+        "nindex",
         "nltk",
         "nobench",
         "nonorm",
@@ -644,6 +697,7 @@
         "nowebui",
         "nprocs",
         "nrow",
+        "nrows",
         "ntasks",
         "NTOL",
         "nucl",
@@ -727,6 +781,7 @@
         "preword",
         "printoptions",
         "prios",
+        "probs",
         "profiler",
         "progressbar",
         "progressbars",
@@ -780,6 +835,9 @@
         "reqparse",
         "resampler",
         "resnet",
+        "resnets",
+        "rgaussroots",
+        "rgaussweights",
         "rgbs",
         "riabovitchev",
         "rint",
@@ -800,6 +858,7 @@
         "runwayml",
         "rutkowski",
         "safecrlf",
+        "safetensor",
         "safetensors",
         "sakimichan",
         "savedir",
@@ -819,12 +878,14 @@
         "selectbox",
         "sents",
         "setuptools",
+        "setvars",
         "sgdm",
         "shhekah",
         "SHHQ",
         "shinkai",
         "shortinst",
         "Shuai",
+        "silu",
         "sintel",
         "skimage",
         "skinsmooth",
@@ -840,6 +901,7 @@
         "spacefilm",
         "spdf",
         "squeezenet",
+        "SRGB",
         "ssim",
         "stabilityai",
         "stdinv",
@@ -851,6 +913,7 @@
         "STREQUAL",
         "stylegan",
         "styleganex",
+        "subconfigs",
         "subdata",
         "subdirs",
         "submatch",
@@ -862,6 +925,7 @@
         "svgsupport",
         "svgsupports",
         "svmlight",
+        "swapaxes",
         "Swin",
         "swint",
         "synctex",
@@ -873,6 +937,8 @@
         "texlive",
         "texpr",
         "textencoder",
+        "thgaussroots",
+        "thgaussweights",
         "thop",
         "tifffile",
         "timelimit",
@@ -887,6 +953,7 @@
         "Toonyou",
         "torchaudio",
         "torchdiffeq",
+        "torchinfo",
         "torchmetrics",
         "torchsde",
         "torchvision",
@@ -915,6 +982,7 @@
         "updown",
         "upfirdn",
         "upsamlings",
+        "upsamplers",
         "urlcolor",
         "usecolormap",
         "usermod",
@@ -926,6 +994,7 @@
         "VGGLPIPS",
         "videoid",
         "vimrc",
+        "virtualenv",
         "vmax",
         "vmin",
         "vscodesetting",
@@ -968,37 +1037,5 @@
         "подпроцессы",
         "Шабаев",
         "шебангом"
-    ],
-    "terminal.integrated.defaultProfile.osx": "zsh",
-    "redhat.telemetry.enabled": false,
-    "yaml.format.printWidth": 120,
-    "jupyter.interactiveWindow.textEditor.executeSelection": true,
-    "git.openRepositoryInParentFolders": "never",
-    "fortran.formatting.formatter": "Disabled",
-    "fortran.fortls.notifyInit": true,
-    "fortran.fortls.path": "~/mambaforge/bin/fortls",
-    "files.watcherExclude": {
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
-        "**/node_modules/*/**": true,
-        "**/.aim/*/**": true,
-        "**/logs/*/**": true,
-        "**/output/*/**": true
-    },
-    "fortran.notifications.releaseNotes": false,
-    "terminal.integrated.enableMultiLinePasteWarning": false,
-    "remoteHub.commitDirectlyWarning": "off",
-    "python.analysis.typeCheckingMode": "off",
-    "settingsSync.ignoredSettings": [
-        "-python.formatting.blackPath"
-    ],
-    "[yaml]": {
-        "editor.tabSize": 2
-    },
-    "extensions.ignoreRecommendations": true,
-    "ruff.args": [
-        "--line-length=120"
-    ],
-    "window.zoomLevel": 1,
-    "editor.minimap.showSlider": "always",
+    ]
 }
