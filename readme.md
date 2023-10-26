@@ -58,15 +58,26 @@ git clone --depth=1 https://github.com/eza-community/eza.git ${ZSH_CUSTOM:-$HOME
 
 # things
 * [miniforge3](https://github.com/conda-forge/miniforge#miniforge3)
-  * linux: `wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh`
-  * macos: `wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh`
+  * linux: ```wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh```
+  * macos: ```wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh```
 * [tpm](https://github.com/tmux-plugins/tpm): ```git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm```
 * [vscode](https://code.visualstudio.com)
-    * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
+  * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
 * [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
 * [Rust](https://doc.rust-lang.org/cargo/getting-started/installation.html)
-    * ```curl https://sh.rustup.rs -sSf | sh```
-    * ```cargo install eza cargo-update```
+```bash
+curl https://sh.rustup.rs -sSf | sh
+cargo install eza cargo-update
+```
+* [syncthing](https://syncthing.net/downloads)
+```bash
+sudo curl -o /usr/share/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
+echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+sudo apt update && sudo apt install syncthing
+cp /usr/share/applications/syncthing-start.desktop ${HOME}/.config/autostart
+```
+
+for macos, [download .dmg](https://github.com/syncthing/syncthing-macos/releases)
 
 
 # configs
