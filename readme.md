@@ -15,19 +15,19 @@
 ```bash
 sudo apt update
 sudo apt upgrade
-sudo apt install -y zsh wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks gdu
+sudo apt install -y zsh wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks gdu restic
 sudo snap refresh
 sudo snap install telegram-desktop slack
 sudo snap install code --classic
 sudo snap install nvim --classic
 ```
 
-2. ```chsh -s $(which zsh)```
+1. ```chsh -s $(which zsh)```
 > (in the case of problems this might help) `sudo usermod -s /usr/bin/zsh $(whoami)`
 
-3. **logout**
+1. **logout**
 
-4. to apply terminal theme (check profile path):
+2. to apply terminal theme (check profile path):
 ```
 dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ < terminal_themes/breeze.dconf
 ```
@@ -82,19 +82,25 @@ for macos, [download .dmg](https://github.com/syncthing/syncthing-macos/releases
 
 # configs
 ```bash
+mkdir ${HOME}/.log
 cp zshrc ${HOME}/.zshrc
 cp profile ${HOME}/.profile
 cp aliases ${HOME}/.aliases
 cp p10k.zsh ${HOME}/.p10k.zsh
 cp tmux.conf ${HOME}/.tmux.conf
-cp gitconfig ${HOME}/.gitconfig ; cp gitignore ${HOME}/.gitignore
+cp gitconfig ${HOME}/.gitconfig && cp gitignore ${HOME}/.gitignore
 ${HOME}/miniforge3/bin/mamba init zsh
-mkdir -p ${HOME}/.config/nvim ; cp vimrc ${HOME}/.config/nvim/init.vim  # for neovim
+mkdir -p ${HOME}/.config/nvim && cp vimrc ${HOME}/.config/nvim/init.vim  # for neovim
 cp vimrc ${HOME}/.vimrc  # for vim
 ```
 > do not forget to call `:PlugInstall` for (n)vim
 > and `<prefix> I` for `tmux`
 > and `mamba update --all -y && mamba clean --all -y`
+
+## Restic
+```bash
+sudo ln -s restic/restic-backup.sh /etc/cron.daily
+```
 
 
 # fonts
