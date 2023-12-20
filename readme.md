@@ -69,7 +69,7 @@ git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
 ## [Rust](https://doc.rust-lang.org/cargo/getting-started/installation.html)
 ```bash
 curl https://sh.rustup.rs -sSf | sh
-cargo install eza cargo-update
+cargo install eza cargo-update tree-sitter-cli ripgrep
 ```
 
 ## [syncthing](https://syncthing.net/downloads)
@@ -92,6 +92,8 @@ git clone --depth=1 https://github.com/joouha/ranger_tmux.git ${HOME}/.config/ra
 git clone --depth=1 https://github.com/alexanderjeurissen/ranger_devicons.git ${HOME}/.config/ranger/plugins
 ```
 
+for image preview, [ueberzugpp](https://github.com/jstkdng/ueberzugpp).
+
 
 # configs
 ```bash
@@ -104,11 +106,10 @@ cp p10k.zsh ${HOME}/.p10k.zsh
 cp tmux.conf ${HOME}/.tmux.conf
 cp gitconfig ${HOME}/.gitconfig && cp gitignore ${HOME}/.gitignore
 ${HOME}/miniforge3/bin/mamba init zsh
-mkdir -p ${HOME}/.config/nvim && cp vimrc ${HOME}/.config/nvim/init.vim  # for neovim
-cp vimrc ${HOME}/.vimrc  # for vim
 cp ranger.conf ${HOME}/.config/ranger/rc.conf
+git clone https://github.com/LazyVim/starter ~/.config/nvim && rm -rf ~/.config/nvim/.git  # yep, it is lazyvim
 ```
-> do not forget to call `:PlugInstall` for (n)vim;
+> do not forget to run `:checkhealth` for nvim
 > and `<prefix> I` for `tmux`;
 > and `mamba update --all -y && mamba clean --all -y`
 
