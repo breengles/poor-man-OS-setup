@@ -3,7 +3,7 @@
 # 1. add a cred file with your repo logins to /etc/restic/cred
 # 2. 
 
-LOG="/home/artem/.log/restic.log"
+LOG="/home/artem/restic.log"
 
 backup_disk="/media/artem/BREE_STOR"
 export RESTIC_REPOSITORY="$backup_disk/restic-backups"

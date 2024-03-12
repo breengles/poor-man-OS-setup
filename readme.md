@@ -5,6 +5,7 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
 brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++
+brew install --cask keepingyouawake
 chsh -s $(which zsh)
 # kill the terminal app after changing default shell
 ```
@@ -69,8 +70,7 @@ git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
 ## [Rust](https://doc.rust-lang.org/cargo/getting-started/installation.html)
 ```bash
 curl https://sh.rustup.rs -sSf | sh
-cargo install eza cargo-update tree-sitter-cli ripgrep
-cargo install zoxide --locked
+cargo install eza cargo-update tree-sitter-cli ripgrep zoxide --locked
 ```
 
 ## [ranger](https://github.com/ranger/ranger/tree/master)
