@@ -5,6 +5,7 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
 brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++
+brew install --cask keepingyouawake
 chsh -s $(which zsh)
 # kill the terminal app after changing default shell
 ```
