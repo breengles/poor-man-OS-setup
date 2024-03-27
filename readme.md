@@ -6,6 +6,7 @@ xcode-select --install
 brew update && brew upgrade
 brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++
 brew install --cask keepingyouawake
+brew install --cask raycast
 chsh -s $(which zsh)
 # kill the terminal app after changing default shell
 ```
