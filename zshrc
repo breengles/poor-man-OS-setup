@@ -45,3 +45,8 @@ fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+if [ -x "$(command -v zoxide)" ]; then
+  eval "$(zoxide init zsh)"
+  alias cd=z
+fi

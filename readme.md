@@ -5,6 +5,8 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
 brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++
+brew install --cask keepingyouawake
+brew install --cask raycast
 chsh -s $(which zsh)
 # kill the terminal app after changing default shell
 ```
@@ -70,16 +72,8 @@ git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
 ```bash
 curl https://sh.rustup.rs -sSf | sh
 cargo install eza cargo-update tree-sitter-cli ripgrep
+cargo install zoxide --locked
 ```
-
-## [syncthing](https://syncthing.net/downloads)
-```bash
-sudo curl -o /usr/share/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
-echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
-sudo apt update && sudo apt install syncthing
-cp /usr/share/applications/syncthing-start.desktop ${HOME}/.config/autostart
-```
-for macos, [download .dmg](https://github.com/syncthing/syncthing-macos/releases)
 
 ## [ranger](https://github.com/ranger/ranger/tree/master)
 * ubuntu: ```sudo apt install ranger```
@@ -109,9 +103,10 @@ ${HOME}/miniforge3/bin/mamba init zsh
 cp ranger.conf ${HOME}/.config/ranger/rc.conf
 git clone https://github.com/LazyVim/starter ~/.config/nvim && rm -rf ~/.config/nvim/.git  # yep, it is lazyvim
 ```
-> do not forget to run `:checkhealth` for nvim
+> do not forget to run `:checkhealth` for nvim;
 > and `<prefix> I` for `tmux`;
-> and `mamba update --all -y && mamba clean --all -y`
+> and `mamba update --all -y && mamba clean --all -y`;
+> and `rm ~/.zcompdump*; compinit`;
 
 
 # fonts
@@ -139,4 +134,13 @@ sudo fc-cache -fv
 sudo apt-key export 5044912E | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/dropbox.gpg
 #      recheck that ^^^^^^^^
 ```
+
+## [syncthing](https://syncthing.net/downloads)
+```bash
+sudo curl -o /usr/share/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
+echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+sudo apt update && sudo apt install syncthing
+cp /usr/share/applications/syncthing-start.desktop ${HOME}/.config/autostart
+```
+for macos, [download .dmg](https://github.com/syncthing/syncthing-macos/releases)
 
