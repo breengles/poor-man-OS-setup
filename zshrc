@@ -6,9 +6,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 export PATH=$HOME/.local/bin:$HOME/bin:$PATH
-
 export FPATH="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/eza/completions/zsh:$FPATH"
-
 export ZSH="$HOME/.oh-my-zsh"
 
 if [ -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ]; then
