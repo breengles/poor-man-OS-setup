@@ -39,14 +39,13 @@ elif [ "$OS" == "Linux" ]; then
     echo "You are on Linux. Assuming it is Fedora (the script is only working on it)."
 
     dnf copr enable faramirza/gdu
-    sudo dnf check-update -y && sudo dnf update -y
-    sudo dnf install -y wget curl git vim tmux make cmake gcc g++ powerline powerline-fonts gfortran gnome-tweaks gdu texlive-scheme-full ranger gnome-tweaks openssl openssl-devel neovim python3-neovim
-
-    # vs code
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
     sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
-    dnf check-update
-    sudo dnf install code
+    sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+
+    sudo dnf check-update -y && sudo dnf upgrade -y --refresh
+    sudo dnf install -y wget curl git vim tmux make cmake gcc g++ powerline powerline-fonts gfortran gnome-tweaks gdu texlive-scheme-full ranger gnome-tweaks openssl openssl-devel neovim python3-neovim code
+    sudo dnf groupupdate core
 
     # sudo dnf install -y restic
     # sudo ln -s restic/restic-backup.sh /etc/cron.daily/restic-backup
