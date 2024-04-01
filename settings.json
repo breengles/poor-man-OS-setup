@@ -34,6 +34,7 @@
     },
     "window.openFilesInNewWindow": "default",
     "window.openFoldersInNewWindow": "default",
+    "window.titleBarStyle": "custom",
     // terminal
     "terminal.integrated.inheritEnv": true,
     "terminal.integrated.profiles.linux": {
