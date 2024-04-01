@@ -3,11 +3,11 @@
 # 1. add a cred file with your repo logins to /etc/restic/cred
 # 2. 
 
-LOG="/home/artem/.log/restic.log"
+LOG="${HOME}/log/restic.log"
 
 backup_disk="/media/artem/BREE_STOR"
 export RESTIC_REPOSITORY="$backup_disk/restic-backups"
-export RESTIC_PASSWORD_FILE="/home/artem/restic-password.txt"
+export RESTIC_PASSWORD_FILE="${HOME}/restic-password.txt"
 
 ### keep last # of days of snapshots
 KEEPDAYS=30
