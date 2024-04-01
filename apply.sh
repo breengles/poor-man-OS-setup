@@ -36,31 +36,35 @@ if [ "$OS" == "Darwin" ]; then
     wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh
 
 elif [ "$OS" == "Linux" ]; then
-    echo "You are on Linux. Assuming it is Ubutnu (the script is only working on it)."
+    echo "You are on Linux. Assuming it is Fedora (the script is only working on it)."
 
-    sudo apt update
-    sudo apt upgrade
-    sudo apt install -y wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran
-    sudo apt install -y gnome-tweaks gdu restic texlive-full ranger
+    dnf copr enable faramirza/gdu
+    sudo dnf check-update -y && sudo dnf update -y
+    sudo dnf install -y wget curl git vim tmux make cmake gcc g++ powerline powerline-fonts gfortran gnome-tweaks gdu texlive-scheme-full ranger gnome-tweaks openssl openssl-devel neovim python3-neovim
 
-    sudo snap refresh
-    sudo snap install telegram-desktop slack
-    sudo snap install code --classic
-    sudo snap install nvim --classic
+    # vs code
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+    dnf check-update
+    sudo dnf install code
+
+    # sudo dnf install -y restic
+    # sudo ln -s restic/restic-backup.sh /etc/cron.daily/restic-backup
+
+    flatpak install -y flathub org.telegram.desktop com.slack.Slack
 
     dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ < terminal_themes/breeze.dconf
-    sudo ln -s restic/restic-backup.sh /etc/cron.daily/restic-backup
 
     wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
 
-    mkdir -p "${HOME}/.local/share/fonts"
+    mkdir -p "${HOME}/.local/share/fonts/CaskaydiaCoveNerdFont"
     curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip
     unzip CascadiaCode.zip -d cascadiacode_tmp
-    mv cascadiacode_tmp/*.ttf "${HOME}/.local/share/fonts"
+    mv cascadiacode_tmp/*.ttf "${HOME}/.local/share/fonts/CaskaydiaCoveNerdFont"
     rm -rf cascadiacode_tmp CascadiaCode.zip
     sudo fc-cache -fv
 else
-    echo "This is neither macOS nor Ubuntu. Exiting."
+    echo "This is neither macOS nor Fedora. Exiting."
 fi
 
 # omz plugins
@@ -82,12 +86,12 @@ cargo install zoxide --locked
 
 # ranger
 mkdir -p "${HOME}/.config/ranger/plugins"
-git clone --depth=1 https://github.com/joouha/ranger_tmux.git "${HOME}/.config/ranger/plugins"
-git clone --depth=1 https://github.com/alexanderjeurissen/ranger_devicons.git "${HOME}/.config/ranger/plugins"
+git clone --depth=1 https://github.com/joouha/ranger_tmux.git "${HOME}/.config/ranger/plugins/ranger_tmux"
+git clone --depth=1 https://github.com/alexanderjeurissen/ranger_devicons.git "${HOME}/.config/ranger/plugins/ranger_devicons"
+cp ranger.conf "${HOME}/.config/ranger/rc.conf"
 
 # configs
-mkdir -p "${HOME}/.log"  # just creating it as restic backup script relies on it
-mkdir -p "${HOME}/.config/ranger"  # this is for ranger file manager; just to be sure it exists
+mkdir -p "${HOME}/log"  # just creating it as restic backup script relies on it
 cp zshrc "${HOME}/.zshrc"
 cp profile "${HOME}/.profile"
 cp aliases "${HOME}/.aliases"
@@ -95,5 +99,4 @@ cp p10k.zsh "${HOME}/.p10k.zsh"
 cp tmux.conf "${HOME}/.tmux.conf"
 cp gitconfig "${HOME}/.gitconfig" && cp gitignore "${HOME}/.gitignore"
 "${HOME}"/miniforge3/bin/mamba init zsh
-cp ranger.conf "${HOME}/.config/ranger/rc.conf"
 git clone https://github.com/LazyVim/starter ~/.config/nvim && rm -rf ~/.config/nvim/.git  # yep, it is lazyvim
