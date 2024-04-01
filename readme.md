@@ -1,7 +1,8 @@
 # Before calling `apply.sh`
 ```bash
-brew install zsh  # if macOS
-sudo apt install zsh  # if ubuntu
+brew update && brew install zsh  # if macOS
+sudo dnf update -y && sudo dnf upgrade -y --refres && sudo apt install zsh  # if fedora
+
 chsh -s $(which zsh)  # if at this step there are problems on ubuntu try this: sudo usermod -s /usr/bin/zsh $(whoami)
 ```
 
@@ -11,6 +12,19 @@ chsh -s $(which zsh)  # if at this step there are problems on ubuntu try this: s
 * `<prefix> I` for `tmux`;
 * `mamba update --all -y && mamba clean --all -y`;
 * `rm ~/.zcompdump*; compinit`;
+
+## [Fedora - NVIDIA](https://rpmfusion.org/Howto/NVIDIA#Installing_the_drivers)
+```bash
+sudo dnf update -y # and reboot if you are not on the latest kernel
+sudo dnf install akmod-nvidia # rhel/centos users can use kmod-nvidia instead
+sudo dnf install xorg-x11-drv-nvidia-cuda #optional for cuda/nvdec/nvenc support
+
+# To create the self generated key and certificate:
+/usr/sbin/kmodgenca
+# To import the key, the command will ask for a password to protect the key
+# You will have to enter this password during the special EFI window (MOK...)
+mokutil --import /etc/pki/akmods/certs/public_key.der
+```
 
 
 # fonts
