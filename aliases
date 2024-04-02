@@ -16,7 +16,7 @@ alias vimconfig="vim ~/.vimrc"
 
 alias c="clear"
 
-alias init_ifort="source /opt/intel/oneapi/setvars.sh >/dev/null"
+alias initifort="source /opt/intel/oneapi/setvars.sh >/dev/null"
 
 alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"
