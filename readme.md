@@ -12,14 +12,14 @@ brew install --cask iterm2
 brew install --cask mactex
 
 brew tap homebrew/cask-fonts
-brew install font-cascadia-code-pl
+brew install font-caskaydia-cove-nerd-font
 
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh
 ```
 
 ## fonts
 * [CascadiaCode](https://github.com/microsoft/cascadia-code)
-* [NerdFont (patched version of fonts, required for tmux theme though you can use it for vscode as well)](https://github.com/ryanoasis/nerd-fonts)
+* [NerdFont (patched version of fonts, required for terminal and tmux theme though you can use it for vscode as well)](https://github.com/ryanoasis/nerd-fonts)
   * For CascadiaCode version:
     * [archive](https://github.com/ryanoasis/nerd-fonts/releases/latest)
     * [repo link](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/CascadiaCode)
