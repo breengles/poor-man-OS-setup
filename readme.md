@@ -11,6 +11,9 @@ brew install --cask raycast
 brew install --cask iterm2
 brew install --cask mactex
 
+brew tap homebrew/cask-fonts
+brew install font-cascadia-code-pl
+
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh
 ```
 
