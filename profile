@@ -29,7 +29,3 @@ fi
 if [ -f "$HOME/.cargo/env" ] ; then
     source "$HOME/.cargo/env"
 fi
-
-if [ -f "/opt/intel/oneapi/setvars.sh" ]; then
-	source /opt/inter/oneapi/setvars.sh
-fi
