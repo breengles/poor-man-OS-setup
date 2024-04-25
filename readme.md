@@ -30,7 +30,7 @@ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge
 ```bash
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks gdu texlive-full ranger
+sudo apt install -y wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks texlive-full ranger
 
 sudo snap refresh
 sudo snap install telegram-desktop slack
@@ -69,8 +69,7 @@ git clone https://github.com/tmux-plugins/tpm "${HOME}"/.tmux/plugins/tpm
 
 # rust
 curl https://sh.rustup.rs -sSf | sh
-cargo install eza cargo-update tree-sitter-cli ripgrep
-cargo install zoxide --locked
+cargo install cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide --locked
 
 # ranger
 mkdir -p "${HOME}/.config/ranger/plugins"
