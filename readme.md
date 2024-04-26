@@ -69,7 +69,7 @@ git clone https://github.com/tmux-plugins/tpm "${HOME}"/.tmux/plugins/tpm
 
 # rust
 curl https://sh.rustup.rs -sSf | sh
-cargo install cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide --locked
+cargo install cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij --locked
 
 # ranger
 mkdir -p "${HOME}/.config/ranger/plugins"
@@ -79,11 +79,13 @@ git clone --depth=1 https://github.com/alexanderjeurissen/ranger_devicons.git "$
 # configs
 mkdir -p "${HOME}/.log"  # just creating it as restic backup script relies on it
 mkdir -p "${HOME}/.config/ranger"  # this is for ranger file manager; just to be sure it exists
+mkdir -p "${HOME}/.config/zellij"  # this is for ranger file manager; just to be sure it exists
 cp zshrc "${HOME}/.zshrc"
 cp profile "${HOME}/.profile"
 cp aliases "${HOME}/.aliases"
 cp p10k.zsh "${HOME}/.p10k.zsh"
 cp tmux.conf "${HOME}/.tmux.conf"
+cp zellij.kdl "${HOME}/.config/zellij/config.kdl
 cp gitconfig "${HOME}/.gitconfig" && cp gitignore "${HOME}/.gitignore"
 "${HOME}"/miniforge3/bin/mamba init zsh
 cp ranger.conf "${HOME}/.config/ranger/rc.conf"
