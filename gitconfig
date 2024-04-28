@@ -1,9 +1,6 @@
 [user]
-  email = "breengles@gmail.com"
   name = "Artem Kotov"
 [core]
-  autocrlf = false
-  safecrlf = false
   excludesfile = ~/.gitignore
   editor = vim
 [alias]
