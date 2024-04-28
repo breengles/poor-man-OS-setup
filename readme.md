@@ -77,9 +77,9 @@ git clone --depth=1 https://github.com/joouha/ranger_tmux.git "${HOME}/.config/r
 git clone --depth=1 https://github.com/alexanderjeurissen/ranger_devicons.git "${HOME}/.config/ranger/plugins/ranger_devicons"
 
 # configs
-mkdir -p "${HOME}/.log"  # just creating it as restic backup script relies on it
-mkdir -p "${HOME}/.config/ranger"  # this is for ranger file manager; just to be sure it exists
-mkdir -p "${HOME}/.config/zellij"  # this is for ranger file manager; just to be sure it exists
+mkdir -p "${HOME}/.log"  # just creating it as some things rely on them
+mkdir -p "${HOME}/.config/ranger"
+mkdir -p "${HOME}/.config/zellij"
 cp zshrc "${HOME}/.zshrc"
 cp profile "${HOME}/.profile"
 cp aliases "${HOME}/.aliases"
