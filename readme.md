@@ -69,7 +69,7 @@ git clone https://github.com/tmux-plugins/tpm "${HOME}"/.tmux/plugins/tpm
 
 # rust
 curl https://sh.rustup.rs -sSf | sh
-cargo install cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij --locked
+cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat
 
 # ranger
 mkdir -p "${HOME}/.config/ranger/plugins"
