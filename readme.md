@@ -5,7 +5,7 @@ xcode-select --install
 # brew https://brew.sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
-brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++ ranger
+brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++
 brew install --cask keepingyouawake
 brew install --cask raycast
 brew install --cask iterm2
@@ -28,9 +28,8 @@ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge
 
 # Ubuntu
 ```bash
-sudo apt update
-sudo apt upgrade -y
-sudo apt install -y wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks texlive-full ranger
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks texlive-full
 
 sudo snap refresh
 sudo snap install telegram-desktop slack
@@ -69,16 +68,11 @@ git clone https://github.com/tmux-plugins/tpm "${HOME}"/.tmux/plugins/tpm
 
 # rust
 curl https://sh.rustup.rs -sSf | sh
-cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat
-
-# ranger
-mkdir -p "${HOME}/.config/ranger/plugins"
-git clone --depth=1 https://github.com/joouha/ranger_tmux.git "${HOME}/.config/ranger/plugins/ranger_tmux"
-git clone --depth=1 https://github.com/alexanderjeurissen/ranger_devicons.git "${HOME}/.config/ranger/plugins/ranger_devicons"
+cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat joshuto
 
 # configs
 mkdir -p "${HOME}/.log"
-mkdir -p "${HOME}/.config/ranger" && cp ranger.conf "${HOME}/.config/ranger/rc.conf"
+mkdir -p "${HOME}/.config/joshuto" && cp joshuto/* "${HOME}/.config/joshuto/"
 mkdir -p "${HOME}/.config/zellij" && cp zellij.kdl "${HOME}/.config/zellij/config.kdl"
 cp zshrc "${HOME}/.zshrc"
 cp profile "${HOME}/.profile"
