@@ -9,6 +9,7 @@ brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++
 brew install --cask keepingyouawake
 brew install --cask raycast
 brew install --cask mactex
+brew install --cask alacritty
 
 brew tap homebrew/cask-fonts
 brew install font-caskaydia-cove-nerd-font
@@ -26,6 +27,7 @@ sudo snap refresh
 sudo snap install telegram-desktop slack
 sudo snap install code --classic
 sudo snap install nvim --classic
+sudo snap install alacritty --classic
 
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
 
@@ -63,7 +65,7 @@ git clone --depth=1 https://github.com/eza-community/eza.git "${ZSH_CUSTOM:-$HOM
 
 # rust
 curl https://sh.rustup.rs -sSf | sh
-cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat joshuto alacritty
+cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat joshuto
 
 # configs
 mkdir -p "${HOME}/.log"
