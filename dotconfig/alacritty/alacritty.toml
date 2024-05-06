@@ -36,7 +36,7 @@ draw_bold_text_with_bright_colors = false
 # KDE Breeze (Ported from Konsole)
 # Default colors
 [colors.primary]
-background = '#232627'
+background = '#16181A'
 foreground = '#fcfcfc'
 
 dim_foreground = '#eff0f1'
