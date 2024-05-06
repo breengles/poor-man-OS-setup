@@ -2,6 +2,8 @@
 TERM = "xterm-256color"
 
 [window]
+padding.x = 5
+
 decorations_theme_variant = "Dark"
 
 dimensions.columns = 100
@@ -11,7 +13,6 @@ option_as_alt = "Both"
 
 [font]
 size = 18
-
 normal.family = "CaskaydiaCove Nerd Font Mono"
 bold.family = "CaskaydiaCove Nerd Font Mono"
 italic.family = "CaskaydiaCove Nerd Font Mono"
@@ -22,7 +23,6 @@ style = "Beam"
 [colors]
 draw_bold_text_with_bright_colors = true
 
-# KDE Breeze (Ported from Konsole)
 # Default colors
 [colors.primary]
 background = '#16181A'
@@ -63,4 +63,3 @@ blue = '#1b668f'
 magenta = '#614a73'
 cyan = '#186c60'
 white = '#63686d'
-
