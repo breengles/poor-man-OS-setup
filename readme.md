@@ -85,7 +85,6 @@ cp tmux.conf "${HOME}/.tmux.conf"
 cp gitconfig "${HOME}/.gitconfig"
 cp gitignore "${HOME}/.gitignore"
 "${HOME}"/miniforge3/bin/mamba init zsh
-git clone https://github.com/LazyVim/starter ~/.config/nvim && rm -rf ~/.config/nvim/.git  # yep, it is lazyvim
 ```
 
 
