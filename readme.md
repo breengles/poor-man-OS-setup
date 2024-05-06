@@ -8,7 +8,7 @@ xcode-select --install
 # brew https://brew.sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
-brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++
+brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++ btop
 brew install --cask keepingyouawake
 brew install --cask raycast
 brew install --cask mactex
@@ -28,7 +28,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install -y wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks texlive-full
 
 sudo snap refresh
-sudo snap install telegram-desktop slack
+sudo snap install telegram-desktop slack btop
 sudo snap install code --classic
 sudo snap install nvim --classic
 sudo snap install alacritty --classic
