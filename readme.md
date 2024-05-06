@@ -72,15 +72,8 @@ curl https://sh.rustup.rs -sSf | sh
 cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat joshuto
 
 # configs
-mkdir -p "${HOME}/.log"
 mkdir -p "${HOME}/.config" && cp -r dotconfig/* "${HOME}/.config"
-cp zshrc "${HOME}/.zshrc"
-cp profile "${HOME}/.profile"
-cp aliases "${HOME}/.aliases"
-cp p10k.zsh "${HOME}/.p10k.zsh"
-cp tmux.conf "${HOME}/.tmux.conf"
-cp gitconfig "${HOME}/.gitconfig"
-cp gitignore "${HOME}/.gitignore"
+cp dotfiles/* $HOME
 "${HOME}"/miniforge3/bin/mamba init zsh
 ```
 

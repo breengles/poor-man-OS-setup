@@ -29,3 +29,25 @@ alias rsync-synchronize="rsync -avzu --delete --progress -h"
 alias rcopy="rsync-copy"
 alias rmove="rsync-move"
 alias rupd="rsync-update"
+
+
+# some stuff for remote cluster
+function s {
+  sbatch "$@"
+}
+
+function q {
+    sinfo
+    echo ""
+    squeue --user="$(whoami)" --format="%.11i %.11P %45j %.8T %.12M %18N"
+    echo -e "\nTotal number of jobs: $(squeue --user="$(whoami)" -h | wc -l)"
+}
+
+function qq {
+    watch -n 1 "squeue --user=$(whoami) --format='%.11i %.11P %45j %.1T %.12M %18N'; echo -e '\nTotal number of jobs: '; squeue --user=$(whoami)  -h | wc -l"
+}
+
+function gpu {
+  ssh "$@" -t "$(which nvitop)"
+}
+
