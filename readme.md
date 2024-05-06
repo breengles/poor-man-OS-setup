@@ -69,7 +69,7 @@ cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide z
 
 # configs
 mkdir -p "${HOME}/.log"
-mkdir -p "${HOME}/.config" && cp dotconfig/* "${HOME}/.config"
+mkdir -p "${HOME}/.config" && cp -r dotconfig/* "${HOME}/.config"
 cp zshrc "${HOME}/.zshrc"
 cp profile "${HOME}/.profile"
 cp aliases "${HOME}/.aliases"
