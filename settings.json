@@ -29,7 +29,7 @@
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook",
         "*.pdf": "default",
-        "*.png": "default",
+        "*.png": "imagePreview.previewEditor",
         "*.jpeg": "imagePreview.previewEditor"
     },
     "window.openFilesInNewWindow": "default",
@@ -37,8 +37,9 @@
     "window.titleBarStyle": "custom",
     // terminal
     "terminal.integrated.inheritEnv": true,
+    "terminal.integrated.macOptionClickForcesSelection": true,
     "terminal.integrated.profiles.linux": {
-        "bash": null,
+        // "bash": null,
         "tmux": {
             "path": "zsh",
             "args": [
@@ -47,8 +48,15 @@
             ],
             "icon": "terminal-tmux",
         },
+        "zellij": {
+            "path": "zsh",
+            "args": [
+                "-c",
+                "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"
+            ],
+            "icon": "terminal-tmux",
+        }
     },
-    "terminal.integrated.macOptionClickForcesSelection": true,
     "terminal.integrated.profiles.osx": {
         "tmux": {
             "path": "zsh",
@@ -58,13 +66,21 @@
             ],
             "icon": "terminal-tmux",
         },
+        "zellij": {
+            "path": "zsh",
+            "args": [
+                "-c",
+                "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"
+            ],
+            "icon": "terminal-tmux",
+        }
     },
-    "terminal.integrated.defaultProfile.linux": "tmux",
-    "terminal.integrated.defaultProfile.osx": "tmux",
-    "terminal.integrated.enableMultiLinePasteWarning": "auto",
+    "terminal.integrated.defaultProfile.linux": "zellij",
+    "terminal.integrated.defaultProfile.osx": "zellij",
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
     // editor
     "editor.minimap.showSlider": "always",
-    "editor.fontFamily": "'CaskaydiaCove Nerd Font', 'Cascadia Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontFamily": "'CaskaydiaCove Nerd Font', 'Cascadia Code', 'monospaced', 'Droid Sans Mono', 'Droid Sans Fallback'",
     "editor.fontSize": 18,
     "editor.rulers": [
         120
@@ -111,13 +127,21 @@
         },
         "editor.formatOnType": true
     },
+    "ruff.format.args": [
+        "--line-length=120",
+        "--exclude=__init__.py"
+    ],
     "python.analysis.completeFunctionParens": true,
     "jupyter.askForKernelRestart": false,
     "jupyter.interactiveWindow.textEditor.executeSelection": true,
-    "notebook.formatOnSave.enabled": false,
     "notebook.cellToolbarLocation": {
         "default": "right",
         "jupyter-notebook": "left"
+    },
+    "notebook.formatOnSave.enabled": true,
+    "notebook.codeActionsOnSave": {
+        "notebook.source.fixAll": "never",
+        "notebook.source.organizeImports": "explicit"
     },
     // fortran
     "fortran.fortls.path": "~/miniforge3/bin/fortls",
@@ -267,6 +291,7 @@
     "cSpell.language": "ru,ru-RU,en-US,en-GB,en",
     "cSpell.userWords": [
         "aakotov",
+        "aclz",
         "adabins",
         "adaconv",
         "adain",
@@ -292,6 +317,7 @@
         "AMFI",
         "AMFICH",
         "Angeli",
+        "ANGSTREM",
         "Anikin",
         "animatediff",
         "aniso",
@@ -322,6 +348,7 @@
         "Autoencoder",
         "autoencoders",
         "autofetch",
+        "autofix",
         "autoflake",
         "autograd",
         "autolabel",
@@ -329,6 +356,7 @@
         "autoupdate",
         "Balthus",
         "Baranovskaya",
+        "barplot",
         "basenode",
         "basepath",
         "basicsr",
@@ -342,6 +370,7 @@
         "binarize",
         "Binarizer",
         "bincount",
+        "binrange",
         "biomutant",
         "bisenet",
         "bitdepth",
@@ -370,6 +399,8 @@
         "celeba",
         "celebahq",
         "cfgs",
+        "changlelog",
+        "charliermarsh",
         "checkhealth",
         "checkpointing",
         "Chervontsev",
@@ -377,6 +408,7 @@
         "Chilingaryan",
         "chkp",
         "chsh",
+        "chunksize",
         "cifar",
         "cinemtatic",
         "citecolor",
@@ -391,16 +423,19 @@
         "CNOF",
         "codeformer",
         "coef",
+        "coefs",
         "colab",
         "colalign",
         "colheader",
         "colorbar",
         "colorfix",
+        "colorfullness",
         "COLORLOG",
         "colormatch",
         "colorspace",
         "colorwheel",
         "COMFACTOR",
+        "comparame",
         "compinit",
         "concat",
         "cond",
@@ -525,6 +560,7 @@
         "featlayer",
         "femtometer",
         "ffhq",
+        "ffval",
         "figsize",
         "filecolor",
         "fileinfos",
@@ -600,6 +636,7 @@
         "highlightcolor",
         "highres",
         "highvram",
+        "histplot",
         "homonuclear",
         "horizontalalignment",
         "hparams",
@@ -641,6 +678,7 @@
         "Inpainter",
         "inpainting",
         "inplace",
+        "inpt",
         "inputframes",
         "interelectronic",
         "intfmt",
@@ -661,10 +699,12 @@
         "iterrows",
         "itertools",
         "Itten",
+        "jaccard",
         "Jarmy",
         "jinr",
         "joblib",
         "jobname",
+        "joshuto",
         "jpeger",
         "jresize",
         "jsonify",
@@ -742,6 +782,7 @@
         "lpip",
         "lpips",
         "lrelu",
+        "LSDIR",
         "lualatex",
         "LUMO",
         "mactex",
@@ -765,6 +806,7 @@
         "mccurry",
         "mdpi",
         "mediapipe",
+        "meds",
         "MEMGET",
         "memmon",
         "meshgrid",
@@ -803,6 +845,7 @@
         "multicontrol",
         "multimask",
         "mybucket",
+        "namelist",
         "namelists",
         "nccl",
         "NCHW",
@@ -836,6 +879,7 @@
         "nprocs",
         "nrow",
         "nrows",
+        "nrth",
         "ntasks",
         "NTOL",
         "nucl",
@@ -978,6 +1022,7 @@
         "realesrgan",
         "reci",
         "rects",
+        "refactorings",
         "refinenet",
         "refonly",
         "regtokens",
@@ -1149,6 +1194,7 @@
         "tqdm",
         "trainloader",
         "trainset",
+        "tranformation",
         "trange",
         "trendings",
         "tril",
@@ -1180,6 +1226,7 @@
         "urlcolor",
         "usecolormap",
         "usermod",
+        "VAE's",
         "Variator",
         "vcodec",
         "venv",
@@ -1211,6 +1258,7 @@
         "wlop",
         "wplus",
         "WSTPLN",
+        "XDIPLEN",
         "xdog",
         "xelatex",
         "xformers",
@@ -1218,6 +1266,7 @@
         "xlabel",
         "xticklabels",
         "xticks",
+        "xtuner",
         "xytext",
         "yapf",
         "ycbcr",
@@ -1228,6 +1277,7 @@
         "zcompdump",
         "ZDIPLEN",
         "Zeldovich",
+        "zellij",
         "Ziwei",
         "znobishchev",
         "zoxide",
@@ -1248,7 +1298,6 @@
     "editor.cursorBlinking": "smooth",
     "editor.cursorSurroundingLines": 1,
     "diffEditor.ignoreTrimWhitespace": false,
-    "window.zoomLevel": 1,
     "workbench.tree.enableStickyScroll": true,
     "editor.stickyScroll.enabled": true,
     "todo-tree.general.tags": [
@@ -1263,12 +1312,16 @@
     "todo-tree.highlights.defaultHighlight": {
         "type": "none"
     },
-    "ruff.format.args": [
-        "--line-length=120"
-    ],
-    "flake8.args": [
-        "--max-line-length=120"
-    ],
     "git-graph.dialog.merge.noCommit": true,
-    "git-graph.dialog.merge.squashCommits": true
+    "git-graph.dialog.merge.squashCommits": true,
+    "window.zoomLevel": 0.8,
+    "explorer.confirmPasteNative": false,
+    "terminal.integrated.fontFamily": "'CaskaydiaCove Nerd Font', 'Cascadia Code', 'monospaced', 'Droid Sans Mono', 'Droid Sans Fallback'",
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.macOptionIsMeta": true,
+    "gitlens.graph.minimap.enabled": false,
+    "gitlens.telemetry.enabled": false,
+    "gitblame.inlineMessageEnabled": true,
+    "gitblame.inlineMessageMargin": 4,
+    "gitblame.statusBarMessageFormat": "${author.name} (${time.ago})",
 }

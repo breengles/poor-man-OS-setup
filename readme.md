@@ -8,7 +8,6 @@ brew update && brew upgrade
 brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++
 brew install --cask keepingyouawake
 brew install --cask raycast
-brew install --cask iterm2
 brew install --cask mactex
 
 brew tap homebrew/cask-fonts
@@ -16,14 +15,6 @@ brew install font-caskaydia-cove-nerd-font
 
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh
 ```
-
-## fonts
-* [CascadiaCode](https://github.com/microsoft/cascadia-code)
-* [NerdFont (patched version of fonts, required for terminal and tmux theme though you can use it for vscode as well)](https://github.com/ryanoasis/nerd-fonts)
-  * For CascadiaCode version:
-    * [archive](https://github.com/ryanoasis/nerd-fonts/releases/latest)
-    * [repo link](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/CascadiaCode)
-> for Ubuntu it should be installed with script
 
 
 # Ubuntu
@@ -35,9 +26,6 @@ sudo snap refresh
 sudo snap install telegram-desktop slack
 sudo snap install code --classic
 sudo snap install nvim --classic
-
-# sudo apt install -y restic
-# sudo ln -s restic/restic-backup.sh /etc/cron.daily/restic-backup
 
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
 
@@ -52,28 +40,34 @@ dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d
 ```
 
 
+# fonts
+* [CascadiaCode](https://github.com/microsoft/cascadia-code)
+* [NerdFont (patched version of fonts, required for terminal and tmux theme though you can use it for vscode as well)](https://github.com/ryanoasis/nerd-fonts)
+  * For CascadiaCode version:
+    * [archive](https://github.com/ryanoasis/nerd-fonts/releases/latest)
+    * [repo link](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/CascadiaCode)
+> for Ubuntu, it should be installed with script
+> for MacOS, it should be installed from homebrew
+
+
 # Things
 ```bash
 # omz plugins
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
-git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/"zsh-syntax-highlighting
+gitc lone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/"zsh-syntax-highlighting
 git clone --depth=1 https://github.com/conda-incubator/conda-zsh-completion.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/"conda-zsh-completion
 git clone --depth=1 https://github.com/TamCore/autoupdate-oh-my-zsh-plugins "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autoupdate"
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
 git clone --depth=1 https://github.com/eza-community/eza.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/eza"
 
-# tmux plugins
-git clone https://github.com/tmux-plugins/tpm "${HOME}"/.tmux/plugins/tpm
-
 # rust
 curl https://sh.rustup.rs -sSf | sh
-cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat joshuto
+cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat joshuto alacritty
 
 # configs
 mkdir -p "${HOME}/.log"
-mkdir -p "${HOME}/.config/joshuto" && cp joshuto/* "${HOME}/.config/joshuto/"
-mkdir -p "${HOME}/.config/zellij" && cp zellij.kdl "${HOME}/.config/zellij/config.kdl"
+mkdir -p "${HOME}/.config" && cp dotconfig/* "${HOME}/.config"
 cp zshrc "${HOME}/.zshrc"
 cp profile "${HOME}/.profile"
 cp aliases "${HOME}/.aliases"
