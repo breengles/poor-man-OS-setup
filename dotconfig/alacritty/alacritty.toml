@@ -2,36 +2,25 @@
 TERM = "xterm-256color"
 
 [window]
-dimensions.columns = 80
-dimensions.lines = 30
+decorations_theme_variant = "Dark"
 
-padding.x = 0
-padding.y = 0
-
-decorations = "full"
+dimensions.columns = 100
+dimensions.lines = 36
 
 option_as_alt = "Both"
 
-[scrolling]
-history = 10000
-
 [font]
-size = 20
+size = 18
 
-normal.family = "CaskaydiaCove Nerd Font"
-normal.style = "SemiLight"
-
-bold.family = "CaskaydiaCove Nerd Font"
-bold.style = "Regular"
-
-italic.family = "CaskaydiaCove Nerd Font"
-italic.style = "SemiLight Italic"
+normal.family = "CaskaydiaCove Nerd Font Mono"
+bold.family = "CaskaydiaCove Nerd Font Mono"
+italic.family = "CaskaydiaCove Nerd Font Mono"
 
 [cursor]
-style = "beam"
+style = "Beam"
 
 [colors]
-draw_bold_text_with_bright_colors = false
+draw_bold_text_with_bright_colors = true
 
 # KDE Breeze (Ported from Konsole)
 # Default colors
@@ -74,3 +63,4 @@ blue = '#1b668f'
 magenta = '#614a73'
 cyan = '#186c60'
 white = '#63686d'
+

@@ -37,8 +37,15 @@ unzip CascadiaCode.zip -d cascadiacode_tmp
 mv cascadiacode_tmp/*.ttf "${HOME}/.local/share/fonts/CaskaydiaCoveNerdFont"
 rm -rf cascadiacode_tmp CascadiaCode.zip
 sudo fc-cache -fv
+```
 
-dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ < terminal_themes/breeze.dconf
+## change default terminal to alacritty
+```bash
+sudo cp start-alacritty /usr/bin/start-alacritty
+sudo chown root:root /usr/bin/start-alacritty
+sudo chmod --reference=/usr/bin/ls /usr/bin/start-alacritty
+sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/start-alacritty 50
+sudo update-alternatives --config x-terminal-emulator
 ```
 
 
