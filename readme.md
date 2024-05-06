@@ -1,4 +1,7 @@
-# MacOS
+# Poor-man OS setup
+Being poor does not mean being useless
+
+## MacOS
 ```bash
 xcode-select --install
 
@@ -11,6 +14,7 @@ brew install --cask raycast
 brew install --cask mactex
 brew install --cask alacritty
 
+# nerd font
 brew tap homebrew/cask-fonts
 brew install font-caskaydia-cove-nerd-font
 
@@ -18,7 +22,7 @@ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge
 ```
 
 
-# Ubuntu
+## Ubuntu
 ```bash
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y wget curl git vim tmux make cmake gcc g++ powerline fonts-powerline gfortran gnome-tweaks texlive-full
@@ -30,7 +34,10 @@ sudo snap install nvim --classic
 sudo snap install alacritty --classic
 
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+```
 
+### font
+```bash
 mkdir -p "${HOME}/.local/share/fonts/CaskaydiaCoveNerdFont"
 curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip
 unzip CascadiaCode.zip -d cascadiacode_tmp
@@ -39,7 +46,7 @@ rm -rf cascadiacode_tmp CascadiaCode.zip
 sudo fc-cache -fv
 ```
 
-## change default terminal to alacritty
+### change default terminal to alacritty
 ```bash
 sudo cp start-alacritty /usr/bin/start-alacritty
 sudo chown root:root /usr/bin/start-alacritty
@@ -49,17 +56,7 @@ sudo update-alternatives --config x-terminal-emulator
 ```
 
 
-# fonts
-* [CascadiaCode](https://github.com/microsoft/cascadia-code)
-* [NerdFont (patched version of fonts, required for terminal and tmux theme though you can use it for vscode as well)](https://github.com/ryanoasis/nerd-fonts)
-  * For CascadiaCode version:
-    * [archive](https://github.com/ryanoasis/nerd-fonts/releases/latest)
-    * [repo link](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/CascadiaCode)
-> for Ubuntu, it should be installed with script
-> for MacOS, it should be installed from homebrew
-
-
-# Things
+## Things
 ```bash
 # omz plugins
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -88,8 +85,17 @@ cp gitignore "${HOME}/.gitignore"
 ```
 
 
-# [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
+## fonts
+I keep it here just for reference: fonts should be installed with the scripts above
+* [CascadiaCode](https://github.com/microsoft/cascadia-code)
+* [NerdFont (patched version of fonts, required for terminal and tmux theme though you can use it for vscode as well)](https://github.com/ryanoasis/nerd-fonts)
+  * For CascadiaCode version:
+    * [archive](https://github.com/ryanoasis/nerd-fonts/releases/latest)
+    * [repo link](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/CascadiaCode)
 
 
-# Known issues 
+## [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
+
+
+## Known issues 
 * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
