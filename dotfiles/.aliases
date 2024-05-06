@@ -3,9 +3,9 @@ if [ -x "$(command -v nvim)" ]; then
 fi
 
 if [ -x "$(command -v eza)" ]; then
-  alias ls="eza --color=always --icons=always"
-  alias l="eza --color=always --icons=always --long"
-  alias ll="eza --color=always --icons=always -abghHlS"
+  alias ls="eza --color=always"
+  alias l="eza --color=always --long"
+  alias ll="eza --color=always -abghHlS"
 fi
 
 if [ -x "$(command -v zellij)" ]; then
