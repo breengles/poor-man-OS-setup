@@ -69,7 +69,7 @@ git clone --depth=1 https://github.com/eza-community/eza.git "${ZSH_CUSTOM:-$HOM
 
 # rust
 curl https://sh.rustup.rs -sSf | sh
-cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat joshuto
+cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat yazi-fm yazi-cli
 
 # configs
 mkdir -p "${HOME}/.config" && cp -r dotconfig/* "${HOME}/.config"
