@@ -40,9 +40,10 @@ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge
 ```bash
 mkdir -p "${HOME}/.local/share/fonts/CaskaydiaCoveNerdFont"
 curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip
-unzip CascadiaCode.zip -d cascadiacode_tmp
-mv cascadiacode_tmp/*.ttf "${HOME}/.local/share/fonts/CaskaydiaCoveNerdFont"
-rm -rf cascadiacode_tmp CascadiaCode.zip
+unzip CascadiaCode.zip -d CascadiaCode
+mv CascadiaCode/*.ttf "${HOME}/.local/share/fonts/CaskaydiaCoveNerdFont"
+rm -rf CascadiaCode CascadiaCode.zip
+
 sudo fc-cache -fv
 ```
 
