@@ -13,7 +13,11 @@ if [ -x "$(command -v zellij)" ]; then
 fi
 
 if [ -x "$(command -v zoxide)" ]; then
-  eval "$(zoxide init zsh)"
+  if [ -n "$BASH_VERSION" ]; then
+    eval "$(zoxide init bash)"
+  elif [ -n "$ZSH_VERSION" ]; then
+    eval "$(zoxide init zsh)"
+  fi
   alias cd=z
 fi
 

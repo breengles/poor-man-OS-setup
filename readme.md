@@ -75,7 +75,7 @@ cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide z
 # configs
 mkdir -p "${HOME}/.config" && cp -r dotconfig/* "${HOME}/.config"
 cp dotfiles/.* $HOME
-"${HOME}"/miniforge3/bin/mamba init zsh
+"${HOME}"/miniforge3/bin/mamba init zsh  # check your shell!
 ```
 
 
