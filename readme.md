@@ -34,6 +34,9 @@ sudo snap install nvim --classic
 sudo snap install alacritty --classic
 
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo dpkg -i ./google-chrome-stable_current_amd64.deb
 ```
 
 ### font
