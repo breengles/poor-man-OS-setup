@@ -15,8 +15,7 @@ else
   ZSH_THEME="robbyrussell"
 fi
 
-export UPDATE_ZSH_DAYS=7
-ZSH_CUSTOM_AUTOUPDATE_QUIET=true
+DISABLE_AUTO_UPDATE=true
 
 ## Which plugins would you like to load?
 ## Standard plugins can be found in $ZSH/plugins/
@@ -26,12 +25,10 @@ ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 plugins=(
   git
   pip
-  vi-mode
   command-not-found
   zsh-syntax-highlighting
   zsh-autosuggestions
   conda-zsh-completion
-  autoupdate
   rust
 )
 
