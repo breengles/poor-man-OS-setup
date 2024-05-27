@@ -1,9 +1,39 @@
 {
     "settingsSync.ignoredSettings": [
-        "-window.zoomLevel"
+        "-window.zoomLevel",
+        "terminal.integrated.fontSize"
     ],
     "extensions.ignoreRecommendations": true,
+    "window.zoomLevel": 0.8,
+    "window.openFilesInNewWindow": "default",
+    "window.openFoldersInNewWindow": "default",
+    "window.titleBarStyle": "custom",
+    "workbench.tree.enableStickyScroll": true,
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook",
+        "*.pdf": "default",
+        "*.png": "imagePreview.previewEditor",
+        "*.jpeg": "imagePreview.previewEditor"
+    },
+    "security.workspace.trust.untrustedFiles": "open",
+    "todo-tree.general.tags": [
+        "todo",
+        "TODO",
+        "FIXME",
+        "REVIEW",
+        "HACK",
+        "REF",
+        "WARN"
+    ],
+    "todo-tree.highlights.defaultHighlight": {
+        "type": "none"
+    },
+    "svelte.enable-ts-plugin": true,
     "redhat.telemetry.enabled": false,
+    "[markdown]": {
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+    },
     "files.autoSave": "onWindowChange",
     "files.watcherExclude": {
         "**/.git/objects/**": true,
@@ -23,19 +53,10 @@
     ],
     "ruff.importStrategy": "useBundled",
     "debug.onTaskErrors": "abort",
-    "security.workspace.trust.untrustedFiles": "open",
-    // "remote.SSH.localServerDownload": "always",
-    "workbench.iconTheme": "material-icon-theme",
-    "workbench.editorAssociations": {
-        "*.ipynb": "jupyter-notebook",
-        "*.pdf": "default",
-        "*.png": "imagePreview.previewEditor",
-        "*.jpeg": "imagePreview.previewEditor"
-    },
-    "window.openFilesInNewWindow": "default",
-    "window.openFoldersInNewWindow": "default",
-    "window.titleBarStyle": "custom",
     // terminal
+    "terminal.integrated.fontFamily": "'CaskaydiaCove Nerd Font', 'Cascadia Code', 'monospaced', 'Droid Sans Mono', 'Droid Sans Fallback'",
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.macOptionIsMeta": true,
     "terminal.integrated.inheritEnv": true,
     "terminal.integrated.macOptionClickForcesSelection": true,
     "terminal.integrated.profiles.linux": {
@@ -79,6 +100,10 @@
     "terminal.integrated.defaultProfile.osx": "zellij",
     "terminal.integrated.enableMultiLinePasteWarning": "never",
     // editor
+    "editor.accessibilitySupport": "off",
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorSurroundingLines": 1,
+    "editor.stickyScroll.enabled": true,
     "editor.minimap.showSlider": "always",
     "editor.fontFamily": "'CaskaydiaCove Nerd Font', 'Cascadia Code', 'monospaced', 'Droid Sans Mono', 'Droid Sans Fallback'",
     "editor.fontSize": 18,
@@ -86,7 +111,7 @@
         120
     ],
     "editor.renderWhitespace": "selection",
-    "editor.detectIndentation": false,
+    "editor.detectIndentation": true,
     "editor.fontLigatures": false,
     "editor.formatOnSave": true,
     "editor.wordWrap": "on",
@@ -95,6 +120,7 @@
     "editor.tabSize": 4,
     "editor.unicodeHighlight.ambiguousCharacters": true,
     // explorer
+    "explorer.confirmPasteNative": false,
     "explorer.autoReveal": false,
     "explorer.confirmDelete": false,
     "explorer.openEditors.visible": 10,
@@ -107,6 +133,12 @@
     "git.allowForcePush": true,
     "git.confirmSync": false,
     "git.confirmForcePush": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "gitblame.inlineMessageEnabled": true,
+    "gitblame.inlineMessageMargin": 4,
+    "gitblame.statusBarMessageFormat": "${author.name} (${time.ago})",
+    "git-graph.dialog.merge.noCommit": true,
+    "git-graph.dialog.merge.squashCommits": true,
     // python
     "python.analysis.typeCheckingMode": "off",
     "python.analysis.diagnosticSeverityOverrides": {
@@ -144,6 +176,7 @@
         "notebook.source.organizeImports": "explicit"
     },
     // fortran
+    "fortran.notifications.releaseNotes": false,
     "fortran.fortls.path": "~/miniforge3/bin/fortls",
     "fortran.formatting.formatter": "Disabled",
     "fortran.fortls.notifyInit": true,
@@ -292,6 +325,7 @@
     "cSpell.userWords": [
         "aakotov",
         "aclz",
+        "activeloop",
         "adabins",
         "adaconv",
         "adain",
@@ -388,6 +422,7 @@
         "breengles",
         "breit",
         "bspline",
+        "btop",
         "capthick",
         "Cascadia",
         "cascadiacode",
@@ -505,6 +540,8 @@
         "diffusionmodules",
         "dinat",
         "dinov",
+        "dipmom",
+        "dipmoms",
         "discretizer",
         "dlib",
         "dnnlib",
@@ -514,6 +551,7 @@
         "dotfiles",
         "downsampler",
         "downsamplers",
+        "dpkg",
         "dpmpp",
         "dpmsolver",
         "dprint",
@@ -640,6 +678,7 @@
         "highres",
         "highvram",
         "histplot",
+        "hlines",
         "homonuclear",
         "horizontalalignment",
         "hparams",
@@ -757,6 +796,7 @@
         "limegreen",
         "linalg",
         "lineart",
+        "linestyles",
         "linkbordercolor",
         "linkcolor",
         "linspace",
@@ -795,6 +835,7 @@
         "mambaforge",
         "mapleader",
         "mappa",
+        "marp",
         "masic",
         "maskdir",
         "maskpredictor",
@@ -846,6 +887,7 @@
         "multdiv",
         "Multic",
         "multicontrol",
+        "multicontrolnet",
         "multimask",
         "mybucket",
         "namelist",
@@ -1166,6 +1208,7 @@
         "tensorlab",
         "testset",
         "testsets",
+        "testsize",
         "texlive",
         "texpr",
         "textcoords",
@@ -1211,6 +1254,7 @@
         "umap",
         "uncond",
         "Unet",
+        "unets",
         "unicontrol",
         "unicontrolnet",
         "unloadable",
@@ -1230,6 +1274,7 @@
         "usecolormap",
         "usermod",
         "VAE's",
+        "vaes",
         "Variator",
         "vcodec",
         "venv",
@@ -1256,6 +1301,8 @@
         "webface",
         "webui",
         "WEBVID",
+        "wikilink",
+        "wikilinks",
         "wincmd",
         "WLKBIS",
         "wlop",
@@ -1272,7 +1319,9 @@
         "xtuner",
         "xytext",
         "yapf",
+        "yazi",
         "ycbcr",
+        "YDIPLEN",
         "yerr",
         "ylabel",
         "yolov",
@@ -1294,37 +1343,5 @@
         "подпроцессы",
         "Шабаев",
         "шебангом"
-    ],
-    "fortran.notifications.releaseNotes": false,
-    "editor.accessibilitySupport": "off",
-    "dvc.doNotShowSetupAfterInstall": true,
-    "editor.cursorBlinking": "smooth",
-    "editor.cursorSurroundingLines": 1,
-    "diffEditor.ignoreTrimWhitespace": false,
-    "workbench.tree.enableStickyScroll": true,
-    "editor.stickyScroll.enabled": true,
-    "todo-tree.general.tags": [
-        "todo",
-        "TODO",
-        "FIXME",
-        "REVIEW",
-        "HACK",
-        "REF",
-        "WARN"
-    ],
-    "todo-tree.highlights.defaultHighlight": {
-        "type": "none"
-    },
-    "git-graph.dialog.merge.noCommit": true,
-    "git-graph.dialog.merge.squashCommits": true,
-    "window.zoomLevel": 0.8,
-    "explorer.confirmPasteNative": false,
-    "terminal.integrated.fontFamily": "'CaskaydiaCove Nerd Font', 'Cascadia Code', 'monospaced', 'Droid Sans Mono', 'Droid Sans Fallback'",
-    "terminal.integrated.fontSize": 16,
-    "terminal.integrated.macOptionIsMeta": true,
-    "gitlens.graph.minimap.enabled": false,
-    "gitlens.telemetry.enabled": false,
-    "gitblame.inlineMessageEnabled": true,
-    "gitblame.inlineMessageMargin": 4,
-    "gitblame.statusBarMessageFormat": "${author.name} (${time.ago})",
+    ]
 }
