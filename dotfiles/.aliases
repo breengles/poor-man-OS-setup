@@ -21,6 +21,13 @@ if [ -x "$(command -v zoxide)" ]; then
   alias cd=z
 fi
 
+mambac() {
+    local python_version=$1
+    local env_name=$2
+    mamba create -y -n "$env_name" python="$python_version"
+    mamba activate "$env_name"
+}
+
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias nvimconfig="nvim ~/.config/nvim/init.vim"
