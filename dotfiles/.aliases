@@ -35,6 +35,8 @@ alias vimconfig="vim ~/.vimrc"
 
 alias c="clear"
 
+alias ipy="ipython"
+
 alias initifort="source /opt/intel/oneapi/setvars.sh >/dev/null"
 
 alias rsync-copy="rsync -avz --progress -h"
