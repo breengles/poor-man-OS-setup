@@ -17,7 +17,7 @@ brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc g++ btop
 brew install --cask keepingyouawake
 brew install --cask raycast
 brew install --cask mactex
-brew install --cask alacritty
+brew install --cask kitty
 
 # nerd font
 brew tap homebrew/cask-fonts
