@@ -19,7 +19,7 @@ if [ -x "$(command -v zoxide)" ]; then
   elif [ -n "$ZSH_VERSION" ]; then
     eval "$(zoxide init zsh)"
   fi
-  alias cd=z
+  # alias cd=z
 fi
 
 mambac() {
