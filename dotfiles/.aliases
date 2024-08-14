@@ -71,6 +71,6 @@ function qq {
 }
 
 function gpu {
-  ssh "$@" -t "$(which nvitop)"
+  ssh "lambda-scalar0$0" -t "$(which nvitop)"
 }
 
