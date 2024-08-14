@@ -22,6 +22,10 @@ if [ -x "$(command -v zoxide)" ]; then
   # alias cd=z
 fi
 
+function calcimages() {
+    find "$1" -type f \( -name \*.jpg -o -name \*.jpeg -o -name \*.png \) | wc -l
+}
+
 mambac() {
     local python_version=$1
     local env_name=$2
