@@ -26,7 +26,6 @@ brew install font-caskaydia-cove-nerd-font
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh
 ```
 
-
 ## Ubuntu
 ```bash
 sudo apt update && sudo apt upgrade -y
@@ -36,14 +35,46 @@ sudo snap refresh
 sudo snap install telegram-desktop slack btop
 sudo snap install code --classic
 sudo snap install nvim --classic
-# sudo snap install alacritty --classic
 
-wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
 
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo dpkg -i ./google-chrome-stable_current_amd64.deb
+```
 
+## Arch
+```bash
+sudo pacman -S --needed base-devel
+sudo pacman -S networkmanager network-manager-applet gcc gcc-fortran git vim zip wget curl tmux telegram-desktop neovim btop nvtop
+
+flatpak install flathub com.google.Chrome
+flatpak install flathub org.gnome.World.PikaBackup
+
+# install rust beforehand
+git clone https://aur.archlinux.org/paru.git
+cd paru
+makepkg -si
+
+paru visual-studio-code-bin
+```
+
+### if using wifi and no networkmanager has been installed
+```bash
+iwctl
+device list
+
+device _name_ set-property Powered on
+adapter _adapter_ set-property Powered on
+
+station _name_ scan
+station _name_ get-networks
+station _name_ connect _SSID_
+```
+
+## kitty
+```bash
 # from https://sw.kovidgoyal.net/kitty/binary/
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+
 # Create symbolic links to add kitty and kitten to PATH (assuming ~/.local/bin is in
 # your system-wide PATH)
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
@@ -62,7 +93,7 @@ xdg-mime default org.kde.dolphin.desktop inode/directory
 gsettings set org.gnome.desktop.default-applications.terminal exec 'kitty'
 ```
 
-### font
+## font
 ```bash
 mkdir -p "${HOME}/.local/share/fonts/CaskaydiaCoveNerdFont"
 curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip
@@ -72,16 +103,6 @@ rm -rf CascadiaCode CascadiaCode.zip
 
 sudo fc-cache -fv
 ```
-
-### change default terminal to alacritty
-```bash
-sudo cp start-alacritty /usr/bin/start-alacritty
-sudo chown root:root /usr/bin/start-alacritty
-sudo chmod --reference=/usr/bin/ls /usr/bin/start-alacritty
-sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/start-alacritty 50
-sudo update-alternatives --config x-terminal-emulator
-```
-
 
 ## Things
 ```bash
@@ -101,9 +122,13 @@ cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide z
 # configs
 mkdir -p "${HOME}/.config" && cp -r dotconfig/* "${HOME}/.config"
 cp dotfiles/.* $HOME
-"${HOME}"/miniforge3/bin/mamba init zsh  # check your shell!
 ```
 
+## mamba
+```bash
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+"${HOME}"/miniforge3/bin/mamba init zsh  # check your shell!
+```
 
 ## fonts
 I keep it here just for reference: fonts should be installed with the scripts above
@@ -113,9 +138,7 @@ I keep it here just for reference: fonts should be installed with the scripts ab
     * [archive](https://github.com/ryanoasis/nerd-fonts/releases/latest)
     * [repo link](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/CascadiaCode)
 
-
 ## [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
-
 
 ## Known issues 
 * [vscode long delete time on KDE](https://jamezrin.name/fix-visual-studio-code-freezing-when-deleting)
