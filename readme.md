@@ -44,7 +44,7 @@ sudo dpkg -i ./google-chrome-stable_current_amd64.deb
 ## Arch
 ```bash
 sudo pacman -S --needed base-devel
-sudo pacman -S networkmanager network-manager-applet gcc gcc-fortran git vim zip wget curl tmux telegram-desktop neovim btop nvtop
+sudo pacman -S networkmanager network-manager-applet gcc gcc-fortran git vim zip wget curl tmux telegram-desktop neovim btop nvtop luarocks lua51 fd lazygit
 
 flatpak install flathub com.google.Chrome
 flatpak install flathub org.gnome.World.PikaBackup
