@@ -43,9 +43,3 @@ source $ZSH/oh-my-zsh.sh
 if [ -f "$HOME/.aliases" ]; then
   source $HOME/.aliases
 fi
-
-if [ -x "$(command -v uv)" ]; then
-  uv generate-shell-completion zsh > "$HOME/uv-completion.zsh"
-  source "$HOME/uv-completion.zsh"
-fi
-
