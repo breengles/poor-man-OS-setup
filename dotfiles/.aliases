@@ -53,6 +53,9 @@ alias rcopy="rsync-copy"
 alias rmove="rsync-move"
 alias rupd="rsync-update"
 
+function act {
+  source "$@/bin/activate"
+}
 
 # some stuff for remote cluster
 function s {
