@@ -54,7 +54,11 @@ alias rmove="rsync-move"
 alias rupd="rsync-update"
 
 function act {
-  source "$@/bin/activate"
+  if [ $# -eq 0 ]; then
+    source "$PWD/.venv/bin/activate"
+  else
+    source "$@/bin/activate"
+  fi
 }
 
 # some stuff for remote cluster
