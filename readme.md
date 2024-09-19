@@ -119,6 +119,15 @@ git clone --depth=1 https://github.com/eza-community/eza.git "${ZSH_CUSTOM:-$HOM
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide zellij bat yazi-fm yazi-cli
 
+# ollama
+# fill-in-the-middle
+ollama pull starcoder2:3b
+# chat
+ollama pull llama3.1:8b
+ollama pull yi-coder:9b
+ollama pull codeqwen:7b-chat
+ollama pull deepseek-coder-v2:16b
+
 # configs
 mkdir -p "${HOME}/.config" && cp -r dotconfig/* "${HOME}/.config"
 cp dotfiles/.* $HOME
