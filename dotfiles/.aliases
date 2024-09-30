@@ -53,14 +53,6 @@ alias rcopy="rsync-copy"
 alias rmove="rsync-move"
 alias rupd="rsync-update"
 
-function act {
-  if [ $# -eq 0 ]; then
-    source "$PWD/.venv/bin/activate"
-  else
-    source "$@/bin/activate"
-  fi
-}
-
 # some stuff for remote cluster
 function s {
   sbatch "$@"
@@ -80,4 +72,3 @@ function qq {
 function gpu {
   ssh "lambda-scalar0$0" -t "$(which nvitop)"
 }
-
