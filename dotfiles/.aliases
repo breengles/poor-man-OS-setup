@@ -27,7 +27,7 @@ function calcimages() {
 }
 
 mambac() {
-    local python_version="3.10"
+    local python_version="3.11"
     local env_name
 
     if [ $# -eq 1 ]; then
