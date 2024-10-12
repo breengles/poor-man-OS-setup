@@ -1,3 +1,17 @@
+#!/usr/bin/env bash
+
+# inits
+if [ -x "$(command -v zoxide)" ]; then
+  if [ -n "$BASH_VERSION" ]; then
+    eval "$(zoxide init bash)"
+  elif [ -n "$ZSH_VERSION" ]; then
+    eval "$(zoxide init zsh)"
+  fi
+fi
+
+alias c="clear"
+alias initifort="source /opt/intel/oneapi/setvars.sh >/dev/null"
+
 if [ -x "$(command -v nvim)" ]; then
   alias vim=nvim
   export EDITOR=nvim
@@ -9,27 +23,35 @@ if [ -x "$(command -v eza)" ]; then
   alias ll="eza --color=always -abghHlS"
 fi
 
-if [ -x "$(command -v zoxide)" ]; then
-  if [ -n "$BASH_VERSION" ]; then
-    eval "$(zoxide init bash)"
-  elif [ -n "$ZSH_VERSION" ]; then
-    eval "$(zoxide init zsh)"
-  fi
-  # alias cd=z
-fi
+# configs
+alias zshconfig="vim ~/.zshrc"
+alias ohmyzsh="vim ~/.oh-my-zsh"
+alias nvimconfig="nvim ~/.config/nvim/init.vim"
+alias vimconfig="vim ~/.vimrc"
 
-function calcimages() {
+# rsync
+alias rsync-copy="rsync -avz --progress -h"
+alias rsync-move="rsync -avz --progress -h --remove-source-files"
+alias rsync-update="rsync -avzu --progress -h"
+alias rsync-synchronize="rsync -avzu --delete --progress -h"
+
+alias rcopy="rsync-copy"
+alias rmove="rsync-move"
+alias rupd="rsync-update"
+
+# some helpers
+function calcimages {
     find "$1" -type f \( -name \*.jpg -o -name \*.jpeg -o -name \*.png \) | wc -l
 }
 
-function update() {
+function update {
   omz update
   brew update && brew upgrade
   mamba update --all -y && mamba clean --all -y
   cargo install-update -a
 }
 
-mambac() {
+function mambac {
     local python_version="3.11"
     local env_name
 
@@ -43,26 +65,6 @@ mambac() {
     mamba create -y -n "$env_name" python="$python_version"
     mamba activate "$env_name"
 }
-
-alias zshconfig="vim ~/.zshrc"
-alias ohmyzsh="vim ~/.oh-my-zsh"
-alias nvimconfig="nvim ~/.config/nvim/init.vim"
-alias vimconfig="vim ~/.vimrc"
-
-alias c="clear"
-
-alias ipy="ipython"
-
-alias initifort="source /opt/intel/oneapi/setvars.sh >/dev/null"
-
-alias rsync-copy="rsync -avz --progress -h"
-alias rsync-move="rsync -avz --progress -h --remove-source-files"
-alias rsync-update="rsync -avzu --progress -h"
-alias rsync-synchronize="rsync -avzu --delete --progress -h"
-
-alias rcopy="rsync-copy"
-alias rmove="rsync-move"
-alias rupd="rsync-update"
 
 # some stuff for remote cluster
 function s {
