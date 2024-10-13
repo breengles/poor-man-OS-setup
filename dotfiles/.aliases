@@ -45,16 +45,21 @@ function calcimages {
 }
 
 function update {
+  echo "Updating omz..."
   omz update
 
+  echo "Updating os packages..."
   unameout="$(uname -s)"
   case "${unameout}" in
     Darwin*) brew update && brew upgrade ;;
     Linux*) sudo apt update && sudo apt upgrade ;;
-    *) echo -e "Unknown uname: $unameout" ;;
+    *) echo "Unknown uname: $unameout" ;;
   esac
 
+  echo "Updating mamba..."
   mamba update --all -y && mamba clean --all -y
+
+  echo "Updating cargo..."
   cargo install-update -a
 }
 
