@@ -1,11 +1,24 @@
 {
   "models": [
     {
-      "model": "gpt-4o",
-      "contextLength": 128000,
       "title": "GPT-4o",
-      "systemMessage": "You are an expert software developer. You give helpful and concise responses.",
+      "model": "gpt-4o",
       "provider": "openai",
+      "systemMessage": "You are an expert software developer. You give helpful and concise responses.",
+      "apiKey": "..."
+    },
+    {
+      "title": "Gemini 1.5 Pro",
+      "model": "gemini-1.5-pro-latest",
+      "provider": "gemini",
+      "systemMessage": "You are an expert software developer. You give helpful and concise responses.",
+      "apiKey": "..."
+    },
+    {
+      "title": "Gemini 1.5 Flash 8B",
+      "model": "gemini-1.5-flash-8b",
+      "provider": "gemini",
+      "systemMessage": "You are an expert software developer. You give helpful and concise responses.",
       "apiKey": "..."
     },
     {
@@ -43,6 +56,11 @@
     "multilineCompletions": "always"
   },
   "customCommands": [
+    {
+      "name": "test",
+      "prompt": "{{{ input }}}\n\nWrite a comprehensive set of unit tests for the selected code. It should setup, run tests that check for correctness including important edge cases, and teardown. Ensure that the tests are complete and sophisticated. Give the tests just as chat output, don't edit any file.",
+      "description": "Write unit tests for highlighted code"
+    },
     {
       "name": "docstrings",
       "prompt": "You will be acting as a senior software engineer helping a colleague document their code. You will follow the guidelines for writing great code comments:\nRule 1: Comments should not duplicate the code.\nRule 2: Good comments do not excuse unclear code.\nRule 3: If you can't write a clear comment, there may be a problem with the code.\nRule 4: Comments should dispel confusion, not cause it.\nRule 5: Explain unidiomatic code in comments.\nRule 6: Provide links to the original source of copied code.\nRule 7: Add comments when fixing bugs.\nRule 8: Use comments to mark incomplete implementations.\nRule 9: DO NOT LEAVE ANY COMMENT FOR IMPORTS.\nUsing this information, add docstrings, and simple comments if needed, the following code:\n\n{{{ input }}}",
