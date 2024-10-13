@@ -46,7 +46,14 @@ function calcimages {
 
 function update {
   omz update
-  brew update && brew upgrade
+
+  unameout="$(uname -s)"
+  case "${unameout}" in
+    Darwin*) brew update && brew upgrade ;;
+    Linux*) sudo apt update && sudo apt upgrade ;;
+    *) echo -e "Unknown uname: $unameout" ;;
+  esac
+
   mamba update --all -y && mamba clean --all -y
   cargo install-update -a
 }
