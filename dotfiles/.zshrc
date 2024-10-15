@@ -31,7 +31,6 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-
 # Add in Powerlevel10k
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
@@ -42,6 +41,7 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
 zinit light conda-incubator/conda-zsh-completion
 
+# Add zinit snippets
 zinit snippet OMZP::command-not-found
 
 # Load completions
@@ -74,8 +74,8 @@ setopt hist_ignore_dups
 setopt hist_find_no_dups
 
 # Completion styling
-# zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-# zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
