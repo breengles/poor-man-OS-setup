@@ -45,8 +45,9 @@ function calcimages {
 }
 
 function update {
-  echo "Updating omz..."
-  omz update
+  echo "Updating zinit..."
+  zinit self-update
+  zinit update
 
   echo "Updating os packages..."
   unameout="$(uname -s)"
