@@ -45,6 +45,8 @@ zinit light conda-incubator/conda-zsh-completion
 zinit snippet OMZP::command-not-found
 
 # Load completions
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 autoload -Uz compinit && compinit
 
 zinit cdreplay -q
