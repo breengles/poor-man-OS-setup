@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+alias -g ......='../../../../..'
+
 # inits
 if [ -x "$(command -v zoxide)" ]; then
   if [ -n "$BASH_VERSION" ]; then
@@ -25,7 +30,6 @@ fi
 
 # configs
 alias zshconfig="vim ~/.zshrc"
-alias ohmyzsh="vim ~/.oh-my-zsh"
 alias nvimconfig="nvim ~/.config/nvim/init.vim"
 alias vimconfig="vim ~/.vimrc"
 
