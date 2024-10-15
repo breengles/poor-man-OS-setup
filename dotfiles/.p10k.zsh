@@ -133,7 +133,7 @@
   # Cyan ahead/behind arrows.
   typeset -g POWERLEVEL9K_VCS_{INCOMING,OUTGOING}_CHANGESFORMAT_FOREGROUND=$cyan
   # Don't show remote branch, current tag or stashes.
-  typeset -g POWERLEVEL9K_VCS_GIT_HOOKS=(vcs-detect-changes git-untracked git-aheadbehind)
+  typeset -g POWERLEVEL9K_VCS_GIT_HOOKS=(vcs-detect-changes git-untracked git-aheadbehind git-tagname)
   # Don't show the branch icon.
   typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=
   # When in detached HEAD state, show @commit where branch normally goes.
@@ -147,45 +147,28 @@
   # Show '⇡' if local branch is ahead of remote.
   typeset -g POWERLEVEL9K_VCS_OUTGOING_CHANGES_ICON=':⇡'
   # Don't show the number of commits next to the ahead/behind arrows.
-  typeset -g POWERLEVEL9K_VCS_{COMMITS_AHEAD,COMMITS_BEHIND}_MAX_NUM=1
+  typeset -g POWERLEVEL9K_VCS_{COMMITS_AHEAD,COMMITS_BEHIND}_MAX_NUM=-1
   # Remove space between '⇣' and '⇡' and all trailing spaces.
   typeset -g POWERLEVEL9K_VCS_CONTENT_EXPANSION='${${${P9K_CONTENT/⇣* :⇡/⇣⇡}// }//:/ }'
 
-  # Grey current time.
-  typeset -g POWERLEVEL9K_TIME_FOREGROUND=$grey
-  # Format for the current time: 09:51:02. See `man 3 strftime`.
-  typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%H:%M:%S}'
-  # If set to true, time will update when you hit enter. This way prompts for the past
-  # commands will contain the start times of their commands rather than the end times of
-  # their preceding commands.
-  typeset -g POWERLEVEL9K_TIME_UPDATE_ON_COMMAND=false
+  ##################################[ context: user@hostname ]##################################
+  # Context color when running with privileges.
+  typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND=178
+  # Context color in SSH without privileges.
+  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND=180
+  # Default context color (no privileges, no SSH).
+  typeset -g POWERLEVEL9K_CONTEXT_FOREGROUND=180
 
-  # Transient prompt works similarly to the builtin transient_rprompt option. It trims down prompt
-  # when accepting a command line. Supported values:
-  #
-  #   - off:      Don't change prompt when accepting a command line.
-  #   - always:   Trim down prompt when accepting a command line.
-  #   - same-dir: Trim down prompt when accepting a command line unless this is the first command
-  #               typed after changing current working directory.
-  typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=always
+  # Context format when running with privileges: bold user@hostname.
+  typeset -g POWERLEVEL9K_CONTEXT_ROOT_TEMPLATE='%B%n@%m'
+  # Context format when in SSH without privileges: user@hostname.
+  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_TEMPLATE='%n@%m'
+  # Default context format (no privileges, no SSH): user@hostname.
+  typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE='%n@%m'
 
-  # Instant prompt mode.
-  #
-  #   - off:     Disable instant prompt. Choose this if you've tried instant prompt and found
-  #              it incompatible with your zsh configuration files.
-  #   - quiet:   Enable instant prompt and don't print warnings when detecting console output
-  #              during zsh initialization. Choose this if you've read and understood
-  #              https://github.com/romkatv/powerlevel10k#instant-prompt.
-  #   - verbose: Enable instant prompt and print a warning when detecting console output during
-  #              zsh initialization. Choose this if you've never tried instant prompt, haven't
-  #              seen the warning, or if you are unsure what this all means.
-  typeset -g POWERLEVEL9K_INSTANT_PROMPT=verbose
-
-  # Hot reload allows you to change POWERLEVEL9K options after Powerlevel10k has been initialized.
-  # For example, you can type POWERLEVEL9K_BACKGROUND=red and see your prompt turn red. Hot reload
-  # can slow down prompt by 1-2 milliseconds, so it's better to keep it turned off unless you
-  # really need it.
-  typeset -g POWERLEVEL9K_DISABLE_HOT_RELOAD=true
+  # Don't show context unless running with privileges or in SSH.
+  # Tip: Remove the next line to always show context.
+  typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
 
 
   #####################[ anaconda: conda environment (https://conda.io/) ]######################
@@ -217,6 +200,34 @@
   # without the surrounding parentheses, or to the last path component of CONDA_PREFIX if the former
   # is empty.
   typeset -g POWERLEVEL9K_ANACONDA_CONTENT_EXPANSION='${${${${CONDA_PROMPT_MODIFIER#\(}% }%\)}:-${CONDA_PREFIX:t}} (v${P9K_ANACONDA_PYTHON_VERSION})'
+
+
+  # Transient prompt works similarly to the builtin transient_rprompt option. It trims down prompt
+  # when accepting a command line. Supported values:
+  #
+  #   - off:      Don't change prompt when accepting a command line.
+  #   - always:   Trim down prompt when accepting a command line.
+  #   - same-dir: Trim down prompt when accepting a command line unless this is the first command
+  #               typed after changing current working directory.
+  typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=always
+
+  # Instant prompt mode.
+  #
+  #   - off:     Disable instant prompt. Choose this if you've tried instant prompt and found
+  #              it incompatible with your zsh configuration files.
+  #   - quiet:   Enable instant prompt and don't print warnings when detecting console output
+  #              during zsh initialization. Choose this if you've read and understood
+  #              https://github.com/romkatv/powerlevel10k#instant-prompt.
+  #   - verbose: Enable instant prompt and print a warning when detecting console output during
+  #              zsh initialization. Choose this if you've never tried instant prompt, haven't
+  #              seen the warning, or if you are unsure what this all means.
+  typeset -g POWERLEVEL9K_INSTANT_PROMPT=verbose
+
+  # Hot reload allows you to change POWERLEVEL9K options after Powerlevel10k has been initialized.
+  # For example, you can type POWERLEVEL9K_BACKGROUND=red and see your prompt turn red. Hot reload
+  # can slow down prompt by 1-2 milliseconds, so it's better to keep it turned off unless you
+  # really need it.
+  typeset -g POWERLEVEL9K_DISABLE_HOT_RELOAD=true
 
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.
