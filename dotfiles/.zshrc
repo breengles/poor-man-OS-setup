@@ -89,4 +89,4 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza -1 --color=always $real
 eval "$(zoxide init --cmd cd zsh)"
 
 # if running from bash as login shell on remote cluster - uncomment the following line
-# source /etc/profile
+# emulate sh -c "source /etc/profile"
