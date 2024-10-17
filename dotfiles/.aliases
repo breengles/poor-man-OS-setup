@@ -49,11 +49,11 @@ function calcimages {
 }
 
 function update {
-  echo "Updating zinit..."
+  echo -e "\n========== Updating zinit ==========\n"
   zinit self-update
   zinit update
 
-  echo "Updating os packages..."
+  echo -e "\n========== Updating os packages ==========\n"
   unameout="$(uname -s)"
   case "${unameout}" in
     Darwin*) brew update && brew upgrade ;;
@@ -61,10 +61,10 @@ function update {
     *) echo "Unknown uname: $unameout" ;;
   esac
 
-  echo "Updating mamba..."
+  echo -e "\n========== Updating mamba ==========\n"
   mamba update --all -y && mamba clean --all -y
 
-  echo "Updating cargo..."
+  echo -e "\n========== Updating cargo ==========\n"
   cargo install-update -a
 }
 
