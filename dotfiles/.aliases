@@ -83,6 +83,8 @@ function mambac {
     mamba activate "$env_name"
 }
 
+
+
 # some stuff for remote cluster
 function s {
   sbatch "$@"
