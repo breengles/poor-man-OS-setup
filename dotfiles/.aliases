@@ -83,7 +83,21 @@ function mambac {
     mamba activate "$env_name"
 }
 
+function echo_project_info {
+  echo "===== SYS INFO ====="
+  echo "Your job ($SLURM_JOB_NAME) is running on $(hostname)"
 
+  nvidia-smi
+  echo "GPUs: $CUDA_VISIBLE_DEVICES"
+  echo "Torch CUDA is available: $(python -c 'import torch; print(torch.cuda.is_available())')"
+
+  echo "Commit hash: $(git rev-parse HEAD)"
+
+  echo "python: $(python -V) @ $(which python)"
+  echo "pip: $(pip -V) @ $(which pip)"
+  pip freeze
+  echo "===================="
+}
 
 # some stuff for remote cluster
 function s {
