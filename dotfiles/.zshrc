@@ -35,10 +35,11 @@ zinit light-mode for \
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # Add in zsh plugins
-zinit light zsh-users/zsh-syntax-highlighting
+zinit light Aloxaf/fzf-tab
+# zinit light zsh-users/zsh-syntax-highlighting
+zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
-zinit light Aloxaf/fzf-tab
 zinit light conda-incubator/conda-zsh-completion
 
 # Add zinit snippets
@@ -90,3 +91,23 @@ eval "$(zoxide init --cmd cd zsh)"
 
 # if running from bash as login shell on remote cluster - uncomment the following line
 # emulate sh -c "source /etc/profile"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/artem.kotov/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/artem.kotov/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/Users/artem.kotov/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/artem.kotov/miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+if [ -f "/Users/artem.kotov/miniforge3/etc/profile.d/mamba.sh" ]; then
+    . "/Users/artem.kotov/miniforge3/etc/profile.d/mamba.sh"
+fi
+# <<< conda initialize <<<
+
