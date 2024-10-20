@@ -8,5 +8,4 @@ __pycache__
 
 .aim
 
-*.slurm
 *slurm*.sh
