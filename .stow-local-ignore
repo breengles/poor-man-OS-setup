@@ -1,0 +1,6 @@
+\.git
+^/readme.*
+^/LICENSE.*
+^/COPYING
+
+/misc

@@ -8,7 +8,7 @@ xcode-select --install
 # brew https://brew.sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
-brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop
+brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow
 brew install --cask kitty
 brew install --cask keepingyouawake
 brew install --cask raycast
@@ -39,13 +39,12 @@ ollama pull yi-coder:9b
 ollama pull codeqwen:7b-chat
 ollama pull deepseek-coder-v2:16b
 
-# configs
-mkdir -p "${HOME}/.config" && cp -r dotconfig/* "${HOME}/.config"
-cp dotfiles/.* $HOME
-
 # mamba
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3-$(uname)-$(uname -m).sh
+
+# from poor-man-OS-setup's root
+stow .
 ```
 
 ## fonts
