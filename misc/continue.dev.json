@@ -63,7 +63,7 @@
     },
     {
       "name": "docstrings",
-      "prompt": "You will be acting as a senior software engineer helping a colleague document their code. You will follow the guidelines for writing great code comments:\nRule 1: Comments should not duplicate the code.\nRule 2: Good comments do not excuse unclear code.\nRule 3: If you can't write a clear comment, there may be a problem with the code.\nRule 4: Comments should dispel confusion, not cause it.\nRule 5: Explain unidiomatic code in comments.\nRule 6: Provide links to the original source of copied code.\nRule 7: Add comments when fixing bugs.\nRule 8: Use comments to mark incomplete implementations.\nRule 9: DO NOT LEAVE ANY COMMENT FOR IMPORTS.\nUsing this information, add docstrings, and simple comments if needed, the following code:\n\n{{{ input }}}",
+      "prompt": "You will be acting as a senior software engineer helping a colleague document their code. You will follow the guidelines for writing great code comments:\nRule 1: Comments should not duplicate the code.\nRule 2: Good comments do not excuse unclear code.\nRule 3: If you can't write a clear comment, there may be a problem with the code.\nRule 4: Comments should dispel confusion, not cause it.\nRule 5: Explain unidiomatic code in comments.\nRule 6: Provide links to the original source of copied code.\nRule 7: Add comments when fixing bugs.\nRule 8: Use comments to mark incomplete implementations.\nUsing this information, add docstrings, and simple comments if needed, the following code:\n\n{{{ input }}}",
       "description": "Add docstrings"
     }
   ],
