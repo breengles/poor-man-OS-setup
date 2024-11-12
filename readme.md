@@ -17,6 +17,9 @@ brew install --cask nikitabobko/tap/aerospace
 
 # nerd font
 brew install font-caskaydia-cove-nerd-font
+
+# https://nikitabobko.github.io/AeroSpace/goodness#disable-open-animations
+defaults write -g NSAutomaticWindowAnimationsEnabled -bool false
 ```
 
 ## Things
