@@ -40,7 +40,7 @@ alias rupd="rsync-update"
 
 # some helpers
 function calcimages {
-    find "$1" -type f \( -name \*.jpg -o -name \*.jpeg -o -name \*.png \) | wc -l
+  find "$1" -type f \( -name \*.jpg -o -name \*.jpeg -o -name \*.png \) | wc -l
 }
 
 function update {
