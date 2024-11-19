@@ -768,3 +768,8 @@ keymap = [
 on = ["<C-s>"]
 run = 'shell "$SHELL" --block --confirm'
 desc = "Open shell here"
+
+[[manager.prepend_keymap]]
+on = "T"
+run = "plugin --sync max-preview"
+desc = "Maximize or restore preview"
