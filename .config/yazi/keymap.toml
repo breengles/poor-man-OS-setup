@@ -194,7 +194,7 @@ keymap = [
     ], run = "shell --interactive", desc = "Run a shell command" },
     { on = [
         ":",
-    ], run = "shell --block", desc = "Run a shell command (block the UI until the command finishes)" },
+    ], run = "shell --interactive --block", desc = "Run a shell command (block the UI until the command finishes)" },
     { on = [
         ".",
     ], run = "hidden toggle", desc = "Toggle the visibility of hidden files" },
