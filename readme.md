@@ -14,22 +14,26 @@ brew install --cask keepingyouawake
 brew install --cask raycast
 brew install --cask mactex
 brew install --cask nikitabobko/tap/aerospace
+brew install --cask google-chrome
+brew install --cask visual-studio-code
+brew install --cask dockey
 
 # nerd font
 brew install font-caskaydia-cove-nerd-font
 
 # https://nikitabobko.github.io/AeroSpace/goodness#disable-open-animations
+defaults write -g ApplePressAndHoldEnabled -bool false
 defaults write -g NSAutomaticWindowAnimationsEnabled -bool false
 ```
 
 ## Things
 ```bash
 # fzf
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install --all
+git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
+$HOME/.fzf/install --all
 
 # tmux
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
 
 # rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
