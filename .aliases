@@ -17,6 +17,10 @@ if [ -x "$(command -v nvim)" ]; then
   export EDITOR=nvim
 fi
 
+if [ -x "$(command -v zellij)" ]; then
+  alias zl=zellij
+fi
+
 if [ -x "$(command -v eza)" ]; then
   alias ls="eza --color=always"
   alias l="eza --color=always --long"
@@ -25,8 +29,6 @@ fi
 
 # configs
 alias zshconfig="vim ~/.zshrc"
-alias nvimconfig="nvim ~/.config/nvim/init.vim"
-alias vimconfig="vim ~/.vimrc"
 
 # rsync
 alias rsync-copy="rsync -avz --progress -h"
