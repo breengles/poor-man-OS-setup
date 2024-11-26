@@ -35,6 +35,10 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide bat yazi-fm yazi-cli zellij
 
+# zellij plugins
+mkdir -p $HOME/zellij-plugins
+wget -P $HOME/zellij-plugins https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
+
 # ollama
 ollama pull starcoder2:3b
 ollama pull llama3.1:8b
