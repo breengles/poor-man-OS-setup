@@ -44,11 +44,12 @@ mkdir -p $HOME/zellij-plugins
 wget -P $HOME/zellij-plugins https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
 
 # ollama
-ollama pull starcoder2:3b
-ollama pull llama3.1:8b
-ollama pull yi-coder:9b
-ollama pull codeqwen:7b-chat
 ollama pull deepseek-coder-v2:16b
+ollama pull llama3.2:3b
+ollama pull codeqwen:7b-chat
+ollama pull yi-coder:9b
+ollama pull starcoder2:15b
+ollama pull starcoder2:3b
 
 # mamba
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
