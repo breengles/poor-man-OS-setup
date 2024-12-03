@@ -9,14 +9,20 @@
       "apiKey": ""
     },
     {
-      "title": "Gemini 1.5 Flash 8B",
+      "title": "Gemini 1.5 Flash",
       "provider": "gemini",
-      "model": "gemini-1.5-flash-8b",
+      "model": "gemini-1.5-flash-latest",
       "apiKey": ""
     },
     {
-      "title": "llama3.1:8b",
-      "model": "llama3.1:8b",
+      "title": "llama3.2:latest",
+      "model": "llama3.2:latest",
+      "contextLength": 32768,
+      "provider": "ollama"
+    },
+    {
+      "title": "qwen2.5-coder:14b",
+      "model": "qwen2.5-coder:14b",
       "contextLength": 32768,
       "provider": "ollama"
     },
