@@ -86,7 +86,7 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza -1 --color=always $realpath'
 
 # Shell integrations
-[[ ! -f ~/.aliases ]] || source ~/.aliases
+[ -f ~/.aliases ] && source ~/.aliases
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 eval "$(zoxide init --cmd cd zsh)"

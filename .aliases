@@ -71,13 +71,18 @@ function mambac {
   local env_name
 
   if [ $# -eq 1 ]; then
-      env_name=$1
+    env_name=$1
   else
-      python_version=$1
-      env_name=$2
+    python_version=$1
+    env_name=$2
   fi
 
-  mamba create -y -n "$env_name" python="$python_version"
+  if conda env list | grep -q "^$env_name\b"; then
+    echo "Environment '$env_name' already exists."
+  else
+    mamba create -y -n "$env_name" python="$python_version"
+  fi
+
   mamba activate "$env_name"
 }
 
