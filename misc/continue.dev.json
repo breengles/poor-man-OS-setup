@@ -15,32 +15,8 @@
       "apiKey": ""
     },
     {
-      "title": "llama3.2:latest",
-      "model": "llama3.2:latest",
-      "contextLength": 32768,
-      "provider": "ollama"
-    },
-    {
       "title": "qwen2.5-coder:14b",
       "model": "qwen2.5-coder:14b",
-      "contextLength": 32768,
-      "provider": "ollama"
-    },
-    {
-      "title": "llama3.2:3b",
-      "model": "llama3.2:3b",
-      "contextLength": 32768,
-      "provider": "ollama"
-    },
-    {
-      "title": "yi-coder:9b",
-      "model": "yi-coder:9b",
-      "contextLength": 32768,
-      "provider": "ollama"
-    },
-    {
-      "title": "codeqwen:7b-chat",
-      "model": "codeqwen:7b-chat",
       "contextLength": 32768,
       "provider": "ollama"
     },
@@ -49,13 +25,29 @@
       "model": "deepseek-coder-v2:16b",
       "contextLength": 32768,
       "provider": "ollama"
+    },
+    {
+      "title": "llama3.2:3b",
+      "model": "llama3.2:3b",
+      "contextLength": 32768,
+      "provider": "ollama"
     }
   ],
   "tabAutocompleteModel": {
-    "title": "StarCoder2-3b",
+    "title": "starcoder2:3b",
     "model": "starcoder2:3b",
     "provider": "ollama"
   },
+  // "tabAutocompleteModel": {
+  //   "title": "qwen2.5-coder:1.5b",
+  //   "model": "qwen2.5-coder:1.5b",
+  //   "provider": "ollama"
+  // },
+  // "tabAutocompleteModel": {
+  //   "title": "qwen2.5-coder:7b",
+  //   "model": "qwen2.5-coder:7b",
+  //   "provider": "ollama"
+  // },
   "tabAutocompleteOptions": {
     "debounceDelay": 500,
     "multilineCompletions": "always"
