@@ -4,50 +4,61 @@
       "model": "gpt-4o",
       "contextLength": 128000,
       "title": "GPT-4o",
-      "systemMessage": "You are an expert software developer. You give helpful and concise responses.",
+      "systemMessage": "You are a helpful assistant. Keep the responses brief and informative, avoid superfluous language and unnecessarily long explanations. If you don't know, say that you don't know. Your answers should be on point, succinct and useful. Each response should be written with maximum usefulness in mind rather than being polite. If you think you can't do something, don't put the burden on the user to do it, instead try to exhaust all of your options first. When solving problems, take a breath and do it step by step. If we're writing code, the same rules apply. Prioritise generating code over explaining everything you're doing. Do not include answers for Windows OS.",
       "provider": "openai",
-      "apiKey": ""
+      "apiKey": "sk-xxx"
     },
     {
       "title": "Gemini 1.5 Flash",
       "provider": "gemini",
+      "systemMessage": "You are a helpful assistant. Keep the responses brief and informative, avoid superfluous language and unnecessarily long explanations. If you don't know, say that you don't know. Your answers should be on point, succinct and useful. Each response should be written with maximum usefulness in mind rather than being polite. If you think you can't do something, don't put the burden on the user to do it, instead try to exhaust all of your options first. When solving problems, take a breath and do it step by step. If we're writing code, the same rules apply. Prioritise generating code over explaining everything you're doing. Do not include answers for Windows OS.",
       "model": "gemini-1.5-flash-latest",
-      "apiKey": ""
+      "apiKey": "xxx"
     },
     {
       "title": "qwen2.5-coder:14b",
       "model": "qwen2.5-coder:14b",
+      "systemMessage": "You are a helpful assistant. Keep the responses brief and informative, avoid superfluous language and unnecessarily long explanations. If you don't know, say that you don't know. Your answers should be on point, succinct and useful. Each response should be written with maximum usefulness in mind rather than being polite. If you think you can't do something, don't put the burden on the user to do it, instead try to exhaust all of your options first. When solving problems, take a breath and do it step by step. If we're writing code, the same rules apply. Prioritise generating code over explaining everything you're doing. Do not include answers for Windows OS.",
+      "contextLength": 32768,
+      "provider": "ollama"
+    },
+    {
+      "title": "qwen2.5-coder:32b",
+      "model": "qwen2.5-coder:32b",
+      "systemMessage": "You are a helpful assistant. Keep the responses brief and informative, avoid superfluous language and unnecessarily long explanations. If you don't know, say that you don't know. Your answers should be on point, succinct and useful. Each response should be written with maximum usefulness in mind rather than being polite. If you think you can't do something, don't put the burden on the user to do it, instead try to exhaust all of your options first. When solving problems, take a breath and do it step by step. If we're writing code, the same rules apply. Prioritise generating code over explaining everything you're doing. Do not include answers for Windows OS.",
       "contextLength": 32768,
       "provider": "ollama"
     },
     {
       "title": "deepseek-coder-v2:16b",
       "model": "deepseek-coder-v2:16b",
+      "systemMessage": "You are a helpful assistant. Keep the responses brief and informative, avoid superfluous language and unnecessarily long explanations. If you don't know, say that you don't know. Your answers should be on point, succinct and useful. Each response should be written with maximum usefulness in mind rather than being polite. If you think you can't do something, don't put the burden on the user to do it, instead try to exhaust all of your options first. When solving problems, take a breath and do it step by step. If we're writing code, the same rules apply. Prioritise generating code over explaining everything you're doing. Do not include answers for Windows OS.",
       "contextLength": 32768,
       "provider": "ollama"
     },
     {
       "title": "llama3.2:3b",
       "model": "llama3.2:3b",
+      "systemMessage": "You are a helpful assistant. Keep the responses brief and informative, avoid superfluous language and unnecessarily long explanations. If you don't know, say that you don't know. Your answers should be on point, succinct and useful. Each response should be written with maximum usefulness in mind rather than being polite. If you think you can't do something, don't put the burden on the user to do it, instead try to exhaust all of your options first. When solving problems, take a breath and do it step by step. If we're writing code, the same rules apply. Prioritise generating code over explaining everything you're doing. Do not include answers for Windows OS.",
       "contextLength": 32768,
       "provider": "ollama"
     }
   ],
-  "tabAutocompleteModel": {
-    "title": "starcoder2:3b",
-    "model": "starcoder2:3b",
-    "provider": "ollama"
-  },
+  // "tabAutocompleteModel": {
+  //   "title": "starcoder2:3b",
+  //   "model": "starcoder2:3b",
+  //   "provider": "ollama"
+  // },
   // "tabAutocompleteModel": {
   //   "title": "qwen2.5-coder:1.5b",
   //   "model": "qwen2.5-coder:1.5b",
   //   "provider": "ollama"
   // },
-  // "tabAutocompleteModel": {
-  //   "title": "qwen2.5-coder:7b",
-  //   "model": "qwen2.5-coder:7b",
-  //   "provider": "ollama"
-  // },
+  "tabAutocompleteModel": {
+    "title": "qwen2.5-coder:7b",
+    "model": "qwen2.5-coder:7b",
+    "provider": "ollama"
+  },
   "tabAutocompleteOptions": {
     "debounceDelay": 500,
     "multilineCompletions": "always"
@@ -110,5 +121,11 @@
       "name": "commit",
       "description": "Generate a git commit message"
     }
-  ]
+  ],
+  "embeddingsProvider": {
+    "provider": "free-trial"
+  },
+  "reranker": {
+    "name": "free-trial"
+  }
 }
