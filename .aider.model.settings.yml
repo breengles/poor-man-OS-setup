@@ -1,4 +1,4 @@
 - name: ollama_chat/qwen2.5-coder:32b
   extra_params:
     max_tokens: 8192
-    num_ctx: 32768
+    num_ctx: 16384
