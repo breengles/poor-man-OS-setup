@@ -90,6 +90,10 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza -1 --color=always $real
 [ -f ~/.aliases ] && source ~/.aliases
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+if [ -f "$HOME/adkb_shell_completion.sh" ]; then
+   source "$HOME/adkb_shell_completion.sh"
+fi
+
 eval "$(zoxide init --cmd cd zsh)"
 
 # if running from bash as login shell on remote cluster - uncomment the following lines
