@@ -87,12 +87,9 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza -1 --color=always $realpath'
 
 # Shell integrations
-[ -f ~/.aliases ] && source ~/.aliases
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-if [ -f "$HOME/adkb_shell_completion.sh" ]; then
-   source "$HOME/adkb_shell_completion.sh"
-fi
+[ -f "$HOME/.aliases" ] && source "$HOME/.aliases"
+[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
+[ -f "$HOME/adkb_shell_completion.sh" ] && source "$HOME/adkb_shell_completion.sh"
 
 eval "$(zoxide init --cmd cd zsh)"
 
