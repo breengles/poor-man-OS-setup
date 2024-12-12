@@ -8,7 +8,7 @@ xcode-select --install
 # brew https://brew.sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
-brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow
+brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow uv
 brew install --cask kitty
 brew install --cask keepingyouawake
 brew install --cask raycast
@@ -44,16 +44,23 @@ mkdir -p $HOME/zellij-plugins
 wget -P $HOME/zellij-plugins https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
 
 # ollama
+ollama pull qwen2.5-coder:1.5b
+ollama pull qwen2.5-coder:7b
+ollama pull qwen2.5-coder:14b
+ollama pull qwen2.5-coder:32b
 ollama pull deepseek-coder-v2:16b
-ollama pull llama3.2:3b
-ollama pull codeqwen:7b-chat
-ollama pull yi-coder:9b
-ollama pull starcoder2:15b
 ollama pull starcoder2:3b
+
+ollama pull llama3.2:3b
+ollama pull llama3.2-vision:11b
+
 
 # mamba
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3-$(uname)-$(uname -m).sh
+
+# uv
+uv tool install --python python3.12 aider-chat
 
 # from poor-man-OS-setup's root
 stow .
