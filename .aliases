@@ -63,7 +63,7 @@ function update {
   mamba update --all -y && mamba clean --all -y
 
   echo -e "\n========== Updating cargo ==========\n"
-  cargo install-update -a
+  cargo install-update --all --jobs 8
 }
 
 function mambac {
