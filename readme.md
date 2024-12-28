@@ -47,7 +47,6 @@ wget -P $HOME/zellij-plugins https://github.com/dj95/zjstatus/releases/latest/do
 # ollama
 ollama pull qwen2.5-coder:1.5b
 ollama pull qwen2.5-coder:7b
-ollama pull qwen2.5-coder:14b
 ollama pull qwen2.5-coder:32b
 ollama pull deepseek-coder-v2:16b
 ollama pull starcoder2:3b
