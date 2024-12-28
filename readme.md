@@ -17,6 +17,7 @@ brew install --cask nikitabobko/tap/aerospace
 brew install --cask google-chrome
 brew install --cask visual-studio-code
 brew install --cask dockey
+brew install --cask transmission
 
 # nerd font
 brew install font-caskaydia-cove-nerd-font
