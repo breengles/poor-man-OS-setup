@@ -3,6 +3,8 @@ Being poor does not mean being useless
 
 ## MacOS
 ```bash
+mkdir -P $HOME/.completions
+
 xcode-select --install
 
 # brew https://brew.sh
