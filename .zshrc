@@ -1,3 +1,5 @@
+fpath=($HOME/.completions $fpath)
+
 export PATH=$HOME/google-cloud-sdk/bin:$HOME/.local/bin:$PATH
 export OLLAMA_API_BASE="http://127.0.0.1:11434"
 
