@@ -2,6 +2,7 @@
 # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
 "$schema" = "https://yazi-rs.github.io/schemas/keymap.json"
 
+
 [manager]
 
 keymap = [
@@ -771,5 +772,10 @@ desc = "Open shell here"
 
 [[manager.prepend_keymap]]
 on = "T"
-run = "plugin --sync max-preview"
+run = "plugin max-preview"
 desc = "Maximize or restore preview"
+
+[preview]
+# Change them to your desired values
+max_width = 2048
+max_height = 2048
