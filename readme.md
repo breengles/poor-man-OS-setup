@@ -24,8 +24,20 @@ brew install --cask transmission
 # nerd font
 brew install font-caskaydia-cove-nerd-font
 
-# https://nikitabobko.github.io/AeroSpace/goodness#disable-open-animations
-defaults write -g ApplePressAndHoldEnabled -bool false
+
+# some macos settings
+defaults write -g AppleMiniaturizeOnDoubleClick -bool false
+defaults write -g AppleShowAllExtensions -bool true
+defaults write -g AppleSpacesSwitchOnActivate -bool false
+
+defaults write -g KeyRepeat -int 2
+defaults write -g ApplePressAndHoldEnabled -bool false  # to enable key repeat
+
+defaults write -g NSAutomaticCapitalizationEnabled -bool false
+defaults write -g NSAutomaticDashSubstitutionEnabled -bool false
+defaults write -g NSAutomaticPeriodSubstitutionEnabled -bool false
+defaults write -g NSAutomaticQuoteSubstitutionEnabled -bool false
+defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false
 defaults write -g NSAutomaticWindowAnimationsEnabled -bool false
 ```
 
