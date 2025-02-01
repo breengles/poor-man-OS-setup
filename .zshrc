@@ -91,6 +91,7 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza -1 --color=always $real
 # Shell integrations
 [ -f "$HOME/.aliases" ] && source "$HOME/.aliases"
 [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
+[ -f "$HOME/.adkb.sh" ] && source "$HOME/.adkb.sh"
 
 eval "$(zoxide init --cmd cd zsh)"
 
