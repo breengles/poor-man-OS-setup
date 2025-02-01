@@ -47,10 +47,8 @@ mkdir -p $HOME/zellij-plugins
 wget -P $HOME/zellij-plugins https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
 
 # ollama
-ollama pull qwen2.5-coder:1.5b
 ollama pull qwen2.5-coder:7b
 ollama pull qwen2.5-coder:32b
-ollama pull deepseek-coder-v2:16b
 ollama pull starcoder2:3b
 
 ollama pull llama3.2:3b
