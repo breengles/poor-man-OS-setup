@@ -15,7 +15,7 @@ brew install --cask kitty
 brew install --cask keepingyouawake
 brew install --cask raycast
 brew install --cask mactex
-brew install --cask nikitabobko/tap/aerospace
+# brew install --cask nikitabobko/tap/aerospace
 brew install --cask google-chrome
 brew install --cask visual-studio-code
 brew install --cask dockey
