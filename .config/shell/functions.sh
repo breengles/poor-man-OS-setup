@@ -5,22 +5,23 @@ function calcimages {
 }
 
 function update {
-  echo -e "\n========== Updating zinit ==========\n"
+  echo -e "\n========== updating zinit ==========\n"
   zinit self-update
   zinit update --all --parallel
 
-  echo -e "\n========== Updating os packages ==========\n"
+  echo -e "\n========== updating os packages ==========\n"
   if [ -x "$(command -v brew)" ]; then
     brew update && brew upgrade
   fi
+
   if [ -x "$(command -v apt)" ]; then
     sudo apt update && sudo apt upgrade
   fi
 
-  echo -e "\n========== Updating mamba ==========\n"
+  echo -e "\n========== updating mamba ==========\n"
   mamba update --all -y && mamba clean --all -y
 
-  echo -e "\n========== Updating cargo ==========\n"
+  echo -e "\n========== updating cargo ==========\n"
   cargo install-update --all --jobs 8
 }
 
