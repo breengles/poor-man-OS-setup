@@ -18,6 +18,7 @@ files=(
     "$HOME/.config/shell/zinit.zsh"
     "$HOME/.config/shell/history.zsh"
     "$HOME/.config/shell/keybindings.zsh"
+    "$HOME/.config/shell/completions.zsh"
     "$HOME/.p10k.zsh"
     "$HOME/.fzf.zsh"
     "$HOME/.adkb.sh"
