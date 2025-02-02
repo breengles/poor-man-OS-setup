@@ -4,24 +4,32 @@
       "title": "DeepSeek Chat",
       "provider": "deepseek",
       "model": "deepseek-chat",
-      "apiKey": "..."
+      "contextLength": 128000,
+      "apiKey": ""
     },
     {
       "title": "DeepSeek Reasoner",
       "provider": "deepseek",
       "model": "deepseek-reasoner",
-      "apiKey": "..."
+      "contextLength": 128000,
+      "apiKey": ""
     },
     {
       "model": "gpt-4o",
       "contextLength": 128000,
       "title": "GPT-4o",
       "provider": "openai",
-      "apiKey": "..."
+      "apiKey": ""
     },
     {
       "title": "qwen2.5-coder:32b",
       "model": "qwen2.5-coder:32b",
+      "contextLength": 16384,
+      "provider": "ollama"
+    },
+    {
+      "title": "deepseek-r1:32b",
+      "model": "deepseek-r1:32b",
       "contextLength": 16384,
       "provider": "ollama"
     }
@@ -36,15 +44,34 @@
   //   "model": "qwen2.5-coder:3b",
   //   "provider": "ollama"
   // },
-  "tabAutocompleteModel": {
-    "title": "DeepSeek Coder",
-    "provider": "deepseek",
-    "model": "deepseek-coder",
-    "apiKey": "..."
-  },
+  // "tabAutocompleteModel": {
+  //   "title": "DeepSeek Coder",
+  //   "provider": "deepseek",
+  //   "model": "deepseek-coder",
+  //   "apiKey": ""
+  // },
+  "tabAutocompleteModel": [
+    {
+      "title": "DeepSeek",
+      "model": "deepseek-coder",
+      "apiKey": "",
+      "provider": "deepseek"
+      // "apiBase": "https://api.deepseek.com/beta"
+    },
+    {
+      "title": "starcoder2:3b",
+      "model": "starcoder2:3b",
+      "provider": "ollama"
+    },
+    {
+      "title": "qwen2.5-coder:3b",
+      "model": "qwen2.5-coder:3b",
+      "provider": "ollama"
+    }
+  ],
   "tabAutocompleteOptions": {
     "debounceDelay": 250,
-    "multilineCompletions": "always"
+    "multilineCompletions": "auto"
   },
   "customCommands": [
     {
