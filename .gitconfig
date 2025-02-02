@@ -1,5 +1,6 @@
 [user]
 	name = Artem Kotov
+	email = kotov.artem@picsart.com
 [core]
   excludesfile = ~/.gitignore
   editor = vim
