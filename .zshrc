@@ -30,6 +30,9 @@ for file in "${files[@]}"; do
     [ -f "$file" ] && source "$file" || echo "File $file not found"
 done
 
+export GRADIO_TEMP_DIR="$HOME/tmp"
+mkdir -p "$GRADIO_TEMP_DIR"
+
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$("$HOME/miniforge3/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
