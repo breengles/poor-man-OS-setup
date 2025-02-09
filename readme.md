@@ -48,7 +48,7 @@ git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
 $HOME/.fzf/install --all
 
 # tmux
-git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
+# git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
 
 # rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -59,13 +59,9 @@ mkdir -p $HOME/zellij-plugins
 wget -P $HOME/zellij-plugins https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
 
 # ollama
-ollama pull qwen2.5-coder:7b
-ollama pull qwen2.5-coder:32b
-ollama pull starcoder2:3b
-
-ollama pull llama3.2:3b
+ollama pull qwen2.5-coder:3b  # for fim
+ollama pull qwen2.5-coder:32b  # chat
 ollama pull llama3.2-vision:11b
-
 
 # mamba
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
