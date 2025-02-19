@@ -63,6 +63,7 @@ function echo_project_info {
 
 # some stuff for remote cluster
 function s {
+  echo_project_info
   sbatch "$@"
 }
 
