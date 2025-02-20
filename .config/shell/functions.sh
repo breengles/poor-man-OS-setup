@@ -61,6 +61,11 @@ function echo_project_info {
   echo "===================="
 }
 
+function activate {
+  conda deactivate
+  source ./.venv/bin/activate
+}
+
 # some stuff for remote cluster
 function s {
   sbatch "$@"
