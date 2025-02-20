@@ -47,6 +47,7 @@
     # =========================[ Line #1 ]=========================
     status                  # exit code of the last command
     anaconda                # conda environment (https://conda.io/)
+    virtualenv
     context                 # user@hostname
     yazi                    # yazi shell (https://github.com/sxyazi/yazi)
     vim_shell               # vim shell indicator (:sh)
@@ -557,6 +558,10 @@
   # Custom icon.
   # typeset -g POWERLEVEL9K_ANACONDA_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
+  # virtualenv
+  typeset -g POWERLEVEL9K_VIRTUALENV_SHOW=true
+  typeset -g POWERLEVEL9K_VIRTUALENV_FOREGROUND=37
+
   ########################## custom prompt segment ##################################
   # Example of a user-defined prompt segment. Function prompt_example will be called on every
   # prompt if `example` prompt segment is added to POWERLEVEL9K_LEFT_PROMPT_ELEMENTS or
@@ -617,6 +622,7 @@
   # really need it.
   typeset -g POWERLEVEL9K_DISABLE_HOT_RELOAD=true
 
+  
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.
   (( ! $+functions[p10k] )) || p10k reload
