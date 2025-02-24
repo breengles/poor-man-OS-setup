@@ -1,7 +1,9 @@
 # Poor-man OS setup
+
 Being poor does not mean being useless
 
 ## MacOS
+
 ```bash
 mkdir -P $HOME/.completions
 
@@ -22,8 +24,8 @@ brew install --cask dockey
 brew install --cask transmission
 
 # nerd font
-brew install font-caskaydia-cove-nerd-font
-
+brew install --cask font-caskaydia-cove-nerd-font
+brew install --cask font-monaspace-nerd-font
 
 # some macos settings
 defaults write -g AppleMiniaturizeOnDoubleClick -bool false
@@ -42,6 +44,7 @@ defaults write -g NSAutomaticWindowAnimationsEnabled -bool false
 ```
 
 ## Things
+
 ```bash
 # fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
@@ -75,7 +78,9 @@ stow .
 ```
 
 ## fonts
+
 I keep it here just for reference: fonts should be installed with the scripts above
+
 * [CascadiaCode](https://github.com/microsoft/cascadia-code)
 * [NerdFont (patched version of fonts, required for terminal and tmux theme though you can use it for vscode as well)](https://github.com/ryanoasis/nerd-fonts)
   * For CascadiaCode version:
