@@ -14,8 +14,10 @@ function update {
     brew update && brew upgrade
   fi
 
-  if [ -x "$(command -v apt)" ]; then
-    sudo apt update && sudo apt upgrade
+  if [[ $(hostname) != "lambda-loginnode"* ]]; then
+    if [ -x "$(command -v apt)" ]; then
+      sudo apt update && sudo apt upgrade
+    fi
   fi
 
   echo -e "\n========== updating mamba ==========\n"
