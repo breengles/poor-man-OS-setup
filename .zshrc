@@ -23,9 +23,9 @@ files=(
     "$HOME/.fzf.zsh"
     "$HOME/.adkb.sh"
     "$HOME/.config/shell/emulate_bash_stuff.zsh"
-    "$HOME/.config/shell/aliases.sh"
     "$HOME/.config/shell/functions.sh"
     "$HOME/.config/shell/mamba.sh"
+    "$HOME/.config/shell/aliases.sh"  # keep it last
 )
 for file in "${files[@]}"; do
     [ -f "$file" ] && source "$file" || echo "File $file not found"
@@ -39,5 +39,3 @@ if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
-
-init_mamba

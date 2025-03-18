@@ -43,9 +43,5 @@ if [ -x "$(command -v bat)" ]; then
   alias cat=bat
 fi
 
-if [ -x "$(command -v mamba)" ]; then
-  alias conda=mamba
-fi
-
 # slurm
 alias spython='srun --nodes=1 --ntasks=1 --cpus-per-task=16 --mem-per-gpu=64G --gres=gpu:1 --partition=scalar6000q --time=30-00:00:00 python -u'
