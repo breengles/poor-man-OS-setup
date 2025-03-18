@@ -25,6 +25,7 @@ files=(
     "$HOME/.config/shell/emulate_bash_stuff.zsh"
     "$HOME/.config/shell/aliases.sh"
     "$HOME/.config/shell/functions.sh"
+    "$HOME/.config/shell/mamba.sh"
 )
 for file in "${files[@]}"; do
     [ -f "$file" ] && source "$file" || echo "File $file not found"
@@ -39,15 +40,4 @@ if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
 
-# >>> mamba initialize >>>
-# !! Contents within this block are managed by 'mamba shell init' !!
-export MAMBA_EXE="$HOME/miniforge3/bin/mamba";
-export MAMBA_ROOT_PREFIX="$HOME/miniforge3";
-__mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__mamba_setup"
-else
-    alias mamba="$MAMBA_EXE"  # Fallback on help from mamba activate
-fi
-unset __mamba_setup
-# <<< mamba initialize <<<
+init_mamba
