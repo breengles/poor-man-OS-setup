@@ -12,7 +12,7 @@ xcode-select --install
 # brew https://brew.sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
-brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow uv
+brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow
 brew install --cask kitty
 brew install --cask keepingyouawake
 brew install --cask raycast
@@ -71,6 +71,7 @@ curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mi
 bash Miniforge3-$(uname)-$(uname -m).sh
 
 # uv
+wget -qO- https://astral.sh/uv/install.sh | sh
 uv tool install --python python3.12 aider-chat
 
 # from poor-man-OS-setup's root
