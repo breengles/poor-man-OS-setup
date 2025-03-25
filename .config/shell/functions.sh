@@ -64,8 +64,19 @@ function echo_project_info {
 }
 
 function activate {
-  conda deactivate
-  source ./.venv/bin/activate
+  local venv_path=".venv"
+  
+  # Override venv_path if provided as an argument
+  if [ $# -eq 1 ]; then
+    venv_path="$1"
+  fi
+  
+  if [ -d "$venv_path" ]; then
+    conda deactivate
+    source "$venv_path/bin/activate"
+  else
+    echo "Virtual environment '$venv_path' does not exist."
+  fi
 }
 
 # some stuff for remote cluster
