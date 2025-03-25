@@ -28,16 +28,21 @@ function update {
 }
 
 function mambac {
-  local python_version="3.11"
+  local python_version
   local env_name
 
+  python_version="3.11"
+  env_name="$(basename "$(pwd)")"
+
   if [ $# -eq 1 ]; then
-    env_name=$1
-  else
-    python_version=$1
-    env_name=$2
+    python_version="$1"
+    env_name="$(basename "$(pwd)")"
+  elif [ $# -eq 2 ]; then
+    python_version="$1"
+    env_name="$2"
   fi
 
+  echo "Creating environment $env_name with python $python_version ..."
   if conda env list | grep -q "^$env_name\b"; then
     echo "Environment '$env_name' already exists."
   else
