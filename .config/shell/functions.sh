@@ -42,7 +42,7 @@ function mambac {
     env_name="$2"
   fi
 
-  echo "Creating environment $env_name with python $python_version ..."
+  echo "Creating environment \`$env_name\` with python \`$python_version\` ..."
   if conda env list | grep -q "^$env_name\b"; then
     echo "Environment '$env_name' already exists."
   else
