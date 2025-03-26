@@ -83,6 +83,7 @@ function activate {
     echo "Virtual environment '$venv_path' does not exist."
   fi
 }
+alias act=activate
 
 # some stuff for remote cluster
 function s {
