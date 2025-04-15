@@ -57,6 +57,10 @@ layout {
                 tab_sync_indicator       " "
                 tab_fullscreen_indicator " 󰊓"
                 tab_floating_indicator   " 󰹙"
+                // limit tab display count
+                tab_display_count         "4"
+                tab_truncate_start_format "#[fg=red,bg=#181825] < +{count} ..."
+                tab_truncate_end_format   "#[fg=red,bg=#181825] ... +{count} >"
 
                 // tab_normal   "#[fg=#6C7086] {name} "
                 // tab_active   "#[fg=#9399B2,bold] {name} "
