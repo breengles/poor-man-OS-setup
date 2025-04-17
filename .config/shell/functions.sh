@@ -34,13 +34,34 @@ function mambac {
   python_version="3.11"
   env_name="$(basename "$(pwd)")"
 
-  if [ $# -eq 1 ]; then
-    python_version="$1"
-    env_name="$(basename "$(pwd)")"
-  elif [ $# -eq 2 ]; then
-    python_version="$1"
-    env_name="$2"
-  fi
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -p)
+        shift
+        if [[ $# -gt 0 ]]; then
+          python_version="$1"
+          shift
+        else
+          echo "Error: Python version argument missing after -p"
+          return 1
+        fi
+        ;;
+      -n)
+        shift
+        if [[ $# -gt 0 ]]; then
+          env_name="$1"
+          shift
+        else
+          echo "Error: Environment name argument missing after -n"
+          return 1
+        fi
+        ;;
+      *)
+        echo "Usage: mambac [-p python_version] [-n env_name]"
+        return 1
+        ;;
+    esac
+  done
 
   echo "Creating environment \`$env_name\` with python \`$python_version\` ..."
   if conda env list | grep -q "^$env_name\b"; then
