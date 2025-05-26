@@ -17,7 +17,6 @@ brew install --cask kitty
 brew install --cask keepingyouawake
 brew install --cask raycast
 brew install --cask mactex
-# brew install --cask nikitabobko/tap/aerospace
 brew install --cask google-chrome
 brew install --cask visual-studio-code
 brew install --cask dockey
@@ -33,7 +32,7 @@ defaults write -g AppleShowAllExtensions -bool true
 defaults write -g AppleSpacesSwitchOnActivate -bool false
 
 defaults write -g KeyRepeat -int 2
-defaults write -g ApplePressAndHoldEnabled -bool false  # to enable key repeat
+defaults write -g ApplePressAndHoldEnabled -bool false
 
 defaults write -g NSAutomaticCapitalizationEnabled -bool false
 defaults write -g NSAutomaticDashSubstitutionEnabled -bool false
@@ -61,11 +60,6 @@ cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide b
 mkdir -p $HOME/zellij-plugins
 wget -P $HOME/zellij-plugins https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
 
-# ollama
-ollama pull qwen2.5-coder:3b  # for fim
-ollama pull qwen2.5-coder:32b  # chat
-ollama pull llama3.2-vision:11b
-
 # mamba
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3-$(uname)-$(uname -m).sh
@@ -76,6 +70,14 @@ uv tool install --python python3.12 aider-chat
 
 # from poor-man-OS-setup's root
 stow .
+```
+
+## Ollama
+
+```bash
+ollama pull qwen2.5-coder:3b  # for fim
+ollama pull qwen2.5-coder:32b  # chat
+ollama pull llama3.2-vision:11b
 ```
 
 ## fonts
