@@ -27,6 +27,9 @@ brew install --cask font-caskaydia-cove-nerd-font
 brew install --cask font-monaspace-nerd-font
 
 # some macos settings
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults write com.apple.menuextra.battery ShowPercent -string "YES"
+
 defaults write -g AppleMiniaturizeOnDoubleClick -bool false
 defaults write -g AppleShowAllExtensions -bool true
 defaults write -g AppleSpacesSwitchOnActivate -bool false
