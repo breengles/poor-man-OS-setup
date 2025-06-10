@@ -6,10 +6,10 @@ alias zshconfig="vim ~/.zshrc"
 alias initifort="source /opt/intel/oneapi/setvars.sh >/dev/null"
 
 # rsync
-alias rsync-copy="rsyncy -az"
-alias rsync-move="rsyncy -az --remove-source-files"
-alias rsync-update="rsyncy -azu"
-alias rsync-synchronize="rsyncy -azu --delete"
+alias rsync-copy="rsyncy -a"
+alias rsync-move="rsyncy -a --remove-source-files"
+alias rsync-update="rsyncy -au"
+alias rsync-synchronize="rsyncy -au --delete"
 
 alias rcopy="rsync-copy"
 alias rmove="rsync-move"
