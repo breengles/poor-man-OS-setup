@@ -2,6 +2,7 @@ export PATH=$HOME/google-cloud-sdk/bin:$HOME/.local/bin:$PATH
 
 export OLLAMA_API_BASE="http://127.0.0.1:11434"
 export GRADIO_TEMP_DIR="$HOME/gradio_tmp"
+mkdir -p "$GRADIO_TEMP_DIR"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -34,8 +35,7 @@ for file in "${files[@]}"; do
     [ -f "$file" ] && source "$file" || echo "File $file not found"
 done
 
-export GRADIO_TEMP_DIR="$HOME/tmp"
-mkdir -p "$GRADIO_TEMP_DIR"
+
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/path.zsh.inc"; fi
