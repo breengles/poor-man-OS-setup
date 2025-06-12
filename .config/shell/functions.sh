@@ -79,12 +79,12 @@ function echo_project_info {
 
   nvidia-smi
   echo "GPUs: $CUDA_VISIBLE_DEVICES"
-  echo "Torch CUDA is available: $(python -c 'import torch; print(torch.cuda.is_available())')"
+  echo "Torch CUDA is available: $(python3 -c 'import torch; print(torch.cuda.is_available())')"
 
   echo "Commit hash: $(git rev-parse HEAD)"
 
-  echo "python: $(python -V) @ $(which python)"
-  echo "pip: $(pip -V) @ $(which pip)"
+  echo "python: $(python3 -V) @ $(which python3)"
+  echo "pip: $(pip3 -V) @ $(which pip3)"
   pip freeze
   echo "===================="
 }
