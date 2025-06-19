@@ -21,6 +21,7 @@ brew install --cask google-chrome
 brew install --cask visual-studio-code
 brew install --cask dockey
 brew install --cask transmission
+brew install --cask obsidian
 
 # nerd font
 brew install --cask font-caskaydia-cove-nerd-font
