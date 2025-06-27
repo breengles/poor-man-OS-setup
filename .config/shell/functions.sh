@@ -125,3 +125,23 @@ function qq {
 function gpu {
   ssh "lambda-scalar0$1" -t "$(which nvitop)"
 }
+
+function gpu_usage {
+  echo -e "User                 Jobs GPUs\n----                 ---- ----"
+  squeue -t RUNNING -h -o "%u %b" | awk '{
+      user=$1; gres=$2;
+      user_jobs[user]++;
+      gpu_count=0;
+      if (gres ~ /gpu/) {
+          if (match(gres, /gpu:([0-9]+)/, arr)) {
+              gpu_count = arr[1];
+          } else if (gres ~ /gpu/) {
+              gpu_count = 1;
+          }
+          user_gpus[user] += gpu_count;
+      }
+  } END {
+      for (user in user_jobs) 
+          printf "%-20s %4d %4d\n", user, user_jobs[user], user_gpus[user]+0
+  }' | sort -k3 -nr
+}
