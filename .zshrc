@@ -22,6 +22,7 @@ files=(
     "$HOME/.config/shell/history.zsh"
     "$HOME/.config/shell/keybindings.zsh"
     "$HOME/.config/shell/completions.zsh"
+    "$HOME/.config/shell/completions_slurm.zsh"
     "$HOME/.p10k.zsh"
     "$HOME/.fzf.zsh"
     "$HOME/.config/shell/emulate_bash_stuff.zsh"
