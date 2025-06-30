@@ -24,6 +24,7 @@ files=(
     "$HOME/.config/shell/completions.zsh"
     "$HOME/.p10k.zsh"
     "$HOME/.fzf.zsh"
+    "$HOME/.completion.slurm.sh"
     # "$HOME/.completion.adkb.sh"
     "$HOME/.completion.uv.sh"
     "$HOME/.config/shell/emulate_bash_stuff.zsh"
