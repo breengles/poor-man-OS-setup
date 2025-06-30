@@ -24,9 +24,6 @@ files=(
     "$HOME/.config/shell/completions.zsh"
     "$HOME/.p10k.zsh"
     "$HOME/.fzf.zsh"
-    "$HOME/.completion.slurm.sh"
-    # "$HOME/.completion.adkb.sh"
-    "$HOME/.completion.uv.sh"
     "$HOME/.config/shell/emulate_bash_stuff.zsh"
     "$HOME/.config/shell/functions.sh"
     "$HOME/.config/shell/mamba.sh"
@@ -36,10 +33,13 @@ for file in "${files[@]}"; do
     [ -f "$file" ] && source "$file" || echo "File $file not found"
 done
 
-
+# add completions
+if [ -f "$HOME/.completion.slurm.sh" ]; then source "$HOME/.completion.slurm.sh"; fi
+if [ -f "$HOME/.completion.adkb.sh" ]; then source "$HOME/.completion.adkb.sh"; fi
+if [ -f "$HOME/.completion.uv.sh" ]; then source "$HOME/.completion.uv.sh"; fi
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/path.zsh.inc"; fi
+if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then source "$HOME/google-cloud-sdk/path.zsh.inc"; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
+if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then source "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
