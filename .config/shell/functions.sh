@@ -89,7 +89,7 @@ function echo_project_info {
   echo "===================="
 }
 
-function activate {
+function act {
   local venv_path=".venv"
   
   # Override venv_path if provided as an argument
@@ -104,13 +104,8 @@ function activate {
     echo "Virtual environment '$venv_path' does not exist."
   fi
 }
-alias act=activate
 
 # some stuff for remote cluster
-function s {
-  sbatch "$@"
-}
-
 function q {
   sinfo
   echo ""
