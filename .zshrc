@@ -34,7 +34,6 @@ for file in "${files[@]}"; do
 done
 
 # add completions
-if [ -f "$HOME/.completion.slurm.sh" ]; then source "$HOME/.completion.slurm.sh"; fi
 if [ -f "$HOME/.completion.adkb.sh" ]; then source "$HOME/.completion.adkb.sh"; fi
 if [ -f "$HOME/.completion.uv.sh" ]; then source "$HOME/.completion.uv.sh"; fi
 
