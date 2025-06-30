@@ -43,6 +43,10 @@ if [ -x "$(command -v bat)" ]; then
   alias cat=bat
 fi
 
+if [ -x "$(command -v sbatch)" ]; then
+  alias s=sbatch
+fi
+
 alias deact=deactivate
 
 # slurm
