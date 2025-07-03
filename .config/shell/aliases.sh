@@ -35,10 +35,6 @@ if [ -x "$(command -v ollama)" ]; then
   alias ol=ollama
 fi
 
-if [ -x "$(command -v cursor)" ]; then
-  alias code=cursor
-fi
-
 if [ -x "$(command -v bat)" ]; then
   alias cat=bat
 fi
