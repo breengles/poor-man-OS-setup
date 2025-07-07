@@ -122,10 +122,14 @@ function gpu {
 }
 
 function gpu_usage {
-  echo -e "User                 Jobs GPUs\n----                 ---- ----"
-  squeue -t RUNNING -h -o "%u %b" | awk '{
-      user=$1; gres=$2;
+  squeue -t RUNNING -h -o "%u %b %P" | awk '{
+      user=$1; gres=$2; partition=$3;
       user_jobs[user]++;
+      user_partition_jobs[user,partition]++;
+      
+      # Track all unique partitions
+      all_partitions[partition] = 1;
+      
       gpu_count=0;
       if (gres ~ /gpu/) {
           if (match(gres, /gpu:([0-9]+)/, arr)) {
@@ -134,9 +138,67 @@ function gpu_usage {
               gpu_count = 1;
           }
           user_gpus[user] += gpu_count;
+          user_partition_gpus[user,partition] += gpu_count;
       }
   } END {
-      for (user in user_jobs) 
-          printf "%-20s %4d %4d\n", user, user_jobs[user], user_gpus[user]+0
-  }' | sort -k3 -nr
+      # Create sorted array of partitions
+      n_partitions = 0;
+      for (p in all_partitions) {
+          partition_list[++n_partitions] = p;
+      }
+      # Sort partitions
+      for (i = 1; i <= n_partitions; i++) {
+          for (j = i + 1; j <= n_partitions; j++) {
+              if (partition_list[i] > partition_list[j]) {
+                  temp = partition_list[i];
+                  partition_list[i] = partition_list[j];
+                  partition_list[j] = temp;
+              }
+          }
+      }
+      
+      # Print header
+      header = sprintf("%-20s %4s %4s", "User", "Jobs", "GPUs");
+      separator = sprintf("%-20s %4s %4s", "----", "----", "----");
+      for (i = 1; i <= n_partitions; i++) {
+          header = header sprintf(" %15s", partition_list[i]);
+          separator = separator sprintf(" %15s", "---------------");
+      }
+      print header;
+      print separator;
+      
+      # Store user data for sorting
+      n_users = 0;
+      for (user in user_jobs) {
+          user_list[++n_users] = user;
+      }
+      
+      # Sort users by GPU count (descending)
+      for (i = 1; i <= n_users; i++) {
+          for (j = i + 1; j <= n_users; j++) {
+              if (user_gpus[user_list[i]] < user_gpus[user_list[j]]) {
+                  temp = user_list[i];
+                  user_list[i] = user_list[j];
+                  user_list[j] = temp;
+              }
+          }
+      }
+      
+      # Print sorted user data
+      for (i = 1; i <= n_users; i++) {
+          user = user_list[i];
+          line = sprintf("%-20s %4d %4d", user, user_jobs[user], user_gpus[user]+0);
+          for (j = 1; j <= n_partitions; j++) {
+              p = partition_list[j];
+              p_jobs = user_partition_jobs[user,p] + 0;
+              p_gpus = user_partition_gpus[user,p] + 0;
+              if (p_jobs > 0 || p_gpus > 0) {
+                  line = line sprintf(" %15s", p_jobs " jobs, " p_gpus " gpus");
+              } else {
+                  line = line sprintf(" %15s", "");
+              }
+          }
+          print line;
+      }
+  }'
 }
