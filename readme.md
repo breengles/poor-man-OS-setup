@@ -79,9 +79,18 @@ stow .
 ## Ollama
 
 ```bash
-ollama pull qwen2.5-coder:3b  # for fim
-ollama pull qwen2.5-coder:32b  # chat
-ollama pull llama3.2-vision:11b
+models=(
+  qwen2.5-coder:1.5b
+  qwen2.5-coder:3b
+  qwen2.5-coder:32b
+  devstral:24b
+  gemma3n:e4b
+  gemma3:27b
+  deepseek-r1:8b
+  qwen3:32b
+  llama3.2-vision:11b
+)
+for model in "${models[@]}"; do ollama pull $model; done
 ```
 
 ## fonts
