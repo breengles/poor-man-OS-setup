@@ -80,9 +80,6 @@ stow .
 
 ```bash
 models=(
-  qwen2.5-coder:1.5b
-  qwen2.5-coder:3b
-  qwen2.5-coder:32b
   devstral:24b
   gemma3n:e4b
   gemma3:27b
