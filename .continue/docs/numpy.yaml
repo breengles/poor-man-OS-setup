@@ -1,0 +1,6 @@
+name: numpy docs
+version: 0.0.1
+schema: v1
+docs:
+  - name: numpy
+    startUrl: https://numpy.org/doc/stable/index.html
