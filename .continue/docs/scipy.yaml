@@ -1,0 +1,6 @@
+name: scipy docs
+version: 0.0.1
+schema: v1
+docs:
+  - name: scipy
+    startUrl: https://docs.scipy.org/doc//scipy/index.html
