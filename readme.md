@@ -12,7 +12,7 @@ xcode-select --install
 # brew https://brew.sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
-brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow maccy rsync bitwarden
+brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow maccy rsync bitwarden fzf
 brew install --cask kitty
 brew install --cask keepingyouawake
 brew install --cask raycast
@@ -54,7 +54,7 @@ git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
 $HOME/.fzf/install --all
 
 # tmux
-# git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
+git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
 
 # rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
