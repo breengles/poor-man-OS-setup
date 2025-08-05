@@ -25,6 +25,7 @@ files=(
     "$HOME/.config/shell/completions.zsh"
     "$HOME/.config/shell/completions_slurm.zsh"
     "$HOME/.p10k.zsh"
+    "$HOME/.fzf.zsh"
     "$HOME/.config/shell/emulate_bash_stuff.zsh"
     "$HOME/.config/shell/functions.sh"
     "$HOME/.config/shell/mamba.sh"
@@ -33,8 +34,6 @@ files=(
 for file in "${files[@]}"; do
     [ -f "$file" ] && source "$file" || echo "File $file not found"
 done
-
-source <(fzf --zsh)
 
 # add completions
 if [ -f "$HOME/.completion.adkb.sh" ]; then source "$HOME/.completion.adkb.sh"; fi
