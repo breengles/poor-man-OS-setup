@@ -12,7 +12,7 @@ xcode-select --install
 # brew https://brew.sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
-brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow maccy rsync
+brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow maccy rsync bitwarden fzf
 brew install --cask kitty
 brew install --cask keepingyouawake
 brew install --cask raycast
@@ -54,7 +54,7 @@ git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
 $HOME/.fzf/install --all
 
 # tmux
-# git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
+git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
 
 # rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -79,9 +79,15 @@ stow .
 ## Ollama
 
 ```bash
-ollama pull qwen2.5-coder:3b  # for fim
-ollama pull qwen2.5-coder:32b  # chat
-ollama pull llama3.2-vision:11b
+models=(
+  devstral:24b
+  gemma3n:e4b
+  gemma3:27b
+  deepseek-r1:8b
+  qwen3:32b
+  llama3.2-vision:11b
+)
+for model in "${models[@]}"; do ollama pull $model; done
 ```
 
 ## fonts
