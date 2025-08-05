@@ -43,6 +43,10 @@ if [ -x "$(command -v sbatch)" ]; then
   alias s=sbatch
 fi
 
+if [ -x "$(command -v cursor)" ]; then
+  alias code=cursor
+fi
+
 alias deact=deactivate
 
 # slurm
