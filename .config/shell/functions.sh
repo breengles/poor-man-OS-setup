@@ -122,8 +122,11 @@ function gpu {
 }
 
 function gpu_usage {
-  squeue -t RUNNING -h -o "%u %b %P" | awk '{
-      user=$1; gres=$2; partition=$3;
+  # Get basic job info and detailed GPU allocation info
+  squeue -t RUNNING -h -o "%i %u %b %P %D %C" | while read jobid user gres partition nodes cpus; do
+    echo "$jobid $user $gres $partition $nodes $cpus"
+  done | awk '{
+      jobid=$1; user=$2; gres=$3; partition=$4; nodes=$5; cpus=$6;
       user_jobs[user]++;
       user_partition_jobs[user,partition]++;
       
@@ -131,6 +134,8 @@ function gpu_usage {
       all_partitions[partition] = 1;
       
       gpu_count=0;
+      
+      # Handle normal GRES format (gres:gpu:N)
       if (gres ~ /gpu/) {
           if (match(gres, /gpu:([0-9]+)/, arr)) {
               gpu_count = arr[1];
@@ -139,8 +144,50 @@ function gpu_usage {
           }
           user_gpus[user] += gpu_count;
           user_partition_gpus[user,partition] += gpu_count;
+          job_gpu_found[jobid] = 1;
+      }
+      # Store job info for later processing of N/A cases
+      else if (gres == "N/A") {
+          na_jobs[jobid] = user ":" partition;
       }
   } END {
+      # For jobs with N/A GRES, get detailed GPU info from scontrol
+      for (jobid in na_jobs) {
+          split(na_jobs[jobid], info, ":");
+          user = info[1];
+          partition = info[2];
+          
+          cmd = "scontrol show job " jobid " | grep -E \"TRES=.*gres/gpu=|TresPerTask=.*gpu:\" | head -1";
+          if ((cmd | getline line) > 0) {
+              close(cmd);
+              gpu_count = 0;
+              
+              # Look for total GPU allocation in TRES field
+              if (match(line, /gres\/gpu=([0-9]+)/, arr)) {
+                  gpu_count = arr[1];
+              }
+              # Fallback: try to extract from TresPerTask if available
+              else {
+                  cmd2 = "scontrol show job " jobid " | grep TresPerTask";
+                  if ((cmd2 | getline line2) > 0) {
+                      close(cmd2);
+                      cmd3 = "scontrol show job " jobid " | grep NumTasks";
+                      if ((cmd3 | getline line3) > 0) {
+                          close(cmd3);
+                          if (match(line2, /gpu:([0-9]+)/, gpu_per_task) && match(line3, /NumTasks=([0-9]+)/, num_tasks)) {
+                              gpu_count = gpu_per_task[1] * num_tasks[1];
+                          }
+                      }
+                  }
+              }
+              
+              if (gpu_count > 0) {
+                  user_gpus[user] += gpu_count;
+                  user_partition_gpus[user,partition] += gpu_count;
+              }
+          }
+      }
+      
       # Create sorted array of partitions
       n_partitions = 0;
       for (p in all_partitions) {
