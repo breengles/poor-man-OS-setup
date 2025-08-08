@@ -279,7 +279,7 @@ function all_gpu {
 
   local rows
   rows=$(
-    sinfo -h -N "${PART_OPT[@]}" -o "%N" | while IFS= read -r node; do
+    sinfo -h -N "${PART_OPT[@]}" -o "%N" | sort -u | while IFS= read -r node; do
       line=$(scontrol show node -o "$node" 2>/dev/null)
       cfg=$(printf "%s\n" "$line" | awk 'match($0,/CfgTRES=([^ ]+)/,m){print m[1]}')
       alloc=$(printf "%s\n" "$line" | awk 'match($0,/AllocTRES=([^ ]+)/,m){print m[1]}')
@@ -301,7 +301,7 @@ function all_gpu {
       total=$(awk -v tres="$cfg" 'BEGIN{n=split(tres,a,",");s=0;for(i=1;i<=n;i++){split(a[i],kv,"=");k=kv[1];v=kv[2];if(k ~ /^gres\/gpu(:|$)/){gsub(/[^0-9]/,"",v); if(v!="") s+=v+0;}}; print s+0}')
       used=$(awk -v tres="$alloc" 'BEGIN{n=split(tres,a,",");s=0;for(i=1;i<=n;i++){split(a[i],kv,"=");k=kv[1];v=kv[2];if(k ~ /^gres\/gpu(:|$)/){gsub(/[^0-9]/,"",v); if(v!="") s+=v+0;}}; print s+0}')
       printf "%s\t%s\t%s/%s\t%s\n" "$node" "$parts" "$used" "$total" "$state"
-    done | sort
+    done
   )
 
   {
