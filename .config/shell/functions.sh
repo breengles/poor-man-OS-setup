@@ -249,3 +249,31 @@ function gpu_usage {
       }
   }'
 }
+
+function all_gpu {
+  if ! command -v sinfo >/dev/null 2>&1 || ! command -v scontrol >/dev/null 2>&1; then
+    echo "SLURM not found: require sinfo and scontrol" >&2
+    return 1
+  fi
+
+  local PART_OPT=""
+  if [ -n "$1" ]; then PART_OPT="-p $1"; fi
+
+  local rows
+  rows=$(
+    sinfo -h -N $PART_OPT -o "%N" | while IFS= read -r node; do
+      line=$(scontrol show node -o "$node" 2>/dev/null)
+      cfg=$(printf "%s\n" "$line" | awk 'match($0,/CfgTRES=([^ ]+)/,m){print m[1]}')
+      alloc=$(printf "%s\n" "$line" | awk 'match($0,/AllocTRES=([^ ]+)/,m){print m[1]}')
+      parts=$(printf "%s\n" "$line" | awk 'match($0,/Partitions=([^ ]+)/,m){print m[1]}')
+      [ -z "$parts" ] && parts="-"
+      total=$(awk -v tres="$cfg" 'BEGIN{n=split(tres,a,",");s=0;for(i=1;i<=n;i++){split(a[i],kv,"=");k=kv[1];v=kv[2];if(k ~ /^gres\/gpu(:|$)/){gsub(/[^0-9]/,"",v); if(v!="") s+=v+0;}}; print s+0}')
+      used=$(awk -v tres="$alloc" 'BEGIN{n=split(tres,a,",");s=0;for(i=1;i<=n;i++){split(a[i],kv,"=");k=kv[1];v=kv[2];if(k ~ /^gres\/gpu(:|$)/){gsub(/[^0-9]/,"",v); if(v!="") s+=v+0;}}; print s+0}')
+      printf "%-28s %-32s %-10s %-5s\n" "$node" "$parts" "$used" "$total"
+    done | sort
+  )
+
+  printf "%-28s %-32s %-10s %-5s\n" "node" "partition" "allocated" "total"
+  printf "%-28s %-32s %-10s %-5s\n" "----" "----------" "---------" "-----"
+  printf "%s\n" "$rows"
+}
