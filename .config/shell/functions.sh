@@ -256,17 +256,44 @@ function all_gpu {
     return 1
   fi
 
+  local FILTER_PART=""
+  local FILTER_NODE=""
+  local OPTIND opt
+  OPTIND=1
+  while getopts ":p:n:" opt; do
+    case "$opt" in
+      p) FILTER_PART="$OPTARG" ;;
+      n) FILTER_NODE="$OPTARG" ;;
+      :) echo "Error: option -$OPTARG requires an argument" >&2; return 1 ;;
+      \?) echo "Usage: all_gpu [-p partition] [-n node_substring]" >&2; return 1 ;;
+    esac
+  done
+  shift $((OPTIND-1))
+  if [ $# -gt 0 ]; then
+    echo "Usage: all_gpu [-p partition] [-n node_substring]" >&2
+    return 1
+  fi
+
   local PART_OPT=""
-  if [ -n "$1" ]; then PART_OPT="-p $1"; fi
+  if [[ -n "$FILTER_PART" ]]; then PART_OPT=(-p "$FILTER_PART"); else PART_OPT=(); fi
 
   local rows
   rows=$(
-    sinfo -h -N $PART_OPT -o "%N" | while IFS= read -r node; do
+    sinfo -h -N "${PART_OPT[@]}" -o "%N" | while IFS= read -r node; do
       line=$(scontrol show node -o "$node" 2>/dev/null)
       cfg=$(printf "%s\n" "$line" | awk 'match($0,/CfgTRES=([^ ]+)/,m){print m[1]}')
       alloc=$(printf "%s\n" "$line" | awk 'match($0,/AllocTRES=([^ ]+)/,m){print m[1]}')
       parts=$(printf "%s\n" "$line" | awk 'match($0,/Partitions=([^ ]+)/,m){print m[1]}')
       [ -z "$parts" ] && parts="-"
+      if [[ -n "$FILTER_PART" ]]; then
+        case ",$parts," in
+          *,${FILTER_PART},*) ;;
+          *) continue ;;
+        esac
+      fi
+      if [[ -n "$FILTER_NODE" && "$node" != *"$FILTER_NODE"* ]]; then
+        continue
+      fi
       state_raw=$(printf "%s\n" "$line" | awk 'match($0,/State=([^ ]+)/,m){print m[1]}')
       state_base=${state_raw%%[*+() ,]*}
       state=$(printf "%s" "${state_base:-}" | tr '[:upper:]' '[:lower:]')
@@ -280,8 +307,8 @@ function all_gpu {
   {
     printf "node\tpartition\tgpu: alloc/total\tstatus\n"
     printf "%s\n" "$rows"
-  } | awk -v FS='\t' '
-    BEGIN { sep = "   " }
+  } | awk '
+    BEGIN { FS = "\t"; sep = "   " }
     {
       lines[NR] = $0
       if (NF > nfields) nfields = NF
@@ -291,7 +318,6 @@ function all_gpu {
       }
     }
     END {
-      # Header
       split(lines[1], h, FS)
       for (i = 1; i <= nfields; i++) {
         printf "%-" maxw[i] "s", h[i]
@@ -299,14 +325,12 @@ function all_gpu {
       }
       printf "\n"
 
-      # Separator
       for (i = 1; i <= nfields; i++) {
         for (j = 0; j < maxw[i]; j++) printf "-"
         if (i < nfields) printf "%s", sep
       }
       printf "\n"
 
-      # Rows
       for (r = 2; r <= NR; r++) {
         split(lines[r], f, FS)
         for (i = 1; i <= nfields; i++) {
