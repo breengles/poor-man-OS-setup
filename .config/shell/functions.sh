@@ -267,13 +267,53 @@ function all_gpu {
       alloc=$(printf "%s\n" "$line" | awk 'match($0,/AllocTRES=([^ ]+)/,m){print m[1]}')
       parts=$(printf "%s\n" "$line" | awk 'match($0,/Partitions=([^ ]+)/,m){print m[1]}')
       [ -z "$parts" ] && parts="-"
+      state_raw=$(printf "%s\n" "$line" | awk 'match($0,/State=([^ ]+)/,m){print m[1]}')
+      state_base=${state_raw%%[*+() ,]*}
+      state=$(printf "%s" "${state_base:-}" | tr '[:upper:]' '[:lower:]')
+      [ -z "$state" ] && state="-"
       total=$(awk -v tres="$cfg" 'BEGIN{n=split(tres,a,",");s=0;for(i=1;i<=n;i++){split(a[i],kv,"=");k=kv[1];v=kv[2];if(k ~ /^gres\/gpu(:|$)/){gsub(/[^0-9]/,"",v); if(v!="") s+=v+0;}}; print s+0}')
       used=$(awk -v tres="$alloc" 'BEGIN{n=split(tres,a,",");s=0;for(i=1;i<=n;i++){split(a[i],kv,"=");k=kv[1];v=kv[2];if(k ~ /^gres\/gpu(:|$)/){gsub(/[^0-9]/,"",v); if(v!="") s+=v+0;}}; print s+0}')
-      printf "%-28s %-32s %-10s %-5s\n" "$node" "$parts" "$used" "$total"
+      printf "%s\t%s\t%s/%s\t%s\n" "$node" "$parts" "$used" "$total" "$state"
     done | sort
   )
 
-  printf "%-28s %-32s %-10s %-5s\n" "node" "partition" "allocated" "total"
-  printf "%-28s %-32s %-10s %-5s\n" "----" "----------" "---------" "-----"
-  printf "%s\n" "$rows"
+  {
+    printf "node\tpartition\tgpu: alloc/total\tstatus\n"
+    printf "%s\n" "$rows"
+  } | awk -v FS='\t' '
+    BEGIN { sep = "   " }
+    {
+      lines[NR] = $0
+      if (NF > nfields) nfields = NF
+      for (i = 1; i <= NF; i++) {
+        field_len = length($i)
+        if (field_len > maxw[i]) maxw[i] = field_len
+      }
+    }
+    END {
+      # Header
+      split(lines[1], h, FS)
+      for (i = 1; i <= nfields; i++) {
+        printf "%-" maxw[i] "s", h[i]
+        if (i < nfields) printf "%s", sep
+      }
+      printf "\n"
+
+      # Separator
+      for (i = 1; i <= nfields; i++) {
+        for (j = 0; j < maxw[i]; j++) printf "-"
+        if (i < nfields) printf "%s", sep
+      }
+      printf "\n"
+
+      # Rows
+      for (r = 2; r <= NR; r++) {
+        split(lines[r], f, FS)
+        for (i = 1; i <= nfields; i++) {
+          printf "%-" maxw[i] "s", f[i]
+          if (i < nfields) printf "%s", sep
+        }
+        printf "\n"
+      }
+    }'
 }
