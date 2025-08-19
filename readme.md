@@ -90,6 +90,12 @@ models=(
 for model in "${models[@]}"; do ollama pull $model; done
 ```
 
+## Cursor extensions
+
+```bash
+grep -vE '^\s*(#|$)' "misc/extensions.txt" | xargs -n1 cursor --install-extension
+```
+
 ## fonts
 
 I keep it here just for reference: fonts should be installed with the scripts above
