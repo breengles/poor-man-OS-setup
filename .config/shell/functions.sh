@@ -250,7 +250,7 @@ function gpu_usage {
   }'
 }
 
-function all_gpu {
+function gpu_alloc {
   if ! command -v sinfo >/dev/null 2>&1 || ! command -v scontrol >/dev/null 2>&1; then
     echo "SLURM not found: require sinfo and scontrol" >&2
     return 1
