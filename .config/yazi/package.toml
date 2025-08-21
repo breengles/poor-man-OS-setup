@@ -1,9 +1,4 @@
 [[plugin.deps]]
-use = "yazi-rs/plugins:max-preview"
-rev = "4a6edc3"
-hash = ""
-
-[[plugin.deps]]
 use = "yazi-rs/plugins:toggle-pane"
 rev = "e95c7b3"
 hash = "d6f60c24d8c0cf57a855bf46115b2502"
