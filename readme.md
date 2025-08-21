@@ -90,6 +90,13 @@ models=(
 for model in "${models[@]}"; do ollama pull $model; done
 ```
 
+## Yazi
+
+```bash
+ya pkg add yazi-rs/plugins:toggle-pane
+ya pkg add yazi-rs/plugins:zoom
+```
+
 ## Cursor extensions
 
 ```bash
