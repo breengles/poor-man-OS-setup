@@ -110,11 +110,12 @@ function q {
   sinfo
   echo ""
   squeue --user="$(whoami)" --format="%.11i %.11P %45j %.8T %.12M %18N"
-  echo -e "\nTotal number of jobs: $(squeue --user="$(whoami)" -h | wc -l)"
+  echo ""
+  squeue --user="$(whoami)" --noheader -o '%T' | awk '{ total++; counts[$1]++; } END { printf "Jobs: %d R=%d P=%d C=%d\n", total+0, counts["RUNNING"]+0, counts["PENDING"]+0, counts["COMPLETING"]+0 }'
 }
 
 function qq {
-  watch -n 1 "squeue --user=\$(whoami) --noheader -o '%T' | awk '{ total++; counts[\$1]++; } END { printf \"Jobs: total=%d running=%d pending=%d completing=%d\\n\", total+0, counts[\"RUNNING\"]+0, counts[\"PENDING\"]+0, counts[\"COMPLETING\"]+0 }'; echo ''; squeue --user=\$(whoami) --format='%.11i %.11P %45j %.1T %.12M %18N'"
+  watch -n 1 "squeue --user=\$(whoami) --noheader -o '%T' | awk '{ total++; counts[\$1]++; } END { printf \"Jobs: %d R=%d P=%d C=%d\\n\", total+0, counts[\"RUNNING\"]+0, counts[\"PENDING\"]+0, counts[\"COMPLETING\"]+0 }'; echo ''; squeue --user=\$(whoami) --format='%.11i %.11P %45j %.1T %.12M %18N'"
 }
 
 function gpu {
