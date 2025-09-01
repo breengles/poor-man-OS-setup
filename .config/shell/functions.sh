@@ -111,11 +111,33 @@ function q {
   echo ""
   squeue --user="$(whoami)" --format="%.11i %.11P %45j %.8T %.12M %18N"
   echo ""
-  squeue --user="$(whoami)" --noheader -o '%T' | awk '{ total++; counts[$1]++; } END { printf "Jobs: %d R=%d P=%d C=%d\n", total+0, counts["RUNNING"]+0, counts["PENDING"]+0, counts["COMPLETING"]+0 }'
+  squeue --user="$(whoami)" --array --noheader -o '%T' | awk '{ 
+    total++; 
+    counts[$1]++; 
+  } END { 
+    running = counts["RUNNING"] + 0;
+    pending = counts["PENDING"] + 0; 
+    completing = counts["COMPLETING"] + 0;
+    other = total - running - pending - completing;
+    printf "Jobs: %d R=%d P=%d C=%d", total, running, pending, completing;
+    if (other > 0) printf " O=%d", other;
+    printf "\n";
+  }'
 }
 
 function qq {
-  watch -n 1 "squeue --user=\$(whoami) --noheader -o '%T' | awk '{ total++; counts[\$1]++; } END { printf \"Jobs: %d R=%d P=%d C=%d\\n\", total+0, counts[\"RUNNING\"]+0, counts[\"PENDING\"]+0, counts[\"COMPLETING\"]+0 }'; echo ''; squeue --user=\$(whoami) --format='%.11i %.11P %45j %.1T %.12M %18N'"
+  watch -n 1 "squeue --user=\$(whoami) --array --noheader -o '%T' | awk '{ 
+    total++; 
+    counts[\$1]++; 
+  } END { 
+    running = counts[\"RUNNING\"] + 0;
+    pending = counts[\"PENDING\"] + 0; 
+    completing = counts[\"COMPLETING\"] + 0;
+    other = total - running - pending - completing;
+    printf \"Jobs: %d R=%d P=%d C=%d\", total, running, pending, completing;
+    if (other > 0) printf \" O=%d\", other;
+    printf \"\\n\";
+  }'; echo ''; squeue --user=\$(whoami) --format='%.11i %.11P %45j %.1T %.12M %18N'"
 }
 
 function gpu {
