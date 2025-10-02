@@ -20,16 +20,16 @@ fi
 # Shell integrations
 files=(
     "$HOME/.config/shell/zinit.zsh"
-    "$HOME/.config/shell/history.zsh"
-    "$HOME/.config/shell/keybindings.zsh"
-    "$HOME/.config/shell/completions.zsh"
-    "$HOME/.config/shell/completions_slurm.zsh"
     "$HOME/.p10k.zsh"
     "$HOME/.fzf.zsh"
     "$HOME/.config/shell/emulate_bash_stuff.zsh"
     "$HOME/.config/shell/functions.sh"
     "$HOME/.config/shell/mamba.sh"
-    "$HOME/.config/shell/aliases.sh"  # keep it last
+    "$HOME/.config/shell/aliases.sh"
+    "$HOME/.config/shell/history.zsh"
+    "$HOME/.config/shell/keybindings.zsh"
+    "$HOME/.config/shell/completions.zsh"
+    "$HOME/.config/shell/completions_slurm.zsh"
 )
 for file in "${files[@]}"; do
     [ -f "$file" ] && source "$file" || echo "File $file not found"
@@ -44,3 +44,7 @@ if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then source "$HOME/google-cloud
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then source "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
