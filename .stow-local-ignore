@@ -6,4 +6,5 @@
 ^/COPYING
 
 /misc
+/.vscode
 /.config/yazi/plugins
