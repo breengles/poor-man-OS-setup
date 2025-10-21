@@ -4,6 +4,10 @@ function calcimages {
   find "$1" -type f \( -name \*.jpg -o -name \*.jpeg -o -name \*.png \) | wc -l
 }
 
+function calcjson {
+  find "$1" -type f -name "*.json" | wc -l
+}
+
 function update {
   echo -e "\n========== updating zinit ==========\n"
   zinit self-update
