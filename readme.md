@@ -12,21 +12,8 @@ xcode-select --install
 # brew https://brew.sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
-brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow maccy rsync bitwarden fzf
-brew install --cask kitty
-brew install --cask keepingyouawake
-brew install --cask raycast
-brew install --cask mactex
-brew install --cask google-chrome
-brew install --cask visual-studio-code
-brew install --cask dockey
-brew install --cask transmission
-brew install --cask obsidian
-brew install --cask alt-tab
-
-# nerd font
-brew install --cask font-caskaydia-cove-nerd-font
-brew install --cask font-monaspace-nerd-font
+brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow rsync fzf
+brew install --cask kitty keepingyouawake raycast mactex google-chrome visual-studio-code dockey transmission obsidian alt-tab maccy bitwarden font-caskaydia-cove-nerd-font font-monaspace-nerd-font
 
 # some macos settings
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
@@ -50,27 +37,15 @@ defaults write -g NSAutomaticWindowAnimationsEnabled -bool false
 ## Things
 
 ```bash
-# fzf
-git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
-$HOME/.fzf/install --all
-
 # tmux
 git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
 
-# rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide bat yazi-fm yazi-cli zellij
+# rust https://github.com/rust-lang/cargo/blob/master/src/doc/src/getting-started/installation.md
+curl https://sh.rustup.rs -sSf | sh
+cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide bat yazi-fm yazi-cli
 
-# zellij plugins
-mkdir -p $HOME/zellij-plugins
-wget -P $HOME/zellij-plugins https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
-
-# mamba
-curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-bash Miniforge3-$(uname)-$(uname -m).sh
-
-# uv
-wget -qO- https://astral.sh/uv/install.sh | sh
+# uv https://docs.astral.sh/uv/getting-started/installation/
+curl -LsSf https://astral.sh/uv/install.sh | sh
 uv tool install --python python3.12 aider-chat
 
 # from poor-man-OS-setup's root
@@ -97,15 +72,3 @@ for model in "${models[@]}"; do ollama pull $model; done
 ya pkg add yazi-rs/plugins:toggle-pane
 ya pkg add yazi-rs/plugins:zoom
 ```
-
-## fonts
-
-I keep it here just for reference: fonts should be installed with the scripts above
-
-* [CascadiaCode](https://github.com/microsoft/cascadia-code)
-* [NerdFont (patched version of fonts, required for terminal and tmux theme though you can use it for vscode as well)](https://github.com/ryanoasis/nerd-fonts)
-  * For CascadiaCode version:
-    * [archive](https://github.com/ryanoasis/nerd-fonts/releases/latest)
-    * [repo link](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/CascadiaCode)
-
-## [intel oneapi](https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html)
