@@ -1,4 +1,377 @@
 {
+  // base
+  "extensions.ignoreRecommendations": true,
+  "interactiveWindow.executeWithShiftEnter": false,
+  "security.workspace.trust.untrustedFiles": "open",
+  "search.exclude": {
+    "**/build": true,
+    "**/builds": true,
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/.venv": true,
+    "**/dist": true,
+    "**/__pycache__": true
+  },
+
+  // vscode setting sync
+  "settingsSync.ignoredSettings": [
+    "-window.zoomLevel",
+    "terminal.integrated.fontSize"
+  ],
+  "settingsSync.ignoredExtensions": ["continue.continue"],
+
+  // cursor
+  "cursor.preferNotificationsSameAsChat": true,
+  "cursor.cpp.disabledLanguages": [],
+
+  // window
+  "window.openFilesInNewWindow": "default",
+  "window.openFoldersInNewWindow": "default",
+  "window.titleBarStyle": "custom",
+  "window.zoomLevel": 0.5,
+
+  // explorer
+  "explorer.confirmPasteNative": false,
+  "explorer.autoReveal": false,
+  "explorer.confirmDelete": false,
+  "explorer.openEditors.visible": 10,
+  "explorer.confirmDragAndDrop": false,
+
+  // workbench
+  "workbench.activityBar.location": "default",
+  "workbench.activityBar.orientation": "vertical",
+  "workbench.editor.highlightModifiedTabs": true,
+  "workbench.tree.enableStickyScroll": true,
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter-notebook",
+    "*.pdf": "default",
+    "*.png": "imagePreview.previewEditor",
+    "*.jpeg": "imagePreview.previewEditor",
+    "*.jpg": "imagePreview.previewEditor"
+  },
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.colorCustomizations": {
+    "terminal.selectionForeground": "#000000",
+    "terminal.selectionBackground": "#fbf8d3"
+  },
+
+  // debug
+  "debug.onTaskErrors": "abort",
+  "debug.console.fontSize": 18,
+
+  // files
+  "files.autoSave": "onWindowChange",
+  "files.watcherExclude": {
+    "**/build/**": true,
+    "**/node_modules/**": true,
+    "**/.venv/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/.aim/**": true,
+    "**/logs/**": true,
+    "**/output/**": true,
+    "**/__pycache__/**": true
+  },
+
+  //editor
+  "editor.fontLigatures": "'calt', 'ss02', 'ss03', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'liga'",
+  "editor.minimap.enabled": false,
+  "editor.scrollbar.verticalScrollbarSize": 18,
+  "editor.indentSize": "tabSize",
+  "editor.tabCompletion": "on",
+  "editor.defaultFormatter": "charliermarsh.ruff",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  },
+  "editor.accessibilitySupport": "off",
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSurroundingLines": 1,
+  "editor.stickyScroll.enabled": true,
+  "editor.minimap.showSlider": "always",
+  "editor.fontFamily": "'MonaspiceNe Nerd Font', 'CaskaydiaCove Nerd Font'",
+  "editor.fontSize": 16,
+  "editor.rulers": [120],
+  "editor.renderWhitespace": "selection",
+  "editor.detectIndentation": true,
+  "editor.formatOnSave": true,
+  "editor.wordWrap": "on",
+  "editor.inlineSuggest.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.tabSize": 4,
+  "editor.unicodeHighlight.ambiguousCharacters": true,
+  "editor.unicodeHighlight.allowedLocales": {
+    "ru": true
+  },
+
+  // terminal
+  "terminal.integrated.autoReplies": {},
+  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.altClickMovesCursor": false,
+  "terminal.integrated.macOptionIsMeta": true,
+  "terminal.integrated.macOptionClickForcesSelection": true,
+  "terminal.integrated.fontFamily": "'MonaspiceNe Nerd Font', 'CaskaydiaCove Nerd Font'",
+  "terminal.integrated.inheritEnv": true,
+  "terminal.integrated.profiles.linux": {
+    "tmux": {
+      "path": "zsh",
+      "args": [
+        "-c",
+        "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit"
+      ],
+      "icon": "terminal-tmux"
+    },
+    "zellij": {
+      "path": "zsh",
+      "args": ["-c", "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"],
+      "icon": "terminal-tmux"
+    }
+  },
+  "terminal.integrated.profiles.osx": {
+    "tmux": {
+      "path": "zsh",
+      "args": [
+        "-c",
+        "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit"
+      ],
+      "icon": "terminal-tmux"
+    },
+    "zellij": {
+      "path": "zsh",
+      "args": ["-c", "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"],
+      "icon": "terminal-tmux"
+    }
+  },
+  "terminal.integrated.defaultProfile.linux": "tmux",
+  "terminal.integrated.defaultProfile.osx": "tmux",
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+
+  //remote
+  "remote.SSH.remotePlatform": {
+    "office": "linux",
+    "pair": "linux",
+    "worker0": "linux",
+    "pair2": "linux"
+  },
+
+  // git
+  "git.replaceTagsWhenPull": true,
+  "git.autofetchPeriod": 60,
+  "git.openRepositoryInParentFolders": "never",
+  "git.ignoreMissingGitWarning": true,
+  "git.enableSmartCommit": true,
+  "git.autofetch": true,
+  "git.allowForcePush": true,
+  "git.confirmSync": false,
+  "git.confirmForcePush": true,
+  "diffEditor.codeLens": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "gitblame.inlineMessageEnabled": true,
+  "gitblame.inlineMessageMargin": 4,
+  "gitblame.statusBarMessageFormat": "${author.name} (${time.ago})",
+  "git-graph.commitDetailsView.location": "Docked to Bottom",
+  "git-graph.repository.commits.fetchAvatars": true,
+  "git-graph.dialog.merge.noCommit": true,
+  "git-graph.dialog.merge.squashCommits": true,
+
+  // python
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.organizeImports.ruff": "explicit",
+      "source.fixAll": "explicit"
+    },
+    "editor.formatOnType": true
+  },
+  "python.analysis.autoFormatStrings": true,
+  "python.analysis.importFormat": "relative",
+  "python.analysis.addHoverSummaries": true,
+  "python.analysis.inlayHints.functionReturnTypes": true,
+  "python.analysis.completeFunctionParens": true,
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingImports": "none"
+  },
+  "python.terminal.activateEnvironment": false,
+  "python.terminal.executeInFileDir": true,
+  "ruff.importStrategy": "useBundled",
+  "ruff.lint.ignore": ["F401"],
+  "ruff.lineLength": 120,
+  "jupyter.askForKernelRestart": false,
+  "jupyter.interactiveWindow.textEditor.executeSelection": true,
+  "notebook.output.textLineLimit": 50,
+  "notebook.defaultFormatter": "charliermarsh.ruff",
+  "notebook.cellToolbarLocation": {
+    "default": "right",
+    "jupyter-notebook": "left"
+  },
+  "notebook.formatOnSave.enabled": true,
+  "notebook.codeActionsOnSave": {
+    "notebook.source.fixAll": "never",
+    "notebook.source.organizeImports": "explicit"
+  },
+
+  // fortran
+  "fortran.formatting.formatter": "Disabled",
+  "fortran.notifications.releaseNotes": false,
+  "fortran.fortls.notifyInit": true,
+  "fortran.fortls.maxLineLength": 120,
+  "fortran.linter.compilerPath": "gfortran",
+  "fortran.linter.compiler": "gfortran",
+  "[FortranFreeForm]": {
+    "editor.tabSize": 2
+  },
+  "[FortranFixedForm]": {
+    "editor.tabSize": 2
+  },
+
+  // markdown
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true
+  },
+  "markdownlint.config": {
+    "default": true,
+    "MD024": false
+  },
+
+  // latex
+  "latex-workshop.latex.recipe.default": "lastUsed",
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.latex.autoClean.run": "onFailed",
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "lualatex x2",
+      "tools": ["lualatex", "lualatex"]
+    },
+    {
+      "name": "pdflatex x2",
+      "tools": ["pdflatex", "pdflatex"]
+    },
+    {
+      "name": "lualatex->biber->lualatex x2",
+      "tools": ["lualatex", "biber", "lualatex", "lualatex"]
+    },
+    {
+      "name": "xelatex->biber->xelatex x2",
+      "tools": ["xelatex", "biber", "xelatex", "xelatex"]
+    },
+    {
+      "name": "pdflatex -> biber -> pdflatex x2",
+      "tools": ["pdflatex", "biber", "pdflatex", "pdflatex"]
+    },
+    {
+      "name": "pdflatex -> bibtex -> pdflatex x2",
+      "tools": ["pdflatex", "bibtex", "pdflatex", "pdflatex"]
+    },
+    {
+      "name": "latexmk",
+      "tools": ["latexmk"]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "lualatex",
+      "command": "lualatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "%DOC%"
+      ]
+    },
+    {
+      "name": "xelatex",
+      "command": "xelatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "%DOC%"
+      ]
+    },
+    {
+      "name": "biber",
+      "command": "biber",
+      "args": ["%DOCFILE%"]
+    },
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "pdflatex",
+      "command": "pdflatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "bibtex",
+      "command": "bibtex",
+      "args": ["%DOCFILE%"],
+      "env": {}
+    }
+  ],
+  "[latex]": {
+    "editor.formatOnSave": false
+  },
+
+  // todo-tree
+  "todo-tree.general.tags": [
+    "todo",
+    "TODO",
+    "FIXME",
+    "REVIEW",
+    "HACK",
+    "REF",
+    "WARN",
+    "note",
+    "NOTE"
+  ],
+  "todo-tree.highlights.defaultHighlight": {
+    "type": "none"
+  },
+  "todo-tree.filtering.excludeGlobs": [
+    "**/node_modules/**",
+    "**/site-packages/**"
+  ],
+  "todo-tree.tree.scanMode": "workspace only",
+
+  // yaml json
+  "yaml.format.printWidth": 120,
+  "[yaml]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // spelling
+  "cSpell.enabled": true,
+  "cSpell.language": "ru,ru-RU,en-US,en-GB,en",
   "cSpell.userWords": [
     "aakotov",
     "abgh",
@@ -1677,349 +2050,11 @@
     "Шабаев",
     "шебангом"
   ],
-  "cSpell.enabled": true,
-  "cSpell.language": "ru,ru-RU,en-US,en-GB,en",
-  "workbench.activityBar.location": "default",
-  "workbench.activityBar.orientation": "vertical",
-  "settingsSync.ignoredSettings": [
-    "-window.zoomLevel",
-    "terminal.integrated.fontSize"
-  ],
-  "settingsSync.ignoredExtensions": ["continue.continue"],
-  "terminal.integrated.macOptionIsMeta": true,
-  "terminal.integrated.macOptionClickForcesSelection": true,
-  "workbench.editor.highlightModifiedTabs": true,
-  "remote.SSH.remotePlatform": {
-    "office": "linux",
-    "pair": "linux",
-    "worker0": "linux",
-    "pair2": "linux"
-  },
-  "editor.defaultFormatter": "charliermarsh.ruff",
-  "notebook.defaultFormatter": "charliermarsh.ruff",
-  "eslint.format.enable": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always"
-  },
-  "extensions.ignoreRecommendations": true,
-  "window.openFilesInNewWindow": "default",
-  "window.openFoldersInNewWindow": "default",
-  "window.titleBarStyle": "custom",
-  "workbench.tree.enableStickyScroll": true,
-  "workbench.editorAssociations": {
-    "*.ipynb": "jupyter-notebook",
-    "*.pdf": "default",
-    "*.png": "imagePreview.previewEditor",
-    "*.jpeg": "imagePreview.previewEditor",
-    "*.jpg": "imagePreview.previewEditor"
-  },
-  "security.workspace.trust.untrustedFiles": "open",
-  "todo-tree.general.tags": [
-    "todo",
-    "TODO",
-    "FIXME",
-    "REVIEW",
-    "HACK",
-    "REF",
-    "WARN",
-    "note",
-    "NOTE"
-  ],
-  "todo-tree.highlights.defaultHighlight": {
-    "type": "none"
-  },
-  "todo-tree.filtering.excludeGlobs": [
-    "**/node_modules/**",
-    "**/site-packages/**"
-  ],
-  "todo-tree.tree.scanMode": "workspace only",
-  "redhat.telemetry.enabled": false,
-  "[markdown]": {
-    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
-    "editor.tabSize": 2,
-    "editor.formatOnSave": true
-  },
-  "markdownlint.config": {
-    "default": true,
-    "MD024": false
-  },
-  "files.autoSave": "onWindowChange",
-  "files.watcherExclude": {
-    "**/build/**": true,
-    "**/node_modules/**": true,
-    "**/.venv/**": true,
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
-    "**/node_modules/*/**": true,
-    "**/.aim/**": true,
-    "**/logs/**": true,
-    "**/output/**": true,
-    "**/__pycache__/**": true
-  },
-  "yaml.format.printWidth": 120,
-  "[yaml]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "ruff.importStrategy": "useBundled",
-  "debug.onTaskErrors": "abort",
-  "terminal.integrated.fontFamily": "'MonaspiceNe Nerd Font', 'CaskaydiaCove Nerd Font'",
-  "terminal.integrated.inheritEnv": true,
-  "terminal.integrated.profiles.linux": {
-    "tmux": {
-      "path": "zsh",
-      "args": [
-        "-c",
-        "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit"
-      ],
-      "icon": "terminal-tmux"
-    },
-    "zellij": {
-      "path": "zsh",
-      "args": ["-c", "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"],
-      "icon": "terminal-tmux"
-    }
-  },
-  "terminal.integrated.profiles.osx": {
-    "tmux": {
-      "path": "zsh",
-      "args": [
-        "-c",
-        "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit"
-      ],
-      "icon": "terminal-tmux"
-    },
-    "zellij": {
-      "path": "zsh",
-      "args": ["-c", "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"],
-      "icon": "terminal-tmux"
-    }
-  },
-  "terminal.integrated.defaultProfile.linux": "tmux",
-  "terminal.integrated.defaultProfile.osx": "tmux",
-  "terminal.integrated.enableMultiLinePasteWarning": "never",
-  "editor.accessibilitySupport": "off",
-  "editor.cursorBlinking": "smooth",
-  "editor.cursorSurroundingLines": 1,
-  "editor.stickyScroll.enabled": true,
-  "editor.minimap.showSlider": "always",
-  "editor.fontFamily": "'MonaspiceNe Nerd Font', 'CaskaydiaCove Nerd Font'",
-  "editor.fontSize": 16,
-  "editor.rulers": [120],
-  "editor.renderWhitespace": "selection",
-  "editor.detectIndentation": true,
-  "editor.fontLigatures": false,
-  "editor.formatOnSave": true,
-  "editor.wordWrap": "on",
-  "editor.inlineSuggest.enabled": true,
-  "editor.guides.bracketPairs": "active",
-  "editor.tabSize": 4,
-  "editor.unicodeHighlight.ambiguousCharacters": true,
-  "explorer.confirmPasteNative": false,
-  "explorer.autoReveal": false,
-  "explorer.confirmDelete": false,
-  "explorer.openEditors.visible": 10,
-  "explorer.confirmDragAndDrop": false,
-  "git.openRepositoryInParentFolders": "never",
-  "git.ignoreMissingGitWarning": true,
-  "git.enableSmartCommit": true,
-  "git.autofetch": true,
-  "git.allowForcePush": true,
-  "git.confirmSync": false,
-  "git.confirmForcePush": true,
-  "diffEditor.ignoreTrimWhitespace": false,
-  "gitblame.inlineMessageEnabled": true,
-  "gitblame.inlineMessageMargin": 4,
-  "gitblame.statusBarMessageFormat": "${author.name} (${time.ago})",
-  "git-graph.dialog.merge.noCommit": true,
-  "git-graph.dialog.merge.squashCommits": true,
-  "python.analysis.diagnosticSeverityOverrides": {
-    "reportMissingImports": "none"
-  },
-  "python.terminal.executeInFileDir": true,
 
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit",
-      "source.organizeImports.ruff": "explicit",
-      "source.fixAll": "explicit"
-    },
-    "editor.formatOnType": true
-  },
-  "python.analysis.importFormat": "relative",
-  "python.analysis.addHoverSummaries": true,
-  "python.analysis.inlayHints.functionReturnTypes": true,
-  "python.analysis.completeFunctionParens": true,
-  "python.terminal.activateEnvironment": false,
-  "python.analysis.userFileIndexingLimit": 10000,
-  "python.analysis.autoFormatStrings": true,
-  "ruff.lint.ignore": ["F401"],
-  "ruff.lineLength": 120,
-  "jupyter.askForKernelRestart": false,
-  "jupyter.interactiveWindow.textEditor.executeSelection": true,
-  "notebook.cellToolbarLocation": {
-    "default": "right",
-    "jupyter-notebook": "left"
-  },
-  "notebook.formatOnSave.enabled": true,
-  "notebook.codeActionsOnSave": {
-    "notebook.source.fixAll": "never",
-    "notebook.source.organizeImports": "explicit"
-  },
-  "fortran.formatting.formatter": "Disabled",
-  "fortran.fortls.notifyInit": true,
-  "[FortranFreeForm]": {
-    "editor.tabSize": 2
-  },
-  "[FortranFixedForm]": {
-    "editor.tabSize": 2
-  },
-  "fortran.fortls.maxLineLength": 120,
-  "fortran.linter.compilerPath": "gfortran",
-  "fortran.linter.compiler": "gfortran",
-  "latex-workshop.latex.recipe.default": "lastUsed",
-  "latex-workshop.view.pdf.viewer": "tab",
-  "latex-workshop.latex.autoClean.run": "onFailed",
-  "latex-workshop.latex.recipes": [
-    {
-      "name": "lualatex x2",
-      "tools": ["lualatex", "lualatex"]
-    },
-    {
-      "name": "pdflatex x2",
-      "tools": ["pdflatex", "pdflatex"]
-    },
-    {
-      "name": "lualatex->biber->lualatex x2",
-      "tools": ["lualatex", "biber", "lualatex", "lualatex"]
-    },
-    {
-      "name": "xelatex->biber->xelatex x2",
-      "tools": ["xelatex", "biber", "xelatex", "xelatex"]
-    },
-    {
-      "name": "pdflatex -> biber -> pdflatex x2",
-      "tools": ["pdflatex", "biber", "pdflatex", "pdflatex"]
-    },
-    {
-      "name": "pdflatex -> bibtex -> pdflatex x2",
-      "tools": ["pdflatex", "bibtex", "pdflatex", "pdflatex"]
-    },
-    {
-      "name": "latexmk",
-      "tools": ["latexmk"]
-    }
-  ],
-  "latex-workshop.latex.tools": [
-    {
-      "name": "lualatex",
-      "command": "lualatex",
-      "args": [
-        "-synctex=1",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "-pdf",
-        "%DOC%"
-      ]
-    },
-    {
-      "name": "xelatex",
-      "command": "xelatex",
-      "args": [
-        "-synctex=1",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "-pdf",
-        "%DOC%"
-      ]
-    },
-    {
-      "name": "biber",
-      "command": "biber",
-      "args": ["%DOCFILE%"]
-    },
-    {
-      "name": "latexmk",
-      "command": "latexmk",
-      "args": [
-        "-synctex=1",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "-pdf",
-        "-outdir=%OUTDIR%",
-        "%DOC%"
-      ],
-      "env": {}
-    },
-    {
-      "name": "pdflatex",
-      "command": "pdflatex",
-      "args": [
-        "-synctex=1",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "%DOC%"
-      ],
-      "env": {}
-    },
-    {
-      "name": "bibtex",
-      "command": "bibtex",
-      "args": ["%DOCFILE%"],
-      "env": {}
-    }
-  ],
-  "[latex]": {
-    "editor.formatOnSave": false
-  },
-  "better-comments.highlightPlainText": true,
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "editor.unicodeHighlight.allowedLocales": {
-    "ru": true
-  },
-
-  "interactiveWindow.executeWithShiftEnter": true,
-  "terminal.integrated.altClickMovesCursor": false,
-  "editor.minimap.enabled": false,
-  "editor.scrollbar.verticalScrollbarSize": 18,
-  "editor.indentSize": "tabSize",
-  "editor.tabCompletion": "on",
-  "git.autofetchPeriod": 60,
-  "git-graph.commitDetailsView.location": "Docked to Bottom",
-  "git-graph.repository.commits.fetchAvatars": true,
-  "diffEditor.codeLens": true,
-  "terminal.integrated.fontSize": 16,
-  "debug.console.fontSize": 18,
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "fortran.notifications.releaseNotes": false,
-  "cursor.preferNotificationsSameAsChat": true,
-  "git.replaceTagsWhenPull": true,
-  "workbench.iconTheme": "material-icon-theme",
+  // other
   "material-icon-theme.folders.theme": "specific",
-  "workbench.colorTheme": "Default Dark Modern",
-  "workbench.colorCustomizations": {
-    "terminal.selectionForeground": "#000000",
-    "terminal.selectionBackground": "#fbf8d3"
-  },
-  "cursor.cpp.disabledLanguages": [],
-  "notebook.output.textLineLimit": 50,
-  "window.zoomLevel": 0.5,
-  "terminal.integrated.autoReplies": {},
-  "search.exclude": {
-    "**/build": true,
-    "**/builds": true,
-    "**/node_modules": true,
-    "**/.git": true,
-    "**/.venv": true,
-    "**/dist": true,
-    "**/__pycache__": true
-  },
+  "redhat.telemetry.enabled": false,
+  "better-comments.highlightPlainText": true,
   "[dockercompose]": {
     "editor.insertSpaces": true,
     "editor.tabSize": 2,
@@ -2029,9 +2064,6 @@
       "comments": false,
       "strings": true
     },
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-  "[github-actions-workflow]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   }
 }
