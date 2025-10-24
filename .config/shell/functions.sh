@@ -24,73 +24,8 @@ function update {
     fi
   fi
 
-  echo -e "\n========== updating mamba ==========\n"
-  mamba update --all -y && mamba clean --all -y
-
   echo -e "\n========== updating cargo ==========\n"
   cargo install-update --all --jobs 8
-}
-
-function mambac {
-  local python_version
-  local env_name
-
-  python_version="3.11"
-  env_name="$(basename "$(pwd)")"
-
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      -p)
-        shift
-        if [[ $# -gt 0 ]]; then
-          python_version="$1"
-          shift
-        else
-          echo "Error: Python version argument missing after -p"
-          return 1
-        fi
-        ;;
-      -n)
-        shift
-        if [[ $# -gt 0 ]]; then
-          env_name="$1"
-          shift
-        else
-          echo "Error: Environment name argument missing after -n"
-          return 1
-        fi
-        ;;
-      *)
-        echo "Usage: mambac [-p python_version] [-n env_name]"
-        return 1
-        ;;
-    esac
-  done
-
-  echo "Creating environment \`$env_name\` with python \`$python_version\` ..."
-  if conda env list | grep -q "^$env_name\b"; then
-    echo "Environment '$env_name' already exists."
-  else
-    mamba create -y -n "$env_name" python="$python_version"
-  fi
-
-  mamba activate "$env_name"
-}
-
-function echo_project_info {
-  echo "===== SYS INFO ====="
-  echo "Your job ($SLURM_JOB_NAME) is running on $(hostname)"
-
-  nvidia-smi
-  echo "GPUs: $CUDA_VISIBLE_DEVICES"
-  echo "Torch CUDA is available: $(python3 -c 'import torch; print(torch.cuda.is_available())')"
-
-  echo "Commit hash: $(git rev-parse HEAD)"
-
-  echo "python: $(python3 -V) @ $(which python3)"
-  echo "pip: $(pip3 -V) @ $(which pip3)"
-  pip freeze
-  echo "===================="
 }
 
 function act {
@@ -102,7 +37,6 @@ function act {
   fi
   
   if [ -d "$venv_path" ]; then
-    conda deactivate
     source "$venv_path/bin/activate"
   else
     echo "Virtual environment '$venv_path' does not exist."

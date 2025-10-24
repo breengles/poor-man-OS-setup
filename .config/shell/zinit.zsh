@@ -28,7 +28,6 @@ zinit light Aloxaf/fzf-tab
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
-zinit light conda-incubator/conda-zsh-completion
 
 # Add zinit snippets
 zinit snippet OMZP::command-not-found
