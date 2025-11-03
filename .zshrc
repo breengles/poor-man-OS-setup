@@ -23,7 +23,7 @@ files=(
     "$HOME/.config/shell/zinit.zsh"
     "$HOME/.p10k.zsh"
     "$HOME/.fzf.zsh"
-    "$HOME/.config/shell/emulate_bash_stuff.zsh"
+    "$HOME/.config/shell/cluster.zsh"
     "$HOME/.config/shell/functions.sh"
     "$HOME/.config/shell/mamba.sh"
     "$HOME/.config/shell/aliases.sh"
