@@ -36,6 +36,9 @@ for file in "${files[@]}"; do
     [ -f "$file" ] && source "$file" || echo "File $file not found"
 done
 
+# add tokens
+if [ -f "$HOME/.env-global.sh" ]; then source "$HOME/.env-global.sh"; fi
+
 # add completions
 if [ -f "$HOME/.completion.adkb.sh" ]; then source "$HOME/.completion.adkb.sh"; fi
 if [ -f "$HOME/.completion.uv.sh" ]; then source "$HOME/.completion.uv.sh"; fi
