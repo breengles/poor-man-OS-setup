@@ -38,5 +38,3 @@ autoload -Uz _zinit
 autoload -Uz compinit && compinit
 
 zinit cdreplay -q
-
-eval "$(zoxide init --cmd cd zsh)"
