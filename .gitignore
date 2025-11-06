@@ -9,6 +9,7 @@
 __pycache__
 .python-version
 .venv*
+*.egg-info
 
 .aim
 
