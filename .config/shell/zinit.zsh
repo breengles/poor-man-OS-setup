@@ -35,6 +35,20 @@ zinit snippet OMZP::command-not-found
 # Load completions
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
-autoload -Uz compinit && compinit
+
+# Load completions with caching (only rebuild once per day)
+autoload -Uz compinit
+setopt EXTENDEDGLOB
+local zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
+
+# Rebuild completion cache only once per day
+if [[ -n ${zcompdump}(#qN.mh+24) ]]; then
+  # Dump file is older than 24 hours, rebuild it
+  compinit
+else
+  # Use cached version, skip security check with -C
+  compinit -C
+fi
+unsetopt EXTENDEDGLOB
 
 zinit cdreplay -q
