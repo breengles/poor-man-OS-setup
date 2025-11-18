@@ -25,7 +25,6 @@ files=(
   "$HOME/.fzf.zsh"
   "$HOME/.config/shell/cluster.zsh"
   "$HOME/.config/shell/functions.sh"
-  "$HOME/.config/shell/mamba.sh"
   "$HOME/.config/shell/aliases.sh"
   "$HOME/.config/shell/history.zsh"
   "$HOME/.config/shell/keybindings.zsh"
