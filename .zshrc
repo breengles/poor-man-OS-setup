@@ -29,7 +29,6 @@ files=(
   "$HOME/.config/shell/history.zsh"
   "$HOME/.config/shell/keybindings.zsh"
   "$HOME/.config/shell/completions.zsh"
-  "$HOME/.config/shell/completions_slurm.zsh"
 )
 for file in "${files[@]}"; do
     [ -f "$file" ] && source "$file" || echo "File $file not found"
