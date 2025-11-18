@@ -18,7 +18,7 @@ function update {
     brew update && brew upgrade
   fi
 
-  if [[ $(hostname) != "lambda-loginnode"* ]]; then
+  if [[ $(hostname) != *"login"* ]]; then
     if [ -x "$(command -v apt)" ]; then
       sudo apt update && sudo apt upgrade
     fi
