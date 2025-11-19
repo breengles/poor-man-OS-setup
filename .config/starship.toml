@@ -77,11 +77,6 @@ added_style = "bold green"
 deleted_style = "bold red"
 format = '([+$added]($added_style) )([-$deleted]($deleted_style) )'
 
-[cmd_duration]
-min_time = 500
-style = "bold yellow"
-format = "[$duration]($style) "
-
 [status]
 disabled = false
 style = "bold red"
