@@ -97,7 +97,7 @@ show_always = false
 
 [hostname]
 ssh_only = true
-style = "bold yellow"
+style = "dim cyan"
 format = "[@$hostname]($style) "
 disabled = false
 
