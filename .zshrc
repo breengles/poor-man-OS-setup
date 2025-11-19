@@ -6,12 +6,8 @@ export OLLAMA_API_BASE="http://127.0.0.1:11434"
 export GRADIO_TEMP_DIR="$HOME/gradio_tmp"
 mkdir -p "$GRADIO_TEMP_DIR"
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# Starship prompt
+export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
   # If you're using macOS, you'll want this enabled
@@ -21,7 +17,6 @@ fi
 # Shell integrations
 files=(
   "$HOME/.config/shell/zinit.zsh"
-  "$HOME/.p10k.zsh"
   "$HOME/.fzf.zsh"
   "$HOME/.config/shell/cluster.zsh"
   "$HOME/.config/shell/functions.sh"
@@ -33,6 +28,9 @@ files=(
 for file in "${files[@]}"; do
     [ -f "$file" ] && source "$file" || echo "File $file not found"
 done
+
+# Initialize Starship prompt (must be after zinit)
+eval "$(starship init zsh)"
 
 # add tokens
 if [ -f "$HOME/.env-global.sh" ]; then source "$HOME/.env-global.sh"; fi
