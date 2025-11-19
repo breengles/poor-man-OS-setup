@@ -8,6 +8,12 @@ case $- in
 *) return ;;
 esac
 
+# Switch to zsh
+if command -v zsh &> /dev/null; then
+    export SHELL=$(command -v zsh)
+    exec zsh
+fi
+
 export PATH=$HOME/google-cloud-sdk/bin:$HOME/.local/bin:$PATH
 
 # History Configuration (matching zsh settings)
