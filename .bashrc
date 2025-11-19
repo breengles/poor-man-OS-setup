@@ -56,28 +56,8 @@ else
   color_prompt=no
 fi
 
-if [ "$color_prompt" = yes ]; then
-  if [ $UID != 0 ]; then
-    # Modern colorful prompt for regular users
-    # Format: [user@host] path $
-    # Colors: cyan user@host, bright blue path, green prompt symbol
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;36m\][\u@\h]\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\]\n\[\033[01;32m\]\$\[\033[00m\] '
-  else
-    # For user root, use red to indicate elevated privileges
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;31m\][\u@\h]\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\]\n\[\033[01;31m\]#\[\033[00m\] '
-  fi
-else
-  PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm* | rxvt*)
-  PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-  ;;
-*) ;;
-esac
+# Starship prompt configuration
+export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -114,3 +94,6 @@ if [ -f $HOME/.fzf.bash ]; then source $HOME/.fzf.bash; fi
 . "$HOME/.cargo/env"
 
 if [ -f "$HOME/.completion.uv.bash" ]; then source "$HOME/.completion.uv.bash"; fi
+
+# Initialize Starship prompt
+eval "$(starship init bash)"

@@ -19,18 +19,11 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-# Add in Powerlevel10k
-zinit ice depth=1; zinit light romkatv/powerlevel10k
-
 # Add in zsh plugins
 zinit light Aloxaf/fzf-tab
-# zinit light zsh-users/zsh-syntax-highlighting
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
-
-# Add zinit snippets
-zinit snippet OMZP::command-not-found
 
 # Load completions
 autoload -Uz _zinit
