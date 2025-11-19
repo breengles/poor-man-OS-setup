@@ -63,17 +63,8 @@ if ! shopt -oq posix; then
 fi
 
 # Shell integrations
-files=(
-  "$HOME/.config/shell/functions.sh"
-  "$HOME/.config/shell/aliases.sh"
-)
-for file in "${files[@]}"; do
-  if [ -f "$file" ]; then
-    source "$file"
-  else
-    echo "File $file not found"
-  fi
-done
+source "$HOME/.config/shell/functions.sh"
+source "$HOME/.config/shell/aliases.sh"
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f "$HOME/google-cloud-sdk/path.bash.inc" ]; then . "$HOME/google-cloud-sdk/path.bash.inc"; fi
