@@ -16,16 +16,22 @@ format = """
 $git_branch\
 $git_status\
 $git_metrics\
+$fill\
+${env_var.YAZI_LEVEL}\
 $python\
 $conda\
+$cmd_duration\
+$status\
+$username\
+$hostname\
 $line_break\
 $character"""
 
-# Right prompt format
-right_format = """$cmd_duration\
-$status\
-$username\
-$hostname"""
+# Right prompt format (disabled, using $fill instead)
+right_format = ""
+
+[fill]
+symbol = " "
 
 [character]
 success_symbol = "[❯](bold green)"
@@ -35,17 +41,15 @@ vimcmd_symbol = "[❮](bold green)"
 [directory]
 style = "bold cyan"
 format = "[$path]($style)[$read_only]($read_only_style) "
-truncation_length = 3
-truncate_to_repo = true
-read_only = " 🔒"
+# Show full path but use smart truncation for long paths
+truncation_length = 5  # Show up to 5 parent directories before truncating
+truncate_to_repo = false  # Show full path from home, not just repo
+read_only = " RO"
 read_only_style = "red"
-truncation_symbol = "…/"
-
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
+truncation_symbol = "…/"  # Symbol shown when path is truncated
+home_symbol = "~"  # Replace $HOME with ~
+# Use fish-style abbreviation: show only first char of middle directories
+fish_style_pwd_dir_length = 1  # 1 = first char, 0 = no abbreviation
 
 [git_branch]
 symbol = ""
@@ -97,16 +101,29 @@ style = "bold yellow"
 format = "[@$hostname]($style) "
 disabled = false
 
+[env_var.YAZI_LEVEL]
+disabled = false
+style = "bold cyan"
+symbol = "⊢ "
+format = '[$symbol]($style)'
+
 [python]
-symbol = " "
+symbol = "venv: "
 style = "bold yellow"
-format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+format = '[($symbol$virtualenv )]($style)'
 pyenv_version_name = false
+# Only show when virtualenv is actually activated (VIRTUAL_ENV is set)
+# The parentheses with space make the whole thing disappear if virtualenv is empty
+detect_extensions = ["py"]
+detect_files = [".python-version", "pyproject.toml", "requirements.txt", "setup.py", "tox.ini"]  
+detect_folders = ["venv", ".venv"]
 
 [conda]
-symbol = " "
+symbol = "conda "
 style = "bold green"
 format = '[$symbol$environment]($style) '
+# Conda is always shown when a conda environment is active
+ignore_base = false  # Show even if it's the base environment
 
 # Disable modules we don't need
 [package]
@@ -127,3 +144,41 @@ disabled = true
 [docker_context]
 disabled = true
 
+[gcloud]
+disabled = true
+
+[aws]
+disabled = true
+
+[azure]
+disabled = true
+
+[kubernetes]
+disabled = true
+
+[terraform]
+disabled = true
+
+[nix_shell]
+disabled = true
+
+[ruby]
+disabled = true
+
+[php]
+disabled = true
+
+[perl]
+disabled = true
+
+[lua]
+disabled = true
+
+[swift]
+disabled = true
+
+[elixir]
+disabled = true
+
+[haskell]
+disabled = true
