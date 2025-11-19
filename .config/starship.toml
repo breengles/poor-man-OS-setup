@@ -89,7 +89,7 @@ symbol = "✘"
 format = '[\[$symbol $common_meaning$signal_name$maybe_int\]]($style) '
 
 [username]
-style_user = "bold yellow"
+style_user = "dimmed cyan"
 style_root = "bold red"
 format = "[$user]($style)"
 disabled = false
@@ -97,7 +97,7 @@ show_always = false
 
 [hostname]
 ssh_only = true
-style = "dim cyan"
+style = "dimmed cyan"
 format = "[@$hostname]($style) "
 disabled = false
 
