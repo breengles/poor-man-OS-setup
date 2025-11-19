@@ -52,7 +52,6 @@ home_symbol = "~"  # Replace $HOME with ~
 fish_style_pwd_dir_length = 1  # 1 = first char, 0 = no abbreviation
 
 [git_branch]
-symbol = ""
 style = "bold green"
 format = "[$symbol$branch(:$remote_branch)]($style) "
 
