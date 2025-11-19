@@ -62,10 +62,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Shell integrations
-source "$HOME/.config/shell/functions.sh"
-source "$HOME/.config/shell/aliases.sh"
-
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f "$HOME/google-cloud-sdk/path.bash.inc" ]; then . "$HOME/google-cloud-sdk/path.bash.inc"; fi
 # The next line enables shell command completion for gcloud.
@@ -79,3 +75,6 @@ if [ -f "$HOME/.completion.uv.bash" ]; then source "$HOME/.completion.uv.bash"; 
 
 # Initialize Starship prompt
 eval "$(starship init bash)"
+
+source "$HOME/.config/shell/functions.sh"
+source "$HOME/.config/shell/aliases.sh"
