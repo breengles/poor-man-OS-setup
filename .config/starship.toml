@@ -101,7 +101,7 @@ format = '[$symbol]($style)'
 [python]
 symbol = ""
 style = "#98a893"
-format = '[($symbol$virtualenv )]($style)'
+format = '[($symbol$virtualenv \($version\) )]($style)'
 pyenv_version_name = false
 # Only show when virtualenv is actually activated (VIRTUAL_ENV is set)
 # The parentheses with space make the whole thing disappear if virtualenv is empty
