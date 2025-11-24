@@ -3,6 +3,7 @@
 .idea
 .vscode/*
 !.vscode/settings.json
+!.vscode/user_settings.json
 !.vscode/extensions.json
 !.vscode/launch.json
 
