@@ -12,31 +12,28 @@
     "**/dist": true,
     "**/__pycache__": true
   },
-
   // vscode setting sync
   "settingsSync.ignoredSettings": [
     "-window.zoomLevel",
     "terminal.integrated.fontSize"
   ],
-  "settingsSync.ignoredExtensions": ["continue.continue"],
-
+  "settingsSync.ignoredExtensions": [
+    "continue.continue"
+  ],
   // cursor
   "cursor.preferNotificationsSameAsChat": true,
   "cursor.cpp.disabledLanguages": [],
-
   // window
   "window.openFilesInNewWindow": "default",
   "window.openFoldersInNewWindow": "default",
   "window.titleBarStyle": "custom",
   "window.zoomLevel": 0.5,
-
   // explorer
   "explorer.confirmPasteNative": false,
   "explorer.autoReveal": false,
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 10,
   "explorer.confirmDragAndDrop": false,
-
   // workbench
   "workbench.activityBar.location": "default",
   "workbench.activityBar.orientation": "vertical",
@@ -55,12 +52,13 @@
     "terminal.selectionForeground": "#000000",
     "terminal.selectionBackground": "#fbf8d3"
   },
-
   // debug
   "debug.onTaskErrors": "abort",
   "debug.console.fontSize": 18,
-
   // files
+  "files.associations": {
+    "*.log": "ansi"
+  },
   "files.autoSave": "onWindowChange",
   "files.watcherExclude": {
     "**/build/**": true,
@@ -74,7 +72,6 @@
     "**/output/**": true,
     "**/__pycache__/**": true
   },
-
   //editor
   "editor.fontLigatures": "'calt', 'ss02', 'ss03', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'liga'",
   "editor.minimap.enabled": false,
@@ -92,7 +89,9 @@
   "editor.minimap.showSlider": "always",
   "editor.fontFamily": "'MonaspiceNe Nerd Font', 'CaskaydiaCove Nerd Font'",
   "editor.fontSize": 16,
-  "editor.rulers": [120],
+  "editor.rulers": [
+    120
+  ],
   "editor.renderWhitespace": "selection",
   "editor.detectIndentation": true,
   "editor.formatOnSave": true,
@@ -104,7 +103,6 @@
   "editor.unicodeHighlight.allowedLocales": {
     "ru": true
   },
-
   // terminal
   "terminal.integrated.autoReplies": {},
   "terminal.integrated.fontSize": 16,
@@ -124,7 +122,10 @@
     },
     "zellij": {
       "path": "zsh",
-      "args": ["-c", "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"],
+      "args": [
+        "-c",
+        "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"
+      ],
       "icon": "terminal-tmux"
     }
   },
@@ -139,7 +140,10 @@
     },
     "zellij": {
       "path": "zsh",
-      "args": ["-c", "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"],
+      "args": [
+        "-c",
+        "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"
+      ],
       "icon": "terminal-tmux"
     }
   },
@@ -149,7 +153,6 @@
   "terminal.integrated.env.linux": {
     "TERM": "xterm-256color"
   },
-
   //remote
   "remote.SSH.remotePlatform": {
     "office": "linux",
@@ -157,7 +160,6 @@
     "worker0": "linux",
     "pair2": "linux"
   },
-
   // git
   "git.replaceTagsWhenPull": true,
   "git.autofetchPeriod": 60,
@@ -177,7 +179,6 @@
   "git-graph.repository.commits.fetchAvatars": true,
   "git-graph.dialog.merge.noCommit": true,
   "git-graph.dialog.merge.squashCommits": true,
-
   // python
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
@@ -200,7 +201,9 @@
   "python.terminal.activateEnvironment": false,
   "python.terminal.executeInFileDir": true,
   "ruff.importStrategy": "useBundled",
-  "ruff.lint.ignore": ["F401"],
+  "ruff.lint.ignore": [
+    "F401"
+  ],
   "ruff.lineLength": 120,
   "jupyter.askForKernelRestart": false,
   "jupyter.interactiveWindow.textEditor.executeSelection": true,
@@ -215,7 +218,6 @@
     "notebook.source.fixAll": "never",
     "notebook.source.organizeImports": "explicit"
   },
-
   // fortran
   "fortran.formatting.formatter": "Disabled",
   "fortran.notifications.releaseNotes": false,
@@ -229,7 +231,6 @@
   "[FortranFixedForm]": {
     "editor.tabSize": 2
   },
-
   // markdown
   "[markdown]": {
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
@@ -240,7 +241,6 @@
     "default": true,
     "MD024": false
   },
-
   // latex
   "latex-workshop.latex.recipe.default": "lastUsed",
   "latex-workshop.view.pdf.viewer": "tab",
@@ -248,31 +248,59 @@
   "latex-workshop.latex.recipes": [
     {
       "name": "lualatex x2",
-      "tools": ["lualatex", "lualatex"]
+      "tools": [
+        "lualatex",
+        "lualatex"
+      ]
     },
     {
       "name": "pdflatex x2",
-      "tools": ["pdflatex", "pdflatex"]
+      "tools": [
+        "pdflatex",
+        "pdflatex"
+      ]
     },
     {
       "name": "lualatex->biber->lualatex x2",
-      "tools": ["lualatex", "biber", "lualatex", "lualatex"]
+      "tools": [
+        "lualatex",
+        "biber",
+        "lualatex",
+        "lualatex"
+      ]
     },
     {
       "name": "xelatex->biber->xelatex x2",
-      "tools": ["xelatex", "biber", "xelatex", "xelatex"]
+      "tools": [
+        "xelatex",
+        "biber",
+        "xelatex",
+        "xelatex"
+      ]
     },
     {
       "name": "pdflatex -> biber -> pdflatex x2",
-      "tools": ["pdflatex", "biber", "pdflatex", "pdflatex"]
+      "tools": [
+        "pdflatex",
+        "biber",
+        "pdflatex",
+        "pdflatex"
+      ]
     },
     {
       "name": "pdflatex -> bibtex -> pdflatex x2",
-      "tools": ["pdflatex", "bibtex", "pdflatex", "pdflatex"]
+      "tools": [
+        "pdflatex",
+        "bibtex",
+        "pdflatex",
+        "pdflatex"
+      ]
     },
     {
       "name": "latexmk",
-      "tools": ["latexmk"]
+      "tools": [
+        "latexmk"
+      ]
     }
   ],
   "latex-workshop.latex.tools": [
@@ -301,7 +329,9 @@
     {
       "name": "biber",
       "command": "biber",
-      "args": ["%DOCFILE%"]
+      "args": [
+        "%DOCFILE%"
+      ]
     },
     {
       "name": "latexmk",
@@ -330,14 +360,15 @@
     {
       "name": "bibtex",
       "command": "bibtex",
-      "args": ["%DOCFILE%"],
+      "args": [
+        "%DOCFILE%"
+      ],
       "env": {}
     }
   ],
   "[latex]": {
     "editor.formatOnSave": false
   },
-
   // todo-tree
   "todo-tree.general.tags": [
     "todo",
@@ -350,15 +381,11 @@
     "note",
     "NOTE"
   ],
-  "todo-tree.highlights.defaultHighlight": {
-    "type": "none"
-  },
   "todo-tree.filtering.excludeGlobs": [
     "**/node_modules/**",
     "**/site-packages/**"
   ],
   "todo-tree.tree.scanMode": "workspace only",
-
   // yaml json
   "yaml.format.printWidth": 120,
   "[yaml]": {
@@ -371,7 +398,6 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-
   // spelling
   "cSpell.enabled": true,
   "cSpell.language": "ru,ru-RU,en-US,en-GB,en",
@@ -389,6 +415,7 @@
     "adain",
     "adamax",
     "Adamenko",
+    "adamw",
     "addoption",
     "addopts",
     "addrpl",
@@ -438,6 +465,7 @@
     "argcomplete",
     "argmax",
     "argmin",
+    "argparsing",
     "armijo",
     "arraystretch",
     "Artem",
@@ -469,6 +497,7 @@
     "autostage",
     "autoupdate",
     "autouse",
+    "avgpool",
     "avzu",
     "Backpropagate",
     "Balthus",
@@ -622,6 +651,7 @@
     "convnext",
     "convs",
     "cooldown",
+    "corda",
     "CORIS",
     "cosmap",
     "costh",
@@ -805,6 +835,7 @@
     "endmacro",
     "enumitem",
     "epicrealism",
+    "epile",
     "errdesc",
     "errorbar",
     "esac",
@@ -816,6 +847,7 @@
     "excludesfile",
     "execdir",
     "exitstat",
+    "exitstatus",
     "expit",
     "facebookresearch",
     "facecolor",
@@ -885,6 +917,7 @@
     "fullgraph",
     "fullservice",
     "funcname",
+    "functorch",
     "funroll",
     "furo",
     "fuseforward",
@@ -924,6 +957,8 @@
     "gloo",
     "gradfix",
     "gradio",
+    "grag",
+    "graphmodule",
     "grayscale",
     "Greiner",
     "gres",
@@ -977,6 +1012,7 @@
     "humanfriendly",
     "husl",
     "hybrilit",
+    "hyperiqa",
     "hypernetworks",
     "hyperparams",
     "idxes",
@@ -1177,6 +1213,7 @@
     "loaddir",
     "loadnet",
     "loadtxt",
+    "loftq",
     "logdict",
     "logdir",
     "loginnode",
@@ -1215,6 +1252,7 @@
     "makesups",
     "mambac",
     "mambaforge",
+    "maniqa",
     "mapleader",
     "mappa",
     "marginparwidth",
@@ -1223,6 +1261,7 @@
     "masic",
     "maskdir",
     "maskpredictor",
+    "matmuls",
     "matplotlib",
     "mattifying",
     "maxcolwidths",
@@ -1304,9 +1343,11 @@
     "multires",
     "multirun",
     "mushan",
+    "musiq",
     "mybucket",
     "namelist",
     "namelists",
+    "nans",
     "Natten",
     "Nattn",
     "nccl",
@@ -1350,6 +1391,7 @@
     "nomakeup",
     "nondiag",
     "noneu",
+    "nonfinite",
     "noninteractive",
     "nonorm",
     "nonstopmode",
@@ -1400,6 +1442,7 @@
     "ogrid",
     "OLEVEL",
     "ollama",
+    "olora",
     "omegaconf",
     "omost",
     "oneapi",
@@ -1461,6 +1504,7 @@
     "pilibs",
     "PIPELINETYPE",
     "pipkey",
+    "pissa",
     "pixelnorm",
     "pkgs",
     "pkief",
@@ -1517,6 +1561,7 @@
     "psycopg",
     "pthread",
     "ptime",
+    "pueue",
     "pupilcenter",
     "putalpha",
     "putalphas",
@@ -1707,6 +1752,7 @@
     "sents",
     "seplut",
     "sess",
+    "sessionfinish",
     "setmainfont",
     "setopt",
     "setspace",
@@ -1875,6 +1921,7 @@
     "torchdiffeq",
     "torchinfo",
     "torchmetrics",
+    "torchrbf",
     "torchrun",
     "torchscript",
     "torchsde",
@@ -1892,6 +1939,7 @@
     "trimap",
     "trisurf",
     "trunc",
+    "tstart",
     "TTGF",
     "turbosd",
     "twintail",
@@ -2098,7 +2146,6 @@
     "Шабаев",
     "шебангом"
   ],
-
   // other
   "material-icon-theme.folders.theme": "specific",
   "redhat.telemetry.enabled": false,
@@ -2115,5 +2162,6 @@
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   "cursorpyright.analysis.inlayHints.genericTypes": false,
-  "remote.autoForwardPortsSource": "hybrid"
+  "remote.autoForwardPortsSource": "hybrid",
+  "workbench.editorLargeFileConfirmation": 50
 }
