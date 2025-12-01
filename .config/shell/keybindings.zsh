@@ -17,6 +17,3 @@ bindkey "^[^?" backward-kill-word # Alt+Backspace
 # Line navigation (Cmd+Left, Cmd+Right)
 bindkey "^A" beginning-of-line # Cmd+Left (from kitty mapping)
 bindkey "^E" end-of-line # Cmd+Right (from kitty mapping)
-
-# Line deletion (Cmd+Backspace)
-bindkey "^U" kill-whole-line # Cmd+Backspace
