@@ -46,7 +46,6 @@ cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide b
 
 # uv https://docs.astral.sh/uv/getting-started/installation/
 curl -LsSf https://astral.sh/uv/install.sh | sh
-uv tool install --python python3.12 aider-chat
 
 # from poor-man-OS-setup's root
 stow .
