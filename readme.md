@@ -71,3 +71,11 @@ for model in "${models[@]}"; do ollama pull $model; done
 ya pkg add yazi-rs/plugins:toggle-pane
 ya pkg add yazi-rs/plugins:zoom
 ```
+
+## Backup
+
+```bash
+brew tap garethgeorge/homebrew-backrest-tap
+brew install backrest restic
+brew services start backrest
+```
