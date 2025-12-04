@@ -51,20 +51,6 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 stow .
 ```
 
-## Ollama
-
-```bash
-models=(
-  devstral:24b
-  gemma3n:e4b
-  gemma3:27b
-  deepseek-r1:8b
-  qwen3:32b
-  llama3.2-vision:11b
-)
-for model in "${models[@]}"; do ollama pull $model; done
-```
-
 ## Yazi
 
 ```bash
