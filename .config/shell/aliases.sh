@@ -51,6 +51,10 @@ if [ -x "$(command -v fd)" ]; then
   alias fd="fd --no-ignore"
 fi
 
+if [ -x "$(command -v pcpctl)" ]; then
+  alias pcp="pcpctl"
+fi
+
 alias deact=deactivate
 
 # slurm
