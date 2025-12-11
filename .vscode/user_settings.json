@@ -22,7 +22,6 @@
   ],
   // cursor
   "cursor.preferNotificationsSameAsChat": true,
-  "cursor.cpp.disabledLanguages": [],
   // window
   "window.openFilesInNewWindow": "default",
   "window.openFoldersInNewWindow": "default",
@@ -47,7 +46,6 @@
     "*.jpg": "imagePreview.previewEditor"
   },
   "workbench.iconTheme": "material-icon-theme",
-  "workbench.colorTheme": "Default Dark Modern",
   "workbench.colorCustomizations": {
     "terminal.selectionForeground": "#000000",
     "terminal.selectionBackground": "#fbf8d3"
@@ -187,8 +185,7 @@
       "source.organizeImports": "explicit",
       "source.organizeImports.ruff": "explicit",
       "source.fixAll": "explicit"
-    },
-    "editor.formatOnType": true
+    }
   },
   "python.analysis.autoFormatStrings": true,
   "python.analysis.importFormat": "relative",
@@ -233,7 +230,7 @@
   },
   // markdown
   "[markdown]": {
-    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2,
     "editor.formatOnSave": true
   },
@@ -426,6 +423,7 @@
     "adpot",
     "aggfunc",
     "aiadmin",
+    "AICDN",
     "aicv",
     "aidea",
     "aifilter",
@@ -455,6 +453,7 @@
     "aniso",
     "annos",
     "anysphere",
+    "apiingress",
     "appendhistory",
     "applify",
     "aprox",
@@ -516,6 +515,7 @@
     "betag",
     "betap",
     "bfloat",
+    "bgremove",
     "biber",
     "bibtex",
     "binarize",
@@ -1273,6 +1273,7 @@
     "maxpool",
     "maxpy",
     "maxrss",
+    "MAXSIZE",
     "maxval",
     "maxw",
     "mccurry",
@@ -1361,6 +1362,7 @@
     "ndim",
     "ndimage",
     "ndme",
+    "nebius",
     "neovim",
     "nesterov",
     "netlin",
@@ -1485,6 +1487,7 @@
     "pbar",
     "PCMOUT",
     "pcolormesh",
+    "pcpctl",
     "pdfauthor",
     "pdfkeywords",
     "pdflatex",
@@ -1825,6 +1828,7 @@
     "stdlib",
     "stdouts",
     "steplora",
+    "stepslora",
     "Stmts",
     "stochasticity",
     "stopword",
@@ -1969,6 +1973,7 @@
     "unpad",
     "unpatching",
     "unscale",
+    "Unshallow",
     "unshuffle",
     "unshuffled",
     "unsloth",
@@ -2163,5 +2168,9 @@
   },
   "cursorpyright.analysis.inlayHints.genericTypes": false,
   "remote.autoForwardPortsSource": "hybrid",
-  "workbench.editorLargeFileConfirmation": 50
+  "workbench.editorLargeFileConfirmation": 50,
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+  "workbench.colorTheme": "Default Dark Modern"
 }
