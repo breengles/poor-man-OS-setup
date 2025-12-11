@@ -47,6 +47,42 @@ cargo install --locked cargo-update tree-sitter-cli ripgrep dua-cli eza zoxide b
 # uv https://docs.astral.sh/uv/getting-started/installation/
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
+# vscode/cursor extensions
+exts=(
+  "anysphere.cpptools"
+  "anysphere.cursorpyright"
+  "anysphere.remote-containers"
+  "anysphere.remote-ssh"
+  "charliermarsh.ruff"
+  "donjayamanne.githistory"
+  "elazarcoh.simply-view-image-for-python-debugging"
+  "esbenp.prettier-vscode"
+  "gruntfuggly.todo-tree"
+  "james-yu.latex-workshop"
+  "janisdd.vscode-edit-csv"
+  "kevinrose.vsc-python-indent"
+  "mhutchie.git-graph"
+  "ms-azuretools.vscode-containers"
+  "ms-azuretools.vscode-docker"
+  "ms-python.debugpy"
+  "ms-python.python"
+  "ms-toolsai.jupyter"
+  "ms-toolsai.jupyter-renderers"
+  "ms-toolsai.vscode-jupyter-cell-tags"
+  "ms-toolsai.vscode-jupyter-slideshow"
+  "pkief.material-icon-theme"
+  "randomfractalsinc.vscode-data-preview"
+  "redhat.vscode-yaml"
+  "streetsidesoftware.code-spell-checker"
+  "streetsidesoftware.code-spell-checker-russian"
+  "tamasfe.even-better-toml"
+  "timonwong.shellcheck"
+  "waderyan.gitblame"
+)
+for ext in "${exts[@]}"; do
+  cursor --install-extension "$ext"
+done
+
 # from poor-man-OS-setup's root
 stow .
 ```
