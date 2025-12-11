@@ -6,6 +6,7 @@
 !.vscode/user_settings.json
 !.vscode/extensions.json
 !.vscode/launch.json
+!.vscode/keybindings.json
 
 __pycache__
 .python-version
