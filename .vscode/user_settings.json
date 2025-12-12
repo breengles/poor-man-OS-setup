@@ -1185,6 +1185,7 @@
     "libxrender",
     "libz",
     "lierla",
+    "lightx",
     "limegreen",
     "limg",
     "limiti",
@@ -2172,5 +2173,8 @@
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
-  "workbench.colorTheme": "Default Dark Modern"
+  "workbench.colorTheme": "Default Dark Modern",
+  "cursorpyright.analysis.diagnosticSeverityOverrides": {
+    "reportMissingImports": "none"
+  }
 }
