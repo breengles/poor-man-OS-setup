@@ -49,3 +49,34 @@ fzf-grep-vim-widget() {
 }
 zle -N fzf-grep-vim-widget
 bindkey "^G" fzf-grep-vim-widget
+
+# Fuzzy find file and open in Cursor (Alt+O)
+fzf-cursor-widget() {
+  local file
+  file=$(command fd --type f --hidden --exclude .git 2>/dev/null | fzf --preview '[[ -f {} ]] && bat --color=always --style=numbers --line-range=:500 {} 2>/dev/null || head -500 {}')
+  if [[ -n "$file" ]]; then
+    BUFFER="cursor $file"
+    zle accept-line
+  fi
+  zle reset-prompt
+}
+zle -N fzf-cursor-widget
+bindkey "^[o" fzf-cursor-widget
+
+# Fuzzy search file contents and open in Cursor at line (Alt+G)
+fzf-grep-cursor-widget() {
+  local selection file line
+  selection=$(rg --color=always --line-number --no-heading --smart-case '' 2>/dev/null | \
+    fzf --ansi --delimiter ':' \
+        --preview 'bat --color=always --highlight-line {2} --line-range={2}:+100 {1} 2>/dev/null' \
+        --preview-window 'up,60%')
+  if [[ -n "$selection" ]]; then
+    file=$(echo "$selection" | cut -d':' -f1)
+    line=$(echo "$selection" | cut -d':' -f2)
+    BUFFER="cursor -g $file:$line"
+    zle accept-line
+  fi
+  zle reset-prompt
+}
+zle -N fzf-grep-cursor-widget
+bindkey "^[g" fzf-grep-cursor-widget
