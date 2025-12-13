@@ -695,7 +695,6 @@ require('lazy').setup({
           cmd = { vim.fn.expand '$HOME/.local/bin/ruff', 'server' },
         },
         pyright = {
-          cmd = { vim.fn.expand '$HOME/.local/bin/pyright-langserver', '--stdio' },
           settings = {
             pyright = {
               -- Use ruff for import sorting
