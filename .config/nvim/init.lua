@@ -690,8 +690,12 @@ require('lazy').setup({
         --
 
         -- Python: ruff for linting/formatting, pyright for type checking
-        ruff = {},
+        -- Using system-installed versions from ~/.local/bin instead of Mason
+        ruff = {
+          cmd = { vim.fn.expand '$HOME/.local/bin/ruff', 'server' },
+        },
         pyright = {
+          cmd = { vim.fn.expand '$HOME/.local/bin/pyright-langserver', '--stdio' },
           settings = {
             pyright = {
               -- Use ruff for import sorting
@@ -739,7 +743,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
-        'ruff', -- Python linter and formatter
+        -- 'ruff', -- Using system-installed version from ~/.local/bin
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
