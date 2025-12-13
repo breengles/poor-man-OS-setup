@@ -12,7 +12,7 @@ xcode-select --install
 # brew https://brew.sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update && brew upgrade
-brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow rsync fzf
+brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow rsync fzf lazygit
 brew install --cask kitty keepingyouawake raycast mactex google-chrome visual-studio-code dockey transmission obsidian alt-tab maccy bitwarden font-caskaydia-cove-nerd-font font-monaspace-nerd-font
 
 # some macos settings

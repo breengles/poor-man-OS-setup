@@ -17,3 +17,35 @@ bindkey "^[^?" backward-kill-word # Alt+Backspace
 # Line navigation (Cmd+Left, Cmd+Right)
 bindkey "^A" beginning-of-line # Cmd+Left (from kitty mapping)
 bindkey "^E" end-of-line # Cmd+Right (from kitty mapping)
+
+
+# Fuzzy find file and open in vim (Ctrl+P)
+fzf-vim-widget() {
+  local file
+  file=$(command fd --type f --hidden --exclude .git 2>/dev/null | fzf --preview '[[ -f {} ]] && bat --color=always --style=numbers --line-range=:500 {} 2>/dev/null || head -500 {}')
+  if [[ -n "$file" ]]; then
+    BUFFER="vim $file"
+    zle accept-line
+  fi
+  zle reset-prompt
+}
+zle -N fzf-vim-widget
+bindkey "^O" fzf-vim-widget
+
+# Fuzzy search file contents and open in vim at line (Ctrl+G)
+fzf-grep-vim-widget() {
+  local selection file line
+  selection=$(rg --color=always --line-number --no-heading --smart-case '' 2>/dev/null | \
+    fzf --ansi --delimiter ':' \
+        --preview 'bat --color=always --highlight-line {2} --line-range={2}:+100 {1} 2>/dev/null' \
+        --preview-window 'up,60%')
+  if [[ -n "$selection" ]]; then
+    file=$(echo "$selection" | cut -d':' -f1)
+    line=$(echo "$selection" | cut -d':' -f2)
+    BUFFER="vim +$line $file"
+    zle accept-line
+  fi
+  zle reset-prompt
+}
+zle -N fzf-grep-vim-widget
+bindkey "^G" fzf-grep-vim-widget
