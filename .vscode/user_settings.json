@@ -86,11 +86,10 @@
   "editor.stickyScroll.enabled": true,
   "editor.minimap.showSlider": "always",
   "editor.fontFamily": "'MonaspiceNe Nerd Font', 'CaskaydiaCove Nerd Font'",
-  "editor.fontSize": 16,
+  "editor.fontSize": 18,
   "editor.rulers": [
     120
   ],
-  "editor.renderWhitespace": "selection",
   "editor.detectIndentation": true,
   "editor.formatOnSave": true,
   "editor.wordWrap": "on",
@@ -1642,6 +1641,7 @@
     "regtokens",
     "reinit",
     "Reiter",
+    "relativenumber",
     "relcc",
     "relu",
     "relvis",
@@ -2176,5 +2176,7 @@
   "workbench.colorTheme": "Default Dark Modern",
   "cursorpyright.analysis.diagnosticSeverityOverrides": {
     "reportMissingImports": "none"
-  }
+  },
+  "editor.renderWhitespace": "boundary",
+  "workbench.editor.showTabs": "single"
 }
