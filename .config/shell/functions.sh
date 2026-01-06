@@ -9,23 +9,28 @@ function calcjson {
 }
 
 function update {
-  echo -e "\n========== updating zinit ==========\n"
-  zinit self-update
-  zinit update --all --parallel
+  if [ -x "$(command -v zinit)" ]; then
+    echo -e "\n========== updating zinit ==========\n"
+    zinit self-update
+    zinit update --all --parallel
+  fi
 
-  echo -e "\n========== updating os packages ==========\n"
   if [ -x "$(command -v brew)" ]; then
+    echo -e "\n========== updating brew packages ==========\n"
     brew update && brew upgrade
   fi
 
   if [[ $(hostname) != *"login"* ]]; then
     if [ -x "$(command -v apt)" ]; then
+      echo -e "\n========== updating apt packages ==========\n"
       sudo apt update && sudo apt upgrade
     fi
   fi
 
-  echo -e "\n========== updating cargo ==========\n"
-  cargo install-update --all --jobs 8
+  if [ -x "$(command -v cargo)" ]; then
+    echo -e "\n========== updating cargo ==========\n"
+    cargo install-update --all --jobs 8
+  fi
 }
 
 function act {
