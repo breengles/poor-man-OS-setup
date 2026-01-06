@@ -35,7 +35,7 @@ bindkey "^O" fzf-vim-widget
 # Fuzzy search file contents and open in vim at line (Ctrl+G)
 fzf-grep-vim-widget() {
   local selection file line
-  selection=$(rg --color=always --line-number --no-heading --smart-case '' 2>/dev/null | \
+  selection=$(rg --hidden --color=always --line-number --no-heading --smart-case '' 2>/dev/null | \
     fzf --ansi --delimiter ':' \
         --preview 'bat --color=always --highlight-line {2} --line-range={2}:+100 {1} 2>/dev/null' \
         --preview-window 'up,60%')
@@ -66,7 +66,7 @@ bindkey "^[o" fzf-cursor-widget
 # Fuzzy search file contents and open in Cursor at line (Alt+G)
 fzf-grep-cursor-widget() {
   local selection file line
-  selection=$(rg --color=always --line-number --no-heading --smart-case '' 2>/dev/null | \
+  selection=$(rg --hidden --color=always --line-number --no-heading --smart-case '' 2>/dev/null | \
     fzf --ansi --delimiter ':' \
         --preview 'bat --color=always --highlight-line {2} --line-range={2}:+100 {1} 2>/dev/null' \
         --preview-window 'up,60%')
