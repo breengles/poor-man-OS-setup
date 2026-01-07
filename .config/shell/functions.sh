@@ -80,7 +80,7 @@ function qq {
     printf \"Jobs: %d R=%d P=%d C=%d\", total, running, pending, completing;
     if (other > 0) printf \" O=%d\", other;
     printf \"\\n\";
-  }'; echo ''; squeue --user=\$(whoami) --format='%.11i %.11P %45j %.1T %.12M %18N'"
+  }'; echo ''; squeue --user=\$(whoami) --format='%.16i %.16P %45j %.3T %.12M %18N'"
 }
 
 function gpu {
