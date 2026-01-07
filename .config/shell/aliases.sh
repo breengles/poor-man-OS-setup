@@ -22,7 +22,6 @@ fi
 
 if [ -x "$(command -v zellij)" ]; then
   alias zl=zellij
-  alias jobs="zl attach --create jobs"
 fi
 
 if [ -x "$(command -v eza)" ]; then
