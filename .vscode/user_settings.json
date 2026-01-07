@@ -17,9 +17,7 @@
     "-window.zoomLevel",
     "terminal.integrated.fontSize"
   ],
-  "settingsSync.ignoredExtensions": [
-    "continue.continue"
-  ],
+  "settingsSync.ignoredExtensions": ["continue.continue"],
   // cursor
   "cursor.preferNotificationsSameAsChat": true,
   // window
@@ -50,6 +48,9 @@
     "terminal.selectionForeground": "#000000",
     "terminal.selectionBackground": "#fbf8d3"
   },
+  "workbench.editorLargeFileConfirmation": 50,
+  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.editor.showTabs": "multiple",
   // debug
   "debug.onTaskErrors": "abort",
   "debug.console.fontSize": 18,
@@ -70,6 +71,7 @@
     "**/output/**": true,
     "**/__pycache__/**": true
   },
+  "files.insertFinalNewline": true,
   //editor
   "editor.fontLigatures": "'calt', 'ss02', 'ss03', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'liga'",
   "editor.minimap.enabled": false,
@@ -87,9 +89,7 @@
   "editor.minimap.showSlider": "always",
   "editor.fontFamily": "'MonaspiceNe Nerd Font', 'CaskaydiaCove Nerd Font'",
   "editor.fontSize": 18,
-  "editor.rulers": [
-    120
-  ],
+  "editor.rulers": [120],
   "editor.detectIndentation": true,
   "editor.formatOnSave": true,
   "editor.wordWrap": "on",
@@ -100,7 +100,9 @@
   "editor.unicodeHighlight.allowedLocales": {
     "ru": true
   },
+  "editor.renderWhitespace": "selection",
   // terminal
+  "terminal.integrated.scrollback": 20000,
   "terminal.integrated.autoReplies": {},
   "terminal.integrated.fontSize": 16,
   "terminal.integrated.altClickMovesCursor": false,
@@ -119,10 +121,7 @@
     },
     "zellij": {
       "path": "zsh",
-      "args": [
-        "-c",
-        "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"
-      ],
+      "args": ["-c", "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"],
       "icon": "terminal-tmux"
     }
   },
@@ -137,10 +136,7 @@
     },
     "zellij": {
       "path": "zsh",
-      "args": [
-        "-c",
-        "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"
-      ],
+      "args": ["-c", "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"],
       "icon": "terminal-tmux"
     }
   },
@@ -155,7 +151,9 @@
     "office": "linux",
     "pair": "linux",
     "worker0": "linux",
-    "pair2": "linux"
+    "pair2": "linux",
+    "worker1": "linux",
+    "nebius": "linux"
   },
   // git
   "git.replaceTagsWhenPull": true,
@@ -197,9 +195,7 @@
   "python.terminal.activateEnvironment": false,
   "python.terminal.executeInFileDir": true,
   "ruff.importStrategy": "useBundled",
-  "ruff.lint.ignore": [
-    "F401"
-  ],
+  "ruff.lint.ignore": ["F401"],
   "ruff.lineLength": 120,
   "jupyter.askForKernelRestart": false,
   "jupyter.interactiveWindow.textEditor.executeSelection": true,
@@ -244,59 +240,31 @@
   "latex-workshop.latex.recipes": [
     {
       "name": "lualatex x2",
-      "tools": [
-        "lualatex",
-        "lualatex"
-      ]
+      "tools": ["lualatex", "lualatex"]
     },
     {
       "name": "pdflatex x2",
-      "tools": [
-        "pdflatex",
-        "pdflatex"
-      ]
+      "tools": ["pdflatex", "pdflatex"]
     },
     {
       "name": "lualatex->biber->lualatex x2",
-      "tools": [
-        "lualatex",
-        "biber",
-        "lualatex",
-        "lualatex"
-      ]
+      "tools": ["lualatex", "biber", "lualatex", "lualatex"]
     },
     {
       "name": "xelatex->biber->xelatex x2",
-      "tools": [
-        "xelatex",
-        "biber",
-        "xelatex",
-        "xelatex"
-      ]
+      "tools": ["xelatex", "biber", "xelatex", "xelatex"]
     },
     {
       "name": "pdflatex -> biber -> pdflatex x2",
-      "tools": [
-        "pdflatex",
-        "biber",
-        "pdflatex",
-        "pdflatex"
-      ]
+      "tools": ["pdflatex", "biber", "pdflatex", "pdflatex"]
     },
     {
       "name": "pdflatex -> bibtex -> pdflatex x2",
-      "tools": [
-        "pdflatex",
-        "bibtex",
-        "pdflatex",
-        "pdflatex"
-      ]
+      "tools": ["pdflatex", "bibtex", "pdflatex", "pdflatex"]
     },
     {
       "name": "latexmk",
-      "tools": [
-        "latexmk"
-      ]
+      "tools": ["latexmk"]
     }
   ],
   "latex-workshop.latex.tools": [
@@ -325,9 +293,7 @@
     {
       "name": "biber",
       "command": "biber",
-      "args": [
-        "%DOCFILE%"
-      ]
+      "args": ["%DOCFILE%"]
     },
     {
       "name": "latexmk",
@@ -356,9 +322,7 @@
     {
       "name": "bibtex",
       "command": "bibtex",
-      "args": [
-        "%DOCFILE%"
-      ],
+      "args": ["%DOCFILE%"],
       "env": {}
     }
   ],
@@ -384,9 +348,11 @@
   "todo-tree.tree.scanMode": "workspace only",
   // yaml json
   "yaml.format.printWidth": 120,
+  "yaml.format.bracketSpacing": false,
   "[yaml]": {
     "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.formatOnSave": true
   },
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
@@ -762,6 +728,8 @@
     "dipmom",
     "dipmoms",
     "dirfile",
+    "dirspec",
+    "dirspecs",
     "discretizer",
     "distdir",
     "distsubdir",
@@ -938,6 +906,7 @@
     "getbbox",
     "getchannel",
     "getdata",
+    "Getenv",
     "getframe",
     "gethostname",
     "getline",
@@ -1693,6 +1662,7 @@
     "rsize",
     "rslora",
     "rsqrt",
+    "rsrv",
     "rstd",
     "rstride",
     "rsyncy",
@@ -2167,16 +2137,13 @@
     },
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  "cursorpyright.analysis.inlayHints.genericTypes": false,
   "remote.autoForwardPortsSource": "hybrid",
-  "workbench.editorLargeFileConfirmation": 50,
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
-  "workbench.colorTheme": "Default Dark Modern",
+  "cursorpyright.analysis.inlayHints.genericTypes": false,
   "cursorpyright.analysis.diagnosticSeverityOverrides": {
     "reportMissingImports": "none"
   },
-  "editor.renderWhitespace": "boundary",
-  "workbench.editor.showTabs": "single"
+  "lldb.suppressUpdateNotifications": true
 }
