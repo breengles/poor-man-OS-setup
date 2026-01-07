@@ -52,7 +52,7 @@ function act {
 function q {
   sinfo
   echo ""
-  squeue --user="$(whoami)" --format="%.11i %.11P %45j %.8T %.12M %18N"
+  squeue --user="$(whoami)" --format="%.16i %.16P %45j %.3T %.12M %18N"
   echo ""
   squeue --user="$(whoami)" --array --noheader -o '%T' | awk '{ 
     total++; 
