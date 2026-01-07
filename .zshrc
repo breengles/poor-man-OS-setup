@@ -1,13 +1,4 @@
-export WORDCHARS='*?_[]~&!$(){}<>'
-export PATH=$HOME/google-cloud-sdk/bin:$HOME/.local/bin:$PATH
-
-export OLLAMA_API_BASE="http://127.0.0.1:11434"
-
-export GRADIO_TEMP_DIR="$HOME/gradio_tmp"
-mkdir -p "$GRADIO_TEMP_DIR"
-
-# Starship prompt
-export STARSHIP_CONFIG="$HOME/.config/starship.toml"
+source "$HOME/.config/shell/env_vars.sh"
 
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
   # If you're using macOS, you'll want this enabled
