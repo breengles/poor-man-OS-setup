@@ -588,5 +588,9 @@
   {
     "key": "shift+cmd+o",
     "command": "workbench.action.files.openFolder"
+  },
+  {
+    "key": "cmd+p",
+    "command": "workbench.action.showAllEditors"
   }
 ]
