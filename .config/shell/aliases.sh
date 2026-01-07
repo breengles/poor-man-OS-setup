@@ -2,6 +2,7 @@
 
 alias c="clear"
 alias zshconfig="vim ~/.zshrc"
+alias watch="watch -c"
 
 alias initifort="source /opt/intel/oneapi/setvars.sh >/dev/null"
 
