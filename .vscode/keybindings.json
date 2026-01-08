@@ -592,5 +592,10 @@
   {
     "key": "cmd+p",
     "command": "workbench.action.showAllEditors"
+  },
+  {
+    "key": "cmd+w",
+    "command": "workbench.action.closeWindow",
+    "when": "!editorIsOpen && !multipleEditorGroups"
   }
 ]
