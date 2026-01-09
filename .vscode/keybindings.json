@@ -596,6 +596,6 @@
   {
     "key": "cmd+w",
     "command": "workbench.action.closeWindow",
-    "when": "!editorIsOpen && !multipleEditorGroups && !(composerFocused && focusedView =~ /^workbench.panel.aichat.view/)"
+    "when": "!editorIsOpen && !multipleEditorGroups && !(composerFocused && !editorTextFocus || !editorTextFocus && focusedView =~ /^workbench.panel.aichat.view/)"
   }
 ]
