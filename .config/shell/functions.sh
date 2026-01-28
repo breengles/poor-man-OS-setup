@@ -10,26 +10,33 @@ function calcjson {
 
 function update {
   if [ -x "$(command -v zinit)" ]; then
-    echo -e "\n========== updating zinit ==========\n"
+    echo "========== updating zinit =========="
     zinit self-update
     zinit update --all --parallel
+    echo
   fi
 
   if [ -x "$(command -v brew)" ]; then
-    echo -e "\n========== updating brew packages ==========\n"
+    echo "========== updating brew packages =========="
     brew update && brew upgrade
+    echo
+    echo "The following packages were NOT upgraded (PINNED):"
+    brew list --pinned
+    echo
   fi
 
   if [[ $(hostname) != *"login"* ]]; then
     if [ -x "$(command -v apt)" ]; then
-      echo -e "\n========== updating apt packages ==========\n"
+      echo "========== updating apt packages =========="
       sudo apt update && sudo apt upgrade
+      echo
     fi
   fi
 
   if [ -x "$(command -v cargo)" ]; then
-    echo -e "\n========== updating cargo ==========\n"
+    echo "========== updating cargo =========="
     cargo install-update --all --jobs 8
+    echo
   fi
 }
 
