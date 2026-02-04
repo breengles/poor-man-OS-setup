@@ -79,6 +79,7 @@ exts=(
   "tamasfe.even-better-toml"
   "timonwong.shellcheck"
   "waderyan.gitblame"
+  "jackiotyu.git-worktree-manager"
 )
 for ext in "${exts[@]}"; do
   cursor --install-extension "$ext"

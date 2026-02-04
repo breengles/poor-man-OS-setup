@@ -10,12 +10,12 @@
     "**/.git": true,
     "**/.venv": true,
     "**/dist": true,
-    "**/__pycache__": true
+    "**/__pycache__": true,
   },
   // vscode setting sync
   "settingsSync.ignoredSettings": [
     "-window.zoomLevel",
-    "terminal.integrated.fontSize"
+    "terminal.integrated.fontSize",
   ],
   "settingsSync.ignoredExtensions": [
     "continue.continue"
@@ -43,12 +43,12 @@
     "*.pdf": "default",
     "*.png": "imagePreview.previewEditor",
     "*.jpeg": "imagePreview.previewEditor",
-    "*.jpg": "imagePreview.previewEditor"
+    "*.jpg": "imagePreview.previewEditor",
   },
   "workbench.iconTheme": "material-icon-theme",
   "workbench.colorCustomizations": {
     "terminal.selectionForeground": "#000000",
-    "terminal.selectionBackground": "#fbf8d3"
+    "terminal.selectionBackground": "#fbf8d3",
   },
   "workbench.editorLargeFileConfirmation": 50,
   "workbench.colorTheme": "Default Dark Modern",
@@ -58,7 +58,7 @@
   "debug.console.fontSize": 18,
   // files
   "files.associations": {
-    "*.log": "ansi"
+    "*.log": "ansi",
   },
   "files.autoSave": "onWindowChange",
   "files.watcherExclude": {
@@ -71,7 +71,7 @@
     "**/.aim/**": true,
     "**/logs/**": true,
     "**/output/**": true,
-    "**/__pycache__/**": true
+    "**/__pycache__/**": true,
   },
   "files.insertFinalNewline": true,
   //editor
@@ -82,7 +82,7 @@
   "editor.tabCompletion": "on",
   "editor.defaultFormatter": "charliermarsh.ruff",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always"
+    "source.fixAll.eslint": "always",
   },
   "editor.accessibilitySupport": "off",
   "editor.cursorBlinking": "smooth",
@@ -102,7 +102,7 @@
   "editor.tabSize": 4,
   "editor.unicodeHighlight.ambiguousCharacters": true,
   "editor.unicodeHighlight.allowedLocales": {
-    "ru": true
+    "ru": true,
   },
   "editor.renderWhitespace": "selection",
   // terminal
@@ -119,9 +119,9 @@
       "path": "zsh",
       "args": [
         "-c",
-        "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit"
+        "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit",
       ],
-      "icon": "terminal-tmux"
+      "icon": "terminal-tmux",
     },
     "zellij": {
       "path": "zsh",
@@ -129,17 +129,17 @@
         "-c",
         "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"
       ],
-      "icon": "terminal-tmux"
-    }
+      "icon": "terminal-tmux",
+    },
   },
   "terminal.integrated.profiles.osx": {
     "tmux": {
       "path": "zsh",
       "args": [
         "-c",
-        "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit"
+        "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit",
       ],
-      "icon": "terminal-tmux"
+      "icon": "terminal-tmux",
     },
     "zellij": {
       "path": "zsh",
@@ -147,14 +147,14 @@
         "-c",
         "ses=${PWD##*/} && zellij attach --create ${ses//[.:]/_}"
       ],
-      "icon": "terminal-tmux"
-    }
+      "icon": "terminal-tmux",
+    },
   },
   "terminal.integrated.defaultProfile.linux": "tmux",
   "terminal.integrated.defaultProfile.osx": "tmux",
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.env.linux": {
-    "TERM": "xterm-256color"
+    "TERM": "xterm-256color",
   },
   //remote
   "remote.SSH.remotePlatform": {
@@ -163,7 +163,7 @@
     "worker0": "linux",
     "pair2": "linux",
     "worker1": "linux",
-    "nebius": "linux"
+    "nebius": "linux",
   },
   // git
   "git.replaceTagsWhenPull": true,
@@ -191,8 +191,8 @@
     "editor.codeActionsOnSave": {
       "source.organizeImports": "explicit",
       "source.organizeImports.ruff": "explicit",
-      "source.fixAll": "explicit"
-    }
+      "source.fixAll": "explicit",
+    },
   },
   "python.analysis.autoFormatStrings": true,
   "python.analysis.importFormat": "relative",
@@ -200,7 +200,7 @@
   "python.analysis.inlayHints.functionReturnTypes": true,
   "python.analysis.completeFunctionParens": true,
   "python.analysis.diagnosticSeverityOverrides": {
-    "reportMissingImports": "none"
+    "reportMissingImports": "none",
   },
   "python.terminal.activateEnvironment": false,
   "python.terminal.executeInFileDir": true,
@@ -215,12 +215,12 @@
   "notebook.defaultFormatter": "charliermarsh.ruff",
   "notebook.cellToolbarLocation": {
     "default": "right",
-    "jupyter-notebook": "left"
+    "jupyter-notebook": "left",
   },
   "notebook.formatOnSave.enabled": true,
   "notebook.codeActionsOnSave": {
     "notebook.source.fixAll": "never",
-    "notebook.source.organizeImports": "explicit"
+    "notebook.source.organizeImports": "explicit",
   },
   // fortran
   "fortran.formatting.formatter": "Disabled",
@@ -230,20 +230,20 @@
   "fortran.linter.compilerPath": "gfortran",
   "fortran.linter.compiler": "gfortran",
   "[FortranFreeForm]": {
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[FortranFixedForm]": {
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   // markdown
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
   },
   "markdownlint.config": {
     "default": true,
-    "MD024": false
+    "MD024": false,
   },
   // latex
   "latex-workshop.latex.recipe.default": "lastUsed",
@@ -255,14 +255,14 @@
       "tools": [
         "lualatex",
         "lualatex"
-      ]
+      ],
     },
     {
       "name": "pdflatex x2",
       "tools": [
         "pdflatex",
         "pdflatex"
-      ]
+      ],
     },
     {
       "name": "lualatex->biber->lualatex x2",
@@ -271,7 +271,7 @@
         "biber",
         "lualatex",
         "lualatex"
-      ]
+      ],
     },
     {
       "name": "xelatex->biber->xelatex x2",
@@ -280,7 +280,7 @@
         "biber",
         "xelatex",
         "xelatex"
-      ]
+      ],
     },
     {
       "name": "pdflatex -> biber -> pdflatex x2",
@@ -289,7 +289,7 @@
         "biber",
         "pdflatex",
         "pdflatex"
-      ]
+      ],
     },
     {
       "name": "pdflatex -> bibtex -> pdflatex x2",
@@ -298,14 +298,14 @@
         "bibtex",
         "pdflatex",
         "pdflatex"
-      ]
+      ],
     },
     {
       "name": "latexmk",
       "tools": [
         "latexmk"
-      ]
-    }
+      ],
+    },
   ],
   "latex-workshop.latex.tools": [
     {
@@ -316,8 +316,8 @@
         "-interaction=nonstopmode",
         "-file-line-error",
         "-pdf",
-        "%DOC%"
-      ]
+        "%DOC%",
+      ],
     },
     {
       "name": "xelatex",
@@ -327,15 +327,15 @@
         "-interaction=nonstopmode",
         "-file-line-error",
         "-pdf",
-        "%DOC%"
-      ]
+        "%DOC%",
+      ],
     },
     {
       "name": "biber",
       "command": "biber",
       "args": [
         "%DOCFILE%"
-      ]
+      ],
     },
     {
       "name": "latexmk",
@@ -346,9 +346,9 @@
         "-file-line-error",
         "-pdf",
         "-outdir=%OUTDIR%",
-        "%DOC%"
+        "%DOC%",
       ],
-      "env": {}
+      "env": {},
     },
     {
       "name": "pdflatex",
@@ -357,9 +357,9 @@
         "-synctex=1",
         "-interaction=nonstopmode",
         "-file-line-error",
-        "%DOC%"
+        "%DOC%",
       ],
-      "env": {}
+      "env": {},
     },
     {
       "name": "bibtex",
@@ -367,11 +367,11 @@
       "args": [
         "%DOCFILE%"
       ],
-      "env": {}
-    }
+      "env": {},
+    },
   ],
   "[latex]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
   },
   // todo-tree
   "todo-tree.general.tags": [
@@ -383,11 +383,11 @@
     "REF",
     "WARN",
     "note",
-    "NOTE"
+    "NOTE",
   ],
   "todo-tree.filtering.excludeGlobs": [
     "**/node_modules/**",
-    "**/site-packages/**"
+    "**/site-packages/**",
   ],
   "todo-tree.tree.scanMode": "workspace only",
   // yaml json
@@ -396,13 +396,13 @@
   "[yaml]": {
     "editor.tabSize": 2,
     "editor.defaultFormatter": "redhat.vscode-yaml",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
   },
   "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
+    "editor.defaultFormatter": "vscode.json-language-features",
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   // spelling
   "cSpell.enabled": true,
@@ -590,6 +590,7 @@
     "Chervontsev",
     "chibi",
     "Chilingaryan",
+    "chima",
     "chkp",
     "chsh",
     "chuncking",
@@ -915,6 +916,7 @@
     "fortls",
     "fpath",
     "fpaths",
+    "fpng",
     "fprettify",
     "frameskip",
     "Frechet",
@@ -951,6 +953,7 @@
     "getchannel",
     "getdata",
     "Getenv",
+    "getexif",
     "getframe",
     "gethostname",
     "getline",
@@ -1103,9 +1106,11 @@
     "iuvarr",
     "iwctl",
     "jaccard",
+    "jackiotyu",
     "janisdd",
     "Jarmy",
     "jasperai",
+    "jeogori",
     "jinr",
     "jobid",
     "jobids",
@@ -1341,6 +1346,7 @@
     "monaspace",
     "Monaspice",
     "monokai",
+    "moonveil",
     "moonwalker",
     "moveaxis",
     "moviepy",
@@ -1572,6 +1578,7 @@
     "Pryishhi",
     "pshuffle",
     "psnr",
+    "psnrs",
     "pspex",
     "psutil",
     "psycopg",
@@ -1742,6 +1749,7 @@
     "sbatch",
     "sberai",
     "scalapack",
+    "scalings",
     "scancel",
     "schnell",
     "Sciera",
@@ -2061,6 +2069,7 @@
     "WORDCHARS",
     "workr",
     "workth",
+    "worktree",
     "wplus",
     "wspace",
     "WSTPLN",
@@ -2164,7 +2173,7 @@
     "Хевисайда",
     "Хилерааса",
     "Шабаев",
-    "шебангом"
+    "шебангом",
   ],
   // other
   "material-icon-theme.folders.theme": "specific",
@@ -2177,17 +2186,18 @@
     "editor.quickSuggestions": {
       "other": true,
       "comments": false,
-      "strings": true
+      "strings": true,
     },
-    "editor.defaultFormatter": "redhat.vscode-yaml"
+    "editor.defaultFormatter": "redhat.vscode-yaml",
   },
   "remote.autoForwardPortsSource": "hybrid",
   "[toml]": {
-    "editor.defaultFormatter": "tamasfe.even-better-toml"
+    "editor.defaultFormatter": "tamasfe.even-better-toml",
   },
   "cursorpyright.analysis.inlayHints.genericTypes": false,
   "cursorpyright.analysis.diagnosticSeverityOverrides": {
-    "reportMissingImports": "none"
+    "reportMissingImports": "none",
   },
-  "lldb.suppressUpdateNotifications": true
+  "lldb.suppressUpdateNotifications": true,
+  "merge-conflict.autoNavigateNextConflict.enabled": true,
 }
