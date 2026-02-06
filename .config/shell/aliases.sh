@@ -26,9 +26,9 @@ if [ -x "$(command -v zellij)" ]; then
 fi
 
 if [ -x "$(command -v eza)" ]; then
-  alias ls="eza --color=always"
-  alias l="eza --color=always --long"
-  alias ll="eza --color=always -abghHlS"
+  alias ls="eza --color=always --group-directories-first"
+  alias l="eza --color=always --long --group-directories-first"
+  alias ll="eza --color=always -abghHlS --group-directories-first"
 fi
 
 if [ -x "$(command -v ollama)" ]; then
