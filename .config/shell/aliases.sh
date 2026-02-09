@@ -25,7 +25,7 @@ if [ -x "$(command -v zellij)" ]; then
   alias zl=zellij
 fi
 
-if [ -x "$(command -v eza)" ]; then
+if [ -x "$(command -v eza)" ] && [ -z "$AGENT" ]; then
   alias ls="eza --color=always --group-directories-first"
   alias l="eza --color=always --long --group-directories-first"
   alias ll="eza --color=always -abghHlS --group-directories-first"
@@ -35,7 +35,7 @@ if [ -x "$(command -v ollama)" ]; then
   alias ol=ollama
 fi
 
-if [ -x "$(command -v bat)" ]; then
+if [ -x "$(command -v bat)" ] && [ -z "$AGENT" ]; then
   alias cat=bat
 fi
 
