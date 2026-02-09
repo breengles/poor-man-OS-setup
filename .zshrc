@@ -31,6 +31,7 @@ if [ -f "$HOME/.completion.adkb.sh" ]; then source "$HOME/.completion.adkb.sh"; 
 if [ -f "$HOME/.completion.uv.sh" ]; then source "$HOME/.completion.uv.sh"; fi
 if [ -f "$HOME/.completion.pueue.zsh" ]; then source "$HOME/.completion.pueue.zsh"; fi
 if [ -f "$HOME/.completion.pcpctl.zsh" ]; then source "$HOME/.completion.pcpctl.zsh"; fi
+if [ -f "$HOME/.completion.opencode.sh" ]; then source "$HOME/.completion.opencode.sh"; fi
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then source "$HOME/google-cloud-sdk/path.zsh.inc"; fi
