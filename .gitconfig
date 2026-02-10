@@ -3,6 +3,7 @@
 [core]
   excludesfile = ~/.gitignore
   editor = vim
+  pager = delta
 [alias]
   co = checkout
   ci = commit -m
@@ -23,3 +24,5 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+[delta]
+    side-by-side = true
