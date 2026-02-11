@@ -56,38 +56,30 @@ function act {
 }
 
 # some stuff for remote cluster
+_SLURM_JOB_SUMMARY_AWK='{
+  total++;
+  counts[$1]++;
+} END {
+  running = counts["RUNNING"] + 0;
+  pending = counts["PENDING"] + 0;
+  completing = counts["COMPLETING"] + 0;
+  other = total - running - pending - completing;
+  printf "Jobs: %d R=%d P=%d C=%d", total, running, pending, completing;
+  if (other > 0) printf " O=%d", other;
+  printf "\n";
+}'
+_SLURM_QUEUE_FMT="%.16i %.16P %45j %.3T %.12M %18N"
+
 function q {
   sinfo
   echo ""
-  squeue --user="$(whoami)" --format="%.16i %.16P %45j %.3T %.12M %18N"
+  squeue --user="$(whoami)" --format="$_SLURM_QUEUE_FMT"
   echo ""
-  squeue --user="$(whoami)" --array --noheader -o '%T' | awk '{ 
-    total++; 
-    counts[$1]++; 
-  } END { 
-    running = counts["RUNNING"] + 0;
-    pending = counts["PENDING"] + 0; 
-    completing = counts["COMPLETING"] + 0;
-    other = total - running - pending - completing;
-    printf "Jobs: %d R=%d P=%d C=%d", total, running, pending, completing;
-    if (other > 0) printf " O=%d", other;
-    printf "\n";
-  }'
+  squeue --user="$(whoami)" --array --noheader -o '%T' | awk "$_SLURM_JOB_SUMMARY_AWK"
 }
 
 function qq {
-  watch -n 1 "squeue --user=\$(whoami) --array --noheader -o '%T' | awk '{ 
-    total++; 
-    counts[\$1]++; 
-  } END { 
-    running = counts[\"RUNNING\"] + 0;
-    pending = counts[\"PENDING\"] + 0; 
-    completing = counts[\"COMPLETING\"] + 0;
-    other = total - running - pending - completing;
-    printf \"Jobs: %d R=%d P=%d C=%d\", total, running, pending, completing;
-    if (other > 0) printf \" O=%d\", other;
-    printf \"\\n\";
-  }'; echo ''; squeue --user=\$(whoami) --format='%.16i %.16P %45j %.3T %.12M %18N'"
+  watch -n 1 "squeue --user=\$(whoami) --array --noheader -o '%T' | awk '$_SLURM_JOB_SUMMARY_AWK'; echo ''; squeue --user=\$(whoami) --format='$_SLURM_QUEUE_FMT'"
 }
 
 # scancel tab completion: completes job IDs with job name as description
@@ -111,14 +103,16 @@ if [ -x "$(command -v scancel)" ]; then
 fi
 
 function gpu {
-  ssh "lambda-scalar0$1" -t "$(which nvitop)"
+  ssh "lambda-scalar$1" -t nvitop
 }
 
 function gpu_usage {
-  # Get basic job info and detailed GPU allocation info
-  squeue -t RUNNING -h -o "%i %u %b %P %D %C" | while read jobid user gres partition nodes cpus; do
-    echo "$jobid $user $gres $partition $nodes $cpus"
-  done | awk '{
+  if ! command -v squeue >/dev/null 2>&1 || ! command -v scontrol >/dev/null 2>&1; then
+    echo "SLURM not found: require squeue and scontrol" >&2
+    return 1
+  fi
+
+  squeue -t RUNNING -h -o "%i %u %b %P %D %C" | awk '{
       jobid=$1; user=$2; gres=$3; partition=$4; nodes=$5; cpus=$6;
       user_jobs[user]++;
       user_partition_jobs[user,partition]++;
@@ -258,16 +252,16 @@ function gpu_alloc {
       p) FILTER_PART="$OPTARG" ;;
       n) FILTER_NODE="$OPTARG" ;;
       :) echo "Error: option -$OPTARG requires an argument" >&2; return 1 ;;
-      \?) echo "Usage: all_gpu [-p partition] [-n node_substring]" >&2; return 1 ;;
+      \?) echo "Usage: gpu_alloc [-p partition] [-n node_substring]" >&2; return 1 ;;
     esac
   done
   shift $((OPTIND-1))
   if [ $# -gt 0 ]; then
-    echo "Usage: all_gpu [-p partition] [-n node_substring]" >&2
+    echo "Usage: gpu_alloc [-p partition] [-n node_substring]" >&2
     return 1
   fi
 
-  local PART_OPT=""
+  local -a PART_OPT
   if [[ -n "$FILTER_PART" ]]; then PART_OPT=(-p "$FILTER_PART"); else PART_OPT=(); fi
 
   local rows
