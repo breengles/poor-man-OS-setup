@@ -90,6 +90,26 @@ function qq {
   }'; echo ''; squeue --user=\$(whoami) --format='%.16i %.16P %45j %.3T %.12M %18N'"
 }
 
+# scancel tab completion: completes job IDs with job name as description
+if [ -x "$(command -v scancel)" ]; then
+  if [ -n "$ZSH_VERSION" ]; then
+    function _scancel_complete {
+      local -a job_specs
+      while IFS='|' read -r jobid jobname; do
+        job_specs+=("${jobid}:${jobname}")
+      done < <(squeue --user="$(whoami)" --noheader -o '%i|%j' 2>/dev/null)
+      _describe 'job' job_specs
+    }
+    compdef _scancel_complete scancel
+  elif [ -n "$BASH_VERSION" ]; then
+    function _scancel_complete {
+      local cur="${COMP_WORDS[COMP_CWORD]}"
+      COMPREPLY=($(compgen -W "$(squeue --user="$(whoami)" --noheader -o '%i' 2>/dev/null)" -- "$cur"))
+    }
+    complete -F _scancel_complete scancel
+  fi
+fi
+
 function gpu {
   ssh "lambda-scalar0$1" -t "$(which nvitop)"
 }
