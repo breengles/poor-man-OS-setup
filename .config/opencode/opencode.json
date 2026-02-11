@@ -11,17 +11,5 @@
             "template": "Review all staged and unstaged changes using `git diff` and `git diff --cached`. Analyze the changes and create well-formatted git commits.\n\nFollow these rules:\n1. Write concise commit messages following the Conventional Commits format (e.g. feat:, fix:, refactor:, docs:, chore:, test:)\n2. The subject line should be max 72 characters\n3. Add a body if the changes are complex, explaining the \"why\" not just the \"what\"\n4. IMPORTANT: Only commit changes that were made during this session. Do NOT commit pre-existing uncommitted changes unless the user explicitly asks to commit all changes.\n5. Divide changes into logical, semantic commits. Group related changes together and separate unrelated changes into distinct commits. For example, a bug fix and a new feature should be separate commits, a refactor and its associated test updates should be one commit.\n6. Stage files selectively for each commit using `git add <specific files>` — do NOT use `git add .` or `git add -A` unless all changes belong to a single logical unit.\n7. Do NOT commit files that contain secrets (.env, credentials, API keys)\n8. Show the final result with `git log --oneline --name-only -n <number of commits made>` after committing",
             "description": "Create a well-formatted git commit"
         }
-    },
-    "agent": {
-        "ask": {
-            "description": "Answers questions using read-only access and bash commands, without modifying files",
-            "mode": "primary",
-            "model": "anthropic/claude-opus-4-6",
-            "tools": {
-                "write": false,
-                "edit": false,
-                "bash": true
-            }
-        }
     }
 }
