@@ -4,6 +4,7 @@
 ^/readme.*
 ^/LICENSE.*
 ^/COPYING
+^/AGENTS\.md
 
 /misc
 /.vscode
