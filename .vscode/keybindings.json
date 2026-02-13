@@ -597,5 +597,9 @@
     "key": "cmd+w",
     "command": "workbench.action.closeWindow",
     "when": "!editorIsOpen && !multipleEditorGroups && !(composerFocused && !editorTextFocus || !editorTextFocus && focusedView =~ /^workbench.panel.aichat.view/)"
+  },
+  {
+    "key": "` `",
+    "command": "workbench.action.createTerminalEditor"
   }
 ]
