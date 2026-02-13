@@ -1,5 +1,5 @@
-[user]
-  name = Artem Kotov
+[include]
+  path = ~/.gitconfig.local
 [core]
   excludesfile = ~/.gitignore
   editor = vim
