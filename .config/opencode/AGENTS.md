@@ -23,3 +23,9 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 ## General
 - Prefer `uv` for all Python-related tasks including linting, formatting, and type checking
 - If a project doesn't have a virtual environment yet, create one with `uv venv` first
+
+## GitLab
+
+- Use `gitlab` MCP tools for interacting with GitLab (issues, merge requests, projects, etc.)
+- If the GitLab MCP server fails, is unavailable, or does not provide enough information, fall back to the `glab` CLI tool instead
+- Example `glab` commands: `glab issue list`, `glab mr list`, `glab mr view <id>`, `glab issue view <id>`
