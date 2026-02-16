@@ -599,8 +599,13 @@
     "when": "!editorIsOpen && !multipleEditorGroups && !(composerFocused && !editorTextFocus || !editorTextFocus && focusedView =~ /^workbench.panel.aichat.view/)"
   },
   {
-    "key": "` `",
+    "key": "ctrl+`",
     "command": "workbench.action.createTerminalEditor"
+  },
+  {
+    "key": "ctrl+`",
+    "command": "-workbench.action.terminal.toggleTerminal",
+    "when": "terminal.active"
   },
   {
     "key": "ctrl+r",
