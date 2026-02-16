@@ -55,4 +55,8 @@ if [ -x "$(command -v pcpctl)" ]; then
   alias pcp="pcpctl"
 fi
 
+if [ -x "$(command -v opencode)" ]; then
+  alias oc=opencode
+fi
+
 alias deact=deactivate
