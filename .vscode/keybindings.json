@@ -601,5 +601,13 @@
   {
     "key": "` `",
     "command": "workbench.action.createTerminalEditor"
+  },
+  {
+    "key": "ctrl+r",
+    "command": "-workbench.action.openRecent"
+  },
+  {
+    "key": "ctrl+shift+r",
+    "command": "workbench.action.openRecent"
   }
 ]
