@@ -262,7 +262,7 @@
   },
   {
     "key": "f1",
-    "command": "workbench.action.showCommands"
+    "command": "workbench.action.openRecent"
   },
   {
     "key": "cmd+e",
@@ -610,9 +610,5 @@
   {
     "key": "ctrl+r",
     "command": "-workbench.action.openRecent"
-  },
-  {
-    "key": "ctrl+shift+r",
-    "command": "workbench.action.openRecent"
   }
 ]
