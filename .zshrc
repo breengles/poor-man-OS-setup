@@ -30,6 +30,7 @@ if [ -f "$HOME/.env-global.sh" ]; then source "$HOME/.env-global.sh"; fi
 # add completions
 if [ -f "$HOME/.completion.adkb.sh" ]; then source "$HOME/.completion.adkb.sh"; fi
 if [ -f "$HOME/.completion.uv.sh" ]; then source "$HOME/.completion.uv.sh"; fi
+if [ -f "$HOME/.completion.glab.zsh" ]; then source "$HOME/.completion.glab.zsh"; fi
 if [ -f "$HOME/.completion.pueue.zsh" ]; then source "$HOME/.completion.pueue.zsh"; fi
 if [ -f "$HOME/.completion.pcpctl.zsh" ]; then source "$HOME/.completion.pcpctl.zsh"; fi
 if [ -f "$HOME/.completion.opencode.sh" ]; then source "$HOME/.completion.opencode.sh"; fi
