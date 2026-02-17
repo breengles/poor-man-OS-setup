@@ -8,6 +8,7 @@ fi
 # Shell integrations
 files=(
   "$HOME/.config/shell/zinit.zsh"
+  "$HOME/.cargo/env"
   "$HOME/.fzf.zsh"
   "$HOME/.config/shell/cluster.zsh"
   "$HOME/.config/shell/functions.sh"
