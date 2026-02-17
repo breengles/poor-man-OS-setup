@@ -52,11 +52,13 @@ else
   # The next line enables shell command completion for gcloud.
   if [ -f "$HOME/google-cloud-sdk/completion.bash.inc" ]; then . "$HOME/google-cloud-sdk/completion.bash.inc"; fi
 
+
   if [ -f $HOME/.fzf.bash ]; then source $HOME/.fzf.bash; fi
+  if [ -f "$HOME/.cargo/env" ]; then source "$HOME/.cargo/env"; fi
 
-  source "$HOME/.cargo/env"
-
-  if [ -f "$HOME/.completion.uv.bash" ]; then source "$HOME/.completion.uv.bash"; fi
+  if [ -f "$HOME/.completion.adkb.sh" ]; then source "$HOME/.completion.adkb.sh"; fi
+  if [ -f "$HOME/.completion.uv.sh" ]; then source "$HOME/.completion.uv.sh"; fi
+  if [ -f "$HOME/.completion.opencode.sh" ]; then source "$HOME/.completion.opencode.sh"; fi
 
   # Initialize Starship prompt
   eval "$(starship init bash)"
