@@ -261,8 +261,9 @@
     "command": "-workbench.action.showCommands"
   },
   {
-    "key": "f1",
-    "command": "workbench.action.openRecent"
+    "key": "shift+cmd+r",
+    "command": "workbench.action.openRecent",
+    "when": "true"
   },
   {
     "key": "cmd+e",
@@ -338,11 +339,6 @@
   {
     "key": "shift+cmd+r",
     "command": "-continue.debugTerminal"
-  },
-  {
-    "key": "shift+cmd+r",
-    "command": "editor.action.rename",
-    "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"
   },
   {
     "key": "ctrl+shift+`",
