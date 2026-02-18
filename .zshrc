@@ -1,3 +1,5 @@
+PROMPT_EOL_MARK=''
+
 source "$HOME/.config/shell/env_vars.sh"
 
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
