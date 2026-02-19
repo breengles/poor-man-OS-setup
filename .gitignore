@@ -16,3 +16,7 @@ __pycache__
 .aim
 
 /.config/yazi/plugins
+
+# Sensitive local config files (safety net)
+.env-global.sh
+.gitconfig.local

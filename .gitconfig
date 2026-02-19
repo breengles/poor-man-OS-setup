@@ -2,12 +2,10 @@
   path = ~/.gitconfig.local
 [core]
   excludesfile = ~/.gitignore
-  editor = vim
+  editor = nvim
   pager = delta
 [alias]
   co = checkout
-  ci = commit -m
-  reci = commit --amend -m
   st = status
   br = branch
   hist = log --pretty=format:\"%h %cd | %s%d\" --graph
@@ -16,7 +14,6 @@
   lg = !"git lg2"
   type = cat-file -t
   dump = cat-file -p
-  reci = commit --amend -m
 [init]
   defaultBranch = main
 [filter "lfs"]

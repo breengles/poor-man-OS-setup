@@ -1593,6 +1593,7 @@ uncond
 Unet
 unets
 unflatten
+unfunction
 unfuse
 Unfuses
 ungerade

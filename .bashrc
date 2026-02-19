@@ -19,7 +19,7 @@ else
   # History Configuration (matching zsh settings)
   HISTSIZE=20000
   HISTFILESIZE=$HISTSIZE
-  HISTFILE=~/.bash_history
+  HISTFILE="$HOME/.bash_history"
   HISTCONTROL=ignorespace:ignoredups:erasedups # Don't put duplicate lines or lines starting with space in history
   shopt -s histappend # Append to the history file, don't overwrite it
   shopt -s cmdhist # Save multi-line commands as one command
@@ -53,7 +53,7 @@ else
   if [ -f "$HOME/google-cloud-sdk/completion.bash.inc" ]; then . "$HOME/google-cloud-sdk/completion.bash.inc"; fi
 
 
-  if [ -f $HOME/.fzf.bash ]; then source $HOME/.fzf.bash; fi
+  if [ -f "$HOME/.fzf.bash" ]; then source "$HOME/.fzf.bash"; fi
   if [ -f "$HOME/.cargo/env" ]; then source "$HOME/.cargo/env"; fi
 
   if [ -f "$HOME/.completion.adkb.sh" ]; then source "$HOME/.completion.adkb.sh"; fi
@@ -61,7 +61,7 @@ else
   if [ -f "$HOME/.completion.opencode.sh" ]; then source "$HOME/.completion.opencode.sh"; fi
 
   # Initialize Starship prompt
-  eval "$(starship init bash)"
+  [ -x "$(command -v starship)" ] && eval "$(starship init bash)"
 
   source "$HOME/.config/shell/functions.sh"
   source "$HOME/.config/shell/aliases.sh"
