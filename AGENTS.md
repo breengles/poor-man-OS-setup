@@ -18,7 +18,7 @@ no build system, no test framework, and no CI/CD pipeline.
 .config/
   kitty/                   # Kitty terminal emulator (theme, fonts)
   nvim/                    # Neovim config (Kickstart-based, lazy.nvim)
-    init.lua               # Main config (~1039 lines)
+    init.lua               # Main config (~1038 lines)
     lua/custom/plugins/    # Custom plugins (git, colorscheme)
     lua/kickstart/         # Kickstart modules
   opencode/                # OpenCode AI tool config
@@ -45,7 +45,7 @@ stow -n -v .
 ```
 
 Files excluded from stow (via `.stow-local-ignore`):
-`.git`, `readme.*`, `LICENSE`, `COPYING`, `AGENTS.md`, `/misc`, `/.vscode`, `/.config/yazi/plugins`
+`.DS_Store`, `.git`, `readme.*`, `LICENSE`, `COPYING`, `AGENTS.md`, `/misc`, `/.vscode`, `/.config/yazi/plugins`
 
 ## Code Style Guidelines
 
@@ -144,10 +144,10 @@ Files excluded from stow (via `.stow-local-ignore`):
 
 ## AI Agent Configuration
 
-- **OpenCode:** Configured at `.config/opencode/opencode.json` with Claude Sonnet 4.6
-  as default model, Claude Opus 4.6 for read-only "ask" agent
+- **OpenCode:** Configured at `.config/opencode/opencode.json` with Claude Opus 4.6
+  as default model, Claude Sonnet 4.6 as small/fast model
 - **OpenCode AGENTS.md:** `.config/opencode/AGENTS.md` contains Python-specific `uv` preferences
-  (also loaded as system instructions by the current session)
+  and GitLab workflow instructions (also loaded as system instructions by the current session)
 
 ## Key Reminders
 
