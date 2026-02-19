@@ -29,6 +29,11 @@ zinit light zsh-users/zsh-autosuggestions
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
+# Docker CLI completions (must be added to fpath before compinit)
+if [ -d "$HOME/.docker/completions" ]; then
+  fpath=("$HOME/.docker/completions" $fpath)
+fi
+
 # Load completions with caching (only rebuild once per day)
 autoload -Uz compinit
 setopt EXTENDEDGLOB
