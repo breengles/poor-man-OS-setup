@@ -57,3 +57,5 @@ When working with TODO files, follow this structure:
    "Suggested resolution order" section listing item numbers in the order they should be
    tackled (e.g. dependencies first, quick wins, then larger efforts). Keep it to a simple
    numbered list with brief rationale per item.
+6. **Keep the Priority Summary table sorted** — whenever adding or updating a TODO item,
+   ensure the Priority Summary table remains sorted by priority (highest first).

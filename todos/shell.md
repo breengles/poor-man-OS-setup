@@ -9,7 +9,7 @@
 | P1 | [#3 NVM loading is synchronous and slow](#3-nvm-loading-is-synchronous-and-slow) |
 | P1 | [#4 Duplicate git alias reci in .gitconfig](#4-duplicate-git-alias-reci-in-gitconfig) |
 | P1 | [#5 .gitconfig editor hardcodes vim instead of nvim](#5-gitconfig-editor-hardcodes-vim-instead-of-nvim) |
-| P1 | [#6 zinit check in update function is unreliable](#6-zinit-check-in-update-function-is-unreliable) |
+| P0 | [#6 zinit check in update function is broken](#6-zinit-check-in-update-function-is-broken) |
 | P2 | [#7 Duplicated fzf widget logic in keybindings.zsh](#7-duplicated-fzf-widget-logic-in-keybindingszsh) |
 | P2 | [#8 gpu function has no argument validation](#8-gpu-function-has-no-argument-validation) |
 | P2 | [#9 No starship command guard in .bashrc](#9-no-starship-command-guard-in-bashrc) |
@@ -17,22 +17,25 @@
 | P2 | [#11 rsync-synchronize has no short alias](#11-rsync-synchronize-has-no-short-alias) |
 | P2 | [#12 Security: .env-global.sh and .gitconfig.local not in .gitignore](#12-security-env-globalsh-and-gitconfiglocal-not-in-gitignore) |
 | P2 | [#13 Inconsistent tilde vs $HOME usage across configs](#13-inconsistent-tilde-vs-home-usage-across-configs) |
+| P2 | [#14 Unquoted $HOME in env_vars.sh PATH assignment](#14-unquoted-home-in-env_varssh-path-assignment) |
+| P2 | [#15 No starship command guard in .zshrc](#15-no-starship-command-guard-in-zshrc) |
 
 ## Suggested Resolution Order
 
-1. **#1** — Buggy error handling can mislead during debugging. Quick fix.
-2. **#4** — Duplicate alias, trivial one-line delete.
-3. **#2** — Style guide violation, one-line fix.
-4. **#5** — Robustness fix, one-line change.
-5. **#6** — Unreliable check, quick fix.
-6. **#12** — Security safety net, add two lines to .gitignore.
-7. **#9** — Missing guard, one-line addition.
-8. **#3** — Performance improvement, moderate effort (lazy-load NVM).
-9. **#8** — Missing validation, small addition.
-10. **#10** — Minor perf, wrap in guard.
-11. **#11** — Trivial consistency fix.
-12. **#7** — Refactor, moderate effort but improves maintainability.
-13. **#13** — Cosmetic consistency, low priority.
+1. **#1** — P0 bug: error handling masks source failures. [Small, <5 min]
+2. **#6** — P0 bug: zinit update is dead code. [Small, <5 min]
+3. **#4** — Duplicate alias, one-line delete. [Small, <2 min]
+4. **#2** — Unquoted $HOME, one-line fix. [Small, <2 min]
+5. **#5** — Editor hardcodes vim, one-line change. [Small, <2 min]
+6. **#12** — Security: add .env-global.sh and .gitconfig.local to .gitignore. [Small, <2 min]
+7. **#9, #15** — Missing starship guards, batch both files. [Small, <5 min]
+8. **#14** — Unquoted $HOME in PATH assignment, one-line fix. [Small, <2 min]
+9. **#8** — gpu function needs argument validation. [Small, <5 min]
+10. **#10** — Guard mkdir with existence check. [Small, <2 min]
+11. **#11** — Add short alias for rsync-synchronize. [Small, <2 min]
+12. **#13** — Tilde vs $HOME consistency across configs. [Small, <10 min]
+13. **#3** — Lazy-load NVM for faster shell startup. [Medium, 15-30 min]
+14. **#7** — Refactor duplicated fzf widget logic. [Medium, 15-30 min]
 
 ---
 
@@ -124,20 +127,20 @@ This relies on the shell alias `alias vim=nvim` from `aliases.sh` to invoke Neov
 
 ---
 
-### #6 zinit check in update function is unreliable
+### #6 zinit check in update function is broken
 
-**Priority:** P1 (Important)
+**Priority:** P0 (Critical)
 **File:** `.config/shell/functions.sh:12`
 
 ```bash
 if [ -x "$(command -v zinit)" ]
 ```
 
-`zinit` is a zsh function loaded by the plugin manager, not a standalone executable. `command -v zinit` returns a function definition, and `[ -x ... ]` tests for file executability. This check may produce incorrect results.
+`zinit` is a zsh function loaded by the plugin manager, not a standalone executable. `command -v zinit` returns the string `zinit`, and `[ -x "zinit" ]` checks if a file named "zinit" exists and is executable in the current directory — which it never will. This means **the zinit update block is dead code** and `update` never updates zinit plugins despite appearing to support it.
 
 **Fix:** Use `type zinit &>/dev/null` or `(( $+functions[zinit] ))`.
 
-**Acceptance criteria:** The `update` function correctly detects whether zinit is available.
+**Acceptance criteria:** Running `update` in zsh correctly detects zinit and runs `zinit self-update && zinit update --all --parallel`.
 
 ---
 
@@ -217,7 +220,7 @@ This runs unconditionally. If `starship` is not installed, it produces an error.
 **File:** `.config/shell/env_vars.sh:6-7`
 
 ```bash
-export GRADIO_TEMP_DIR="$HOME/.gradio_tmp"
+export GRADIO_TEMP_DIR="$HOME/gradio_tmp"
 mkdir -p "$GRADIO_TEMP_DIR"
 ```
 
@@ -243,7 +246,7 @@ The rsync aliases define both long-form and short-form versions, except `rsync-s
 - `rsync-update` / `rupd`
 - `rsync-synchronize` / ??? (missing `rsync` short alias)
 
-**Acceptance criteria:** Add `alias rsync='rsync-synchronize'` or similar short alias for consistency.
+**Acceptance criteria:** Add a short alias like `alias rsync-sync='rsync-synchronize'` or `alias rsyncd='rsync-synchronize'` for consistency. Note: do NOT use `alias rsync=...` as that would shadow the rsync binary itself.
 
 ---
 
@@ -268,3 +271,37 @@ If someone accidentally places these files in the repo root, they could be track
 Shell configs inconsistently use `~` and `$HOME` for home directory references. The style guide prefers `"$HOME"` with double-quotes.
 
 **Acceptance criteria:** Consistent use of `"$HOME"` across all shell config files.
+
+---
+
+### #14 Unquoted $HOME in env_vars.sh PATH assignment
+
+**Priority:** P2 (Nice-to-have)
+**File:** `.config/shell/env_vars.sh:2`
+
+```bash
+export PATH=$HOME/google-cloud-sdk/bin:$HOME/.local/bin:$PATH
+```
+
+`$HOME` is unquoted. While PATH assignments don't undergo word splitting, the project style guide requires double-quoting all variable expansions for consistency.
+
+**Fix:** `export PATH="$HOME/google-cloud-sdk/bin:$HOME/.local/bin:$PATH"`
+
+**Acceptance criteria:** PATH assignment uses quoted `"$HOME"`.
+
+---
+
+### #15 No starship command guard in .zshrc
+
+**Priority:** P2 (Nice-to-have)
+**File:** `.zshrc:27`
+
+```zsh
+eval "$(starship init zsh)"
+```
+
+Same issue as #9 but in `.zshrc`. If `starship` is not installed, this produces an error. Should be guarded like other optional tools.
+
+**Fix:** `[ -x "$(command -v starship)" ] && eval "$(starship init zsh)"`
+
+**Acceptance criteria:** No error in zsh when starship is not installed.
