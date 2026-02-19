@@ -49,7 +49,6 @@ return {
 
       -- Light blue group (#81c6f6)
       hi('IncSearch', { fg = '#81c6f6' })
-      hi('Title', { fg = '#81c6f6' })
       hi('PreCondit', { fg = '#81c6f6' })
       hi('Debug', { fg = '#81c6f6' })
       hi('SpecialChar', { fg = '#81c6f6' })

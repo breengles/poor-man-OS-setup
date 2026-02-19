@@ -454,6 +454,7 @@ evals
 EVCCNV
 excludesfile
 execdir
+exepath
 exitstat
 exitstatus
 expit
@@ -769,6 +770,7 @@ lapi
 latexindent
 latexmk
 latlayer
+lazydev
 lazyvim
 lbet
 LCAO
@@ -778,6 +780,7 @@ legender
 leggauss
 legvander
 leres
+lesspipe
 levelname
 levelno
 lexic
