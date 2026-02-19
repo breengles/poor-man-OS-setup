@@ -140,15 +140,7 @@
   "terminal.integrated.env.linux": {
     "TERM": "xterm-256color",
   },
-  //remote
-  "remote.SSH.remotePlatform": {
-    "office": "linux",
-    "pair": "linux",
-    "worker0": "linux",
-    "pair2": "linux",
-    "worker1": "linux",
-    "nebius": "linux",
-  },
+  // remote — remote.SSH.remotePlatform: configure per-machine (not tracked)
   // git
   "git.replaceTagsWhenPull": true,
   "git.autofetchPeriod": 60,
