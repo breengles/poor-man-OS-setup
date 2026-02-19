@@ -24,6 +24,10 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 - Prefer `uv` for all Python-related tasks including linting, formatting, and type checking
 - If a project doesn't have a virtual environment yet, create one with `uv venv` first
 
+## Markdown
+
+- After editing or creating any markdown file (`.md`), always run `npx prettier --write <file>` to format it before committing.
+
 ## Git Commits
 
 - Never include issue IDs or numbers (e.g. `#5`, `#123`) in commit messages — GitLab interprets
