@@ -5,7 +5,7 @@ Being poor does not mean being useless
 ## MacOS
 
 ```bash
-mkdir -P $HOME/.completions
+mkdir -p "$HOME/.completions"
 
 xcode-select --install
 
@@ -80,7 +80,6 @@ exts=(
   "timonwong.shellcheck"
   "waderyan.gitblame"
   "jackiotyu.git-worktree-manager"
-  "elazarcoh.simply-view-image-for-python-debugging"
 )
 for ext in "${exts[@]}"; do
   cursor --install-extension "$ext"
