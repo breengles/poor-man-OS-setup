@@ -382,7 +382,15 @@
   },
   // spelling
   "cSpell.enabled": true,
-  "cSpell.import": ["~/.cspell.json"],
+  "cSpell.language": "ru,ru-RU,en-US,en-GB,en",
+  "cSpell.customDictionaries": {
+    "personal": {
+      "name": "personal",
+      "path": "~/.cspell-words.txt",
+      "scope": "user",
+      "addWords": true
+    }
+  },
   // other
   "material-icon-theme.folders.theme": "specific",
   "redhat.telemetry.enabled": false,
