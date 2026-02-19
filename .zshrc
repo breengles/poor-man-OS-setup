@@ -20,11 +20,15 @@ files=(
   "$HOME/.config/shell/completions.zsh"
 )
 for file in "${files[@]}"; do
-    [ -f "$file" ] && source "$file" || echo "File $file not found"
+  if [ -f "$file" ]; then
+    source "$file"
+  else
+    echo "File $file not found" >&2
+  fi
 done
 
 # Initialize Starship prompt (must be after zinit)
-eval "$(starship init zsh)"
+[ -x "$(command -v starship)" ] && eval "$(starship init zsh)"
 
 # add tokens
 if [ -f "$HOME/.env-global.sh" ]; then source "$HOME/.env-global.sh"; fi
@@ -43,8 +47,18 @@ if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then source "$HOME/google-cloud
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then source "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
 
+# Lazy-load NVM to avoid 50-200ms startup penalty
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  function _load_nvm {
+    unfunction nvm node npm npx 2>/dev/null
+    \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  }
+  function nvm { _load_nvm; nvm "$@" }
+  function node { _load_nvm; node "$@" }
+  function npm { _load_nvm; npm "$@" }
+  function npx { _load_nvm; npx "$@" }
+fi
 
 eval "$(zoxide init --cmd cd zsh)"

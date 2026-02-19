@@ -15,6 +15,7 @@ alias rsync-synchronize="rsync -auh --delete --info=progress2"
 alias rcopy="rsync-copy"
 alias rmove="rsync-move"
 alias rupd="rsync-update"
+alias rsync-sync="rsync-synchronize"
 
 if [ -x "$(command -v nvim)" ]; then
   alias vim=nvim

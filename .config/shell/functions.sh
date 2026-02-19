@@ -9,7 +9,7 @@ function calcjson {
 }
 
 function update {
-  if [ -x "$(command -v zinit)" ]; then
+  if type zinit &>/dev/null; then
     echo "========== updating zinit =========="
     zinit self-update
     zinit update --all --parallel
@@ -103,6 +103,10 @@ if [ -x "$(command -v scancel)" ]; then
 fi
 
 function gpu {
+  if [ -z "$1" ]; then
+    echo "Usage: gpu <node-number>" >&2
+    return 1
+  fi
   ssh "lambda-scalar$1" -t nvitop
 }
 
