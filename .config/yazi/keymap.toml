@@ -173,7 +173,7 @@ keymap = [
         "P",
     ], run = "paste --force", desc = "Paste the files (overwrite if the destination exists)" },
     { on = [
-        "-",
+        "<C-l>",
     ], run = "link", desc = "Symlink the absolute path of files" },
     { on = [
         "_",
@@ -206,7 +206,7 @@ keymap = [
         "S",
     ], run = "search rg", desc = "Search files by content using ripgrep" },
     { on = [
-        "<C-s>",
+        "<C-x>",
     ], run = "search none", desc = "Cancel the ongoing search" },
     { on = [
         "z",
