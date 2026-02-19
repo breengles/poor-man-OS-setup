@@ -24,6 +24,11 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 - Prefer `uv` for all Python-related tasks including linting, formatting, and type checking
 - If a project doesn't have a virtual environment yet, create one with `uv venv` first
 
+## Git Commits
+
+- Never include issue IDs or numbers (e.g. `#5`, `#123`) in commit messages — GitLab interprets
+  `#N` as an issue reference and may auto-close issues unintentionally.
+
 ## GitLab
 
 - Use `gitlab` MCP tools for interacting with GitLab (issues, merge requests, projects, etc.)
