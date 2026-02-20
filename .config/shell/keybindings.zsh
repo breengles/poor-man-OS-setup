@@ -4,8 +4,10 @@ zle -N up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 zle -N down-line-or-beginning-search
 
-bindkey "^[[A" up-line-or-beginning-search # Up
-bindkey "^[[B" down-line-or-beginning-search # Down
+bindkey "^[[A" up-line-or-beginning-search # Up (normal mode)
+bindkey "^[OA"  up-line-or-beginning-search # Up (application mode)
+bindkey "^[[B" down-line-or-beginning-search # Down (normal mode)
+bindkey "^[OB"  down-line-or-beginning-search # Down (application mode)
 
 # Word navigation (Alt+Left, Alt+Right)
 bindkey "^[b" backward-word # Alt+Left (from kitty mapping)
