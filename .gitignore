@@ -18,10 +18,7 @@ __pycache__
 /.config/yazi/plugins
 
 # Claude Code auto-generated project files
-/.claude/*
-!/.claude/CLAUDE.md
-!/.claude/settings.json
-!/.claude/skills/
+/.claude/settings.local.json
 
 # Sensitive local config files (safety net)
 .env-global.sh
