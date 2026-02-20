@@ -1,6 +1,7 @@
 ---
 name: todo-analyze
 description: Analyze a TODO file, map dependencies, and produce a resolution plan
+argument-hint: "[area or path]"
 ---
 
 Analyze a TODO file and produce a detailed resolution plan. The user provides a path argument: $ARGUMENTS

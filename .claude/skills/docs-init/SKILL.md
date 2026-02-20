@@ -1,6 +1,7 @@
 ---
 name: docs-init
 description: Generate technical documentation for the project or a specific component
+argument-hint: "[component or path]"
 ---
 
 Generate comprehensive technical documentation for this project. The user may provide an optional scope argument: $ARGUMENTS
