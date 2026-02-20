@@ -568,6 +568,7 @@ Ghibli
 gitblame
 githistory
 gitpython
+glab
 Glazov
 gloo
 gradfix
@@ -1232,6 +1233,7 @@ pytorch
 pywavelets
 pyyaml
 pyzmq
+qdict
 qdrt
 qfloat
 qstats
@@ -1276,6 +1278,7 @@ reinit
 Reiter
 relativenumber
 relcc
+releaserc
 relu
 relvis
 relwithdebinfo
@@ -1649,6 +1652,7 @@ varnames
 vcodec
 VECLIB
 venv
+venvs
 Verlang
 verticalalignment
 veryfast
