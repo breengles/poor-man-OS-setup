@@ -1,6 +1,7 @@
 ---
 name: todo-revise
 description: Revise existing TODO files — optionally pass a path or area name to scope
+argument-hint: "[area or path]"
 ---
 
 Revise existing TODO files for this project. The user may provide an optional path argument: $ARGUMENTS
