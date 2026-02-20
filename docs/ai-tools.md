@@ -8,24 +8,50 @@ The repository configures two AI coding assistants: **Claude Code** (Anthropic's
 
 | File                             | Description                                                 |
 | -------------------------------- | ----------------------------------------------------------- |
-| `AGENTS.md` (repo root)          | Project-level instructions for Claude Code                  |
+| `AGENTS.md` (repo root)          | Project-level instructions for Claude Code and OpenCode     |
+| `.claude/CLAUDE.md`              | Claude Code user-level preferences (stow → `~/.claude/`)   |
+| `.claude/skills/*/SKILL.md`      | Claude Code custom slash commands (stow → `~/.claude/skills/`) |
 | `.config/opencode/opencode.json` | OpenCode configuration (model, MCP servers, slash commands) |
 | `.config/opencode/AGENTS.md`     | OpenCode agent instructions (Python, Git, GitLab)           |
 | `.config/opencode/agent/ask.md`  | Read-only agent mode definition                             |
 
-Note: Claude Code's own config (`.config/Claude/`) is referenced in the root `AGENTS.md` but the actual config directory is not present in this repo — it's configured outside the dotfiles.
+Note: `~/.claude/settings.json` (MCP servers, hooks, plugins, permissions) is managed by Claude Code itself and not stow-managed.
 
 ## Claude Code
 
 ### Configuration
 
-Claude Code reads project-level instructions from `AGENTS.md` in the repo root and from `~/.config/Claude/AGENTS.md` for user-level preferences. The root `AGENTS.md` contains:
+Claude Code reads instructions from multiple sources:
 
-- Complete repository structure and purpose
-- Code style guidelines for all languages (Shell, Lua, Python, Markdown, YAML, JSON)
-- Editor settings reference (rulers, formatters, tab sizes)
-- Git conventions (Conventional Commits, no issue IDs)
-- Environment notes (platforms, tools, shell setup)
+- **Project-level:** `AGENTS.md` in the repo root (structure, code style, git conventions)
+- **User-level preferences:** `.claude/CLAUDE.md` (stow-managed to `~/.claude/CLAUDE.md`)
+- **User-level skills:** `.claude/skills/*/SKILL.md` (stow-managed to `~/.claude/skills/`)
+- **Settings:** `~/.claude/settings.json` (managed by Claude Code — MCP servers, hooks, plugins, permissions)
+
+### User-Level Preferences (`.claude/CLAUDE.md`)
+
+Cross-project preferences that apply in every Claude Code session:
+
+- **Python**: Always use `uv` (never pip/conda/poetry)
+- **Markdown**: Format with `npx prettier --write` after editing
+- **Git**: No issue IDs (`#N`) in commit messages
+- **GitLab**: Prefer MCP tools, fall back to `glab` CLI
+- **TODO files**: Priority table + detailed sections + resolution order
+
+### Slash Commands (Skills)
+
+Six custom skills are stow-deployed from `.claude/skills/` to `~/.claude/skills/`:
+
+| Command         | Description                                                 |
+| --------------- | ----------------------------------------------------------- |
+| `/commit`       | Analyze changes, create well-formatted Conventional Commits |
+| `/todo-init`    | Scan project and create initial TODO files by area          |
+| `/todo-revise`  | Update existing TODO files based on recent changes          |
+| `/todo-analyze` | Deep-analyze a TODO file, map dependencies, produce plan    |
+| `/docs-init`    | Generate comprehensive technical documentation              |
+| `/docs-revise`  | Update existing documentation to match codebase changes     |
+
+These are identical to the OpenCode slash commands (same templates), providing feature parity between the two tools.
 
 ### Key Conventions
 
@@ -65,16 +91,7 @@ This provides GitLab issue, merge request, and project management directly from 
 
 ### Slash Commands
 
-OpenCode defines several custom slash commands:
-
-| Command         | Description                                                 |
-| --------------- | ----------------------------------------------------------- |
-| `/commit`       | Analyze changes, create well-formatted Conventional Commits |
-| `/todo-init`    | Scan project and create initial TODO files by area          |
-| `/todo-revise`  | Update existing TODO files based on recent changes          |
-| `/todo-analyze` | Deep-analyze a TODO file, map dependencies, produce plan    |
-| `/docs-init`    | Generate comprehensive technical documentation              |
-| `/docs-revise`  | Update existing documentation to match codebase changes     |
+OpenCode defines the same 6 custom slash commands as Claude Code (see table above). The templates are defined in `opencode.json` under the `command` key. Claude Code's skill files contain identical prompt templates.
 
 #### `/commit` Details
 
@@ -120,6 +137,24 @@ Both tools share conventions defined in their respective `AGENTS.md` files:
 | Git commit messages    | Conventional Commits, no `#N` references              |
 | GitLab interaction     | Prefer MCP tools, fall back to `glab` CLI             |
 | TODO file format       | Priority table + detailed sections + resolution order |
+
+## Stow Deployment
+
+Claude Code user-level config is stow-managed from this repo:
+
+```
+.claude/CLAUDE.md              → ~/.claude/CLAUDE.md
+.claude/skills/commit/         → ~/.claude/skills/commit/
+.claude/skills/todo-init/      → ~/.claude/skills/todo-init/
+.claude/skills/todo-revise/    → ~/.claude/skills/todo-revise/
+.claude/skills/todo-analyze/   → ~/.claude/skills/todo-analyze/
+.claude/skills/docs-init/      → ~/.claude/skills/docs-init/
+.claude/skills/docs-revise/    → ~/.claude/skills/docs-revise/
+```
+
+The `.stow-local-ignore` excludes Claude Code's auto-generated project files (`settings*.json`, `plans/`, `todos/`). The `.gitignore` uses `/.claude/*` with explicit un-ignores for `CLAUDE.md` and `skills/`.
+
+`~/.claude/settings.json` is NOT stow-managed — Claude Code writes to it directly (hooks, plugins, MCP servers, permissions).
 
 ## Dependencies
 
