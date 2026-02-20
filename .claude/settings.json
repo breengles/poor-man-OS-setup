@@ -10,13 +10,25 @@
       "Bash(tree:*)",
       "Bash(ls:*)",
       "Bash(git add:*)",
+      "Bash(git blame:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(git describe:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
       "Bash(git ls-files:*)",
+      "Bash(git remote:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git shortlog:*)",
+      "Bash(git show:*)",
       "Bash(git status:*)",
+      "Bash(git tag:*)",
       "Bash(git branch:*)",
       "Bash(git pull:*)",
       "Bash(git push:*)",
       "Bash(git commit:*)",
-      "Edit(~/.claude/settings.json)"
+      "Bash(npx prettier:*)",
+      "Edit(**/.claude/settings.json)",
+      "Edit(**/.claude/settings.local.json)"
     ],
     "defaultMode": "acceptEdits"
   },
@@ -27,10 +39,7 @@
     "gitlab-cli": {
       "type": "stdio",
       "command": "glab",
-      "args": [
-        "mcp",
-        "serve"
-      ],
+      "args": ["mcp", "serve"],
       "env": {}
     }
   }
