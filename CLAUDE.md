@@ -19,7 +19,6 @@ no build system, no test framework, and no CI/CD pipeline.
     init.lua               # Main config (~1038 lines)
     lua/custom/plugins/    # Custom plugins (git, colorscheme)
     lua/kickstart/         # Kickstart modules
-  opencode/                # OpenCode AI tool config
   shell/                   # Shell modules (aliases, functions, env, completions, keybindings)
   starship.toml            # Starship prompt config
   yazi/                    # Yazi file manager config + plugins
