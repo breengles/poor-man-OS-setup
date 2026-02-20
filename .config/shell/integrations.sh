@@ -35,7 +35,7 @@ if [ -f "$HOME/.env-global.sh" ]; then source "$HOME/.env-global.sh"; fi
 
 # Tool completions
 # For each tool, try shell-specific file (.zsh/.bash) first, then generic (.sh).
-_completion_tools=(adkb uv opencode glab pueue pcpctl)
+_completion_tools=(adkb uv opencode glab pueue pcpctl delta)
 for _tool in "${_completion_tools[@]}"; do
   if [ -f "$HOME/.completion.${_tool}.${_sh}" ]; then
     source "$HOME/.completion.${_tool}.${_sh}"
