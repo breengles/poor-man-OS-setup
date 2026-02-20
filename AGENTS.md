@@ -144,10 +144,15 @@ Files excluded from stow (via `.stow-local-ignore`):
 
 ## AI Agent Configuration
 
+- **Claude Code:** User-level preferences at `.claude/CLAUDE.md` (stow-managed)
+- **Claude Code skills:** 6 custom slash commands at `.claude/skills/` — commit, todo-init,
+  todo-revise, todo-analyze, docs-init, docs-revise (stow-managed to `~/.claude/skills/`)
+- **Claude Code settings:** `~/.claude/settings.json` (managed by Claude Code itself, not stow —
+  contains MCP servers, hooks, plugins, permissions)
 - **OpenCode:** Configured at `.config/opencode/opencode.json` with Claude Opus 4.6
   as default model, Claude Sonnet 4.6 as small/fast model
-- **OpenCode AGENTS.md:** `.config/opencode/AGENTS.md` contains Python-specific `uv` preferences
-  and GitLab workflow instructions (also loaded as system instructions by the current session)
+- **OpenCode AGENTS.md:** `.config/opencode/AGENTS.md` contains cross-project preferences
+  (also available at `.claude/CLAUDE.md` for Claude Code)
 
 ## Key Reminders
 
