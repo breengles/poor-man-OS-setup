@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      "WebSearch",
       "Bash(cat:*)",
       "Bash(head:*)",
       "Bash(tail:*)",
@@ -27,6 +28,8 @@
       "Bash(git push:*)",
       "Bash(git commit:*)",
       "Bash(npx prettier:*)",
+      "Edit(~/.claude/settings.json)",
+      "Edit(~/.claude/settings.local.json)",
       "Edit(**/.claude/settings.json)",
       "Edit(**/.claude/settings.local.json)"
     ],
@@ -42,5 +45,9 @@
       "args": ["mcp", "serve"],
       "env": {}
     }
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
   }
 }
