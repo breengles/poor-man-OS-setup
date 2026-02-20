@@ -21,7 +21,6 @@ no build system, no test framework, and no CI/CD pipeline.
     init.lua               # Main config (~1038 lines)
     lua/custom/plugins/    # Custom plugins (git, colorscheme)
     lua/kickstart/         # Kickstart modules
-  opencode/                # OpenCode AI tool config
   shell/                   # Shell modules (aliases, functions, env, completions, keybindings)
   starship.toml            # Starship prompt config
   yazi/                    # Yazi file manager config + plugins
@@ -149,10 +148,6 @@ Files excluded from stow (via `.stow-local-ignore`):
   todo-revise, todo-analyze, docs-init, docs-revise (stow-managed to `~/.claude/skills/`)
 - **Claude Code settings:** `~/.claude/settings.json` (managed by Claude Code itself, not stow —
   contains MCP servers, hooks, plugins, permissions)
-- **OpenCode:** Configured at `.config/opencode/opencode.json` with Claude Opus 4.6
-  as default model, Claude Sonnet 4.6 as small/fast model
-- **OpenCode AGENTS.md:** `.config/opencode/AGENTS.md` contains cross-project preferences
-  (also available at `.claude/CLAUDE.md` for Claude Code)
 
 ## Key Reminders
 
