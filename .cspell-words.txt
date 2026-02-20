@@ -21,6 +21,7 @@ adjustl
 adkb
 ADLU
 adpot
+Agentic
 aggfunc
 aiadmin
 AICDN
@@ -77,6 +78,7 @@ asanyarray
 ascontiguousarray
 ashot
 astype
+asyncio
 atey
 atol
 atten
@@ -764,6 +766,8 @@ lambdalabs
 LANCZOS
 Landmarker
 landmarkpredictor
+langchain
+langgraph
 LAPACK
 LAPACK's
 lapi
@@ -969,6 +973,7 @@ multirun
 mushan
 musiq
 mybucket
+mypy
 namelist
 namelists
 nans
