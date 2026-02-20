@@ -15,7 +15,7 @@
       "context": "Chat",
       "bindings": {
         "escape": null,
-        "ctrl+escape": "chat:cancel",
+        "ctrl+x": "chat:cancel",
         "ctrl+f": "chat:killAgents",
         "shift+tab": "chat:cycleMode",
         "meta+p": "chat:modelPicker",
