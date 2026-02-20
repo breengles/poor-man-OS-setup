@@ -11,3 +11,6 @@
 /todos
 /.vscode
 /.config/yazi/plugins
+/\.claude/settings\.local\.json
+/\.claude/plans
+/\.claude/todos
