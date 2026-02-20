@@ -18,18 +18,9 @@ source "$HOME/.config/shell/functions.sh"
 source "$HOME/.config/shell/aliases.sh"
 source "$HOME/.config/shell/integrations.sh"  # starship, fzf, cargo, gcloud, completions, tokens
 
-# Lazy-load NVM to avoid 50-200ms startup penalty
+# NVM (Node Version Manager)
 export NVM_DIR="$HOME/.nvm"
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-  function _load_nvm {
-    unfunction nvm node npm npx 2>/dev/null
-    \. "$NVM_DIR/nvm.sh"
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-  }
-  function nvm { _load_nvm; nvm "$@" }
-  function node { _load_nvm; node "$@" }
-  function npm { _load_nvm; npm "$@" }
-  function npx { _load_nvm; npx "$@" }
-fi
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
 
 eval "$(zoxide init --cmd cd zsh)"
