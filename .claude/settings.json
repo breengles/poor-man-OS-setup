@@ -9,6 +9,7 @@
       "Edit(**/.claude/settings.local.json)",
       "Bash(pre-commit:*)",
       "Bash(ruff:*)",
+      "Bash(uv:*)",
       "Bash(grep:*)",
       "Bash(head:*)",
       "Bash(tail:*)",
