@@ -1013,6 +1013,7 @@ nhwc
 NICA
 nikitabobko
 nindex
+njit
 NKJBNCL
 nlabels
 nltk
@@ -1166,6 +1167,7 @@ postword
 pothos
 powerlevel
 powerline
+prange
 precompute
 Precomputes
 precondioner
