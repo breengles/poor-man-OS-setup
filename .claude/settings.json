@@ -40,7 +40,13 @@
       "Bash(glab release list:*)",
       "Bash(glab release view:*)",
       "Bash(glab auth status:*)",
-      "Bash(glab api:*)"
+      "Bash(glab api:*)",
+      "Edit(/tmp/**)",
+      "Write(/tmp/**)",
+      "Write(~/.claude/settings.json)",
+      "Write(~/.claude/settings.local.json)",
+      "Write(**/.claude/settings.json)",
+      "Write(**/.claude/settings.local.json)"
     ],
     "defaultMode": "acceptEdits"
   },
