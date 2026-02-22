@@ -11,7 +11,6 @@
       "Bash(ruff:*)",
       "Bash(uv:*)",
       "Bash(grep:*)",
-      "Bash(head:*)",
       "Bash(tail:*)",
       "Bash(cat:*)",
       "Bash(head:*)",
