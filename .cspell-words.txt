@@ -292,6 +292,7 @@ cursorpyright
 cutn
 CXXFLAGS
 Cпектроскопические
+DACH
 dacos
 Daria
 darkgray
@@ -499,6 +500,7 @@ finit
 fira
 firstrow
 fivek
+flamegraphs
 flaskwebgui
 flathub
 flipud
@@ -785,6 +787,7 @@ legender
 leggauss
 legvander
 leres
+Lernplan
 lesspipe
 levelname
 levelno
@@ -1575,6 +1578,7 @@ torchsde
 torchvision
 totensor
 tqdm
+tracemalloc
 trainables
 trainloader
 trainscripts
