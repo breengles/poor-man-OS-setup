@@ -72,9 +72,9 @@ Output a single message containing the MR title and description in GitLab markdo
 
 <bulleted list of the key changes, grouped logically>
 
-### How to test
+### Impact
 
-<brief instructions for reviewers to verify the changes>
+<brief instructions for reviewers to understand the impact of the changes>
 ```
 
 ## Rules
@@ -82,7 +82,7 @@ Output a single message containing the MR title and description in GitLab markdo
 1. **Title** must be concise (under 72 characters), written in imperative mood (e.g. "Add user authentication" not "Added user authentication").
 2. **Summary** should explain the "why" — motivation and context — not just restate the diff.
 3. **Changes** should be a bulleted list of meaningful changes, not a file-by-file dump. Group related changes together. Focus on what matters to a reviewer. Do not just list the changed files.
-4. **How to use** should give reviewers concrete steps or commands to get simple expression how to use it if applicable.
+4. **Impact** should give reviewers concrete steps or commands to get simple expression how to use it if applicable.
 5. Agent should interview the user if there are any questions about the changes or the MR.
 6. If commits reference GitLab issues, include a `### Related issues` section with links (e.g. `Closes #123` or `Relates to #45`).
 7. Do NOT pad the description with boilerplate, caveats, or filler. Keep it tight and useful.
