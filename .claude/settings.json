@@ -10,6 +10,8 @@
       "Bash(pre-commit:*)",
       "Bash(ruff:*)",
       "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
       "Bash(cat:*)",
       "Bash(head:*)",
       "Bash(tail:*)",
