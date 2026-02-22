@@ -19,6 +19,8 @@
       "Bash(tree:*)",
       "Bash(ls:*)",
       "Bash(git:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
       "Bash(npx prettier:*)",
       "Bash(glab issue list:*)",
       "Bash(glab issue view:*)",
