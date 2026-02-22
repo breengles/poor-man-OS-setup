@@ -83,7 +83,8 @@ Output a single message containing the MR title and description in GitLab markdo
 2. **Summary** should explain the "why" — motivation and context — not just restate the diff.
 3. **Changes** should be a bulleted list of meaningful changes, not a file-by-file dump. Group related changes together. Focus on what matters to a reviewer. Do not just list the changed files.
 4. **How to use** should give reviewers concrete steps or commands to get simple expression how to use it if applicable.
-5. If commits reference GitLab issues, include a `### Related issues` section with links (e.g. `Closes #123` or `Relates to #45`).
-6. Do NOT pad the description with boilerplate, caveats, or filler. Keep it tight and useful.
-7. Do NOT include issue references that don't actually exist — only include them if the commits or branch name clearly reference real issues.
-8. Output the title and description as a single, copy-pasteable message. Do not add commentary before or after.
+5. Agent should interview the user if there are any questions about the changes or the MR.
+6. If commits reference GitLab issues, include a `### Related issues` section with links (e.g. `Closes #123` or `Relates to #45`).
+7. Do NOT pad the description with boilerplate, caveats, or filler. Keep it tight and useful.
+8. Do NOT include issue references that don't actually exist — only include them if the commits or branch name clearly reference real issues.
+9. Output the title and description as a single, copy-pasteable message. Do not add commentary before or after.
