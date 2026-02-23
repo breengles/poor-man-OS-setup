@@ -19,6 +19,15 @@ __pycache__
 
 # Claude Code auto-generated project files
 /.claude/settings.local.json
+/.claude/backups
+/.claude/cache
+/.claude/debug
+/.claude/plugins
+/.claude/projects
+/.claude/session-env
+/.claude/shell-snapshots
+/.claude/todos
+/.claude/history.jsonl
 
 # Sensitive local config files (safety net)
 .env-global.sh
