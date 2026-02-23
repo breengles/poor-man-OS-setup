@@ -1,4 +1,8 @@
-# Project Overview
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
 
 This is a **dotfiles/system configuration repository** managed with [GNU Stow](https://www.gnu.org/software/stow/).
 It symlinks configuration files from this repo into `$HOME`. There is no compiled source code,
@@ -22,10 +26,23 @@ no build system, no test framework, and no CI/CD pipeline.
   shell/                   # Shell modules (aliases, functions, env, completions, keybindings)
   starship.toml            # Starship prompt config
   yazi/                    # Yazi file manager config + plugins
+.claude/
+  CLAUDE.md                # User-level Claude Code preferences (stowed to ~/.claude/)
+  skills/                  # Custom slash commands (commit, todo-*, docs-*, mr-description)
+  agents/                  # Custom agent definitions (branch-code-reviewer)
 .vscode/
   user_settings.json       # Cursor/VS Code settings
   keybindings.json         # Cursor/VS Code keybindings
 ```
+
+### Shell Module Architecture
+
+Shell config uses a split pattern: **shared** (`.sh`) vs **shell-specific** (`.zsh`/`.bash`).
+
+- `.zshrc` sources zsh-specific modules first (zinit, cluster, history, keybindings, completions), then shared modules (functions, aliases, integrations)
+- `.bashrc` auto-switches to zsh if available; otherwise sources shared modules directly
+- `integrations.sh` detects the running shell via `$ZSH_VERSION`/`$BASH_VERSION` and loads the correct shell-specific completion/integration files
+- Aliases in `aliases.sh` conditionally guard `eza`/`bat` replacements behind `[ -z "$AGENT" ]`
 
 ## Build / Lint / Test Commands
 
@@ -42,7 +59,7 @@ stow -n -v .
 ```
 
 Files excluded from stow (via `.stow-local-ignore`):
-`.DS_Store`, `.git`, `readme.*`, `LICENSE`, `COPYING`, `AGENTS.md`, `CLAUDE.md`, `/misc`, `/.vscode`, `/.config/yazi/plugins`
+`.DS_Store`, `.git`, `readme.*`, `LICENSE`, `COPYING`, `CLAUDE.md`, `/docs`, `/misc`, `/todos`, `/.vscode`, `/.config/yazi/plugins`, `/.claude/settings.local.json`, `/.claude/plans`, `/.claude/todos`
 
 ## Code Style Guidelines
 
@@ -69,8 +86,11 @@ Files excluded from stow (via `.stow-local-ignore`):
 - **LSP:** lua_ls configured with `callSnippet = 'Replace'`
 - **Style:** Follow Kickstart.nvim conventions - descriptive `desc` fields for keymaps
 
-### Python (configured tooling, not in this repo)
+### Python
 
+#### Tooling
+
+- **Target version:** Python 3.10+ (use `X | Y` union types, `match`/`case`, `ParamSpec`)
 - **Package manager:** Always use `uv` (never pip, venv, conda, poetry, or pipenv)
   - Create venvs: `uv venv`
   - Install packages: `uv pip install <package>`
@@ -83,7 +103,31 @@ Files excluded from stow (via `.stow-local-ignore`):
 - **Import format:** Relative imports preferred (`python.analysis.importFormat: "relative"`)
 - **Type checking:** Pyright in `basic` mode (Pyright handles go-to-definition, completions;
   Ruff handles linting)
+- **Testing:** pytest (with fixtures, `parametrize`, `conftest.py`)
 - **Format on save:** Enabled (ruff_organize_imports, then ruff_format)
+
+#### Style & Conventions
+
+- **Type hints:** Annotate all function signatures (params + return types); skip local variables
+  unless it aids clarity. Use modern syntax: `str | None` not `Optional[str]`,
+  `list[int]` not `List[int]`
+- **No `from __future__ import annotations`** — avoid it; some libraries (Pydantic, FastAPI)
+  need runtime-evaluable annotations
+- **Data modeling:**
+  - `pydantic.BaseModel` for services, APIs, config, and anything needing validation/serialization
+  - `dataclasses.dataclass` for internal data structures
+  - `dataclasses` + `pyrallis` for simple CLI applications and experiment configs
+- **Web framework:** FastAPI for APIs and services
+- **Logging:** stdlib `logging` module by default; use `loguru` if the project already uses it
+- **Async:** Use `asyncio` for I/O-bound work when it provides clear benefit; default to sync
+- **Paths:** Always use `pathlib.Path`, never `os.path`
+- **Strings:** f-strings for all interpolation; `.format()` only when f-strings can't work
+  (e.g., deferred formatting in logging)
+- **Docstrings:** Google style (`Args:`, `Returns:`, `Raises:` sections). Write docstrings for
+  public APIs and non-obvious functions; skip for trivial/self-explanatory code
+- **Naming:** `snake_case` for functions/variables, `PascalCase` for classes,
+  `UPPER_SNAKE_CASE` for constants
+- **Imports:** Group in order: stdlib, third-party, local. Prefer relative imports within packages
 
 ### Markdown
 
@@ -138,6 +182,15 @@ Files excluded from stow (via `.stow-local-ignore`):
   confusing AI agent output. Be aware of this if running shell commands.
 - **Navigation:** `zoxide` replaces `cd` (`eval "$(zoxide init --cmd cd zsh)"`)
 - **Search tools:** ripgrep (`rg`), fd (`fd --no-ignore`)
+
+## AI Agent Configuration
+
+- **Claude Code user prefs:** `.claude/CLAUDE.md` (stowed to `~/.claude/CLAUDE.md`)
+- **Claude Code skills:** 8 custom slash commands at `.claude/skills/` — commit, todo-init,
+  todo-revise, todo-analyze, docs-init, docs-revise, docs-analyze, mr-description
+- **Claude Code agents:** `.claude/agents/` — branch-code-reviewer
+- **Claude Code settings:** `~/.claude/settings.json` (managed by Claude Code itself, not stow —
+  contains MCP servers, hooks, plugins, permissions)
 
 ## Key Reminders
 
