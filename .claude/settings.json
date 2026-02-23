@@ -16,6 +16,7 @@
       "Edit(**/.claude/settings.json)",
       "Edit(**/.claude/settings.local.json)",
       "Bash(pre-commit *)",
+      "Bash(chmod +x *)",
       "Bash(ruff *)",
       "Bash(uv *)",
       "Bash(grep *)",
@@ -48,10 +49,7 @@
       "Write(**/.claude/settings.json)",
       "Write(**/.claude/settings.local.json)"
     ],
-    "deny": [
-      "Bash(rm *)",
-      "Bash(rmdir *)"
-    ],
+    "deny": ["Bash(rm *)", "Bash(rmdir *)"],
     "ask": [
       "Bash(git push --force *)",
       "Bash(git push * --force *)",
@@ -85,10 +83,7 @@
     "gitlab-cli": {
       "type": "stdio",
       "command": "glab",
-      "args": [
-        "mcp",
-        "serve"
-      ],
+      "args": ["mcp", "serve"],
       "env": {}
     }
   }
