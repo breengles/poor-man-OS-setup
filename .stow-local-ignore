@@ -4,7 +4,6 @@
 ^/readme.*
 ^/LICENSE.*
 ^/COPYING
-^/AGENTS\.md
 ^/CLAUDE\.md
 
 /docs
