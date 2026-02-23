@@ -12,5 +12,13 @@
 /.vscode
 /.config/yazi/plugins
 /\.claude/settings\.local\.json
+/\.claude/backups
+/\.claude/cache
+/\.claude/debug
 /\.claude/plans
+/\.claude/plugins
+/\.claude/projects
+/\.claude/session-env
+/\.claude/shell-snapshots
 /\.claude/todos
+/\.claude/history\.jsonl
