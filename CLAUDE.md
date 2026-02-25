@@ -30,6 +30,12 @@ no build system, no test framework, and no CI/CD pipeline.
   CLAUDE.md                # User-level Claude Code preferences (stowed to ~/.claude/)
   skills/                  # Custom slash commands (commit, todo-*, docs-*, mr-description)
   agents/                  # Custom agent definitions (branch-code-reviewer)
+.config/
+  opencode/                # OpenCode config (stowed to ~/.config/opencode/)
+    opencode.json          # Main config (permissions, MCP servers, formatters)
+    AGENTS.md              # Global rules/preferences (mirrors .claude/CLAUDE.md)
+    agents/                # Custom agents (branch-code-reviewer)
+    skills/                # Agent skills (commit, todo-*, docs-*, mr-description)
 .vscode/
   user_settings.json       # Cursor/VS Code settings
   keybindings.json         # Cursor/VS Code keybindings
@@ -185,12 +191,22 @@ Files excluded from stow (via `.stow-local-ignore`):
 
 ## AI Agent Configuration
 
+### Claude Code
+
 - **Claude Code user prefs:** `.claude/CLAUDE.md` (stowed to `~/.claude/CLAUDE.md`)
 - **Claude Code skills:** 8 custom slash commands at `.claude/skills/` — commit, todo-init,
   todo-revise, todo-analyze, docs-init, docs-revise, docs-analyze, mr-description
 - **Claude Code agents:** `.claude/agents/` — branch-code-reviewer
 - **Claude Code settings:** `~/.claude/settings.json` (managed by Claude Code itself, not stow —
   contains MCP servers, hooks, plugins, permissions)
+
+### OpenCode
+
+- **OpenCode global rules:** `.config/opencode/AGENTS.md` (stowed to `~/.config/opencode/AGENTS.md`)
+- **OpenCode config:** `.config/opencode/opencode.json` (permissions, MCP servers, formatters)
+- **OpenCode skills:** 8 skills at `.config/opencode/skills/` — commit, todo-init,
+  todo-revise, todo-analyze, docs-init, docs-revise, docs-analyze, mr-description
+- **OpenCode agents:** `.config/opencode/agents/` — branch-code-reviewer
 
 ## Key Reminders
 
