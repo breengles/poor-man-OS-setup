@@ -22,3 +22,9 @@
 /\.claude/shell-snapshots
 /\.claude/todos
 /\.claude/history\.jsonl
+
+/\.config/opencode/node_modules
+/\.config/opencode/bun\.lock
+/\.config/opencode/package\.json
+/\.config/opencode/\.gitignore
+/\.config/opencode/\.DS_Store
