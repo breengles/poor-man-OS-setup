@@ -1,0 +1,8 @@
+{
+  "$schema": "https://opencode.ai/tui.json",
+  "keybinds": {
+    "model_cycle_favorite": "shift+tab",
+    "model_cycle_favorite_reverse": "none",
+    "agent_cycle_reverse": "none"
+  }
+}
