@@ -67,6 +67,7 @@ argmax
 argmin
 argparsing
 armijo
+armine
 arraystretch
 Artem
 artemkotov
