@@ -33,15 +33,38 @@ fi
 # Tokens / secrets
 if [ -f "$HOME/.env-global.sh" ]; then source "$HOME/.env-global.sh"; fi
 
+# Generate tab-completion script for a tool (stdout).
+# Add new tools here as: tool) tool-specific-command ;;
+_gen_completion() {
+  local tool="$1" sh="$2"
+  case "$tool" in
+    delta)    delta --generate-completion "$sh" ;;
+    glab)     glab completion -s "$sh" ;;
+    pueue)    pueue completions "$sh" ;;
+    rg)       rg --generate "complete-${sh}" ;;
+    uv)       uv generate-shell-completion "$sh" ;;
+    *)        return 1 ;;
+  esac
+}
+
 # Tool completions
 # For each tool, try shell-specific file (.zsh/.bash) first, then generic (.sh).
-_completion_tools=(adkb uv opencode glab pueue pcpctl delta)
+# If no pre-generated file exists, attempt to generate and cache one.
+_completion_tools=(adkb uv opencode glab pueue pcpctl delta rg)
 for _tool in "${_completion_tools[@]}"; do
   if [ -f "$HOME/.completion.${_tool}.${_sh}" ]; then
     source "$HOME/.completion.${_tool}.${_sh}"
   elif [ -f "$HOME/.completion.${_tool}.sh" ]; then
     source "$HOME/.completion.${_tool}.sh"
+  elif command -v "$_tool" >/dev/null 2>&1; then
+    _comp_file="$HOME/.completion.${_tool}.${_sh}"
+    if _gen_completion "$_tool" "$_sh" > "$_comp_file" 2>/dev/null && [ -s "$_comp_file" ]; then
+      source "$_comp_file"
+    else
+      rm -f "$_comp_file"
+    fi
   fi
 done
 
-unset _sh _fzf _gcloud_path _gcloud_comp _completion_tools _tool
+unset _sh _fzf _gcloud_path _gcloud_comp _completion_tools _tool _comp_file
+unset -f _gen_completion
