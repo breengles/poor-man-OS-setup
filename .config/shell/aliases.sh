@@ -44,10 +44,6 @@ if [ -x "$(command -v sbatch)" ]; then
   alias s=sbatch
 fi
 
-if [ -x "$(command -v cursor)" ]; then
-  alias code=cursor
-fi
-
 if [ -x "$(command -v fd)" ]; then
   alias fd="fd --no-ignore"
 fi
