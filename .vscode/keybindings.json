@@ -606,5 +606,11 @@
   {
     "key": "ctrl+r",
     "command": "-workbench.action.openRecent"
+  },
+  {
+    "key": "ctrl+space",
+    "command": "workbench.action.terminal.sendSequence",
+    "args": { "text": "\u0000" },
+    "when": "terminalFocus"
   }
 ]
