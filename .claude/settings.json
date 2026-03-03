@@ -92,7 +92,7 @@
       "Bash(glab release delete *)",
       "Bash(glab label delete *)"
     ],
-    "defaultMode": "acceptEdits"
+    "defaultMode": "bypassPermissions"
   },
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true,
@@ -111,5 +111,6 @@
       ],
       "env": {}
     }
-  }
+  },
+  "skipDangerousModePermissionPrompt": true
 }
