@@ -262,6 +262,7 @@ costh
 countmem
 cphi
 cpptools
+cpython
 crafters
 Cronos
 cropdir
@@ -596,6 +597,7 @@ hardlight
 hartree
 hasattr
 hasface
+hasmakeup
 hbar
 hccl
 hdfs
