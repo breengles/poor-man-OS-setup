@@ -333,6 +333,75 @@ function gpu_alloc {
     }'
 }
 
+function gpu_free {
+  if ! command -v sinfo >/dev/null 2>&1 || ! command -v scontrol >/dev/null 2>&1; then
+    echo "SLURM not found: require sinfo and scontrol" >&2
+    return 1
+  fi
+
+  local rows
+  rows=$(
+    sinfo -N -h -o "%N %P" | while read -r node part; do
+      part="${part%\*}"
+      line=$(scontrol show node -o "$node" 2>/dev/null)
+      cfg=$(printf "%s\n" "$line" | awk 'match($0,/CfgTRES=([^ ]+)/,m){print m[1]}')
+      alloc=$(printf "%s\n" "$line" | awk 'match($0,/AllocTRES=([^ ]+)/,m){print m[1]}')
+      total=$(awk -v tres="$cfg" 'BEGIN{n=split(tres,a,",");s=0;for(i=1;i<=n;i++){split(a[i],kv,"=");k=kv[1];v=kv[2];if(k ~ /^gres\/gpu(:|$)/){gsub(/[^0-9]/,"",v); if(v!="") s+=v+0;}}; print s+0}')
+      used=$(awk -v tres="$alloc" 'BEGIN{n=split(tres,a,",");s=0;for(i=1;i<=n;i++){split(a[i],kv,"=");k=kv[1];v=kv[2];if(k ~ /^gres\/gpu(:|$)/){gsub(/[^0-9]/,"",v); if(v!="") s+=v+0;}}; print s+0}')
+      printf "%s\t%s\t%s\n" "$part" "$total" "$used"
+    done
+  )
+
+  {
+    printf "partition\ttotal\tallocated\tavailable\n"
+    printf "%s\n" "$rows" | awk -F'\t' '
+      {
+        total[$1] += $2
+        alloc[$1] += $3
+      }
+      END {
+        n = asorti(total, sorted)
+        for (i = 1; i <= n; i++) {
+          p = sorted[i]
+          avail = total[p] - alloc[p]
+          printf "%s\t%d\t%d\t%d\n", p, total[p], alloc[p], avail
+        }
+      }'
+  } | awk '
+    BEGIN { FS = "\t"; sep = "   " }
+    {
+      lines[NR] = $0
+      if (NF > nfields) nfields = NF
+      for (i = 1; i <= NF; i++) {
+        field_len = length($i)
+        if (field_len > maxw[i]) maxw[i] = field_len
+      }
+    }
+    END {
+      split(lines[1], h, FS)
+      for (i = 1; i <= nfields; i++) {
+        printf "%-" maxw[i] "s", h[i]
+        if (i < nfields) printf "%s", sep
+      }
+      printf "\n"
+
+      for (i = 1; i <= nfields; i++) {
+        for (j = 0; j < maxw[i]; j++) printf "-"
+        if (i < nfields) printf "%s", sep
+      }
+      printf "\n"
+
+      for (r = 2; r <= NR; r++) {
+        split(lines[r], f, FS)
+        for (i = 1; i <= nfields; i++) {
+          printf "%-" maxw[i] "s", f[i]
+          if (i < nfields) printf "%s", sep
+        }
+        printf "\n"
+      }
+    }'
+}
+
 function git_cleanup {
   if ! git rev-parse --is-inside-work-tree &>/dev/null; then
     echo "error: not a git repository" >&2
