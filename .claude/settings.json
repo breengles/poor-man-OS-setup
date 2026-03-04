@@ -99,8 +99,10 @@
     "context7@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true
+    "code-simplifier@claude-plugins-official": true,
+    "ast-index@ast-index-marketplace": true
   },
+  "skipDangerousModePermissionPrompt": true,
   "mcpServers": {
     "gitlab-cli": {
       "type": "stdio",
@@ -111,6 +113,5 @@
       ],
       "env": {}
     }
-  },
-  "skipDangerousModePermissionPrompt": true
+  }
 }
