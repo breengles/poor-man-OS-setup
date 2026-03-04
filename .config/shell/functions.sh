@@ -332,3 +332,70 @@ function gpu_alloc {
       }
     }'
 }
+
+function git_cleanup {
+  if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+    echo "error: not a git repository" >&2
+    return 1
+  fi
+
+  # auto-detect base branch
+  local base
+  if git show-ref --verify --quiet refs/heads/main; then
+    base="main"
+  elif git show-ref --verify --quiet refs/heads/master; then
+    base="master"
+  else
+    echo "error: neither 'main' nor 'master' branch found" >&2
+    return 1
+  fi
+
+  local current
+  current="$(git symbolic-ref --short HEAD 2>/dev/null)"
+
+  echo "Base branch: $base"
+  echo "Fetching and pruning remote tracking refs..."
+  git fetch --prune
+
+  # delete local branches already merged into base
+  local merged_deleted=0
+  while IFS= read -r branch; do
+    branch="$(echo "$branch" | xargs)"
+    [ -z "$branch" ] && continue
+    [ "$branch" = "main" ] || [ "$branch" = "master" ] || [ "$branch" = "$current" ] && continue
+    echo "Deleting merged branch: $branch"
+    git branch -d "$branch"
+    merged_deleted=$((merged_deleted + 1))
+  done < <(git branch --merged "$base" --format='%(refname:short)')
+
+  # find branches whose upstream is gone
+  local gone_branches=()
+  while IFS= read -r line; do
+    local branch_name
+    branch_name="$(echo "$line" | awk '{print $1}')"
+    [ -z "$branch_name" ] && continue
+    [ "$branch_name" = "main" ] || [ "$branch_name" = "master" ] || [ "$branch_name" = "$current" ] && continue
+    gone_branches+=("$branch_name")
+  done < <(git branch -vv | grep ': gone]')
+
+  local gone_deleted=0
+  if [ ${#gone_branches[@]} -gt 0 ]; then
+    echo ""
+    echo "Branches with deleted upstream:"
+    printf "  %s\n" "${gone_branches[@]}"
+    printf "Force-delete these branches? [y/N] "
+    read -r confirm
+    if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
+      for branch in "${gone_branches[@]}"; do
+        echo "Deleting gone branch: $branch"
+        git branch -D "$branch"
+        gone_deleted=$((gone_deleted + 1))
+      done
+    else
+      echo "Skipped."
+    fi
+  fi
+
+  echo ""
+  echo "Done. Deleted $merged_deleted merged and $gone_deleted gone branch(es)."
+}
