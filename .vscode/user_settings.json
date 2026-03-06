@@ -30,7 +30,6 @@
   // explorer
   "explorer.confirmPasteNative": false,
   "explorer.autoReveal": false,
-  "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 10,
   "explorer.confirmDragAndDrop": false,
   // workbench
@@ -217,10 +216,6 @@
     "editor.tabSize": 2,
     "editor.formatOnSave": true,
   },
-  "markdownlint.config": {
-    "default": true,
-    "MD024": false,
-  },
   // latex
   "latex-workshop.latex.recipe.default": "lastUsed",
   "latex-workshop.view.pdf.viewer": "tab",
@@ -388,8 +383,8 @@
       "name": "personal",
       "path": "~/.cspell-words.txt",
       "scope": "user",
-      "addWords": true
-    }
+      "addWords": true,
+    },
   },
   // other
   "material-icon-theme.folders.theme": "specific",
@@ -416,7 +411,13 @@
   },
   "lldb.suppressUpdateNotifications": true,
   "merge-conflict.autoNavigateNextConflict.enabled": true,
-  "claudeCode.useTerminal": true,
   "git.detectWorktrees": false,
   "terminal.integrated.confirmOnKill": "never",
+  "claudeCode.preferredLocation": "sidebar",
+  "chat.agentsControl.enabled": false,
+  "python.analysis.typeCheckingMode": "standard",
+  "scm.defaultViewMode": "tree",
+  "terminal.integrated.enableImages": true,
+  "terminal.integrated.gpuAcceleration": "on",
+  "claudeCode.allowDangerouslySkipPermissions": true,
 }
