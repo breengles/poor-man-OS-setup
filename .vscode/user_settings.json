@@ -46,8 +46,10 @@
   },
   "workbench.iconTheme": "material-icon-theme",
   "workbench.colorCustomizations": {
-    "terminal.selectionForeground": "#000000",
-    "terminal.selectionBackground": "#fbf8d3",
+    "[*Dark*]": {
+      "terminal.selectionForeground": "#000000",
+      "terminal.selectionBackground": "#fbf8d3",
+    },
   },
   "workbench.editorLargeFileConfirmation": 50,
   "workbench.colorTheme": "Default Dark Modern",
@@ -420,4 +422,10 @@
   "terminal.integrated.enableImages": true,
   "terminal.integrated.gpuAcceleration": "on",
   "claudeCode.allowDangerouslySkipPermissions": true,
+  "remote.SSH.remotePlatform": {
+    "pair": "linux",
+  },
+  "window.autoDetectColorScheme": true,
+  "workbench.preferredLightColorTheme": "Ayu Light Bordered",
+  "workbench.preferredDarkColorTheme": "Ayu Dark Bordered",
 }
