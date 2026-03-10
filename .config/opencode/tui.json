@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/tui.json",
-  "theme": "system",
+  "theme": "opencode",
   "keybinds": {
     "model_cycle_favorite": "shift+tab",
     "model_cycle_favorite_reverse": "none",
