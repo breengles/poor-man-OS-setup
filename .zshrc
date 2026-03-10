@@ -24,3 +24,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
 
 eval "$(zoxide init --cmd cd zsh)"
+
+# opencode
+export PATH=/Users/artem/.opencode/bin:$PATH
