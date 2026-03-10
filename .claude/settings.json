@@ -102,6 +102,7 @@
     "code-simplifier@claude-plugins-official": true,
     "ast-index@ast-index-marketplace": true
   },
+  "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
   "mcpServers": {
     "gitlab-cli": {
@@ -113,6 +114,5 @@
       ],
       "env": {}
     }
-  },
-  "effortLevel": "high"
+  }
 }
