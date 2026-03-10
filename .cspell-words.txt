@@ -1574,6 +1574,7 @@ toonify
 Toonyou
 topdir
 topiq
+topiqnrface
 torchaudio
 torchdiffeq
 torchinfo
