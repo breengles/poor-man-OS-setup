@@ -1,5 +1,7 @@
 {
   // base
+  "scm.defaultViewMode": "tree",
+  "merge-conflict.autoNavigateNextConflict.enabled": true,
   "extensions.ignoreRecommendations": true,
   "interactiveWindow.executeWithShiftEnter": false,
   "security.workspace.trust.untrustedFiles": "open",
@@ -23,17 +25,17 @@
   // cursor
   "cursor.preferNotificationsSameAsChat": true,
   // window
+  "window.autoDetectColorScheme": true,
   "window.openFilesInNewWindow": "default",
   "window.openFoldersInNewWindow": "default",
-  "window.titleBarStyle": "custom",
   "window.zoomLevel": 0.5,
   // explorer
   "explorer.confirmPasteNative": false,
   "explorer.autoReveal": false,
   "explorer.openEditors.visible": 10,
   "explorer.confirmDragAndDrop": false,
-  // workbench
-  "workbench.activityBar.location": "default",
+  "workbench.preferredLightColorTheme": "Default Light Modern",
+  "workbench.preferredDarkColorTheme": "Default Dark Modern",
   "workbench.activityBar.orientation": "vertical",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.tree.enableStickyScroll": true,
@@ -46,14 +48,11 @@
   },
   "workbench.iconTheme": "material-icon-theme",
   "workbench.colorCustomizations": {
-    "[*Dark*]": {
-      "terminal.selectionForeground": "#000000",
-      "terminal.selectionBackground": "#fbf8d3",
-    },
+    "terminal.selectionForeground": "#000000",
+    "terminal.selectionBackground": "#fbf8d3",
   },
   "workbench.editorLargeFileConfirmation": 50,
   "workbench.colorTheme": "Default Dark Modern",
-  "workbench.editor.showTabs": "multiple",
   // debug
   "debug.onTaskErrors": "abort",
   "debug.console.fontSize": 18,
@@ -107,6 +106,10 @@
   },
   "editor.renderWhitespace": "selection",
   // terminal
+  "terminal.integrated.confirmOnKill": "never",
+  "terminal.integrated.enableImages": true,
+  "terminal.integrated.gpuAcceleration": "on",
+  "terminal.external.osxExec": "kitty.app",
   "terminal.integrated.scrollback": 20000,
   "terminal.integrated.autoReplies": {},
   "terminal.integrated.fontSize": 16,
@@ -141,8 +144,16 @@
   "terminal.integrated.env.linux": {
     "TERM": "xterm-256color",
   },
+  "terminal.integrated.env.osx": {
+    "TERM": "xterm-256color",
+  },
   // remote — remote.SSH.remotePlatform: configure per-machine (not tracked)
+  "remote.autoForwardPortsSource": "hybrid",
+  "remote.SSH.remotePlatform": {
+    "pair": "linux",
+  },
   // git
+  "git.detectWorktrees": false,
   "git.replaceTagsWhenPull": true,
   "git.autofetchPeriod": 60,
   "git.openRepositoryInParentFolders": "never",
@@ -181,6 +192,10 @@
   },
   "python.terminal.activateEnvironment": false,
   "python.terminal.executeInFileDir": true,
+  "cursorpyright.analysis.inlayHints.genericTypes": false,
+  "cursorpyright.analysis.diagnosticSeverityOverrides": {
+    "reportMissingImports": "none",
+  },
   "ruff.importStrategy": "useBundled",
   "ruff.lint.ignore": [
     "F401"
@@ -388,8 +403,10 @@
       "addWords": true,
     },
   },
+  // claude
+  "claudeCode.preferredLocation": "sidebar",
+  "claudeCode.allowDangerouslySkipPermissions": true,
   // other
-  "material-icon-theme.folders.theme": "specific",
   "redhat.telemetry.enabled": false,
   "better-comments.highlightPlainText": true,
   "[dockercompose]": {
@@ -403,29 +420,10 @@
     },
     "editor.defaultFormatter": "redhat.vscode-yaml",
   },
-  "remote.autoForwardPortsSource": "hybrid",
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml",
   },
-  "cursorpyright.analysis.inlayHints.genericTypes": false,
-  "cursorpyright.analysis.diagnosticSeverityOverrides": {
-    "reportMissingImports": "none",
-  },
   "lldb.suppressUpdateNotifications": true,
-  "merge-conflict.autoNavigateNextConflict.enabled": true,
-  "git.detectWorktrees": false,
-  "terminal.integrated.confirmOnKill": "never",
-  "claudeCode.preferredLocation": "sidebar",
   "chat.agentsControl.enabled": false,
   "python.analysis.typeCheckingMode": "standard",
-  "scm.defaultViewMode": "tree",
-  "terminal.integrated.enableImages": true,
-  "terminal.integrated.gpuAcceleration": "on",
-  "claudeCode.allowDangerouslySkipPermissions": true,
-  "remote.SSH.remotePlatform": {
-    "pair": "linux",
-  },
-  "window.autoDetectColorScheme": true,
-  "workbench.preferredLightColorTheme": "Ayu Light Bordered",
-  "workbench.preferredDarkColorTheme": "Ayu Dark Bordered",
 }
