@@ -50,6 +50,10 @@
   "workbench.colorCustomizations": {
     "terminal.selectionForeground": "#000000",
     "terminal.selectionBackground": "#fbf8d3",
+    "[*Light*]": {
+      "terminalCursor.foreground": "#000000",
+      "terminalCursor.background": "#ffffff",
+    },
   },
   "workbench.editorLargeFileConfirmation": 50,
   "workbench.colorTheme": "Default Dark Modern",
@@ -113,6 +117,7 @@
   "terminal.integrated.scrollback": 20000,
   "terminal.integrated.autoReplies": {},
   "terminal.integrated.fontSize": 16,
+  "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.altClickMovesCursor": false,
   "terminal.integrated.macOptionIsMeta": true,
   "terminal.integrated.macOptionClickForcesSelection": true,
@@ -426,4 +431,6 @@
   "lldb.suppressUpdateNotifications": true,
   "chat.agentsControl.enabled": false,
   "python.analysis.typeCheckingMode": "standard",
+  "editor.cursorWidth": 1,
+  "terminal.integrated.cursorWidth": 3,
 }
