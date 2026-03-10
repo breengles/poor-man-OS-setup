@@ -113,7 +113,6 @@
   "terminal.integrated.confirmOnKill": "never",
   "terminal.integrated.enableImages": true,
   "terminal.integrated.gpuAcceleration": "on",
-  "terminal.external.osxExec": "kitty.app",
   "terminal.integrated.scrollback": 20000,
   "terminal.integrated.autoReplies": {},
   "terminal.integrated.fontSize": 16,
