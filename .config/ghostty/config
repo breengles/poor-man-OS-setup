@@ -13,6 +13,12 @@ window-padding-balance = true
 # theme (auto-switches with macOS light/dark mode)
 theme = light:light-theme,dark:dark-theme
 
+# splits
+keybind = super+shift+left=goto_split:left
+keybind = super+shift+right=goto_split:right
+keybind = super+shift+up=goto_split:top
+keybind = super+shift+down=goto_split:bottom
+
 # macos
 macos-option-as-alt = true
 quit-after-last-window-closed = true
