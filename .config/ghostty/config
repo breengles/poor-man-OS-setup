@@ -10,8 +10,8 @@ window-padding-x = 5
 window-padding-y = 0
 window-padding-balance = true
 
-# theme (auto-switches with macOS light/dark mode)
-theme = light:light-theme,dark:dark-theme
+# theme
+theme = dark-theme
 
 # navigation
 keybind = alt+left=esc:b
