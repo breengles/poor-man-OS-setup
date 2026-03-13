@@ -104,6 +104,10 @@
   },
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "type": "command",
+    "command": "bash /Users/artem/.claude/statusline-command.sh"
+  },
   "mcpServers": {
     "gitlab-cli": {
       "type": "stdio",
