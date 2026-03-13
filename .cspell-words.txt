@@ -428,6 +428,8 @@ DYLD
 easydict
 ebad
 edgecolor
+editreward
+editscore
 EDSR
 Eeth
 efficientnet
