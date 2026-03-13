@@ -154,7 +154,7 @@
   // remote — remote.SSH.remotePlatform: configure per-machine (not tracked)
   "remote.autoForwardPortsSource": "hybrid",
   "remote.SSH.remotePlatform": {
-    "pair": "linux",
+    "pair": "linux"
   },
   // git
   "git.detectWorktrees": false,
@@ -432,4 +432,5 @@
   "python.analysis.typeCheckingMode": "standard",
   "editor.cursorWidth": 1,
   "terminal.integrated.cursorWidth": 3,
+  "git-worktree-manager.worktreeSubdirectoryTemplate": "$REF_NAME",
 }
