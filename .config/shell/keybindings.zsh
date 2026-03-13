@@ -10,15 +10,15 @@ bindkey "^[[B" down-line-or-beginning-search # Down (normal mode)
 bindkey "^[OB"  down-line-or-beginning-search # Down (application mode)
 
 # Word navigation (Alt+Left, Alt+Right)
-bindkey "^[b" backward-word # Alt+Left (from kitty mapping)
-bindkey "^[f" forward-word # Alt+Right (from kitty mapping)
+bindkey "^[b" backward-word # Alt+Left (from terminal mapping)
+bindkey "^[f" forward-word # Alt+Right (from terminal mapping)
 
 # Word deletion (Alt+Backspace)
 bindkey "^[^?" backward-kill-word # Alt+Backspace
 
 # Line navigation (Cmd+Left, Cmd+Right)
-bindkey "^A" beginning-of-line # Cmd+Left (from kitty mapping)
-bindkey "^E" end-of-line # Cmd+Right (from kitty mapping)
+bindkey "^A" beginning-of-line # Cmd+Left (from terminal mapping)
+bindkey "^E" end-of-line # Cmd+Right (from terminal mapping)
 
 
 # Shared helpers for fzf file/grep widgets

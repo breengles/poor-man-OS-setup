@@ -19,7 +19,7 @@ Note: These files are in `.vscode/` but are excluded from stow via `.stow-local-
 
 | Setting                    | Value                                | Purpose                            |
 | -------------------------- | ------------------------------------ | ---------------------------------- |
-| `editor.fontSize`          | 18                                   | Matches Kitty terminal font size   |
+| `editor.fontSize`          | 18                                   | Terminal-matching font size        |
 | `editor.fontFamily`        | MonaspiceNe Nerd Font, CaskaydiaCove | Nerd Font with fallback            |
 | `editor.fontLigatures`     | Custom set                           | Selective ligatures enabled        |
 | `editor.rulers`            | [120]                                | Line length guide at 120 chars     |
@@ -211,7 +211,7 @@ The project README lists all recommended extensions. Key categories:
 ## Relationship to Other Components
 
 - **tmux** sessions are auto-created per workspace in the integrated terminal
-- **Font** (MonaspiceNe Nerd Font) is shared with Kitty and Neovim
+- **Font** (MonaspiceNe Nerd Font) is shared with Neovim
 - **Python tooling** (Ruff line length 120, Pyright basic mode) matches Neovim's LSP config
 - **Format-on-save** behavior mirrors Neovim's conform.nvim setup
 - **Git** keybindings complement the terminal-based LazyGit workflow in Neovim

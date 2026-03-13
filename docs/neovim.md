@@ -33,7 +33,7 @@ end)
 
 ### Nerd Font Assumption
 
-`vim.g.have_nerd_font = true` — the config assumes a Nerd Font is installed (MonaspiceNe Nerd Font, configured in Kitty). This enables icons in which-key, statusline, and diagnostic signs. Fallback text symbols are defined when Nerd Fonts are unavailable.
+`vim.g.have_nerd_font = true` — the config assumes a Nerd Font is installed (MonaspiceNe Nerd Font). This enables icons in which-key, statusline, and diagnostic signs. Fallback text symbols are defined when Nerd Fonts are unavailable.
 
 ### Custom Colorscheme
 
@@ -208,7 +208,7 @@ Additional parsers are installed automatically when a file of that type is opene
 
 ## Relationship to Other Components
 
-- Uses **MonaspiceNe Nerd Font** configured in Kitty
+- Uses **MonaspiceNe Nerd Font**
 - `$EDITOR` is set to `nvim` in the shell aliases
 - Shell fzf widgets (`Ctrl+O`, `Ctrl+G`) open files in Neovim
 - Python formatting matches the Ruff configuration used in Cursor/VS Code

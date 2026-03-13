@@ -71,7 +71,7 @@ The configuration works on both **macOS** (Homebrew) and **Linux** (HPC clusters
 | Aspect            | macOS                         | Linux                             |
 | ----------------- | ----------------------------- | --------------------------------- |
 | Package manager   | Homebrew                      | apt (conditional in `update`)     |
-| Terminal          | Kitty                         | SSH/tmux                          |
+| Terminal          | Ghostty                       | SSH/tmux                          |
 | Shell install     | Homebrew (`brew install zsh`) | System package or pre-installed   |
 | Rust tools        | Cargo (same on both)          | Cargo (same on both)              |
 | CUDA              | N/A                           | `module load cuda12.4` on cluster |
@@ -91,7 +91,7 @@ xcode-select --install
 
 # 3. Install packages
 brew install zsh wget curl git vim neovim tmux make cmake gfortran gcc btop stow rsync fzf lazygit
-brew install --cask kitty keepingyouawake raycast mactex dockey transmission obsidian alt-tab maccy \
+brew install --cask keepingyouawake raycast mactex dockey transmission obsidian alt-tab maccy \
   font-caskaydia-cove-nerd-font font-monaspace-nerd-font
 
 # 4. Install Rust toolchain
@@ -131,7 +131,6 @@ When `stow .` runs, the resulting symlinks look like:
 ~/.tmux.conf        -> ~/poor-man-OS-setup/.tmux.conf
 ~/.cspell-words.txt -> ~/poor-man-OS-setup/.cspell-words.txt
 ~/.config/nvim/     -> ~/poor-man-OS-setup/.config/nvim/
-~/.config/kitty/    -> ~/poor-man-OS-setup/.config/kitty/
 ~/.config/shell/    -> ~/poor-man-OS-setup/.config/shell/
 ~/.config/starship.toml -> ~/poor-man-OS-setup/.config/starship.toml
 ~/.config/yazi/     -> ~/poor-man-OS-setup/.config/yazi/ (minus plugins/)

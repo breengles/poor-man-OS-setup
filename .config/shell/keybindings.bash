@@ -2,15 +2,15 @@ bind '"\e[A": history-search-backward'  # Up arrow
 bind '"\e[B": history-search-forward'   # Down arrow
 
 # Word navigation (Alt+Left, Alt+Right)
-bind '"\eb": backward-word'             # Alt+Left (from kitty mapping)
-bind '"\ef": forward-word'              # Alt+Right (from kitty mapping)
+bind '"\eb": backward-word'             # Alt+Left (from terminal mapping)
+bind '"\ef": forward-word'              # Alt+Right (from terminal mapping)
 
 # Word deletion (Alt+Backspace)
 bind '"\e\C-?": backward-kill-word'     # Alt+Backspace
 
 # Line navigation (Cmd+Left, Cmd+Right)
-bind '"\C-a": beginning-of-line'        # Cmd+Left (from kitty mapping)
-bind '"\C-e": end-of-line'              # Cmd+Right (from kitty mapping)
+bind '"\C-a": beginning-of-line'        # Cmd+Left (from terminal mapping)
+bind '"\C-e": end-of-line'              # Cmd+Right (from terminal mapping)
 
 # ---------------------------------------------------------------------------
 # fzf widgets (Ctrl+O, Ctrl+G, Alt+O, Alt+G)

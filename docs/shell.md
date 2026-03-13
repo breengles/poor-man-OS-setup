@@ -101,10 +101,10 @@ Keybindings are implemented in both Bash and Zsh variants with identical behavio
 | Key             | Action                | Notes                                  |
 | --------------- | --------------------- | -------------------------------------- |
 | `Up` / `Down`   | History prefix search | Searches history matching typed prefix |
-| `Alt+Left`      | Backward word         | Kitty sends `\x1b\x62`                 |
-| `Alt+Right`     | Forward word          | Kitty sends `\x1b\x66`                 |
-| `Cmd+Left`      | Beginning of line     | Kitty sends `\x01` (Ctrl+A)            |
-| `Cmd+Right`     | End of line           | Kitty sends `\x05` (Ctrl+E)            |
+| `Alt+Left`      | Backward word         | Terminal sends `\x1b\x62`              |
+| `Alt+Right`     | Forward word          | Terminal sends `\x1b\x66`              |
+| `Cmd+Left`      | Beginning of line     | Terminal sends `\x01` (Ctrl+A)         |
+| `Cmd+Right`     | End of line           | Terminal sends `\x05` (Ctrl+E)         |
 | `Alt+Backspace` | Delete word backward  | Standard terminal behavior             |
 
 ### fzf Widgets
@@ -227,7 +227,7 @@ fi
 
 ## Relationship to Other Components
 
-- **Kitty** sends special escape sequences for `Cmd+Left/Right` and `Alt+Left/Right` that the keybinding modules interpret
+- **Terminal** sends special escape sequences for `Cmd+Left/Right` and `Alt+Left/Right` that the keybinding modules interpret
 - **Starship** is initialized in `integrations.sh` using the config from `.config/starship.toml`
 - **tmux** propagates the `$AGENT` variable to child shells via `update-environment`
 - **Neovim** is aliased as `vim` and set as `$EDITOR`

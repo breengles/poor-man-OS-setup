@@ -129,7 +129,6 @@ This creates or attaches to a tmux session named after the current directory (wi
 
 ## Relationship to Other Components
 
-- **Kitty** provides the terminal that tmux runs inside; true color overrides ensure colors pass through correctly
 - **Shell** keybindings (`Alt+Left/Right`, `Cmd+Left/Right`) are passed through tmux via `xterm-keys on`
 - **Cursor/VS Code** auto-creates tmux sessions per workspace
 - **`$AGENT`** environment variable is propagated from the outer shell through tmux to inner shells

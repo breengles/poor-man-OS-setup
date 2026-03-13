@@ -18,7 +18,6 @@ no build system, no test framework, and no CI/CD pipeline.
 .gitconfig                 # Git config (delta pager, aliases, LFS)
 .tmux.conf                 # tmux config (C-Space prefix, TPM plugin manager)
 .config/
-  kitty/                   # Kitty terminal emulator (theme, fonts)
   nvim/                    # Neovim config (Kickstart-based, lazy.nvim)
     init.lua               # Main config (~1038 lines)
     lua/custom/plugins/    # Custom plugins (git, colorscheme)
@@ -178,7 +177,7 @@ Files excluded from stow (via `.stow-local-ignore`):
 
 - **Primary shell:** Zsh with zinit plugin manager
 - **Prompt:** Starship (2-line lean style)
-- **Terminal:** Kitty (MonaspiceNe Nerd Font, size 18)
+- **Terminal:** Ghostty
 - **Multiplexer:** tmux (prefix: `C-Space`)
 - **Editor (terminal):** Neovim (Kickstart + lazy.nvim)
 - **Editor (GUI):** Cursor (VS Code fork)
