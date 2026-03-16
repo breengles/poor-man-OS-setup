@@ -402,6 +402,7 @@ dpolthy
 dprint
 dreambooth
 Dreamshaper
+dresscode
 DSCALAPACK
 dscratch
 dset
@@ -502,6 +503,7 @@ finetuning
 finfo
 finit
 fira
+firered
 firstrow
 fivek
 flamegraphs
@@ -1684,6 +1686,7 @@ vimrc
 viridis
 virtualenv
 vitb
+vitonhd
 vividlight
 vmax
 vmin
@@ -1692,6 +1695,7 @@ vratio
 vscodesetting
 vscore
 vstack
+vton
 vtoonify
 vtype
 vutils
