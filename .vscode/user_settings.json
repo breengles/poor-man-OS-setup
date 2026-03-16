@@ -25,7 +25,7 @@
   // cursor
   "cursor.preferNotificationsSameAsChat": true,
   // window
-  "window.autoDetectColorScheme": false,
+  "window.autoDetectColorScheme": true,
   "window.openFilesInNewWindow": "default",
   "window.openFoldersInNewWindow": "default",
   "window.zoomLevel": 0.5,
