@@ -1481,6 +1481,7 @@ stablesr
 starcoder
 starlette
 startangle
+statusline
 stderrs
 stdinv
 stdlib
