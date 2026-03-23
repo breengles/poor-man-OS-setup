@@ -623,6 +623,7 @@ HISTDUP
 histplot
 hlines
 homonuclear
+hookwrapper
 horiz
 horizontalalignment
 hparams
@@ -886,6 +887,7 @@ magn
 maininit
 maix
 makepkg
+makereport
 makesups
 mambac
 mambaforge
@@ -1031,6 +1033,7 @@ noalpha
 nobench
 nofreckles
 noheader
+nolora
 nomakeup
 nondiag
 noneu
