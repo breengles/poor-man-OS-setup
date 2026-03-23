@@ -8,18 +8,22 @@ function calcjson {
   find "$1" -type f -name "*.json" | wc -l
 }
 
+function _run {
+  local label="$1"
+  shift
+  echo "========== updating $label =========="
+  echo "$*"
+  eval "$@"
+  echo
+}
+
 function update {
   if type zinit &>/dev/null; then
-    echo "========== updating zinit =========="
-    zinit self-update
-    zinit update --all --parallel
-    echo
+    _run "zinit" "zinit self-update && zinit update --all --parallel"
   fi
 
   if [ -x "$(command -v brew)" ]; then
-    echo "========== updating brew packages =========="
-    brew update && brew upgrade
-    echo
+    _run "brew packages" "brew update && brew upgrade"
     echo "The following packages were NOT upgraded (PINNED):"
     brew list --pinned
     echo
@@ -27,16 +31,12 @@ function update {
 
   if [[ $(hostname) != *"login"* ]]; then
     if [ -x "$(command -v apt)" ]; then
-      echo "========== updating apt packages =========="
-      sudo apt update && sudo apt upgrade
-      echo
+      _run "apt packages" "sudo apt update && sudo apt upgrade"
     fi
   fi
 
   if [ -x "$(command -v cargo)" ]; then
-    echo "========== updating cargo =========="
-    cargo install-update --all --jobs 8
-    echo
+    _run "cargo" "cargo install-update --all --jobs 8"
   fi
 }
 
