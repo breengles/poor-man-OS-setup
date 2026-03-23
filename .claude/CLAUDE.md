@@ -44,6 +44,48 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 - If the GitLab MCP server fails, is unavailable, or does not provide enough information, fall back to the `glab` CLI tool instead
 - Example `glab` commands: `glab issue list`, `glab mr list`, `glab mr view <id>`, `glab issue view <id>`
 
+## Spec-Driven Development (SDD)
+
+Use SDD selectively — only for long-lived engineering artifacts, never for exploratory research code.
+
+### When to use specs
+
+- Training pipelines, data loaders, evaluation harnesses
+- CLI tools, APIs, dashboards
+- Shared libraries or frameworks
+- Anything that will live beyond one experiment cycle
+
+### When NOT to use specs
+
+- Experiment scripts, notebooks, ablation code
+- One-off analysis or visualization
+- Anything in `experiments/`
+
+### Spec structure
+
+Specs live in `specs/<feature-name>/` with three files:
+
+1. `requirements.md` — What & why. User stories, acceptance criteria.
+2. `design.md` — How. Architecture, data flow, key decisions.
+3. `tasks.md` — Ordered implementation checklist with checkboxes.
+
+### Workflow
+
+1. Create `requirements.md` first. Review it before proceeding.
+2. Generate `design.md` from the requirements. Review before proceeding.
+3. Generate `tasks.md` from design + requirements.
+4. Implement task by task. Check off each in `tasks.md`.
+5. Delete the spec dir once the feature is stable and merged
+   (the code is the source of truth after that).
+
+### Decision heuristic
+
+Ask: **"Will this code outlive the current experiment?"**
+
+- **Yes** → write a spec in `specs/`
+- **No** → skip SDD, use `todos/` if tracking is needed
+- **Not sure** → start without a spec, retroactively add one if the code persists
+
 ## TODO Files
 
 TODO files live in `todos/` organized by area: `todos/<area>.md`
