@@ -348,6 +348,7 @@ densepose
 dequantize
 dequantizing
 derivs
+detectron
 dets
 devel
 devenv
@@ -1278,6 +1279,7 @@ ranknet
 raunet
 raycast
 rbet
+rcnn
 rcopy
 rdzv
 READIN
@@ -1353,6 +1355,7 @@ rsrv
 rstd
 rstride
 rsyncy
+rtmlib
 rtol
 RTVAE
 ruamel
@@ -1612,6 +1615,7 @@ tril
 trimap
 trisurf
 trunc
+tryon
 tstart
 TTGF
 turbosd
@@ -1690,6 +1694,7 @@ vimrc
 viridis
 virtualenv
 vitb
+VITON
 vitonhd
 vividlight
 vmax
@@ -1716,6 +1721,7 @@ websearch
 webui
 WEBVID
 wezterm
+wholebody
 wikilink
 wikilinks
 wincmd

@@ -3,10 +3,16 @@
 
 input=$(cat)
 
-model=$(echo "$input" | jq -r '.model.display_name // "Claude"')
-used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+eval "$(echo "$input" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+model = data.get('model', {}).get('display_name', 'Claude')
+used = data.get('context_window', {}).get('used_percentage')
+print(f'model={model!r}')
+print(f'used={used!r}')
+")"
 
-if [ -z "$used" ]; then
+if [ -z "$used" ] || [ "$used" = "None" ]; then
   printf "%s" "$model"
   exit 0
 fi
