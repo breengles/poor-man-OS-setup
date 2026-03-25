@@ -19,7 +19,7 @@ no build system, no test framework, and no CI/CD pipeline.
 .tmux.conf                 # tmux config (C-Space prefix, TPM plugin manager)
 .config/
   nvim/                    # Neovim config (Kickstart-based, lazy.nvim)
-    init.lua               # Main config (~1038 lines)
+    init.lua               # Main config (~500 lines)
     lua/custom/plugins/    # Custom plugins (git, colorscheme)
     lua/kickstart/         # Kickstart modules
   shell/                   # Shell modules (aliases, functions, env, completions, keybindings)
@@ -63,8 +63,7 @@ stow .
 stow -n -v .
 ```
 
-Files excluded from stow (via `.stow-local-ignore`):
-`.DS_Store`, `.git`, `readme.*`, `LICENSE`, `COPYING`, `CLAUDE.md`, `/docs`, `/misc`, `/todos`, `/.vscode`, `/.config/yazi/plugins`, `/.claude/settings.local.json`, `/.claude/plans`, `/.claude/todos`
+Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `docs/`, `misc/`, `todos/`, `.vscode/`, many `.claude/` transient dirs, and OpenCode build artifacts).
 
 ## Code Style Guidelines
 
@@ -137,6 +136,7 @@ Files excluded from stow (via `.stow-local-ignore`):
 ### Markdown
 
 - **Formatter:** Prettier (VS Code/Cursor)
+- **Pre-commit formatting:** After editing or creating any `.md` file, run `npx prettier --write <file>` before committing
 - **Indentation:** 2 spaces
 - **Format on save:** Enabled
 - **Linting:** markdownlint with MD024 (duplicate headings) disabled
@@ -170,6 +170,8 @@ Files excluded from stow (via `.stow-local-ignore`):
 - **Subject line:** Max 72 characters
 - **Pager:** delta (side-by-side diffs)
 - **LFS:** Enabled
+- **No issue IDs in commits:** Never include `#N` references (e.g. `#5`, `#123`) — GitLab
+  interprets them as issue references and may auto-close issues unintentionally
 - **Common aliases:** `co` (checkout), `ci` (commit -m), `st` (status), `br` (branch),
   `lg` (fancy log graph)
 
@@ -203,7 +205,7 @@ Files excluded from stow (via `.stow-local-ignore`):
 
 - **OpenCode global rules:** `.config/opencode/AGENTS.md` (stowed to `~/.config/opencode/AGENTS.md`)
 - **OpenCode config:** `.config/opencode/opencode.json` (permissions, MCP servers, formatters)
-- **OpenCode skills:** 8 skills at `.config/opencode/skills/` — commit, todo-init,
+- **OpenCode commands:** 8 commands at `.config/opencode/commands/` — commit, todo-init,
   todo-revise, todo-analyze, docs-init, docs-revise, docs-analyze, mr-description
 - **OpenCode agents:** `.config/opencode/agents/` — branch-code-reviewer
 
