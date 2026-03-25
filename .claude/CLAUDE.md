@@ -1,5 +1,19 @@
 # Personal Preferences
 
+## Safety
+
+NEVER use destructive commands without explicit user approval. The following are **absolutely forbidden** unless the user explicitly asks for them:
+
+- `rm -rf` (or any recursive force-delete)
+- `git push --force` / `git push --force-with-lease`
+- `git pull --force`
+- `git reset --hard`
+- `git checkout .` / `git restore .` (discarding all changes)
+- `git clean -f`
+- `git branch -D` (force-delete branch)
+
+If a task seems to require one of these, stop and ask the user first.
+
 ## Python
 
 ### Tooling
