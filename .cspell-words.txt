@@ -179,6 +179,7 @@ cfgs
 CFLAGS
 changlelog
 charliermarsh
+chatgtp
 checkhealth
 checkpointing
 Chervontsev
