@@ -29,12 +29,6 @@ no build system, no test framework, and no CI/CD pipeline.
   CLAUDE.md                # User-level Claude Code preferences (stowed to ~/.claude/)
   skills/                  # Custom slash commands (commit, todo-*, docs-*, mr-description)
   agents/                  # Custom agent definitions (branch-code-reviewer)
-.config/
-  opencode/                # OpenCode config (stowed to ~/.config/opencode/)
-    opencode.json          # Main config (permissions, MCP servers, formatters)
-    AGENTS.md              # Global rules/preferences (mirrors .claude/CLAUDE.md)
-    agents/                # Custom agents (branch-code-reviewer)
-    skills/                # Agent skills (commit, todo-*, docs-*, mr-description)
 .vscode/
   user_settings.json       # Cursor/VS Code settings
   keybindings.json         # Cursor/VS Code keybindings
@@ -63,7 +57,7 @@ stow .
 stow -n -v .
 ```
 
-Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `docs/`, `misc/`, `todos/`, `.vscode/`, many `.claude/` transient dirs, and OpenCode build artifacts).
+Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `docs/`, `misc/`, `todos/`, `.vscode/`, and many `.claude/` transient dirs).
 
 ## Code Style Guidelines
 
@@ -114,7 +108,10 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
 
 - **Type hints:** Annotate all function signatures (params + return types); skip local variables
   unless it aids clarity. Use modern syntax: `str | None` not `Optional[str]`,
-  `list[int]` not `List[int]`
+  `list[int]` not `List[int]`.
+  **Exception — pyrallis dataclasses:** pyrallis does not support expression-style unions
+  (`X | Y`) in dataclass field annotations. Use `Optional[X]` and `Union[X, Y]` from `typing`
+  instead when defining pyrallis CLI config dataclasses.
 - **No `from __future__ import annotations`** — avoid it; some libraries (Pydantic, FastAPI)
   need runtime-evaluable annotations
 - **Data modeling:**
@@ -200,14 +197,6 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
 - **Claude Code agents:** `.claude/agents/` — branch-code-reviewer
 - **Claude Code settings:** `~/.claude/settings.json` (managed by Claude Code itself, not stow —
   contains MCP servers, hooks, plugins, permissions)
-
-### OpenCode
-
-- **OpenCode global rules:** `.config/opencode/AGENTS.md` (stowed to `~/.config/opencode/AGENTS.md`)
-- **OpenCode config:** `.config/opencode/opencode.json` (permissions, MCP servers, formatters)
-- **OpenCode commands:** 8 commands at `.config/opencode/commands/` — commit, todo-init,
-  todo-revise, todo-analyze, docs-init, docs-revise, docs-analyze, mr-description
-- **OpenCode agents:** `.config/opencode/agents/` — branch-code-reviewer
 
 ## Key Reminders
 

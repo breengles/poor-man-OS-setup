@@ -2,24 +2,19 @@
 
 ## Overview
 
-The repository configures two AI coding assistants: **Claude Code** (Anthropic's CLI agent) and **OpenCode** (a TUI-based coding agent). Both share similar conventions through `AGENTS.md` files and are configured to use Claude Opus 4.6 as the primary model.
+The repository configures **Claude Code** (Anthropic's CLI agent) as the AI coding assistant, using Claude Opus 4.6 as the primary model.
 
 ## File Structure
 
-| File                             | Description                                                 |
-| -------------------------------- | ----------------------------------------------------------- |
-| `AGENTS.md` (repo root)          | Project-level instructions for Claude Code and OpenCode     |
-| `.claude/CLAUDE.md`              | Claude Code user-level preferences (stow → `~/.claude/`)   |
-| `.claude/skills/*/SKILL.md`      | Claude Code custom slash commands (stow → `~/.claude/skills/`) |
-| `.config/opencode/opencode.json` | OpenCode configuration (model, MCP servers, slash commands) |
-| `.config/opencode/AGENTS.md`     | OpenCode agent instructions (Python, Git, GitLab)           |
-| `.config/opencode/agent/ask.md`  | Read-only agent mode definition                             |
+| File                        | Description                                                    |
+| --------------------------- | -------------------------------------------------------------- |
+| `AGENTS.md` (repo root)     | Project-level instructions for Claude Code                     |
+| `.claude/CLAUDE.md`         | Claude Code user-level preferences (stow → `~/.claude/`)       |
+| `.claude/skills/*/SKILL.md` | Claude Code custom slash commands (stow → `~/.claude/skills/`) |
 
 Note: `~/.claude/settings.json` (MCP servers, hooks, plugins, permissions) is managed by Claude Code itself and not stow-managed.
 
-## Claude Code
-
-### Configuration
+## Configuration
 
 Claude Code reads instructions from multiple sources:
 
@@ -28,7 +23,7 @@ Claude Code reads instructions from multiple sources:
 - **User-level skills:** `.claude/skills/*/SKILL.md` (stow-managed to `~/.claude/skills/`)
 - **Settings:** `~/.claude/settings.json` (managed by Claude Code — MCP servers, hooks, plugins, permissions)
 
-### User-Level Preferences (`.claude/CLAUDE.md`)
+## User-Level Preferences (`.claude/CLAUDE.md`)
 
 Cross-project preferences that apply in every Claude Code session:
 
@@ -38,9 +33,9 @@ Cross-project preferences that apply in every Claude Code session:
 - **GitLab**: Prefer MCP tools, fall back to `glab` CLI
 - **TODO files**: Priority table + detailed sections + resolution order
 
-### Slash Commands (Skills)
+## Slash Commands (Skills)
 
-Six custom skills are stow-deployed from `.claude/skills/` to `~/.claude/skills/`:
+Custom skills are stow-deployed from `.claude/skills/` to `~/.claude/skills/`:
 
 | Command         | Description                                                 |
 | --------------- | ----------------------------------------------------------- |
@@ -51,49 +46,7 @@ Six custom skills are stow-deployed from `.claude/skills/` to `~/.claude/skills/
 | `/docs-init`    | Generate comprehensive technical documentation              |
 | `/docs-revise`  | Update existing documentation to match codebase changes     |
 
-These are identical to the OpenCode slash commands (same templates), providing feature parity between the two tools.
-
-### Key Conventions
-
-- **Python**: Always use `uv` (never pip/conda/poetry)
-- **Git**: Conventional Commits format, no `#N` issue references
-- **Shell**: 2-space indentation, guard aliases with `$AGENT`
-- **Lua**: 2-space indentation, single-quoted strings
-- **Line length**: 120 characters for Python, Fortran, YAML
-
-## OpenCode
-
-### Model Configuration
-
-```json
-{
-  "model": "anthropic/claude-opus-4-6",
-  "small_model": "anthropic/claude-sonnet-4-6",
-  "disabled_providers": ["opencode"],
-  "autoupdate": true
-}
-```
-
-### MCP Servers
-
-OpenCode connects to a GitLab MCP server via the `glab` CLI:
-
-```json
-"mcp": {
-  "gitlab": {
-    "type": "local",
-    "command": ["glab", "mcp", "serve"]
-  }
-}
-```
-
-This provides GitLab issue, merge request, and project management directly from the coding agent.
-
-### Slash Commands
-
-OpenCode defines the same 6 custom slash commands as Claude Code (see table above). The templates are defined in `opencode.json` under the `command` key. Claude Code's skill files contain identical prompt templates.
-
-#### `/commit` Details
+### `/commit` Details
 
 The commit command enforces:
 
@@ -105,7 +58,7 @@ The commit command enforces:
 - No issue IDs in messages
 - Shows `git log --oneline --name-only` after committing
 
-#### `/todo-init` and `/todo-revise`
+### `/todo-init` and `/todo-revise`
 
 TODO files follow a structured format in `todos/<area>.md`:
 
@@ -113,22 +66,11 @@ TODO files follow a structured format in `todos/<area>.md`:
 2. Detailed sections with descriptions
 3. Suggested resolution order
 
-#### `/docs-init` and `/docs-revise`
+### `/docs-init` and `/docs-revise`
 
 Documentation files live in `docs/<component>.md` with a `docs/README.md` index.
 
-### Ask Agent
-
-The `ask.md` agent definition creates a read-only mode that:
-
-- Answers questions about the codebase, external docs, and general topics
-- Strictly denies all file modifications
-- Can use web search/fetch for external information
-- Directs users to switch agents when they want to make changes
-
-## Shared Conventions (AGENTS.md)
-
-Both tools share conventions defined in their respective `AGENTS.md` files:
+## Key Conventions
 
 | Convention             | Detail                                                |
 | ---------------------- | ----------------------------------------------------- |
@@ -159,13 +101,12 @@ The `.stow-local-ignore` excludes Claude Code's auto-generated project files (`s
 ## Dependencies
 
 - **Claude Code** (`claude` CLI)
-- **OpenCode** (`brew install anomalyco/tap/opencode`)
 - **glab** CLI (for GitLab MCP server)
 - Anthropic API key (for Claude models)
 
 ## Relationship to Other Components
 
-- **Git** conventions are enforced by both agents' `/commit` workflows
-- **Shell** `$AGENT` variable disables eza/bat aliases when agents run shell commands
+- **Git** conventions are enforced by the `/commit` workflow
+- **Shell** `$AGENT`/`$CLAUDECODE` variables disable eza/bat aliases when agents run shell commands
 - **tmux** propagates `$AGENT` to nested sessions
 - **GitLab** MCP server provides issue/MR management inside the agent

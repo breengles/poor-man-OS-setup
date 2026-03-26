@@ -28,7 +28,7 @@ See [Stow / Deployment](stow.md) for full prerequisites and platform-specific se
 | [Yazi](yazi.md)              | `.config/yazi/`                       | File manager: vim keybindings, fzf/zoxide integration, plugins         |
 | [Git](git.md)                | `.gitconfig`                          | Aliases, delta pager, LFS, local config include                        |
 | [Editor (GUI)](editor.md)    | `.vscode/`                            | Cursor/VS Code settings, keybindings, Python/LaTeX/Markdown            |
-| [AI Tools](ai-tools.md)      | `.config/opencode/`, `AGENTS.md`      | Claude Code and OpenCode config, slash commands, MCP servers           |
+| [AI Tools](ai-tools.md)      | `.claude/`, `AGENTS.md`               | Claude Code config, slash commands, MCP servers                        |
 | [Stow / Deployment](stow.md) | `.stow-local-ignore`                  | How the repo deploys, exclusions, prerequisites, cross-platform        |
 
 ## Architecture
@@ -88,8 +88,8 @@ Neovim
 
 AI Tools
   ├── AGENTS.md → conventions for Git, Python, Shell
-  ├── OpenCode MCP → GitLab via glab
-  └── $AGENT env var → shell alias guards
+  ├── Claude Code MCP → GitLab via glab
+  └── $AGENT/$CLAUDECODE env vars → shell alias guards
 ```
 
 ## Platforms

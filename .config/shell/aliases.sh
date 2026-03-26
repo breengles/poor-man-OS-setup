@@ -30,11 +30,11 @@ if [ -x "$(command -v eza)" ] && [ -z "$AGENT" ] && [ -z "$CLAUDECODE" ]; then
   alias ls="eza --color=always --group-directories-first"
   alias l="eza --color=always --long --group-directories-first"
   alias ll="eza --color=always -abghHlS --group-directories-first"
+else
+  alias l="ls -lh"
+  alias ll="ls -lAh"
 fi
 
-if [ -x "$(command -v ollama)" ]; then
-  alias ol=ollama
-fi
 
 if [ -x "$(command -v bat)" ] && [ -z "$AGENT" ] && [ -z "$CLAUDECODE" ]; then
   alias cat=bat
@@ -52,8 +52,5 @@ if [ -x "$(command -v pcpctl)" ]; then
   alias pcp="pcpctl"
 fi
 
-if [ -x "$(command -v opencode)" ]; then
-  alias oc=opencode
-fi
 
 alias deact=deactivate

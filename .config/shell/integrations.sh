@@ -50,7 +50,7 @@ _gen_completion() {
 # Tool completions
 # For each tool, try shell-specific file (.zsh/.bash) first, then generic (.sh).
 # If no pre-generated file exists, attempt to generate and cache one.
-_completion_tools=(adkb uv opencode glab pueue pcpctl delta rg)
+_completion_tools=(adkb uv glab pueue pcpctl delta rg)
 for _tool in "${_completion_tools[@]}"; do
   if [ -f "$HOME/.completion.${_tool}.${_sh}" ]; then
     source "$HOME/.completion.${_tool}.${_sh}"
