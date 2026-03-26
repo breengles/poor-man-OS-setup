@@ -1088,7 +1088,6 @@ ofade
 Ofast
 ogrid
 OLEVEL
-ollama
 olora
 omegaconf
 omost
@@ -1103,7 +1102,6 @@ onnxruntime
 openai
 openaimodel
 OPENBLAS
-opencode
 opencv
 OPENFACTOR
 openjourney

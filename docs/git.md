@@ -101,4 +101,4 @@ From the project's AGENTS.md:
 - **Neovim** provides LazyGit integration (`<leader>gg`) and Diffview (`<leader>gd`)
 - **Cursor/VS Code** has extensive Git settings (auto-fetch, blame, Git Graph)
 - **Shell** sets `$EDITOR=nvim` via aliases
-- **AI tools** have commit conventions defined in `AGENTS.md` and OpenCode slash commands
+- **AI tools** have commit conventions defined in `AGENTS.md` and Claude Code slash commands

@@ -136,8 +136,6 @@ Aliases are only defined when the underlying tool is installed:
 | `code` | `cursor`                                       | cursor installed           |
 | `fd`   | `fd --no-ignore`                               | fd installed               |
 | `s`    | `sbatch`                                       | SLURM available            |
-| `oc`   | `opencode`                                     | opencode installed         |
-| `ol`   | `ollama`                                       | ollama installed           |
 
 ### Rsync Aliases
 
@@ -185,7 +183,7 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview '...'  # Directory preview f
 
 ### Tool Completions
 
-The integrations module loads completions for: `adkb`, `uv`, `opencode`, `glab`, `pueue`, `pcpctl`. It looks for shell-specific completion files (`~/.completion.<tool>.zsh` or `~/.completion.<tool>.bash`) falling back to generic `.sh` variants.
+The integrations module loads completions for: `adkb`, `uv`, `glab`, `pueue`, `pcpctl`. It looks for shell-specific completion files (`~/.completion.<tool>.zsh` or `~/.completion.<tool>.bash`) falling back to generic `.sh` variants.
 
 ## Integrations
 

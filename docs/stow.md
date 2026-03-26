@@ -134,7 +134,6 @@ When `stow .` runs, the resulting symlinks look like:
 ~/.config/shell/    -> ~/poor-man-OS-setup/.config/shell/
 ~/.config/starship.toml -> ~/poor-man-OS-setup/.config/starship.toml
 ~/.config/yazi/     -> ~/poor-man-OS-setup/.config/yazi/ (minus plugins/)
-~/.config/opencode/ -> ~/poor-man-OS-setup/.config/opencode/
 ```
 
 ## Relationship to Other Components
