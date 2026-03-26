@@ -32,7 +32,10 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 ### Style
 
 - Type-annotate all function signatures (params + return); skip local variables.
-  Use modern syntax: `str | None`, `list[int]` (not `Optional`, `List`)
+  Use modern syntax: `str | None`, `list[int]` (not `Optional`, `List`).
+  **Exception — pyrallis dataclasses:** pyrallis does not support expression-style unions
+  (`X | Y`) in dataclass field annotations. Use `Optional[X]` and `Union[X, Y]` from `typing`
+  instead when defining pyrallis CLI config dataclasses.
 - No `from __future__ import annotations`
 - Data modeling: Pydantic for services/APIs, dataclasses for internal, dataclasses + pyrallis for CLI apps
 - Web framework: FastAPI
