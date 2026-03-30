@@ -50,6 +50,10 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 
 - After editing or creating any markdown file (`.md`), always run `npx prettier --write <file>` to format it before committing.
 
+## Pre-commit Hooks
+
+- If the project has a `.pre-commit-config.yaml`, run `pre-commit run --all` and fix any issues before committing.
+
 ## Git Commits
 
 - Never include issue IDs or numbers (e.g. `#5`, `#123`) in commit messages — GitLab interprets
