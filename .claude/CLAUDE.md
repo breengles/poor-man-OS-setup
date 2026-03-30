@@ -52,7 +52,7 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 
 ## Pre-commit Hooks
 
-- If the project has a `.pre-commit-config.yaml`, run `pre-commit run --all` and fix any issues before committing.
+- If the project has a `.pre-commit-config.yaml`, run `pre-commit run` (staged files only) and fix any issues before committing.
 
 ## Git Commits
 
