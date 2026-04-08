@@ -1089,6 +1089,7 @@ ofade
 Ofast
 ogrid
 OLEVEL
+ollama
 olora
 omegaconf
 omost
@@ -1616,6 +1617,7 @@ trisurf
 trunc
 tryon
 tstart
+ttft
 TTGF
 turbosd
 twintail
