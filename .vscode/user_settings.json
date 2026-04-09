@@ -57,6 +57,9 @@
   },
   "workbench.editorLargeFileConfirmation": 50,
   "workbench.colorTheme": "Default Dark Modern",
+  "workbench.editor.autoLockGroups": {
+    "terminalEditor": false,
+  },
   // debug
   "debug.onTaskErrors": "abort",
   "debug.console.fontSize": 18,
@@ -79,7 +82,7 @@
   },
   "files.insertFinalNewline": true,
   //editor
-  "editor.fontLigatures": "'calt', 'ss02', 'ss03', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'liga'",
+  // "editor.fontLigatures": "'calt', 'ss02', 'ss03', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'liga'",
   "editor.minimap.enabled": false,
   "editor.scrollbar.verticalScrollbarSize": 18,
   "editor.indentSize": "tabSize",
@@ -155,9 +158,9 @@
   "remote.autoForwardPortsSource": "hybrid",
   "remote.SSH.remotePlatform": {
     "pair": "linux",
+    "pair2": "linux",
+    "nebius": "linux",
   },
-  // git
-  "git.detectWorktrees": false,
   "git.replaceTagsWhenPull": true,
   "git.autofetchPeriod": 60,
   "git.openRepositoryInParentFolders": "never",
@@ -336,7 +339,6 @@
         "-synctex=1",
         "-interaction=nonstopmode",
         "-file-line-error",
-        "-pdf",
         "-outdir=%OUTDIR%",
         "%DOC%",
       ],
@@ -432,5 +434,5 @@
   "python.analysis.typeCheckingMode": "standard",
   "editor.cursorWidth": 1,
   "terminal.integrated.cursorWidth": 3,
-  "git-worktree-manager.worktreeSubdirectoryTemplate": "$REF_NAME",
+  "git-worktree-manager.worktreeSubdirectoryTemplate": "$BASE_NAME-$REF_NAME",
 }
