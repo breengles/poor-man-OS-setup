@@ -68,7 +68,10 @@
       "Write(**/.claude/settings.json)",
       "Write(**/.claude/settings.local.json)"
     ],
-    "deny": ["Bash(rm *)", "Bash(rmdir *)"],
+    "deny": [
+      "Bash(rm *)",
+      "Bash(rmdir *)"
+    ],
     "ask": [
       "Bash(git push --force *)",
       "Bash(git push * --force *)",
@@ -91,6 +94,10 @@
     ],
     "defaultMode": "bypassPermissions"
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash $HOME/.claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
@@ -101,15 +108,14 @@
   },
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
-  "statusLine": {
-    "type": "command",
-    "command": "bash $HOME/.claude/statusline-command.sh"
-  },
   "mcpServers": {
     "gitlab-cli": {
       "type": "stdio",
       "command": "glab",
-      "args": ["mcp", "serve"],
+      "args": [
+        "mcp",
+        "serve"
+      ],
       "env": {}
     }
   }
