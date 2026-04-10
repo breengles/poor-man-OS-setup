@@ -1734,6 +1734,7 @@ WORDCHARS
 workr
 workth
 worktree
+worktrees
 wplus
 wspace
 WSTPLN
