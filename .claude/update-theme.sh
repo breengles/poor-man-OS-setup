@@ -84,9 +84,9 @@ apply_theme() {
         return
     fi
 
-    # Read current theme to avoid unnecessary writes
+    # Read current theme — use __UNSET__ sentinel so missing key != "dark"
     local current
-    current=$(python3 -c "import json; print(json.load(open('$CLAUDE_JSON')).get('theme','dark'))" 2>/dev/null || echo "dark")
+    current=$(python3 -c "import json; print(json.load(open('$CLAUDE_JSON')).get('theme','__UNSET__'))" 2>/dev/null || echo "__UNSET__")
 
     if [[ "$current" == "$theme" ]]; then
         return 0
