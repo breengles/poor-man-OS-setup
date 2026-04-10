@@ -104,7 +104,8 @@
     "feature-dev@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
-    "ast-index@ast-index-marketplace": true
+    "ast-index@ast-index-marketplace": true,
+    "picsart@picsart-marketplace": true
   },
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
