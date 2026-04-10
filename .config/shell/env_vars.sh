@@ -7,3 +7,13 @@ export GRADIO_TEMP_DIR="$HOME/gradio_tmp"
 [ ! -d "$GRADIO_TEMP_DIR" ] && mkdir -p "$GRADIO_TEMP_DIR"
 
 export STARSHIP_CONFIG="$HOME/.config/starship.toml"
+
+# Export current macOS theme for SSH forwarding to remote machines.
+# Used by TUI apps (Claude Code, etc.) to match system appearance.
+if command -v defaults &>/dev/null; then
+  if defaults read -g AppleInterfaceStyle &>/dev/null 2>&1; then
+    export MACOS_SYSTEM_THEME="dark"
+  else
+    export MACOS_SYSTEM_THEME="light"
+  fi
+fi
