@@ -246,6 +246,7 @@ concentrately
 cond
 conda
 conds
+conftest
 conlist
 controldir
 controlnet
