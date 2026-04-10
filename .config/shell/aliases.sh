@@ -36,9 +36,6 @@ else
 fi
 
 
-if [ -x "$(command -v bat)" ] && [ -z "$AGENT" ] && [ -z "$CLAUDECODE" ]; then
-  alias cat=bat
-fi
 
 if [ -x "$(command -v sbatch)" ]; then
   alias s=sbatch
