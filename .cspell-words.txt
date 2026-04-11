@@ -381,6 +381,7 @@ distdir
 distsubdir
 DLAMCH
 DLAPACK
+dlegpoly
 dlib
 DMATH
 DMKL
@@ -511,6 +512,7 @@ fira
 firered
 firstrow
 fivek
+fixturename
 flamegraphs
 flaskwebgui
 flathub
@@ -801,6 +803,7 @@ leakyrelu
 leftmargin
 legender
 leggauss
+legpoly
 legvander
 leres
 Lernplan
