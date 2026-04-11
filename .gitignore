@@ -29,6 +29,8 @@ __pycache__
 /.claude/todos
 /.claude/history.jsonl
 
+/.config/opencode/package-lock.json
+
 # Sensitive local config files (safety net)
 .env-global.sh
 .gitconfig.local

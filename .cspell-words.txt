@@ -438,7 +438,9 @@ EDSR
 Eeth
 efficientnet
 egood
+eigensolve
 eigh
+eigvecs
 einops
 Ekaterina
 elazarcoh
@@ -534,6 +536,7 @@ frettify
 Frobenius
 fromarray
 frombuffer
+frontl
 FSCC
 fsdp
 ftfy
@@ -762,6 +765,8 @@ keypoints
 khachik
 kimg
 kitti
+kmax
+kmin
 kodex
 Kontext
 kornia
@@ -975,6 +980,7 @@ moonveil
 moonwalker
 moveaxis
 moviepy
+msign
 mucha
 mult
 multdiv
@@ -1105,6 +1111,7 @@ onnxruntime
 openai
 openaimodel
 OPENBLAS
+opencode
 opencv
 OPENFACTOR
 openjourney
@@ -1267,6 +1274,7 @@ quasimolecules
 qwen
 qwenimage
 qwent
+Racah
 Radovan
 Rafelski
 raggedright
