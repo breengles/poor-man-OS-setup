@@ -349,6 +349,7 @@ denoisings
 densepose
 dequantize
 dequantizing
+Derivables
 derivs
 detectron
 dets
