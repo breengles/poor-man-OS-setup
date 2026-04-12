@@ -46,6 +46,13 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 - Docstrings: Google style (`Args:`, `Returns:`, `Raises:`); skip for trivial code
 - Imports: stdlib → third-party → local; prefer relative imports within packages
 
+## Code and Comments
+
+- **No Unicode symbols in code or comments.** Use plain ASCII equivalents instead.
+  Examples: `*` not `·`, `->` not `→`, `>=` not `≥`, `<=` not `≤`, `!=` not `≠`,
+  `sum(...)` or `\sum` not `∑`, `\int` not `∫`, `alpha`/`beta` not `α`/`β`.
+  Wrong: `# g·f + f·g = 2∫gf dr` — Right: `# g * f + f * g = 2 * \int gf dr`
+
 ## Markdown
 
 - After editing or creating any markdown file (`.md`), always run `npx prettier --write <file>` to format it before committing.
