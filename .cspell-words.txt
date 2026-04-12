@@ -416,6 +416,7 @@ dssim
 dstack
 DSTEV
 dstsize
+dsum
 DSYEV
 DSYEVX
 DSYGV
