@@ -27,7 +27,7 @@ no build system, no test framework, and no CI/CD pipeline.
   yazi/                    # Yazi file manager config + plugins
 .claude/
   CLAUDE.md                # User-level Claude Code preferences (stowed to ~/.claude/)
-  skills/                  # Custom slash commands (commit, todo-*, docs-*, mr-description)
+  skills/                  # Custom slash commands (commit, todo-*, docs-*, mr-description, spec-review)
   agents/                  # Custom agent definitions (branch-code-reviewer)
 .vscode/
   user_settings.json       # Cursor/VS Code settings
@@ -192,8 +192,8 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
 ### Claude Code
 
 - **Claude Code user prefs:** `.claude/CLAUDE.md` (stowed to `~/.claude/CLAUDE.md`)
-- **Claude Code skills:** 8 custom slash commands at `.claude/skills/` — commit, todo-init,
-  todo-revise, todo-analyze, docs-init, docs-revise, docs-analyze, mr-description
+- **Claude Code skills:** 9 custom slash commands at `.claude/skills/` — commit, todo-init,
+  todo-revise, todo-analyze, docs-init, docs-revise, docs-analyze, mr-description, spec-review
 - **Claude Code agents:** `.claude/agents/` — branch-code-reviewer
 - **Claude Code settings:** `~/.claude/settings.json` (managed by Claude Code itself, not stow —
   contains MCP servers, hooks, plugins, permissions)

@@ -78,6 +78,7 @@ Use SDD selectively — only for long-lived engineering artifacts, never for exp
 
 ### When to use specs
 
+- User explicitly asks for SSD
 - Training pipelines, data loaders, evaluation harnesses
 - CLI tools, APIs, dashboards
 - Shared libraries or frameworks
@@ -91,20 +92,65 @@ Use SDD selectively — only for long-lived engineering artifacts, never for exp
 
 ### Spec structure
 
-Specs live in `specs/<feature-name>/` with three files:
+Specs live in `specs/<feature-name>/` with up to four files:
 
-1. `requirements.md` — What & why. User stories, acceptance criteria.
-2. `design.md` — How. Architecture, data flow, key decisions.
-3. `tasks.md` — Ordered implementation checklist with checkboxes.
+1. `requirements.md` -- What & why. EARS-format acceptance criteria (see below).
+2. `design.md` -- How. Architecture, data flow, key decisions.
+3. `tasks.md` -- Ordered implementation checklist with checkboxes (see format below).
+4. `research.md` (optional) -- Rejected alternatives, trade-offs, constraints discovered
+   during design. Valuable when "why not X" matters (e.g. ML architecture choices).
+
+### Requirements format (EARS)
+
+Write acceptance criteria using EARS patterns -- each requirement gets a numeric ID
+and one of these forms:
+
+- **Event-driven:** `When [event], the [system/component] shall [action].`
+- **State-driven:** `While [condition], the [system/component] shall [action].`
+- **Unwanted behavior:** `If [trigger], the [system/component] shall [action].`
+- **Optional feature:** `Where [feature is included], the [system/component] shall [action].`
+- **Ubiquitous:** `The [system/component] shall [action].`
+
+Use concrete component names (e.g. "the training loop", "the API gateway"), not generic
+"the system". Each requirement must be testable and describe a single behavior.
+
+### Task format
+
+Each task in `tasks.md` should include:
+
+- **Requirements traceability:** end each task with `_Requirements: 1.1, 2.3_`
+  (numeric IDs from `requirements.md`) so nothing gets orphaned.
+- **Parallel markers:** append `(P)` to tasks that have no dependency on the
+  immediately preceding task. Add `_Boundary: ComponentName_` to confirm
+  non-overlapping scope. Default: tasks are sequential (order implies dependency).
+- **Completion notes:** when checking off a task, append a brief note on what was
+  done and what was tested. Helps when resuming across sessions.
+
+Example:
+
+```markdown
+- [ ] 2.1 (P) Add token validation middleware
+  - Verify JWT signature and expiry
+  - Return 401 with structured error on failure
+  - _Requirements: 1.2, 1.3_
+  - _Boundary: AuthMiddleware_
+- [ ] 2.2 (P) Implement rate limiter
+  - Sliding window per API key
+  - _Requirements: 3.1_
+  - _Boundary: RateLimiter_
+- [ ] 2.3 Wire middleware into request pipeline
+  - Depends on 2.1 and 2.2
+  - _Requirements: 1.2, 3.1_
+```
 
 ### Workflow
 
-1. Create `requirements.md` first. Review it before proceeding.
-2. Generate `design.md` from the requirements. Review before proceeding.
-3. Generate `tasks.md` from design + requirements.
-4. Implement task by task. Check off each in `tasks.md`.
-5. Delete the spec dir once the feature is stable and merged
-   (the code is the source of truth after that).
+1. Create `requirements.md` first (EARS format). Review it before proceeding.
+2. Generate `design.md` from the requirements. Optionally capture rejected
+   alternatives and trade-offs in `research.md`. Review before proceeding.
+3. Run `/spec-review` to validate design completeness against requirements.
+4. Generate `tasks.md` from design + requirements (with traceability + parallel markers).
+5. Implement task by task. Check off each in `tasks.md` with a brief completion note.
 
 ### Decision heuristic
 
