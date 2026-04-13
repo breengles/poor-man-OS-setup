@@ -470,6 +470,7 @@ evals
 EVCCNV
 excludesfile
 execdir
+Executability
 exepath
 exitstat
 exitstatus
