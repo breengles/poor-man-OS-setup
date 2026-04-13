@@ -108,7 +108,6 @@
     "picsart@picsart-marketplace": true
   },
   "effortLevel": "high",
-  "advisorModel": "opus",
   "skipDangerousModePermissionPrompt": true,
   "mcpServers": {
     "gitlab-cli": {
