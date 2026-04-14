@@ -26,12 +26,10 @@
   "cursor.preferNotificationsSameAsChat": true,
   // window
   "window.autoDetectColorScheme": true,
-  "window.openFilesInNewWindow": "default",
   "window.openFoldersInNewWindow": "default",
   "window.zoomLevel": 0.5,
   // explorer
   "explorer.confirmPasteNative": false,
-  "explorer.autoReveal": false,
   "explorer.openEditors.visible": 10,
   "explorer.confirmDragAndDrop": false,
   "workbench.preferredLightColorTheme": "Default Light Modern",
@@ -435,4 +433,5 @@
   "editor.cursorWidth": 1,
   "terminal.integrated.cursorWidth": 3,
   "git-worktree-manager.worktreeSubdirectoryTemplate": "$BASE_NAME-$REF_NAME",
+  "csv.enabled": false,
 }
