@@ -118,6 +118,9 @@ Use concrete component names (e.g. "the training loop", "the API gateway"), not 
    Use standard markdown heading slugs for links (e.g. `[Description](#1-description-slug)`).
    **Never use HTML anchors** (`<a id="N"></a>`) -- they are invisible in plain
    markdown and don't navigate reliably in VS Code.
+   Include a **Status** column (`Pending`, `Done`, `Blocked`) to track progress.
+   **Never use strikethrough** (`~~text~~`) on task names -- it makes text
+   unreadable and links unclickable. Update the Status column instead.
 2. **Suggested Resolution Order** -- numbered list of task IDs with brief rationale.
 3. **Detailed Tasks** -- one `###` heading per task with full description,
    files to modify, acceptance criteria checklist, and metadata.
@@ -137,12 +140,12 @@ Example:
 ```markdown
 ## Task Summary
 
-| #   | Task                                                    | Depends on |
-| --- | ------------------------------------------------------- | ---------- |
-| 1   | [Define types module](#1-define-types-module)           | --         |
-| 2   | [Add token validation](#2-add-token-validation)         | 1          |
-| 3   | [Implement rate limiter](#3-implement-rate-limiter)     | 1          |
-| 4   | [Wire middleware pipeline](#4-wire-middleware-pipeline) | 2, 3       |
+| #   | Task                                                    | Status  | Depends on |
+| --- | ------------------------------------------------------- | ------- | ---------- |
+| 1   | [Define types module](#1-define-types-module)           | Done    | --         |
+| 2   | [Add token validation](#2-add-token-validation)         | Pending | 1          |
+| 3   | [Implement rate limiter](#3-implement-rate-limiter)     | Pending | 1          |
+| 4   | [Wire middleware pipeline](#4-wire-middleware-pipeline) | Pending | 2, 3       |
 
 ## Detailed Tasks
 
