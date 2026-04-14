@@ -112,7 +112,17 @@ Use concrete component names (e.g. "the training loop", "the API gateway"), not 
 
 ### Task format
 
-Each task in `tasks.md` should include:
+`tasks.md` has three sections:
+
+1. **Task Summary table** -- one row per task with links to detailed sections.
+   Use standard markdown heading slugs for links (e.g. `[Description](#1-description-slug)`).
+   **Never use HTML anchors** (`<a id="N"></a>`) -- they are invisible in plain
+   markdown and don't navigate reliably in VS Code.
+2. **Suggested Resolution Order** -- numbered list of task IDs with brief rationale.
+3. **Detailed Tasks** -- one `###` heading per task with full description,
+   files to modify, acceptance criteria checklist, and metadata.
+
+Each task should include:
 
 - **Requirements traceability:** end each task with `_Requirements: 1.1, 2.3_`
   (numeric IDs from `requirements.md`) so nothing gets orphaned.
@@ -125,18 +135,58 @@ Each task in `tasks.md` should include:
 Example:
 
 ```markdown
-- [ ] 2.1 (P) Add token validation middleware
-  - Verify JWT signature and expiry
-  - Return 401 with structured error on failure
-  - _Requirements: 1.2, 1.3_
-  - _Boundary: AuthMiddleware_
-- [ ] 2.2 (P) Implement rate limiter
-  - Sliding window per API key
-  - _Requirements: 3.1_
-  - _Boundary: RateLimiter_
-- [ ] 2.3 Wire middleware into request pipeline
-  - Depends on 2.1 and 2.2
-  - _Requirements: 1.2, 3.1_
+## Task Summary
+
+| #   | Task                                                    | Depends on |
+| --- | ------------------------------------------------------- | ---------- |
+| 1   | [Define types module](#1-define-types-module)           | --         |
+| 2   | [Add token validation](#2-add-token-validation)         | 1          |
+| 3   | [Implement rate limiter](#3-implement-rate-limiter)     | 1          |
+| 4   | [Wire middleware pipeline](#4-wire-middleware-pipeline) | 2, 3       |
+
+## Detailed Tasks
+
+### 1. Define types module
+
+Create shared type definitions.
+
+- [x] All types importable, pyright passes
+
+_Requirements: 1.1_
+
+---
+
+### 2. Add token validation
+
+(P) Verify JWT signature and expiry. Return 401 with structured error on failure.
+
+- [ ] Middleware rejects expired tokens
+- [ ] Middleware returns structured 401 error
+
+_Requirements: 1.2, 1.3_
+_Boundary: AuthMiddleware_
+
+---
+
+### 3. Implement rate limiter
+
+(P) Sliding window per API key.
+
+- [ ] Rate limiter enforces per-key limits
+
+_Requirements: 3.1_
+_Boundary: RateLimiter_
+
+---
+
+### 4. Wire middleware pipeline
+
+Wire token validation and rate limiter into request pipeline.
+Depends on 2 and 3.
+
+- [ ] Requests pass through both middleware in order
+
+_Requirements: 1.2, 3.1_
 ```
 
 ### Workflow
