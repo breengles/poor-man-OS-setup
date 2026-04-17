@@ -408,6 +408,7 @@ dpolrx
 dpolth
 dpolthy
 dprint
+draccus
 dreambooth
 Dreamshaper
 dresscode
@@ -727,6 +728,7 @@ irth
 isdigit
 isimage
 isin
+isinstance
 Ismi
 isort
 itemsep
@@ -749,6 +751,7 @@ jobids
 joblib
 jobname
 jobz
+joinpath
 joshuto
 jpeger
 jresize
@@ -1531,6 +1534,7 @@ STREQUAL
 strikethrough
 stylegan
 styleganex
+subcmd
 subconfigs
 subdata
 subdiagonal
