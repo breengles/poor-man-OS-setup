@@ -62,6 +62,29 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 - Never include issue IDs or numbers (e.g. `#5`, `#123`) in commit messages — GitLab interprets
   `#N` as an issue reference and may auto-close issues unintentionally.
 
+## Git Worktrees
+
+Apply this rule **only when the user explicitly asks to create a new branch** (e.g. "create a
+branch for X", "start a new branch and implement Y", "cut a branch off main and ..."). In that
+case, do the work in a dedicated git worktree instead of creating the branch in the current
+checkout — dispatch an agent with `isolation: "worktree"` (or run `git worktree add` explicitly)
+so the main checkout stays untouched.
+
+Do **not** apply this rule for plain "implement X" / "fix Y" / "refactor Z" requests that don't
+mention a new branch — keep working in the current checkout as usual.
+
+- **Location convention:** `<project-name>.worktrees/<sanitized-branch-name>`, placed as a
+  sibling of the main repo directory (i.e. `../<project-name>.worktrees/<sanitized-branch-name>`).
+- **Project name:** the basename of the main repo directory (e.g. for `/Users/artem/poor-man-OS-setup`
+  the project name is `poor-man-OS-setup`).
+- **Sanitized branch name:** replace every `/` in the branch name with `-`
+  (e.g. `feat/new-thing` -> `feat-new-thing`). Keep all other characters as-is.
+- **Example:** branch `feat/worktree-flow` in repo `poor-man-OS-setup` -> worktree path
+  `../poor-man-OS-setup.worktrees/feat-worktree-flow`.
+- Always create the worktree from the latest `main` (or the explicitly requested base branch).
+- When the work is done and merged/abandoned, clean up with `git worktree remove <path>` —
+  never delete the directory manually.
+
 ## GitLab
 
 - Use `gitlab` MCP tools for interacting with GitLab (issues, merge requests, projects, etc.)
