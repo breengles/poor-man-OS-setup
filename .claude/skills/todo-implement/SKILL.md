@@ -1,0 +1,198 @@
+---
+name: todo-implement
+description: Implement items from a TODO file, one at a time, with independent implementer and reviewer subagents per item. The main session acts as orchestrator only.
+argument-hint: "<area or path> [item-numbers | all]"
+---
+
+# todo-implement
+
+## Role
+
+You are the **orchestrator**. You do NOT write implementation code yourself. For each
+item you dispatch a fresh **todo-implementer** subagent that writes the code, then a
+fresh **todo-reviewer** subagent that verifies it. You handle TODO-file reading, item
+sequencing, committing, and updating `todos/<area>.md`.
+
+This keeps the main session context clean -- implementation details live in subagent
+contexts and don't accumulate here.
+
+## Modes
+
+- **No item numbers**: present pending items and ask which to implement (default).
+  After each item, ask whether to continue to the next or stop.
+- **Item numbers provided** (e.g. `solver 3 5 7`): implement those items in order.
+- **Keyword `all`** (e.g. `solver all`): implement all pending items following the
+  "Suggested resolution order" in the file. Stop after 5 completed items and suggest
+  starting a fresh session for the rest.
+
+## Step 1: Resolve target file
+
+Parse `$ARGUMENTS`:
+
+- If a path is given (e.g. `todos/solver.md`), use it.
+- If an area name is given (e.g. `solver`), use `todos/<name>.md`.
+- If no argument, list files under `todos/` and ask which to target.
+
+If the file does not exist, stop and report.
+
+Read the target file. Also run `git status --porcelain` to note any pre-existing
+uncommitted changes.
+
+Retain the TODO content in your context -- you need it to construct subagent prompts.
+
+## Step 2: Build the item queue
+
+Parse the target file and identify open items from the Priority Summary table.
+
+For each item, check:
+
+- **Already done?** If an item is not in the Priority Summary table but still has a
+  detailed section, treat it as stale -- flag to user, do not implement.
+- **Dependencies**: read the "Suggested resolution order" section. If the user asked
+  for a specific item whose prerequisites are still open, warn before proceeding.
+- **Priority**: note P0/P1/P2 -- used in subagent prompts and commit messages.
+
+Present the item queue to the user and ask for confirmation before proceeding.
+
+## Step 3: Execute items (one at a time)
+
+For each item, execute this cycle. After each completed item, retain only a
+**one-line summary** (e.g. "solver#5: APPROVED, 2 files changed, commit abc1234")
+and discard the full subagent reports from your working memory.
+
+### 3a. Dispatch implementer
+
+Dispatch the **todo-implementer** subagent via the Agent tool:
+
+```
+Agent({
+  subagent_type: "todo-implementer",
+  prompt: <item-specific context below>
+})
+```
+
+The prompt must include:
+
+- The area name and item number
+- The full detailed section for that item from `todos/<area>.md`
+  (description, context, acceptance criteria, cited files/lines)
+- The item's priority (P0/P1/P2)
+- Any dependencies on other items from the "Suggested resolution order"
+- The project's test command if known (e.g. `pytest`, `npm test`)
+
+The implementer's role, execution protocol, and status report format are defined
+in its agent file -- do not repeat them in the prompt.
+
+### 3b. Handle implementer status
+
+Parse the implementer's `STATUS` from its `## Status Report` block:
+
+- **READY_FOR_REVIEW**: proceed to reviewer (step 3c)
+- **BLOCKED**: add a `_Blocked: {reason}_` line under the item's detailed section
+  in `todos/<area>.md`, skip to next item
+- **NEEDS_CONTEXT**: re-dispatch once with the requested context; if still
+  unresolved, block the item
+
+Also capture any `CONCERNS` field -- if the implementer flagged unrelated issues
+they noticed, you will file those as new TODO items in step 3f.
+
+### 3c. Dispatch reviewer
+
+Dispatch the **todo-reviewer** subagent via the Agent tool:
+
+```
+Agent({
+  subagent_type: "todo-reviewer",
+  prompt: <item-specific context below>
+})
+```
+
+The prompt must include:
+
+- The area name and item number
+- The full detailed section for the item (the reviewer must see the same criteria)
+- The path `todos/<area>.md` so the reviewer can read context if needed
+- The implementer's status report (for reference -- the reviewer verifies
+  independently by running `git diff`)
+
+The reviewer's role, checklist, and verdict format are defined in its agent file --
+do not repeat them in the prompt.
+
+### 3d. Handle the verdict
+
+Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
+
+- **APPROVED**: proceed to commit (step 3e).
+- **REJECTED (round 1-2)**: dispatch a **new** todo-implementer subagent with:
+  - The original item context
+  - The reviewer's specific FINDINGS and REMEDIATION
+  - Instruction to fix the cited issues only
+    Then re-dispatch the todo-reviewer. Max 2 fix rounds.
+- **REJECTED (round 3)**: add `_Blocked: reviewer rejected after 2 fix rounds --
+{summary}_` under the item in `todos/<area>.md`. Report to user, move to next item.
+
+### 3e. Commit (orchestrator does this, not subagents)
+
+Stage only the files the implementer changed, plus the updated `todos/<area>.md`:
+
+```
+git add <file1> <file2> ... todos/<area>.md
+```
+
+**Never** use `git add -A` or `git add .`.
+
+Commit with: `fix({area}): {brief item description}` for P0 bug fixes,
+`feat({area}): ...` for new behavior, or `refactor({area}): ...` / `chore({area}): ...`
+as appropriate. Do not include issue IDs in the commit message.
+
+### 3f. Update the TODO file
+
+- **Remove** the item row from the Priority Summary table.
+- **Remove** the item's detailed section entirely (per the TODO file
+  convention -- no "Resolved" section).
+- **Rebuild** the "Suggested resolution order" section so the numbering
+  still matches remaining items.
+- **Add follow-up items** if the implementer reported CONCERNS worth tracking
+  (new bugs noticed, unrelated tech debt). Assign reasonable priority and
+  include a one-line description + cited files.
+- **Delete the file entirely** if this was the last open item.
+
+After editing the `.md`, run `npx prettier --write todos/<area>.md` (unless the
+file was deleted).
+
+### 3g. Decide next step
+
+- **If item numbers were specified**: move to the next specified item.
+- **If `all` mode**: re-read `todos/<area>.md` (or list `todos/` if it was
+  deleted), find the next item per resolution order, continue.
+  After 5 completed items in this session, stop and suggest starting a fresh
+  session.
+- **If default mode**: ask the user whether to continue to the next item or stop.
+
+## Step 4: Wrap up
+
+After finishing (all items done, user stops, or session limit reached), report:
+
+1. **Completed items**: list with commit hashes
+2. **Blocked items**: list with reasons
+3. **Remaining items**: count still pending (or "file deleted" if none remain)
+4. **Follow-ups filed**: any new TODO items you added from CONCERNS
+5. **Next step**: if items remain, suggest `/todo-implement {area}` in a fresh session
+
+## Critical constraints
+
+- **You are the orchestrator.** Do NOT write implementation code in the main session.
+  All code changes come from todo-implementer subagents.
+- **One item at a time.** Never dispatch multiple implementers simultaneously.
+- **Fresh subagents.** Each dispatch is a new Agent call with a new context.
+  Never reuse or continue a prior subagent.
+- **Selective staging.** Never `git add -A` or `git add .`.
+- **No destructive git.** Never `git checkout .`, `git reset --hard`, or similar.
+- **Scope discipline.** If the implementer changed files outside the item's area
+  without justification, do NOT commit those changes. Flag it and ask the user.
+- **No silent bundling.** If the implementer fixed something unrelated, either
+  split it out into a follow-up commit (with user approval) or file it as a new
+  TODO item -- don't bury it in the current commit.
+- **Bounded retries.** Max 2 fix rounds per reviewer rejection, then block.
+- **Context hygiene.** After each item, retain only the one-line summary. Do NOT
+  carry forward the full implementer/reviewer reports into the next item's context.
