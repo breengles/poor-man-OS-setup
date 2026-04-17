@@ -107,7 +107,7 @@
     "ast-index@ast-index-marketplace": true,
     "picsart@picsart-marketplace": true
   },
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "skipDangerousModePermissionPrompt": true,
   "mcpServers": {
     "gitlab-cli": {
