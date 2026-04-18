@@ -506,6 +506,7 @@ fcray
 featlayer
 femtometer
 Femtometers
+femtometres
 ffhq
 ffval
 figsize
@@ -692,6 +693,7 @@ imwrite
 inbnd
 inbrowser
 incir
+incompat
 initifort
 inner
 inoreabbrev
