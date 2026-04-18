@@ -124,13 +124,26 @@ do not repeat them in the prompt.
 Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
 
 - **APPROVED**: proceed to commit (step 3e).
-- **REJECTED (round 1-2)**: dispatch a **new** spec-implementer subagent with:
+- **REJECTED (round 1)**: dispatch a **new** spec-implementer subagent (default
+  Sonnet) with:
   - The original task context
   - The reviewer's specific FINDINGS and REMEDIATION
   - Instruction to fix the cited issues only
-    Then re-dispatch the spec-reviewer. Max 2 fix rounds.
-- **REJECTED (round 3)**: append `_Blocked: reviewer rejected after 2 fix
-rounds -- {summary}_` to the task in `tasks.md`. Report to user, move to next task.
+    Then re-dispatch the spec-reviewer.
+- **REJECTED (round 2)**: **escalate to Opus** -- dispatch a new spec-implementer
+  with `model: "opus"` passed to the Agent tool (this overrides the agent's
+  frontmatter default). Include the original task context, all accumulated
+  FINDINGS from both prior rounds, and a note that this is an escalated attempt
+  after two Sonnet rounds failed. Then re-dispatch the spec-reviewer.
+- **REJECTED (round 3)**: append `_Blocked: reviewer rejected after 2 fix rounds
+  (including Opus escalation) -- {summary}_` to the task in `tasks.md`. Report
+  to user, move to next task.
+
+**User disagreement escalation.** If the user interjects mid-cycle with strong
+pushback on the implementer's approach ("no, that's wrong", "this won't work",
+"stop and rethink"), treat the next retry as an escalated Opus round regardless
+of rejection count. Pass the user's specific objection as additional input to
+the implementer alongside the original task context.
 
 ### 3e. Commit (orchestrator does this, not subagents)
 
