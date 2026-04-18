@@ -1066,6 +1066,7 @@ noneu
 nonfinite
 noninteractive
 nonorm
+nonshifted
 nonstopmode
 NOPROMPT
 normalbae
