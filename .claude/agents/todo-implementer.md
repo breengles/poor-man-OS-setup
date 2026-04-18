@@ -2,7 +2,7 @@
 name: todo-implementer
 description: Implements a single TODO item. Dispatched by the todo-implement skill -- do not invoke directly.
 tools: Read, Write, Edit, Bash, Glob, Grep
-model: sonnet
+model: opus
 ---
 
 # TODO Implementer

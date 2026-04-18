@@ -2,7 +2,7 @@
 name: spec-implementer
 description: Implements a single spec task. Dispatched by the spec-implement skill -- do not invoke directly.
 tools: Read, Write, Edit, Bash, Glob, Grep
-model: sonnet
+model: opus
 ---
 
 # Task Implementer
