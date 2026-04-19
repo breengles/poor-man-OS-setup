@@ -37,6 +37,7 @@ aisharp
 alacritty
 albumentations
 alessio
+Alexey
 alexnet
 AlgoType
 allclose
@@ -76,12 +77,14 @@ artstation
 artur
 arxiv
 asanyarray
+asarray
 ascontiguousarray
 asfortranarray
 ashot
 astype
 asyncio
 atey
+atleast
 atol
 atten
 autocast
@@ -972,6 +975,7 @@ minsizerel
 minval
 Mironova
 mish
+missingval
 MLFLOW
 Mllama
 mlruns
