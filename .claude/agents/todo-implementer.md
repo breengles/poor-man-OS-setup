@@ -66,6 +66,18 @@ For `TODO`/`FIXME`/`HACK`/`XXX` comment items: remove the comment once the
 underlying issue is fixed. A fixed TODO with the comment still in place is
 not resolved.
 
+**Code quality matters as much as correctness.** The code you write will be
+reviewed for readability and simplicity, not just "does it work":
+
+- Write the most straightforward code that satisfies the acceptance criteria.
+  Prefer plain, direct solutions over clever ones.
+- Do not introduce abstractions, indirection, or generalization that the item
+  does not require. Three similar lines are better than a premature abstraction.
+- Use descriptive names. Keep functions short and focused.
+- Do not leave dead code, unused parameters, debug prints, or commented-out
+  blocks. Do not add error handling for conditions that cannot occur.
+- Only add a comment when the "why" is non-obvious; do not comment the "what".
+
 ### Step 4: Validate
 
 - Run the project's test suite if a test command was provided.
@@ -83,6 +95,9 @@ Before reporting back, verify:
   explicitly asks to file a follow-up, in which case note it in CONCERNS)
 - Tests (if written) would fail if the implementation were removed
 - Changes are confined to the declared area/boundary
+- Code is clean and easy to follow: no gratuitous abstractions, dead code,
+  or over-complicated logic. A reader should understand the intent without
+  chasing indirection.
 
 If any check fails, fix the implementation and re-validate.
 

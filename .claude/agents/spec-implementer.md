@@ -56,6 +56,18 @@ wiring) don't have clean test patterns.
 Keep changes tightly scoped to the task's boundary. Follow the design constraints
 exactly. Use project conventions (naming, imports, style) from the existing code.
 
+**Code quality matters as much as correctness.** The code you write will be
+reviewed for readability and simplicity, not just "does it work":
+
+- Write the most straightforward code that satisfies the requirements. Prefer
+  plain, direct solutions over clever ones.
+- Do not introduce abstractions, indirection, or generalization that the task
+  does not require. Three similar lines are better than a premature abstraction.
+- Use descriptive names. Keep functions short and focused.
+- Do not leave dead code, unused parameters, debug prints, or commented-out
+  blocks. Do not add error handling for conditions that cannot occur.
+- Only add a comment when the "why" is non-obvious; do not comment the "what".
+
 ### Step 4: Validate
 
 - Run the project's test suite if a test command was provided.
@@ -71,6 +83,9 @@ Before reporting back, verify:
 - The implementation is real production code, not a mock/stub/placeholder/TODO
 - No TBD, TODO, or FIXME markers left in changed files
 - Tests (if written) would fail if the implementation were removed
+- Code is clean and easy to follow: no gratuitous abstractions, dead code,
+  or over-complicated logic. A reader should understand the intent without
+  chasing indirection.
 
 If any check fails, fix the implementation and re-validate.
 
