@@ -3,10 +3,10 @@
 # Sync Claude Code theme with system appearance before each launch.
 # Locally: detects macOS light/dark mode.
 # Remotely: reads $MACOS_SYSTEM_THEME env var (forwarded via SSH, see ~/.ssh/config).
-# function claude {
-#   ~/.claude/update-theme.sh 2>/dev/null
-#   command claude "$@"
-# }
+function claude {
+  ~/.claude/update-theme.sh 2>/dev/null
+  command claude "$@"
+}
 
 function calcimages {
   find "$1" -type f \( -name \*.jpg -o -name \*.jpeg -o -name \*.png \) | wc -l
