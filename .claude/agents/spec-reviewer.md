@@ -75,6 +75,23 @@ Evaluate each item. If ANY item fails, the verdict is REJECTED.
 - Assertions are meaningful (not `assert True` or `expect(true).toBe(true)`).
 - Tests would fail if the implementation were removed or broken.
 
+**9. Code quality**
+
+Correctness alone is not enough -- the code must also be clean and maintainable.
+
+- The implementation is easy to read and follow. Names are descriptive,
+  control flow is straightforward, and a new reader can understand the
+  intent without a long chain of indirection.
+- Logic is not over-complicated: no gratuitous abstractions, unnecessary
+  layers, speculative generalization, or clever tricks where a plain
+  approach would do. Three similar lines beat a premature abstraction.
+- No dead code, unused parameters, leftover debug prints, or commented-out
+  blocks. No redundant error handling for conditions that cannot occur.
+- Comments (if any) explain the non-obvious "why", not the "what".
+- If quality issues are found, REJECT with concrete feedback: cite the
+  exact file and line, explain what is too complex or unclear, and
+  describe the simpler alternative the implementer should use.
+
 ## Review verdict
 
 End your response with exactly this structured block. The orchestrator parses the
