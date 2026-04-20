@@ -202,6 +202,7 @@ ckpt
 ckptroot
 ckpts
 clangd
+classmethod
 cldm
 clipiqa
 clipseg
@@ -271,6 +272,7 @@ cphi
 cpptools
 cpython
 crafters
+CREAT
 cres
 Cronos
 cropdir
@@ -554,6 +556,7 @@ Frobenius
 fromarray
 frombuffer
 frontl
+frozenset
 FSCC
 fsdp
 ftfy
@@ -1165,6 +1168,7 @@ pasteable
 pastelmix
 patchelf
 patchtokens
+pathlib
 pbar
 PCMOUT
 pcolormesh
@@ -1653,6 +1657,7 @@ trimap
 trisurf
 trunc
 tryon
+tsdir
 tstart
 ttft
 TTGF
@@ -1773,6 +1778,7 @@ workth
 worktree
 worktrees
 wplus
+WRONLY
 wspace
 WSTPLN
 xattn
