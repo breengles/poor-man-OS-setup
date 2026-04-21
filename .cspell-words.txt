@@ -338,6 +338,8 @@ deact
 debd
 debugpy
 Debye
+dedup
+Deduplicator
 deepface
 deepfloyd
 deepseek
@@ -502,6 +504,7 @@ faceshape
 failhandler
 failspy
 fairscale
+faiss
 Falconsai
 fastapi
 fbacktrace
@@ -531,6 +534,7 @@ firstrow
 fivek
 fixturename
 flamegraphs
+FLANN
 flaskwebgui
 flathub
 flipud
@@ -1260,6 +1264,7 @@ pueue
 pupilcenter
 putalpha
 putalphas
+pyarrow
 pyav
 pycache
 pycocotools
@@ -1364,6 +1369,7 @@ resnets
 respace
 Restic
 resultdir
+Resumability
 reweight
 rgaussroots
 rgaussweights
@@ -1632,6 +1638,7 @@ Toonyou
 topdir
 topiq
 topiqnrface
+topn
 torchaudio
 torchdiffeq
 torchinfo
