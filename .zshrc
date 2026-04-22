@@ -12,6 +12,7 @@ source "$HOME/.config/shell/cluster.zsh"
 source "$HOME/.config/shell/history.zsh"
 source "$HOME/.config/shell/keybindings.zsh"
 source "$HOME/.config/shell/completions.zsh"
+source "$HOME/.config/shell/claude-tmux.zsh"
 
 # Shared modules (shell-agnostic)
 source "$HOME/.config/shell/functions.sh"
