@@ -47,6 +47,6 @@ Follow these steps:
 
 6. **Do NOT create empty docs** — only create a `docs/<component>.md` if there is meaningful content to document.
 
-7. **Format with Prettier** — after creating each markdown file, run `npx prettier --write <file>` to ensure consistent formatting.
+7. **Format with Prettier** — after creating each markdown file, run `npx prettier --write --print-width 120 <file>` to ensure consistent formatting.
 
 8. **Print a summary** at the end — list all documentation files created with a brief description of what each covers and the total scope documented.

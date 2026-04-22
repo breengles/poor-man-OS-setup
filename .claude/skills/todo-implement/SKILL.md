@@ -22,8 +22,7 @@ contexts and don't accumulate here.
   After each item, ask whether to continue to the next or stop.
 - **Item numbers provided** (e.g. `solver 3 5 7`): implement those items in order.
 - **Keyword `all`** (e.g. `solver all`): implement all pending items following the
-  "Suggested resolution order" in the file. Stop after 5 completed items and suggest
-  starting a fresh session for the rest.
+  "Suggested resolution order" in the file.
 
 ## Step 1: Resolve target file
 
@@ -135,7 +134,7 @@ Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
   FINDINGS from both prior rounds, and a note that this is an escalated attempt
   after two Sonnet rounds failed. Then re-dispatch the todo-reviewer.
 - **REJECTED (round 3)**: add `_Blocked: reviewer rejected after 2 fix rounds
-  (including Opus escalation) -- {summary}_` under the item in `todos/<area>.md`.
+(including Opus escalation) -- {summary}_` under the item in `todos/<area>.md`.
   Report to user, move to next item.
 
 **User disagreement escalation.** If the user interjects mid-cycle with strong
@@ -170,7 +169,7 @@ as appropriate. Do not include issue IDs in the commit message.
   include a one-line description + cited files.
 - **Delete the file entirely** if this was the last open item.
 
-After editing the `.md`, run `npx prettier --write todos/<area>.md` (unless the
+After editing the `.md`, run `npx prettier --write --print-width 120 todos/<area>.md` (unless the
 file was deleted).
 
 ### 3g. Decide next step
@@ -178,8 +177,6 @@ file was deleted).
 - **If item numbers were specified**: move to the next specified item.
 - **If `all` mode**: re-read `todos/<area>.md` (or list `todos/` if it was
   deleted), find the next item per resolution order, continue.
-  After 5 completed items in this session, stop and suggest starting a fresh
-  session.
 - **If default mode**: ask the user whether to continue to the next item or stop.
 
 ## Step 4: Wrap up

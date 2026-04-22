@@ -51,7 +51,7 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 
 ## Markdown
 
-- After editing or creating any markdown file (`.md`), always run `npx prettier --write <file>` to format it before committing.
+- After editing or creating any markdown file (`.md`), always run `npx prettier --write --print-width 120 <file>` to format it before committing.
 
 ## Pre-commit Hooks
 

@@ -28,7 +28,7 @@ Claude Code reads instructions from multiple sources:
 Cross-project preferences that apply in every Claude Code session:
 
 - **Python**: Always use `uv` (never pip/conda/poetry)
-- **Markdown**: Format with `npx prettier --write` after editing
+- **Markdown**: Format with `npx prettier --write --print-width 120` after editing
 - **Git**: No issue IDs (`#N`) in commit messages
 - **GitLab**: Prefer MCP tools, fall back to `glab` CLI
 - **TODO files**: Priority table + detailed sections + resolution order
@@ -75,7 +75,7 @@ Documentation files live in `docs/<component>.md` with a `docs/README.md` index.
 | Convention             | Detail                                                |
 | ---------------------- | ----------------------------------------------------- |
 | Python package manager | `uv` exclusively                                      |
-| Markdown formatting    | Run `npx prettier --write` after editing              |
+| Markdown formatting    | Run `npx prettier --write --print-width 120` after editing |
 | Git commit messages    | Conventional Commits, no `#N` references              |
 | GitLab interaction     | Prefer MCP tools, fall back to `glab` CLI             |
 | TODO file format       | Priority table + detailed sections + resolution order |

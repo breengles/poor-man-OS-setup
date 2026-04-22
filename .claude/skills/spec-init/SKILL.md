@@ -78,7 +78,7 @@ Rules:
 - Do not leak implementation details into requirements (WHAT, not HOW).
 - Keep IDs dense and consecutive (no gaps, no alphabetic mixing).
 
-After writing, run `npx prettier --write specs/<feature-name>/requirements.md`.
+After writing, run `npx prettier --write --print-width 120 specs/<feature-name>/requirements.md`.
 
 Then **pause**: print the open questions, summarize the requirements, and ask the user to
 review before moving on. Do not start `design.md` until the user confirms requirements are
@@ -113,7 +113,7 @@ Rules:
   basic, Pydantic/dataclasses split, etc.; shell scripts: 2-space indent, bash shebang; Lua:
   2-space indent, single quotes; etc.).
 
-After writing, run `npx prettier --write specs/<feature-name>/design.md`.
+After writing, run `npx prettier --write --print-width 120 specs/<feature-name>/design.md`.
 
 ## Step 4: (Optional) Draft `research.md`
 
@@ -132,7 +132,7 @@ When creating it, use sections:
 - **Trade-offs** — explicit "we chose X over Y because Z" entries.
 - **Constraints / risks** — things that shaped the design or that future readers need to know.
 
-Format with `npx prettier --write` after writing.
+Format with `npx prettier --write --print-width 120` after writing.
 
 ## Step 5: Run `/spec-review`
 
@@ -171,7 +171,7 @@ Traceability requirement: every requirement ID from `requirements.md` must appea
 least one task's `_Requirements:_` line. Before finishing, cross-check this and report any
 orphaned requirements.
 
-Format with `npx prettier --write specs/<feature-name>/tasks.md`.
+Format with `npx prettier --write --print-width 120 specs/<feature-name>/tasks.md`.
 
 ## Step 7: Wrap up
 
@@ -201,7 +201,7 @@ and commit, and offer the `/commit` skill if they want help with the commit mess
   and at least one task.
 - **ASCII only.** Follow the project rule against Unicode symbols in code and comments;
   plain prose in markdown is fine, but keep diagrams, math, and inline code ASCII.
-- **Prettier pass.** Run `npx prettier --write` on every markdown file you create or modify
+- **Prettier pass.** Run `npx prettier --write --print-width 120` on every markdown file you create or modify
   before considering the stage done.
 - **No issue IDs.** Never include `#N` references anywhere — they will auto-close GitLab
   issues if this lands in a commit message.

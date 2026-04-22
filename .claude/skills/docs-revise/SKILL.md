@@ -46,7 +46,7 @@ For each documentation file in scope, follow these steps:
 
 8. **Create missing docs** — if you discover a component that exists in the code but has no documentation file at all, create one following the same structure as `docs-init`.
 
-9. **Format with Prettier** — after modifying each markdown file, run `npx prettier --write <file>`.
+9. **Format with Prettier** — after modifying each markdown file, run `npx prettier --write --print-width 120 <file>`.
 
 10. **Print a revision summary** at the end:
     - Files updated (with a brief list of what changed in each)

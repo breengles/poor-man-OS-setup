@@ -133,7 +133,7 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
 ### Markdown
 
 - **Formatter:** Prettier (VS Code/Cursor)
-- **Pre-commit formatting:** After editing or creating any `.md` file, run `npx prettier --write <file>` before committing
+- **Pre-commit formatting:** After editing or creating any `.md` file, run `npx prettier --write --print-width 120 <file>` before committing
 - **Indentation:** 2 spaces
 - **Format on save:** Enabled
 - **Linting:** markdownlint with MD024 (duplicate headings) disabled

@@ -22,7 +22,6 @@ contexts and don't accumulate here.
   After each task, ask whether to continue to the next or stop.
 - **Task numbers provided** (e.g. `my-feature 2.1 2.3`): implement those tasks in order.
 - **Keyword `all`** (e.g. `my-feature all`): implement all pending tasks sequentially.
-  Stop after 5 completed tasks and suggest starting a fresh session for the rest.
 
 ## Step 1: Gather context
 
@@ -136,7 +135,7 @@ Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
   FINDINGS from both prior rounds, and a note that this is an escalated attempt
   after two Sonnet rounds failed. Then re-dispatch the spec-reviewer.
 - **REJECTED (round 3)**: append `_Blocked: reviewer rejected after 2 fix rounds
-  (including Opus escalation) -- {summary}_` to the task in `tasks.md`. Report
+(including Opus escalation) -- {summary}_` to the task in `tasks.md`. Report
   to user, move to next task.
 
 **User disagreement escalation.** If the user interjects mid-cycle with strong
@@ -172,12 +171,11 @@ Mark the task `[x]` and append a completion note:
 
 - **If task numbers were specified**: move to the next specified task.
 - **If `all` mode**: re-read `tasks.md`, find next pending task, continue.
-  After 5 completed tasks in this session, stop and suggest starting a fresh session.
 - **If default mode**: ask the user whether to continue to the next task or stop.
 
 ## Step 4: Wrap up
 
-After finishing (all tasks done, user stops, or session limit reached), report:
+After finishing (all tasks done or user stops), report:
 
 1. **Completed tasks**: list with commit hashes
 2. **Blocked tasks**: list with reasons
