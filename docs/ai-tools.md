@@ -8,7 +8,7 @@ The repository configures **Claude Code** (Anthropic's CLI agent) as the AI codi
 
 | File                        | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
-| `AGENTS.md` (repo root)     | Project-level instructions for Claude Code                     |
+| `CLAUDE.md` (repo root)     | Project-level instructions for Claude Code                     |
 | `.claude/CLAUDE.md`         | Claude Code user-level preferences (stow → `~/.claude/`)       |
 | `.claude/skills/*/SKILL.md` | Claude Code custom slash commands (stow → `~/.claude/skills/`) |
 
@@ -18,7 +18,7 @@ Note: `~/.claude/settings.json` (MCP servers, hooks, plugins, permissions) is ma
 
 Claude Code reads instructions from multiple sources:
 
-- **Project-level:** `AGENTS.md` in the repo root (structure, code style, git conventions)
+- **Project-level:** `CLAUDE.md` in the repo root (structure, code style, git conventions)
 - **User-level preferences:** `.claude/CLAUDE.md` (stow-managed to `~/.claude/CLAUDE.md`)
 - **User-level skills:** `.claude/skills/*/SKILL.md` (stow-managed to `~/.claude/skills/`)
 - **Settings:** `~/.claude/settings.json` (managed by Claude Code — MCP servers, hooks, plugins, permissions)
