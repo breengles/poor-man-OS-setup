@@ -122,5 +122,5 @@
       "env": {}
     }
   },
-  "skipAutoPermissionPrompt": true
+  "theme": "light"
 }
