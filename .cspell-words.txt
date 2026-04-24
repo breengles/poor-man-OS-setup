@@ -1197,6 +1197,7 @@ pidinet
 piexif
 pilibs
 PIPELINETYPE
+pipenv
 pipkey
 pissa
 pixelnorm

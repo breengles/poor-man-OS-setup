@@ -16,17 +16,7 @@ If a task seems to require one of these, stop and ask the user first.
 
 ## Python
 
-### Tooling
-
-Always use `uv` for Python project management instead of pip, venv, conda, poetry, or pipenv.
-
-- Create venvs: `uv venv`
-- Install packages: `uv pip install <package>`
-- Run scripts: `uv run python script.py` or `uv run pytest`
-- Add deps: `uv add <package>`, `uv add --dev <package>`
-- Target version: Python 3.10+
-- Formatter/linter: Ruff (line length 120, F401 ignored)
-- Type checking: Pyright in `basic` mode
+Always use `uv` (https://docs.astral.sh/uv/) for Python project management instead of pip, venv, conda, poetry, or pipenv.
 
 ### Style
 
@@ -46,8 +36,7 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 
 - **No Unicode symbols in code or comments.** Use plain ASCII equivalents instead.
   Examples: `*` not `·`, `->` not `→`, `>=` not `≥`, `<=` not `≤`, `!=` not `≠`,
-  `sum(...)` or `\sum` not `∑`, `\int` not `∫`, `alpha`/`beta` not `α`/`β`.
-  Wrong: `# g·f + f·g = 2∫gf dr` — Right: `# g * f + f * g = 2 * \int gf dr`
+  `sum(...)` or `\sum` not `∑`. Wrong: `# g·f + f·g = 2∫gf dr` - Right: `# g * f + f * g = 2 * \int gf dr`
 
 ## Markdown
 
@@ -163,26 +152,14 @@ Example:
 ```markdown
 ## Task Summary
 
-| #   | Task                                                    | Status  | Depends on |
-| --- | ------------------------------------------------------- | ------- | ---------- |
-| 1   | [Define types module](#1-define-types-module)           | Done    | --         |
-| 2   | [Add token validation](#2-add-token-validation)         | Pending | 1          |
-| 3   | [Implement rate limiter](#3-implement-rate-limiter)     | Pending | 1          |
-| 4   | [Wire middleware pipeline](#4-wire-middleware-pipeline) | Pending | 2, 3       |
+| #   | Task                                            | Status  | Depends on |
+| --- | ----------------------------------------------- | ------- | ---------- |
+| 1   | [Add token validation](#1-add-token-validation) | Pending | --         |
+| 2   | [Add rate limiter](#2-add-rate-limiter)         | Pending | --         |
 
 ## Detailed Tasks
 
-### 1. Define types module
-
-Create shared type definitions.
-
-- [x] All types importable, pyright passes
-
-_Requirements: 1.1_
-
----
-
-### 2. Add token validation
+### 1. Add token validation
 
 (P) Verify JWT signature and expiry. Return 401 with structured error on failure.
 
@@ -194,7 +171,7 @@ _Boundary: AuthMiddleware_
 
 ---
 
-### 3. Implement rate limiter
+### 2. Add rate limiter
 
 (P) Sliding window per API key.
 
@@ -202,17 +179,6 @@ _Boundary: AuthMiddleware_
 
 _Requirements: 3.1_
 _Boundary: RateLimiter_
-
----
-
-### 4. Wire middleware pipeline
-
-Wire token validation and rate limiter into request pipeline.
-Depends on 2 and 3.
-
-- [ ] Requests pass through both middleware in order
-
-_Requirements: 1.2, 3.1_
 ```
 
 ### Workflow
