@@ -110,6 +110,7 @@
   "effortLevel": "xhigh",
   "awaySummaryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true,
   "mcpServers": {
     "gitlab-cli": {
       "type": "stdio",
