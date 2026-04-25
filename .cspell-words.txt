@@ -82,6 +82,7 @@ ascontiguousarray
 asfortranarray
 ashot
 astype
+asym
 asyncio
 atey
 atleast
