@@ -10,7 +10,7 @@ Initialize a TODO tracking system for this project. Follow these steps:
 2. **Identify areas** — group discovered items semantically by project area (e.g. `solver`, `api`, `ui`, `cli`, `tests`, `docs`, `infra`). Use names that match the project's own module/directory structure.
 
 3. **Create `todos/<area>.md` files** — one file per area. Each file must follow the TODO file format from AGENTS.md:
-   - **Priority Summary table** at the top with only open items sorted by priority (P0/P1/P2). Each row links to its detailed section heading.
+   - **Priority Summary table** at the top with only open items sorted by priority (highest first). Exactly **three columns**: `Task` (link `[#N](anchor)` to the detailed section), `Priority` (`P0` / `P1` / `P2`), and `Status` (`Pending` or `Blocked`).
    - **Detailed sections** below the table — one heading per item with a clear description, context, and acceptance criteria where possible.
    - **Suggested resolution order** at the bottom — an unnumbered (bullet) list of item numbers in recommended tackling order with brief rationale (e.g. `- #5 -- prerequisite for #7`). Use bullets so removing a completed item doesn't force renumbering.
 

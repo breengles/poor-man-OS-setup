@@ -98,13 +98,15 @@ Use concrete component names (e.g. "the training loop", "the API gateway"), not 
 
 `tasks.md` has three sections:
 
-1. **Task Summary table** -- one row per task with links to detailed sections.
-   Use standard markdown heading slugs for links (e.g. `[Description](#1-description-slug)`).
-   **Never use HTML anchors** (`<a id="N"></a>`) -- they are invisible in plain
-   markdown and don't navigate reliably in VS Code.
-   Include a **Status** column (`Pending`, `Done`, `Blocked`) to track progress.
-   **Never use strikethrough** (`~~text~~`) on task names -- it makes text
-   unreadable and links unclickable. Update the Status column instead.
+1. **Task Summary table** -- exactly **two columns**: `Task` and `Status`.
+   - `Task` is a markdown link to the detailed section, with the link text as `[#N](anchor)`
+     where `N` is the task ID (e.g. `[#1](#1-add-token-validation)`, `[#2.3](#23-...)`).
+     Do not put descriptions in the cell -- those live in the detailed section.
+   - `Status` is one of `Pending`, `Done`, or `Blocked`.
+   - Use standard markdown heading slugs for the anchors. **Never use HTML anchors**
+     (`<a id="N"></a>`) -- they are invisible in plain markdown and don't navigate
+     reliably in VS Code. **Never use strikethrough** (`~~text~~`) -- update the
+     `Status` column instead.
 2. **Suggested Resolution Order** -- unnumbered (bullet) list of task IDs with brief rationale, e.g.
    `- 1.1 -- foundation, no deps`. Use bullets, not a numbered list, so removing a completed
    task doesn't force renumbering.
@@ -117,18 +119,21 @@ Each task should include:
 - **Parallel markers:** append `(P)` to tasks that have no dependency on the
   immediately preceding task. Add `_Boundary: ComponentName_` to confirm
   non-overlapping scope. Default: tasks are sequential (order implies dependency).
-- **Completion notes:** when checking off a task, append a brief note on what was
-  done and what was tested. Helps when resuming across sessions.
+- **Dependencies:** capture cross-task prerequisites as `_Depends: 1.1, 1.2_` in
+  the detailed section (since the table no longer has a `Depends on` column).
+- **Completion notes:** when a task is marked `Done`, append a brief note on
+  what was done and what was tested in the detailed section. Helps when resuming
+  across sessions.
 
 Example:
 
 ```markdown
 ## Task Summary
 
-| #   | Task                                            | Status  | Depends on |
-| --- | ----------------------------------------------- | ------- | ---------- |
-| 1   | [Add token validation](#1-add-token-validation) | Pending | --         |
-| 2   | [Add rate limiter](#2-add-rate-limiter)         | Pending | --         |
+| Task                          | Status  |
+| ----------------------------- | ------- |
+| [#1](#1-add-token-validation) | Pending |
+| [#2](#2-add-rate-limiter)     | Pending |
 
 ## Detailed Tasks
 
@@ -169,12 +174,20 @@ TODO files live in `todos/` organized by area: `todos/<area>.md` (e.g. `todos/so
 
 When working with TODO files, follow this structure:
 
-1. **Priority Summary table** at the very top - only open items, sorted by priority.
-   Each issue in the table must be a **markdown link** to its detailed section heading
-   (e.g. `[#5 Description](#5-heading-slug)`), so it's Cmd+click navigable.
-2. **Detailed sections** in the middle - full descriptions of open issues grouped by category.
-3. **When an item is resolved**, remove it from the Priority Summary table and from the
-   open detailed sections.
+1. **Priority Summary table** at the very top - only open items, sorted by priority
+   (highest priority first). Exactly **three columns**: `Task`, `Priority`, and `Status`.
+   - `Task` is a markdown link to the detailed section, with the link text as
+     `[#N](anchor)` (e.g. `[#5](#5-broken-cache-invalidation)`). Do not put
+     descriptions in the cell.
+   - `Priority` is `P0` / `P1` / `P2` (or `High` / `Med` / `Low`, project-consistent).
+   - `Status` is `Pending` or `Blocked`. Resolved items are deleted from the file
+     entirely (no `Done` row).
+   - **Never use HTML anchors** (`<a id="N"></a>`) -- they are invisible in plain
+     markdown and don't navigate reliably in VS Code.
+2. **Detailed sections** in the middle - full descriptions of open issues grouped
+   by category.
+3. **When an item is resolved**, remove it from the Priority Summary table and from
+   the detailed sections entirely.
 4. **When all items are resolved**, delete the TODO file entirely.
 5. **Suggested resolution order** - after the Priority Summary table, include a short
    "Suggested resolution order" section listing item numbers in the order they should be

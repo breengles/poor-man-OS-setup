@@ -128,10 +128,11 @@ Parse the implementer's `STATUS` from its `## Status Report` block:
 - **READY_FOR_REVIEW**: in a size-1 batch, proceed to reviewer (step 3c). In a
   separate-implementers batch, dispatch the next item's implementer; only proceed
   to the reviewer once every implementer in the batch is `READY_FOR_REVIEW`.
-- **BLOCKED**: add a `_Blocked: {reason}_` line under the item's detailed section
-  in `todos/<area>.md`. If this was one item in a separate-implementers batch,
-  drop only that item from the batch and continue with the rest; if the batch
-  becomes empty, skip to the next batch.
+- **BLOCKED**: flip the item's Status column in the Priority Summary table from
+  `Pending` to `Blocked` and add a `_Blocked: {reason}_` line under the item's
+  detailed section in `todos/<area>.md`. If this was one item in a
+  separate-implementers batch, drop only that item from the batch and continue
+  with the rest; if the batch becomes empty, skip to the next batch.
 - **NEEDS_CONTEXT**: re-dispatch once with the requested context; if still
   unresolved, block the item
 
@@ -180,9 +181,10 @@ Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
   frontmatter default). Include the original item context, all accumulated
   FINDINGS from both prior rounds, and a note that this is an escalated attempt
   after two Sonnet rounds failed. Then re-dispatch the todo-reviewer.
-- **REJECTED (round 3)**: add `_Blocked: reviewer rejected after 2 fix rounds
-(including Opus escalation) -- {summary}_` under the item in `todos/<area>.md`.
-  Report to user, move to next item.
+- **REJECTED (round 3)**: flip the item's Status column to `Blocked` and add
+  `_Blocked: reviewer rejected after 2 fix rounds (including Opus escalation) --
+{summary}_` under the item's detailed section in `todos/<area>.md`. Report
+  to user, move to next item.
 
 **User disagreement escalation.** If the user interjects mid-cycle with strong
 pushback on the implementer's approach ("no, that's wrong", "this won't work",

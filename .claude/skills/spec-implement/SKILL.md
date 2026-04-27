@@ -47,10 +47,12 @@ Major tasks (1., 2., 3.) are grouping headers, not execution units.
 
 For each task, check:
 
-- **Already done?** Skip tasks marked `[x]`.
-- **Blocked?** If a task has `_Blocked:_`, skip it and report why.
-- **Dependencies met?** Check `_Depends:_` annotations -- all referenced tasks must
-  be `[x]`. If a prerequisite is incomplete, implement it first or warn the user.
+- **Already done?** Skip tasks whose Status column is `Done`.
+- **Blocked?** Skip tasks whose Status column is `Blocked` (the reason should be
+  in the task's detailed section, typically as a `_Blocked:_` line). Report why.
+- **Dependencies met?** Check `_Depends:_` annotations in the detailed section --
+  all referenced tasks must have Status `Done`. If a prerequisite is incomplete,
+  implement it first or warn the user.
 - **Boundary scope**: note the `_Boundary:_` annotation if present.
 - **Requirements traced**: note the `_Requirements:_` IDs.
 
@@ -132,7 +134,8 @@ Parse the implementer's `STATUS` from its `## Status Report` block:
 - **READY_FOR_REVIEW**: in a size-1 batch, proceed to reviewer (step 3c). In a
   separate-implementers batch, dispatch the next task's implementer; only proceed
   to the reviewer once every implementer in the batch is `READY_FOR_REVIEW`.
-- **BLOCKED**: append `_Blocked: {reason}_` to the task in `tasks.md`. If this was
+- **BLOCKED**: flip the task's Status column to `Blocked` and append a
+  `_Blocked: {reason}_` line to its detailed section in `tasks.md`. If this was
   one task in a separate-implementers batch, drop only that task from the batch
   and continue with the rest; if the batch becomes empty, skip to the next batch.
 - **NEEDS_CONTEXT**: re-dispatch once with the requested context; if still unresolved,
@@ -179,9 +182,10 @@ Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
   frontmatter default). Include the original task context, all accumulated
   FINDINGS from both prior rounds, and a note that this is an escalated attempt
   after two Sonnet rounds failed. Then re-dispatch the spec-reviewer.
-- **REJECTED (round 3)**: append `_Blocked: reviewer rejected after 2 fix rounds
-(including Opus escalation) -- {summary}_` to the task in `tasks.md`. Report
-  to user, move to next task.
+- **REJECTED (round 3)**: flip the task's Status column to `Blocked` and append
+  `_Blocked: reviewer rejected after 2 fix rounds (including Opus escalation) --
+{summary}_` to the task's detailed section in `tasks.md`. Report to user, move
+  to next task.
 
 **User disagreement escalation.** If the user interjects mid-cycle with strong
 pushback on the implementer's approach ("no, that's wrong", "this won't work",
@@ -208,19 +212,24 @@ Do not include issue IDs in the commit message.
 
 ### 3f. Update tasks.md
 
-Mark every task in the batch `[x]` and append a completion note to each:
+For every task in the batch:
 
-```markdown
-- [x] 2.1 (P) Add token validation middleware -- done: JWT validation
-      middleware in auth/middleware.py, tested with pytest
-```
+- Flip its `Status` column in the Task Summary table from `Pending` to `Done`.
+- Append a brief completion note to the task's detailed section, e.g.:
+
+  ```markdown
+  ### 1. Add token validation
+
+  ...
+
+  _Done: JWT validation middleware in auth/middleware.py, tested with pytest_
+  ```
 
 Also **prune the "Suggested Resolution Order" section** so it lists only the
-still-pending tasks. Completed tasks are already tracked via the `[x]` checkbox
-and the Status column in the Task Summary table; keeping them in the resolution
-order just makes it harder to see what's left. The order is an **unnumbered
-(bullet) list**, so just delete the bullets for completed tasks -- there is
-nothing to renumber.
+still-pending tasks. Completed tasks are already tracked via their `Done` status
+in the Task Summary table; keeping them in the resolution order just makes it
+harder to see what's left. The order is an **unnumbered (bullet) list**, so just
+delete the bullets for completed tasks -- there is nothing to renumber.
 
 ### 3g. Decide next step
 

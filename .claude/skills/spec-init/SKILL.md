@@ -149,9 +149,12 @@ If the review returns **NEEDS REVISION**, fix the cited issues in `requirements.
 Generate `specs/<feature-name>/tasks.md` from the approved requirements + design. Follow the
 exact structure from CLAUDE.md:
 
-1. **Task Summary table** — columns: `#`, `Task` (markdown link to detailed section by
-   standard heading slug), `Status` (`Pending` / `Done` / `Blocked`), `Depends on`.
-   Never use HTML anchors. Never use strikethrough on task names.
+1. **Task Summary table** — exactly two columns: `Task` and `Status`.
+   - `Task` is a markdown link with link text `[#N](anchor)`, e.g.
+     `[#1.1](#11-add-token-validation)`. Do not put descriptions in the cell.
+   - `Status` is `Pending`, `Done`, or `Blocked`.
+   - Never use HTML anchors. Never use strikethrough on task names — update the
+     Status column instead.
 2. **Suggested Resolution Order** — unnumbered (bullet) list of task IDs with brief
    rationale (dependencies first, quick wins, then larger efforts), e.g.
    `- 1.1 -- foundation, no deps`. Use bullets so removing a completed task doesn't force
@@ -162,7 +165,8 @@ exact structure from CLAUDE.md:
    - `_Requirements: 1.1, 2.3_` line at the end (must reference IDs from `requirements.md`).
    - `(P)` marker at the start of the description for tasks with no dependency on the
      immediately preceding task, paired with a `_Boundary: <ComponentName>_` line.
-   - `Depends on` column in the summary table matches the actual prerequisite task IDs.
+   - `_Depends: 1.1, 1.2_` metadata line listing prerequisite task IDs (since the
+     summary table no longer has a `Depends on` column).
 
 Ordering guideline: Foundation -> Core -> Integration -> Validation.
 

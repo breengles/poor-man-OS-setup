@@ -2,9 +2,9 @@
 
 ## Priority Summary
 
-| #   | Issue                                                                                                          | Priority |
-| --- | -------------------------------------------------------------------------------------------------------------- | -------- |
-| 1   | [Avoid double .zshrc sourcing in claude-tmux contexts](#1-avoid-double-zshrc-sourcing-in-claude-tmux-contexts) | Low      |
+| Task                                                         | Priority | Status  |
+| ------------------------------------------------------------ | -------- | ------- |
+| [#1](#1-avoid-double-zshrc-sourcing-in-claude-tmux-contexts) | P2       | Pending |
 
 ## Suggested resolution order
 

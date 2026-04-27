@@ -23,11 +23,11 @@ For each TODO file in scope, follow these steps:
 4. **Update the file:**
    - **Remove resolved items** — if a TODO item has been addressed (code fixed, feature implemented, issue closed), delete it from both the Priority Summary table and the detailed sections entirely. Do NOT keep a "Resolved" section.
    - **Add new items** — if you find new TODOs, bugs, or improvements not yet tracked, add them with appropriate priority and detail.
-   - **Re-prioritize** — adjust priorities if the situation has changed (e.g. a P2 became a blocker, or a P1 is now less urgent).
+   - **Re-prioritize** — adjust priorities if the situation has changed (e.g. a P2 became a blocker, or a P1 is now less urgent). Update the row's `Priority` column and resort the Priority Summary table accordingly.
    - **Update descriptions** — refine descriptions if you now have better context or if the scope of an item has changed.
    - **Rebuild the Suggested resolution order** — reorder based on current state (dependencies, quick wins, urgency).
 
-5. **Maintain format** — ensure the file still follows the TODO file format from AGENTS.md: Priority Summary table at top (with markdown links to headings), detailed sections, suggested resolution order at bottom.
+5. **Maintain format** — ensure the file still follows the TODO file format from AGENTS.md: Priority Summary table at top (three columns: `Task` link `[#N](anchor)`, `Priority`, `Status`; rows sorted by priority), detailed sections, suggested resolution order at bottom.
 
 6. **Delete empty files** — if all items in a file are resolved, delete the file entirely.
 
