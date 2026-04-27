@@ -53,13 +53,44 @@ For each item, check:
 
 Present the item queue to the user and ask for confirmation before proceeding.
 
-## Step 3: Execute items (one at a time)
+## Step 2b: Plan batches for independent items
 
-For each item, execute this cycle. After each completed item, retain only a
-**one-line summary** (e.g. "solver#5: APPROVED, 2 files changed, commit abc1234")
-and discard the full subagent reports from your working memory.
+A **batch** is one or more items reviewed and committed together. Most batches are
+size 1. You may batch only when consecutive queued items are independent of each
+other -- typically the "Suggested resolution order" lists them adjacently with no
+inter-dependency, and they touch unrelated files or share a clear theme.
 
-### 3a. Dispatch implementer
+Batching is a **logical** grouping. Implementers and reviewers still run **strictly
+sequentially** -- never dispatch implementers concurrently. What batching changes
+is the _unit of review and commit_: one reviewer verdict and one commit cover the
+whole batch.
+
+For a multi-item batch, choose ONE strategy:
+
+- **Separate implementers, one reviewer.** Dispatch implementers sequentially (one
+  per item), accumulating their changes in the working tree. Once every implementer
+  in the batch has returned `READY_FOR_REVIEW`, dispatch a single reviewer for the
+  combined diff.
+- **One combined implementer, one reviewer.** If the items are semantically
+  entangled (overlap on files, share a refactor, only make sense together), pass
+  the whole batch to a single implementer in one prompt, then dispatch one reviewer
+  for the combined diff.
+
+Prefer the combined-implementer strategy when splitting would force implementers to
+duplicate context or step on each other's edits. Prefer separate implementers when
+the items are clearly disjoint.
+
+"Independent" / "parallel" here only authorizes batching of review and commit -- it
+does NOT mean multiple implementers run at the same time.
+
+## Step 3: Execute items (one batch at a time)
+
+For each batch (size 1 by default; see Step 2b), execute this cycle. After each
+completed batch, retain only a **one-line summary** (e.g. "solver#5: APPROVED,
+2 files changed, commit abc1234"; or "solver batch [#5,#7]: APPROVED, commit
+abc1234") and discard the full subagent reports from your working memory.
+
+### 3a. Dispatch implementer(s)
 
 Dispatch the **todo-implementer** subagent via the Agent tool:
 
@@ -72,12 +103,20 @@ Agent({
 
 The prompt must include:
 
-- The area name and item number
+- The area name and item number. For a combined-implementer batch, list every
+  item number in the batch and make explicit that all of them are in scope for
+  this implementer.
 - The full detailed section for that item from `todos/<area>.md`
-  (description, context, acceptance criteria, cited files/lines)
+  (description, context, acceptance criteria, cited files/lines). Include the
+  detailed section for every item in the batch when using a combined implementer.
 - The item's priority (P0/P1/P2)
 - Any dependencies on other items from the "Suggested resolution order"
 - The project's test command if known (e.g. `pytest`, `npm test`)
+
+For a separate-implementers batch, dispatch each implementer **sequentially** (wait
+for each to return before dispatching the next), repeating step 3b after each one.
+Only proceed to the reviewer (step 3c) once every implementer in the batch has
+returned `READY_FOR_REVIEW`.
 
 The implementer's role, execution protocol, and status report format are defined
 in its agent file -- do not repeat them in the prompt.
@@ -86,9 +125,13 @@ in its agent file -- do not repeat them in the prompt.
 
 Parse the implementer's `STATUS` from its `## Status Report` block:
 
-- **READY_FOR_REVIEW**: proceed to reviewer (step 3c)
+- **READY_FOR_REVIEW**: in a size-1 batch, proceed to reviewer (step 3c). In a
+  separate-implementers batch, dispatch the next item's implementer; only proceed
+  to the reviewer once every implementer in the batch is `READY_FOR_REVIEW`.
 - **BLOCKED**: add a `_Blocked: {reason}_` line under the item's detailed section
-  in `todos/<area>.md`, skip to next item
+  in `todos/<area>.md`. If this was one item in a separate-implementers batch,
+  drop only that item from the batch and continue with the rest; if the batch
+  becomes empty, skip to the next batch.
 - **NEEDS_CONTEXT**: re-dispatch once with the requested context; if still
   unresolved, block the item
 
@@ -108,11 +151,15 @@ Agent({
 
 The prompt must include:
 
-- The area name and item number
-- The full detailed section for the item (the reviewer must see the same criteria)
+- The area name and item number. For a multi-item batch, list every item in the
+  batch and make clear that the reviewer must verify the combined diff against
+  all of them.
+- The full detailed section for the item (the reviewer must see the same criteria).
+  For a multi-item batch, include the detailed section for every item.
 - The path `todos/<area>.md` so the reviewer can read context if needed
 - The implementer's status report (for reference -- the reviewer verifies
-  independently by running `git diff`)
+  independently by running `git diff`). For a separate-implementers batch,
+  concatenate every implementer's status report.
 
 The reviewer's role, checklist, and verdict format are defined in its agent file --
 do not repeat them in the prompt.
@@ -145,7 +192,7 @@ the implementer alongside the original item context.
 
 ### 3e. Commit (orchestrator does this, not subagents)
 
-Stage only the files the implementer changed, plus the updated `todos/<area>.md`:
+Stage only the files the implementer(s) changed, plus the updated `todos/<area>.md`:
 
 ```
 git add <file1> <file2> ... todos/<area>.md
@@ -153,31 +200,41 @@ git add <file1> <file2> ... todos/<area>.md
 
 **Never** use `git add -A` or `git add .`.
 
-Commit with: `fix({area}): {brief item description}` for P0 bug fixes,
-`feat({area}): ...` for new behavior, or `refactor({area}): ...` / `chore({area}): ...`
-as appropriate. Do not include issue IDs in the commit message.
+For a size-1 batch, commit with: `fix({area}): {brief item description}` for P0
+bug fixes, `feat({area}): ...` for new behavior, or `refactor({area}): ...` /
+`chore({area}): ...` as appropriate. For a multi-item batch, use a single commit
+covering every item with a message that summarizes the batch (e.g.
+`refactor({area}): {shared theme} (items #3, #5, #7)`). Do not include issue IDs
+in the commit message.
 
 ### 3f. Update the TODO file
+
+For every item in the batch:
 
 - **Remove** the item row from the Priority Summary table.
 - **Remove** the item's detailed section entirely (per the TODO file
   convention -- no "Resolved" section).
+
+Then once for the batch:
+
 - **Rebuild** the "Suggested resolution order" section so the numbering
   still matches remaining items.
-- **Add follow-up items** if the implementer reported CONCERNS worth tracking
+- **Add follow-up items** if any implementer reported CONCERNS worth tracking
   (new bugs noticed, unrelated tech debt). Assign reasonable priority and
   include a one-line description + cited files.
-- **Delete the file entirely** if this was the last open item.
+- **Delete the file entirely** if the batch closed the last open items.
 
 After editing the `.md`, run `npx prettier --write --print-width 120 todos/<area>.md` (unless the
 file was deleted).
 
 ### 3g. Decide next step
 
-- **If item numbers were specified**: move to the next specified item.
+- **If item numbers were specified**: move to the next specified item (or batch).
 - **If `all` mode**: re-read `todos/<area>.md` (or list `todos/` if it was
-  deleted), find the next item per resolution order, continue.
-- **If default mode**: ask the user whether to continue to the next item or stop.
+  deleted), find the next item (or independent-item batch per Step 2b) per
+  resolution order, continue.
+- **If default mode**: ask the user whether to continue to the next item/batch
+  or stop.
 
 ## Step 4: Wrap up
 
@@ -193,7 +250,10 @@ After finishing (all items done, user stops, or session limit reached), report:
 
 - **You are the orchestrator.** Do NOT write implementation code in the main session.
   All code changes come from todo-implementer subagents.
-- **One item at a time.** Never dispatch multiple implementers simultaneously.
+- **Sequential dispatch.** Never dispatch multiple implementers simultaneously --
+  even within an independent-item batch, implementers run one after another.
+  "Parallel" / "independent" items only authorize batched review and committing,
+  not concurrent execution.
 - **Fresh subagents.** Each dispatch is a new Agent call with a new context.
   Never reuse or continue a prior subagent.
 - **Selective staging.** Never `git add -A` or `git add .`.
