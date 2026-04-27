@@ -22,7 +22,7 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
 
 - Type-annotate all function signatures (params + return); skip local variables.
   Use modern syntax: `str | None`, `list[int]` (not `Optional`, `List`).
-  **Exception — pyrallis dataclasses:** pyrallis does not support expression-style unions
+  **Exception - pyrallis dataclasses:** pyrallis does not support expression-style unions
   (`X | Y`) in dataclass field annotations. Use `Optional[X]` and `Union[X, Y]` from `typing`
   instead when defining pyrallis CLI config dataclasses.
 - No `from __future__ import annotations`
@@ -48,7 +48,7 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
 
 ## Git Commits
 
-- Never include issue IDs or numbers (e.g. `#5`, `#123`) in commit messages — GitLab interprets
+- Never include issue IDs or numbers (e.g. `#5`, `#123`) in commit messages - GitLab interprets
   `#N` as an issue reference and may auto-close issues unintentionally.
 
 ## Git Worktrees
@@ -56,47 +56,20 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
 Apply this rule **only when the user explicitly asks to create a new branch** (e.g. "create a
 branch for X", "start a new branch and implement Y", "cut a branch off main and ..."). In that
 case, do the work in a dedicated git worktree instead of creating the branch in the current
-checkout — dispatch an agent with `isolation: "worktree"` (or run `git worktree add` explicitly)
+checkout - dispatch an agent with `isolation: "worktree"` (or run `git worktree add` explicitly)
 so the main checkout stays untouched.
 
 Do **not** apply this rule for plain "implement X" / "fix Y" / "refactor Z" requests that don't
-mention a new branch — keep working in the current checkout as usual.
+mention a new branch - keep working in the current checkout as usual.
 
-- **Location convention:** `<project-name>.worktrees/<sanitized-branch-name>`, placed as a
-  sibling of the main repo directory (i.e. `../<project-name>.worktrees/<sanitized-branch-name>`).
-- **Project name:** the basename of the main repo directory (e.g. for `/Users/artem/poor-man-OS-setup`
-  the project name is `poor-man-OS-setup`).
-- **Sanitized branch name:** replace every `/` in the branch name with `-`
-  (e.g. `feat/new-thing` -> `feat-new-thing`). Keep all other characters as-is.
-- **Example:** branch `feat/worktree-flow` in repo `poor-man-OS-setup` -> worktree path
-  `../poor-man-OS-setup.worktrees/feat-worktree-flow`.
-- Always create the worktree from the latest `main` (or the explicitly requested base branch).
-- When the work is done and merged/abandoned, clean up with `git worktree remove <path>` —
-  never delete the directory manually.
-
-## GitLab
-
-- Use `gitlab` MCP tools for interacting with GitLab (issues, merge requests, projects, etc.)
-- If the GitLab MCP server fails, is unavailable, or does not provide enough information, fall back to the `glab` CLI tool instead
-- Example `glab` commands: `glab issue list`, `glab mr list`, `glab mr view <id>`, `glab issue view <id>`
+- **Location convention:** `<project-name>.worktrees/<project-name>-<sanitized-branch-name>`, placed as a sibling of the main repo directory (i.e. `../<project-name>.worktrees/<project-name>-<sanitized-branch-name>`).
+- **Project name:** the basename of the main repo directory (e.g. for `/Users/artem/poor-man-OS-setup` the project name is `poor-man-OS-setup`).
+- **Sanitized branch name:** replace every `/` in the branch name with `-` (e.g. `feat/new-thing` -> `feat-new-thing`). Keep all other characters as-is.
+- **Example:** branch `feat/worktree-flow` in repo `poor-man-OS-setup` -> worktree path `../poor-man-OS-setup.worktrees/feat-worktree-flow`.
+- Always create the worktree from the latest `main` from remote if it exists, otherwise use local `main` (or the explicitly requested base branch).
+- When the work is done and merged/abandoned, clean up with `git worktree remove <path>` - never delete the directory manually.
 
 ## Spec-Driven Development (SDD)
-
-Use SDD selectively — only for long-lived engineering artifacts, never for exploratory research code.
-
-### When to use specs
-
-- User explicitly asks for SSD
-- Training pipelines, data loaders, evaluation harnesses
-- CLI tools, APIs, dashboards
-- Shared libraries or frameworks
-- Anything that will live beyond one experiment cycle
-
-### When NOT to use specs
-
-- Experiment scripts, notebooks, ablation code
-- One-off analysis or visualization
-- Anything in `experiments/`
 
 ### Spec structure
 
@@ -105,8 +78,7 @@ Specs live in `specs/<feature-name>/` with up to four files:
 1. `requirements.md` -- What & why. EARS-format acceptance criteria (see below).
 2. `design.md` -- How. Architecture, data flow, key decisions.
 3. `tasks.md` -- Ordered implementation checklist with checkboxes (see format below).
-4. `research.md` (optional) -- Rejected alternatives, trade-offs, constraints discovered
-   during design. Valuable when "why not X" matters (e.g. ML architecture choices).
+4. `research.md` (optional) -- Rejected alternatives, trade-offs, constraints discovered during design. Valuable when "why not X" matters (e.g. ML architecture choices).
 
 ### Requirements format (EARS)
 
@@ -134,8 +106,7 @@ Use concrete component names (e.g. "the training loop", "the API gateway"), not 
    **Never use strikethrough** (`~~text~~`) on task names -- it makes text
    unreadable and links unclickable. Update the Status column instead.
 2. **Suggested Resolution Order** -- numbered list of task IDs with brief rationale.
-3. **Detailed Tasks** -- one `###` heading per task with full description,
-   files to modify, acceptance criteria checklist, and metadata.
+3. **Detailed Tasks** -- one `###` heading per task with full description, files to modify, acceptance criteria checklist, and metadata.
 
 Each task should include:
 
@@ -192,19 +163,18 @@ _Boundary: RateLimiter_
 
 ## TODO Files
 
-TODO files live in `todos/` organized by area: `todos/<area>.md`
-(e.g. `todos/solver.md`, `todos/api.md`, `todos/ui.md`).
+TODO files live in `todos/` organized by area: `todos/<area>.md` (e.g. `todos/solver.md`, `todos/api.md`, `todos/ui.md`).
 
 When working with TODO files, follow this structure:
 
-1. **Priority Summary table** at the very top — only open items, sorted by priority.
+1. **Priority Summary table** at the very top - only open items, sorted by priority.
    Each issue in the table must be a **markdown link** to its detailed section heading
    (e.g. `[#5 Description](#5-heading-slug)`), so it's Cmd+click navigable.
-2. **Detailed sections** in the middle — full descriptions of open issues grouped by category.
+2. **Detailed sections** in the middle - full descriptions of open issues grouped by category.
 3. **When an item is resolved**, remove it from the Priority Summary table and from the
    open detailed sections.
 4. **When all items are resolved**, delete the TODO file entirely.
-5. **Suggested resolution order** — after the Priority Summary table, include a short
+5. **Suggested resolution order** - after the Priority Summary table, include a short
    "Suggested resolution order" section listing item numbers in the order they should be
    tackled (e.g. dependencies first, quick wins, then larger efforts). Keep it to a simple
    numbered list with brief rationale per item.
