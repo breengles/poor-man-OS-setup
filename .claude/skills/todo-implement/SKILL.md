@@ -217,8 +217,12 @@ For every item in the batch:
 
 Then once for the batch:
 
-- **Rebuild** the "Suggested resolution order" section so the numbering
-  still matches remaining items.
+- **Rebuild** the "Suggested resolution order" section so it lists **only the
+  still-pending items**. Completed items are removed from the file entirely
+  (per the convention above), so they must also disappear from the resolution
+  order -- there is no value in keeping done work there. The order is an
+  unnumbered (bullet) list, so just delete the bullets for completed items --
+  there is nothing to renumber.
 - **Add follow-up items** if any implementer reported CONCERNS worth tracking
   (new bugs noticed, unrelated tech debt). Assign reasonable priority and
   include a one-line description + cited files.

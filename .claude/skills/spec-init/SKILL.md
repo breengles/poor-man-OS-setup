@@ -152,8 +152,10 @@ exact structure from CLAUDE.md:
 1. **Task Summary table** — columns: `#`, `Task` (markdown link to detailed section by
    standard heading slug), `Status` (`Pending` / `Done` / `Blocked`), `Depends on`.
    Never use HTML anchors. Never use strikethrough on task names.
-2. **Suggested Resolution Order** — numbered list of task IDs with brief rationale
-   (dependencies first, quick wins, then larger efforts).
+2. **Suggested Resolution Order** — unnumbered (bullet) list of task IDs with brief
+   rationale (dependencies first, quick wins, then larger efforts), e.g.
+   `- 1.1 -- foundation, no deps`. Use bullets so removing a completed task doesn't force
+   renumbering.
 3. **Detailed Tasks** — one `###` heading per task with:
    - A short description and any sub-bullets of what the task covers.
    - Acceptance criteria as a checkbox list.

@@ -215,6 +215,13 @@ Mark every task in the batch `[x]` and append a completion note to each:
       middleware in auth/middleware.py, tested with pytest
 ```
 
+Also **prune the "Suggested Resolution Order" section** so it lists only the
+still-pending tasks. Completed tasks are already tracked via the `[x]` checkbox
+and the Status column in the Task Summary table; keeping them in the resolution
+order just makes it harder to see what's left. The order is an **unnumbered
+(bullet) list**, so just delete the bullets for completed tasks -- there is
+nothing to renumber.
+
 ### 3g. Decide next step
 
 - **If task numbers were specified**: move to the next specified task (or batch).

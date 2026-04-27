@@ -8,7 +8,7 @@
 
 ## Suggested resolution order
 
-1. #1 — purely cosmetic/perf, not blocking anything. Pick up when doing other shell startup work.
+- #1 — purely cosmetic/perf, not blocking anything. Pick up when doing other shell startup work.
 
 ## Detailed sections
 

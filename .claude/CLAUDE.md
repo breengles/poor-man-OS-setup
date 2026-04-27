@@ -105,7 +105,9 @@ Use concrete component names (e.g. "the training loop", "the API gateway"), not 
    Include a **Status** column (`Pending`, `Done`, `Blocked`) to track progress.
    **Never use strikethrough** (`~~text~~`) on task names -- it makes text
    unreadable and links unclickable. Update the Status column instead.
-2. **Suggested Resolution Order** -- numbered list of task IDs with brief rationale.
+2. **Suggested Resolution Order** -- unnumbered (bullet) list of task IDs with brief rationale, e.g.
+   `- 1.1 -- foundation, no deps`. Use bullets, not a numbered list, so removing a completed
+   task doesn't force renumbering.
 3. **Detailed Tasks** -- one `###` heading per task with full description, files to modify, acceptance criteria checklist, and metadata.
 
 Each task should include:
@@ -176,5 +178,6 @@ When working with TODO files, follow this structure:
 4. **When all items are resolved**, delete the TODO file entirely.
 5. **Suggested resolution order** - after the Priority Summary table, include a short
    "Suggested resolution order" section listing item numbers in the order they should be
-   tackled (e.g. dependencies first, quick wins, then larger efforts). Keep it to a simple
-   numbered list with brief rationale per item.
+   tackled (e.g. dependencies first, quick wins, then larger efforts). Use an unnumbered
+   (bullet) list with brief rationale per item (e.g. `- #5 -- prerequisite for #7`), not a
+   numbered list, so removing a completed item doesn't force renumbering.

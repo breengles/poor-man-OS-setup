@@ -24,7 +24,7 @@ Follow these steps:
 
 4. **Produce a resolution plan** — present a clear, ordered plan:
    - **Dependency graph** — which items depend on which (can be a simple list)
-   - **Recommended resolution order** — numbered list with rationale for ordering (dependencies first, then quick wins to build momentum, then larger efforts)
+   - **Recommended resolution order** — unnumbered (bullet) list of item numbers with rationale for ordering (dependencies first, then quick wins to build momentum, then larger efforts). Bullets keep the list stable as items are completed and removed.
    - **Effort estimates** — for each item: Small (< 1hr), Medium (1-4hrs), Large (4hrs+)
    - **Risk assessment** — flag items that touch critical paths or have high regression risk
    - **Quick wins** — highlight items that are low-effort and high-impact
