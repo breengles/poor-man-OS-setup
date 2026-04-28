@@ -53,16 +53,34 @@ Use whichever of `main` or `master` exists. If both exist, prefer `main`.
 
 6. For each changed file, read the full current version to understand context beyond the diff.
 
-### Step 3: Produce the MR Title and Description
+### Step 3: Detect Breaking Changes
 
-Output a single message containing the MR title and description in GitLab markdown format. Use this exact structure:
+Identify any breaking changes in the branch. A change is "breaking" if it would force consumers to update their code, configuration, or workflow. Sources to check:
+
+1. Commit messages with a `!` after the type/scope (e.g. `feat!:`, `refactor(api)!:`) per Conventional Commits.
+2. Commit bodies/footers containing a `BREAKING CHANGE:` (or `BREAKING-CHANGE:`) trailer.
+3. The diff itself — even if commits don't flag it, look for: removed/renamed public APIs, changed function signatures, removed CLI flags or env vars, changed config schema, changed HTTP routes/payloads, changed DB schema without migration, bumped major versions of dependencies.
+
+Collect a short, imperative-mood description for each breaking change (one line each). If you find breaking changes that the commits did NOT flag, ask the user to confirm before including them.
+
+### Step 4: Produce the MR Title and Description
+
+Output a single message containing the MR title and description in GitLab markdown format. The title and description follow [semantic-release](https://semantic-release.gitbook.io/) / [Conventional Commits](https://www.conventionalcommits.org/) conventions so release tooling can parse them.
+
+Use this exact structure:
 
 ```
 ## Title
 
-<short, descriptive title under 72 characters>
+<type>(<optional scope>)<!>: <short, imperative description under 72 characters>
 
 ## Description
+
+BREAKING CHANGE: <first breaking change, one line>
+
+BREAKING CHANGE: <second breaking change, one line>
+
+...
 
 ### Summary
 
@@ -77,14 +95,29 @@ Output a single message containing the MR title and description in GitLab markdo
 <brief instructions for reviewers to understand the impact of the changes>
 ```
 
+If there are no breaking changes, omit the `BREAKING CHANGE:` block entirely (do not leave a placeholder).
+
 ## Rules
 
-1. **Title** must be concise (under 72 characters), written in imperative mood (e.g. "Add user authentication" not "Added user authentication").
-2. **Summary** should explain the "why" — motivation and context — not just restate the diff.
-3. **Changes** should be a bulleted list of meaningful changes, not a file-by-file dump. Group related changes together. Focus on what matters to a reviewer. Do not just list the changed files.
-4. **Impact** should give reviewers concrete steps or commands to get simple expression how to use it if applicable.
-5. Agent should interview the user if there are any questions about the changes or the MR.
-6. If commits reference GitLab issues, include a `### Related issues` section with links (e.g. `Closes #123` or `Relates to #45`).
-7. Do NOT pad the description with boilerplate, caveats, or filler. Keep it tight and useful.
-8. Do NOT include issue references that don't actually exist — only include them if the commits or branch name clearly reference real issues.
-9. Output the title and description as a single, copy-pasteable message. Do not add commentary before or after.
+1. **Title** must follow Conventional Commits: `<type>(<optional scope>)<!>: <subject>`.
+   - `type` is one of `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `ci`, `chore`, `revert`, `style`.
+   - Append `!` after the type/scope when the MR introduces breaking changes (e.g. `feat(api)!: drop v1 endpoints`).
+   - Subject is concise (whole title under 72 characters), imperative mood, lowercase first letter, no trailing period.
+2. **BREAKING CHANGE block** comes first in the description, before `### Summary`. Enumerate one `BREAKING CHANGE:` line per breaking change, separated by blank lines, exactly as semantic-release expects:
+
+   ```
+   BREAKING CHANGE: drop support for Node 16
+
+   BREAKING CHANGE: rename `--config` flag to `--config-file`
+   ```
+
+   Each line stays on a single line (no wrapping) and uses imperative mood. Omit the entire block if there are no breaking changes. If breaking changes exist, the title MUST include the `!` marker.
+
+3. **Summary** should explain the "why" — motivation and context — not just restate the diff.
+4. **Changes** should be a bulleted list of meaningful changes, not a file-by-file dump. Group related changes together. Focus on what matters to a reviewer. Do not just list the changed files.
+5. **Impact** should give reviewers concrete steps or commands to get simple expression how to use it if applicable.
+6. Agent should interview the user if there are any questions about the changes, the MR, or whether something qualifies as a breaking change.
+7. If commits reference GitLab issues, include a `### Related issues` section with links (e.g. `Closes #123` or `Relates to #45`).
+8. Do NOT pad the description with boilerplate, caveats, or filler. Keep it tight and useful.
+9. Do NOT include issue references that don't actually exist — only include them if the commits or branch name clearly reference real issues.
+10. Output the title and description as a single, copy-pasteable message. Do not add commentary before or after.
