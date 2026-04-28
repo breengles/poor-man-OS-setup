@@ -1168,6 +1168,7 @@ paddleocr
 PAFL
 PAFLPAPS
 palplot
+parallelizable
 Parens
 paru
 PARULA
