@@ -179,16 +179,12 @@ When working with TODO files, follow this structure:
    - `Task` is a markdown link to the detailed section, with the link text as
      `[#N](anchor)` (e.g. `[#5](#5-broken-cache-invalidation)`). Do not put
      descriptions in the cell.
-   - `Priority` is `P0` / `P1` / `P2` (or `High` / `Med` / `Low`, project-consistent).
-   - `Status` is `Pending` or `Blocked`. Resolved items are deleted from the file
-     entirely (no `Done` row).
-   - **Never use HTML anchors** (`<a id="N"></a>`) -- they are invisible in plain
-     markdown and don't navigate reliably in VS Code.
-2. **Detailed sections** in the middle - full descriptions of open issues grouped
-   by category.
-3. **When an item is resolved**, remove it from the Priority Summary table and from
-   the detailed sections entirely.
-4. **When all items are resolved**, delete the TODO file entirely.
+   - `Priority` is `P0` / `P1` / `P2`.
+   - `Status` is `Pending` or `Blocked`. Resolved items are deleted from the file entirely (no `Done` row).
+   - **Never use HTML anchors** (`<a id="N"></a>`)
+2. **Detailed sections** in the middle - full descriptions of open issues grouped by category.
+3. **When an item is resolved**, remove it from the Priority Summary table and from the detailed sections entirely.
+4. **When all items are resolved**, delete the content of the TODO file entirely.
 5. **Suggested resolution order** - after the Priority Summary table, include a short
    "Suggested resolution order" section listing item numbers in the order they should be
    tackled (e.g. dependencies first, quick wins, then larger efforts). Use an unnumbered
