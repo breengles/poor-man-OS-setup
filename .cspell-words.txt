@@ -275,6 +275,7 @@ cpptools
 cpython
 crafters
 CREAT
+creds
 cres
 Cronos
 cropdir
@@ -321,6 +322,7 @@ dataframe
 dataloaders
 datamodules
 datapath
+dataplatform
 dataroot
 datas
 dateutil
