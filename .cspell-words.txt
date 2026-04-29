@@ -1293,6 +1293,8 @@ pypi
 pyplot
 pyproject
 pyrallis
+pyright
+pyrightconfig
 pyrsistent
 pytest
 pytestmark

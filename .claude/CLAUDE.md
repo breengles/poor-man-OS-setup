@@ -2,7 +2,7 @@
 
 ## Safety
 
-NEVER use destructive commands without explicit user approval. The following are **absolutely forbidden** unless the user explicitly asks for them:
+NEVER use destructive commands without explicit user approval. The following are **absolutely forbidden**:
 
 - `rm -rf` (or any recursive force-delete)
 - `git push --force` / `git push --force-with-lease`
@@ -31,6 +31,14 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
 - Paths: always `pathlib.Path`, never `os.path`
 - Strings: f-strings for all interpolation
 - Docstrings: Google style (`Args:`, `Returns:`, `Raises:`); skip for trivial code
+
+### Type checking
+
+- Always invoke pyright via `uv run pyright <files>` so it picks up the project's `.venv`.
+- Treat LSP/IDE import errors as suspect when the symbol is widely used elsewhere in the repo or
+  exists in `.venv` - re-verify with `uv run pyright` before "fixing" the import.
+- For projects without a `pyrightconfig.json` / `[tool.pyright]` block, prefer adding one
+  (`venvPath = "."`, `venv = ".venv"`) over relying on the `uv run` prefix.
 
 ## Code and Comments
 
