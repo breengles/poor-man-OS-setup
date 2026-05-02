@@ -67,6 +67,17 @@ reviewed for readability and simplicity, not just "does it work":
 - Do not leave dead code, unused parameters, debug prints, or commented-out
   blocks. Do not add error handling for conditions that cannot occur.
 - Only add a comment when the "why" is non-obvious; do not comment the "what".
+- **No function-local / method-local imports.** All `import` statements belong
+  at the top of the module. Putting an `import` inside a function or method
+  body -- typically to dodge a circular import -- is an anti-pattern. If you
+  hit a circular import, either the design is wrong or you are taking a
+  shortcut: fix it by extracting the shared symbol into a third module or
+  inverting the dependency. Do not paper over it with a local import. If
+  the design itself forces the cycle, report BLOCKED and describe the
+  structural problem rather than working around it. The only legitimate
+  exceptions are genuinely lazy-loaded optional dependencies (e.g. heavyweight
+  libraries gated behind a feature flag), and these must be called out in
+  CONCERNS with justification.
 
 ### Step 4: Validate
 

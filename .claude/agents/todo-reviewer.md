@@ -101,6 +101,17 @@ Correctness alone is not enough -- the code must also be clean and maintainable.
 - No dead code, unused parameters, leftover debug prints, or commented-out
   blocks. No redundant error handling for conditions that cannot occur.
 - Comments (if any) explain the non-obvious "why", not the "what".
+- **No function-local / method-local imports.** Grep the diff for `import`
+  statements that are indented inside a function or method body
+  (e.g. `^\s+import \|^\s+from .* import `). These almost always exist to
+  dodge a circular import and are an anti-pattern: they signal either a
+  broken module dependency graph or the implementer cutting corners. If
+  found, REJECT and require the implementer to either restructure the
+  modules (extract the shared symbol or invert the dependency) or, if the
+  design itself forces the cycle, raise it as a structural concern rather
+  than papering over it. The only legitimate exceptions are explicitly
+  lazy-loaded optional dependencies (e.g. heavy libraries gated behind a
+  feature flag) and must be justified in the implementer's CONCERNS.
 - If quality issues are found, REJECT with concrete feedback: cite the
   exact file and line, explain what is too complex or unclear, and
   describe the simpler alternative the implementer should use.
