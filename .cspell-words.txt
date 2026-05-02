@@ -69,6 +69,7 @@ argmin
 argparsing
 armijo
 armine
+arpack
 arraystretch
 Artem
 artemkotov
@@ -377,6 +378,7 @@ dewarping
 dexp
 DEXTRA
 DGEMM
+diagonalisation
 dictto
 dictx
 diffbir
@@ -457,10 +459,14 @@ EDSR
 Eeth
 efficientnet
 egood
+eigendecomposition
+eigenproblem
 eigensolutions
 eigensolve
 eigensolver
+eigensolving
 eigh
+eigsh
 eigvecs
 einops
 Ekaterina
@@ -742,6 +748,7 @@ ipython
 ipywidgets
 irse
 irth
+iscomplexobj
 isdigit
 isimage
 isin
@@ -1214,6 +1221,7 @@ plusminus
 PNDM
 pnginfo
 pnorm
+polarisability
 POLARIZ
 polrxkr
 polth
@@ -1543,6 +1551,7 @@ stablesr
 starcoder
 starlette
 startangle
+staticmethod
 statusline
 stderrs
 stdinv
@@ -1586,6 +1595,7 @@ Swin
 swinir
 swint
 switchnode
+symmetrisation
 sympy
 synctex
 tablefmt
