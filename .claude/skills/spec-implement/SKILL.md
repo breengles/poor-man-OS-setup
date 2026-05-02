@@ -170,7 +170,7 @@ do not repeat them in the prompt.
 
 Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
 
-- **APPROVED**: proceed to commit (step 3e).
+- **APPROVED**: proceed to update `tasks.md` (step 3e), then commit (step 3f).
 - **REJECTED (round 1)**: dispatch a **new** spec-implementer subagent (default
   Sonnet) with:
   - The original task context
@@ -187,32 +187,22 @@ Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
 {summary}_` to the task's detailed section in `tasks.md`. Report to user, move
   to next task.
 
+**Critical ordering:** never mark a task `Done` or write its completion note
+into `tasks.md` until the reviewer's verdict is `APPROVED` for the batch that
+contains it. While the verdict is still `REJECTED` (across any retry round),
+leave `tasks.md` untouched -- the task is not done yet, and a premature edit
+would lose the source of truth driving the retry.
+
 **User disagreement escalation.** If the user interjects mid-cycle with strong
 pushback on the implementer's approach ("no, that's wrong", "this won't work",
 "stop and rethink"), treat the next retry as an escalated Opus round regardless
 of rejection count. Pass the user's specific objection as additional input to
 the implementer alongside the original task context.
 
-### 3e. Commit (orchestrator does this, not subagents)
+### 3e. Update tasks.md (only after APPROVED)
 
-Stage only the files the implementer(s) changed, plus `tasks.md`:
-
-```
-git add <file1> <file2> ... specs/{feature}/tasks.md
-```
-
-**Never** use `git add -A` or `git add .`.
-
-For a size-1 batch, commit with: `feat({feature}): {brief task description}`.
-For a multi-task batch, use a single commit covering all tasks in the batch with a
-message that summarizes the batch (e.g. `feat({feature}): {shared theme} (tasks
-3.1, 3.2, 3.3)`).
-
-Do not include issue IDs in the commit message.
-
-### 3f. Update tasks.md
-
-For every task in the batch:
+Run this step **only after** step 3d returned `APPROVED` for the batch. For
+every approved task in the batch:
 
 - Flip its `Status` column in the Task Summary table from `Pending` to `Done`.
 - Append a brief completion note to the task's detailed section, e.g.:
@@ -230,6 +220,28 @@ still-pending tasks. Completed tasks are already tracked via their `Done` status
 in the Task Summary table; keeping them in the resolution order just makes it
 harder to see what's left. The order is an **unnumbered (bullet) list**, so just
 delete the bullets for completed tasks -- there is nothing to renumber.
+
+After editing `tasks.md`, run `npx prettier --write --print-width 120 specs/{feature}/tasks.md`.
+
+### 3f. Commit (orchestrator does this, not subagents)
+
+Stage only the files the implementer(s) changed, plus the `tasks.md` edits
+from step 3e. The `tasks.md` update and the implementation changes go in the
+**same commit** -- never commit code without the matching `tasks.md` update,
+and never commit a `tasks.md` update without the implementation behind it:
+
+```
+git add <file1> <file2> ... specs/{feature}/tasks.md
+```
+
+**Never** use `git add -A` or `git add .`.
+
+For a size-1 batch, commit with: `feat({feature}): {brief task description}`.
+For a multi-task batch, use a single commit covering all tasks in the batch with a
+message that summarizes the batch (e.g. `feat({feature}): {shared theme} (tasks
+3.1, 3.2, 3.3)`).
+
+Do not include issue IDs in the commit message.
 
 ### 3g. Decide next step
 

@@ -169,7 +169,7 @@ do not repeat them in the prompt.
 
 Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
 
-- **APPROVED**: proceed to commit (step 3e).
+- **APPROVED**: proceed to update the TODO file (step 3e), then commit (step 3f).
 - **REJECTED (round 1)**: dispatch a **new** todo-implementer subagent (default
   Sonnet) with:
   - The original item context
@@ -186,32 +186,22 @@ Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
 {summary}_` under the item's detailed section in `todos/<area>.md`. Report
   to user, move to next item.
 
+**Critical ordering:** never resolve/delete a TODO item or write its updates
+into `todos/<area>.md` until the reviewer's verdict is `APPROVED` for the batch
+that contains it. While the verdict is still `REJECTED` (across any retry
+round), leave the TODO file untouched -- the item is not done yet, and a
+premature edit would lose the source of truth driving the retry.
+
 **User disagreement escalation.** If the user interjects mid-cycle with strong
 pushback on the implementer's approach ("no, that's wrong", "this won't work",
 "stop and rethink"), treat the next retry as an escalated Opus round regardless
 of rejection count. Pass the user's specific objection as additional input to
 the implementer alongside the original item context.
 
-### 3e. Commit (orchestrator does this, not subagents)
+### 3e. Update the TODO file (only after APPROVED)
 
-Stage only the files the implementer(s) changed, plus the updated `todos/<area>.md`:
-
-```
-git add <file1> <file2> ... todos/<area>.md
-```
-
-**Never** use `git add -A` or `git add .`.
-
-For a size-1 batch, commit with: `fix({area}): {brief item description}` for P0
-bug fixes, `feat({area}): ...` for new behavior, or `refactor({area}): ...` /
-`chore({area}): ...` as appropriate. For a multi-item batch, use a single commit
-covering every item with a message that summarizes the batch (e.g.
-`refactor({area}): {shared theme} (items #3, #5, #7)`). Do not include issue IDs
-in the commit message.
-
-### 3f. Update the TODO file
-
-For every item in the batch:
+Run this step **only after** step 3d returned `APPROVED` for the batch. For
+every approved item in the batch:
 
 - **Remove** the item row from the Priority Summary table.
 - **Remove** the item's detailed section entirely (per the TODO file
@@ -232,6 +222,30 @@ Then once for the batch:
 
 After editing the `.md`, run `npx prettier --write --print-width 120 todos/<area>.md` (unless the
 file was deleted).
+
+### 3f. Commit (orchestrator does this, not subagents)
+
+Stage only the files the implementer(s) changed, plus the `todos/<area>.md`
+edits from step 3e (or its deletion). The TODO update and the implementation
+changes go in the **same commit** -- never commit code without the matching
+TODO update, and never commit a TODO update without the implementation behind
+it:
+
+```
+git add <file1> <file2> ... todos/<area>.md
+```
+
+If step 3e deleted `todos/<area>.md`, stage the deletion with `git add` (or
+`git rm`) so it lands in the same commit.
+
+**Never** use `git add -A` or `git add .`.
+
+For a size-1 batch, commit with: `fix({area}): {brief item description}` for P0
+bug fixes, `feat({area}): ...` for new behavior, or `refactor({area}): ...` /
+`chore({area}): ...` as appropriate. For a multi-item batch, use a single commit
+covering every item with a message that summarizes the batch (e.g.
+`refactor({area}): {shared theme} (items #3, #5, #7)`). Do not include issue IDs
+in the commit message.
 
 ### 3g. Decide next step
 
