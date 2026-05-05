@@ -45,6 +45,9 @@
     "*.jpg": "imagePreview.previewEditor",
   },
   "workbench.iconTheme": "material-icon-theme",
+  "material-icon-theme.files.associations": {
+    "*.sbatch": "console",
+  },
   "workbench.colorCustomizations": {
     "terminal.selectionForeground": "#000000",
     "terminal.selectionBackground": "#fbf8d3",
@@ -158,6 +161,7 @@
     "pair": "linux",
     "pair2": "linux",
     "nebius": "linux",
+    "worker0": "linux",
   },
   "git.replaceTagsWhenPull": true,
   "git.autofetchPeriod": 60,
@@ -383,8 +387,9 @@
   ],
   "todo-tree.tree.scanMode": "workspace only",
   // yaml json
-  "yaml.format.printWidth": 120,
+  "yaml.format.printWidth": 500,
   "yaml.format.bracketSpacing": false,
+  "yaml.format.enable": true,
   "[yaml]": {
     "editor.tabSize": 2,
     "editor.defaultFormatter": "redhat.vscode-yaml",
@@ -434,4 +439,15 @@
   "terminal.integrated.cursorWidth": 3,
   "git-worktree-manager.worktreeSubdirectoryTemplate": "$BASE_NAME-$REF_NAME",
   "csv.enabled": false,
+  "explorer.autoReveal": false,
+  "git.autoRepositoryDetection": false,
+  "git-worktree-manager.treeView.showExternalTerminalInTreeItem": false,
+  "git-worktree-manager.treeView.showTerminalInTreeItem": false,
+  "git-worktree-manager.treeView.showOpenExplorerInTreeItem": false,
+  "git-worktree-manager.treeView.showOpenRepositoryInTreeItem": false,
+  "git-worktree-manager.treeView.showCheckoutInWorktreeItem": false,
+  "git-worktree-manager.worktreePick.showTerminal": false,
+  "git-worktree-manager.worktreePick.showExternalTerminal": false,
+  "prettier.bracketSpacing": false,
+  "search.useIgnoreFiles": false,
 }
