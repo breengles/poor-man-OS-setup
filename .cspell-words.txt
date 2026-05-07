@@ -151,6 +151,7 @@ blendshapes
 blobname
 bnum
 bodyface
+boldsymbol
 breengles
 breit
 bson
@@ -331,6 +332,7 @@ davidanson
 DBLACS
 DBLAS
 dble
+DBOC
 dbsplines
 DCMAKE
 dconf

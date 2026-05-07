@@ -10,8 +10,10 @@ bindkey "^[[B" down-line-or-beginning-search # Down (normal mode)
 bindkey "^[OB"  down-line-or-beginning-search # Down (application mode)
 
 # Word navigation (Alt+Left, Alt+Right)
-bindkey "^[b" backward-word # Alt+Left (from terminal mapping)
-bindkey "^[f" forward-word # Alt+Right (from terminal mapping)
+bindkey "^[b" backward-word # Alt+Left (macOS Terminal / Option-as-Meta)
+bindkey "^[f" forward-word # Alt+Right (macOS Terminal / Option-as-Meta)
+bindkey "^[[1;3D" backward-word # Alt+Left (VS Code / xterm modifier-arrow)
+bindkey "^[[1;3C" forward-word # Alt+Right (VS Code / xterm modifier-arrow)
 
 # Word deletion (Alt+Backspace)
 bindkey "^[^?" backward-kill-word # Alt+Backspace

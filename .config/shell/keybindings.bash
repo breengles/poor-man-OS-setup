@@ -2,8 +2,10 @@ bind '"\e[A": history-search-backward'  # Up arrow
 bind '"\e[B": history-search-forward'   # Down arrow
 
 # Word navigation (Alt+Left, Alt+Right)
-bind '"\eb": backward-word'             # Alt+Left (from terminal mapping)
-bind '"\ef": forward-word'              # Alt+Right (from terminal mapping)
+bind '"\eb": backward-word'             # Alt+Left (macOS Terminal / Option-as-Meta)
+bind '"\ef": forward-word'              # Alt+Right (macOS Terminal / Option-as-Meta)
+bind '"\e[1;3D": backward-word'         # Alt+Left (VS Code / xterm modifier-arrow)
+bind '"\e[1;3C": forward-word'          # Alt+Right (VS Code / xterm modifier-arrow)
 
 # Word deletion (Alt+Backspace)
 bind '"\e\C-?": backward-kill-word'     # Alt+Backspace
