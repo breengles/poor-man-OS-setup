@@ -1,7 +1,7 @@
 ---
 name: todo-implementer
 description: Implements a single TODO item. Dispatched by the todo-implement skill -- do not invoke directly.
-tools: Read, Write, Edit, Bash, Glob, Grep
+tools: Read, Write, Edit, Bash, Glob, Grep, WebSearch, WebFetch
 model: sonnet
 ---
 

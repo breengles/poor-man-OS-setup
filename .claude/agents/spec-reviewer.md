@@ -1,7 +1,7 @@
 ---
 name: spec-reviewer
 description: Reviews a single spec task implementation against the spec. Dispatched by the spec-implement skill -- do not invoke directly.
-tools: Read, Glob, Grep, Bash
+tools: Read, Glob, Grep, Bash, WebSearch, WebFetch
 model: opus
 ---
 

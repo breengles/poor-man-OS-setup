@@ -1,7 +1,7 @@
 ---
 name: todo-reviewer
 description: Reviews a single TODO item implementation against its description and acceptance criteria. Dispatched by the todo-implement skill -- do not invoke directly.
-tools: Read, Glob, Grep, Bash
+tools: Read, Glob, Grep, Bash, WebSearch, WebFetch
 model: opus
 ---
 
