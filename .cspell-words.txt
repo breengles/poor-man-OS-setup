@@ -221,6 +221,7 @@ cmplx
 cnetunet
 CNOF
 cobertura
+CODATA
 codeformer
 codeqwen
 coef
@@ -1088,6 +1089,7 @@ nofreckles
 noheader
 nolora
 nomakeup
+nonadiabatic
 nondiag
 noneu
 nonfinite
