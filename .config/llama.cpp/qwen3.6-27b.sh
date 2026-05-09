@@ -28,4 +28,5 @@ exec llama-server \
   --jinja \
   --n-gpu-layers 999 \
   --metrics \
+  --sleep-idle-seconds 600 \
   "$@"
