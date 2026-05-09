@@ -1,6 +1,6 @@
 {
   "editorPaddingX": 1,
-  "theme": "light",
+  "theme": "dark",
   "defaultProvider": "llamacpp-local",
   "defaultModel": "qwen3.6-27b",
   "skills": [

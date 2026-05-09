@@ -25,14 +25,14 @@
   // cursor
   "cursor.preferNotificationsSameAsChat": true,
   // window
-  "window.autoDetectColorScheme": true,
+  "window.autoDetectColorScheme": false,
   "window.openFoldersInNewWindow": "default",
   "window.zoomLevel": 0.5,
   // explorer
   "explorer.confirmPasteNative": false,
   "explorer.openEditors.visible": 10,
   "explorer.confirmDragAndDrop": false,
-  "workbench.preferredLightColorTheme": "Default Light Modern",
+  // "workbench.preferredLightColorTheme": "Default Light Modern",
   "workbench.preferredDarkColorTheme": "Default Dark Modern",
   "workbench.activityBar.orientation": "vertical",
   "workbench.editor.highlightModifiedTabs": true,
@@ -124,7 +124,7 @@
   "terminal.integrated.altClickMovesCursor": false,
   "terminal.integrated.macOptionIsMeta": true,
   "terminal.integrated.macOptionClickForcesSelection": true,
-  "terminal.integrated.fontFamily": "'MonaspiceNe Nerd Font', 'CaskaydiaCove Nerd Font'",
+  "terminal.integrated.fontFamily": "MonaspiceNe Nerd Font, 'CaskaydiaCove Nerd Font'",
   "terminal.integrated.inheritEnv": true,
   "terminal.integrated.profiles.linux": {
     "tmux": {

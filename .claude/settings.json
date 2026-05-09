@@ -110,7 +110,7 @@
   "effortLevel": "xhigh",
   "awaySummaryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
-  "theme": "light",
+  "theme": "dark",
   "skipAutoPermissionPrompt": true,
   "mcpServers": {
     "gitlab-cli": {
