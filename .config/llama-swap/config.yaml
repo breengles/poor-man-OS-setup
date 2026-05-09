@@ -19,6 +19,7 @@ macros:
     --n-gpu-layers 999
     --metrics
     --log-timestamps
+    --no-warmup
 
 models:
   qwen3.6-27b:
