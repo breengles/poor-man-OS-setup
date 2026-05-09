@@ -2,7 +2,7 @@
   "editorPaddingX": 1,
   "theme": "dark",
   "defaultProvider": "llamacpp-local",
-  "defaultModel": "qwen3.6-27b",
+  "defaultModel": "qwen3.6-35b-a3b",
   "skills": [
     "~/.claude/skills"
   ],

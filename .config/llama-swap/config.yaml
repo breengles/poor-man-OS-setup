@@ -1,0 +1,44 @@
+# llama-swap config: lazy-loads/swaps llama.cpp servers per OpenAI `model` field.
+# Listens on 127.0.0.1:8080 (started by `llama_serve` in shell/functions.sh).
+#
+# Memory budget on 36 GB M3 Pro:
+#   qwen3.6-27b   Q4_K_M ~16 GB + q4_0 KV @ 128K   ~8 GB
+#   qwen3.6-35b-a3b UD-Q4_K_M ~22 GB + q8_0 KV @ 64K ~8 GB
+# Both can be loaded individually; swap unloads the previous before loading the next.
+
+healthCheckTimeout: 180
+startPort: 18080
+
+macros:
+  llama-server-base: >
+    llama-server
+    --host 127.0.0.1
+    --port ${PORT}
+    --flash-attn on
+    --jinja
+    --n-gpu-layers 999
+    --metrics
+    --log-timestamps
+
+models:
+  qwen3.6-27b:
+    cmd: |
+      ${llama-server-base}
+      --model ${env.HOME}/models/qwen3.6-27b/Qwen3.6-27B-Q4_K_M.gguf
+      --alias qwen3.6-27b
+      --ctx-size 131072
+      --cache-type-k q4_0
+      --cache-type-v q4_0
+      --log-file ${env.HOME}/.local/state/llama.cpp/qwen3.6-27b.log
+    ttl: 600
+
+  qwen3.6-35b-a3b:
+    cmd: |
+      ${llama-server-base}
+      --model ${env.HOME}/models/qwen3.6-35b-a3b/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf
+      --alias qwen3.6-35b-a3b
+      --ctx-size 65536
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --log-file ${env.HOME}/.local/state/llama.cpp/qwen3.6-35b-a3b.log
+    ttl: 600

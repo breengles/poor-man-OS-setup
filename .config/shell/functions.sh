@@ -11,12 +11,14 @@ function claude {
 # Launch llama.cpp server with the local Qwen model in a detached tmux session.
 # Connects to pi via http://127.0.0.1:8080/v1 (see ~/.pi/agent/models.json).
 function llama_serve {
-  local session="llama-server"
-  local model="$HOME/models/qwen3.6-27b/Qwen3.6-27B-Q4_K_M.gguf"
-  local host="127.0.0.1"
-  local port="8080"
-  local ctx="32768"
+  local session="llama-swap"
+  local config="${LLAMA_SWAP_CONFIG:-$HOME/.config/llama-swap/config.yaml}"
+  local listen="${LLAMA_SWAP_LISTEN:-127.0.0.1:8080}"
 
+  if ! command -v llama-swap >/dev/null 2>&1; then
+    echo "llama-swap not found in PATH (brew install mostlygeek/llama-swap/llama-swap)" >&2
+    return 1
+  fi
   if ! command -v llama-server >/dev/null 2>&1; then
     echo "llama-server not found in PATH" >&2
     return 1
@@ -25,8 +27,8 @@ function llama_serve {
     echo "tmux not found in PATH" >&2
     return 1
   fi
-  if [ ! -f "$model" ]; then
-    echo "model file not found: $model" >&2
+  if [ ! -f "$config" ]; then
+    echo "llama-swap config not found: $config" >&2
     return 1
   fi
 
@@ -35,9 +37,12 @@ function llama_serve {
     return 0
   fi
 
+  mkdir -p "$HOME/.local/state/llama.cpp"
+
   tmux new-session -d -s "$session" \
-    "llama-server -m '$model' --host '$host' --port '$port' -c '$ctx' --alias qwen3.6-27b"
-  echo "Started llama-server in tmux session '$session' on $host:$port"
+    "llama-swap --config '$config' --listen '$listen'"
+  echo "Started llama-swap in tmux session '$session' on $listen"
+  echo "Models: $(awk '/^models:/{f=1;next} f && /^  [a-zA-Z]/{print "  - "$1}' "$config" | tr -d ':')"
   echo "Attach with: tmux attach -t $session"
 }
 
