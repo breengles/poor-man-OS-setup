@@ -1,0 +1,10 @@
+{
+  "editorPaddingX": 1,
+  "theme": "light",
+  "defaultProvider": "llamacpp-local",
+  "defaultModel": "qwen3.6-27b",
+  "skills": [
+    "~/.claude/skills"
+  ],
+  "lastChangelogVersion": "0.74.0"
+}

@@ -8,6 +8,39 @@ function claude {
   command claude "$@"
 }
 
+# Launch llama.cpp server with the local Qwen model in a detached tmux session.
+# Connects to pi via http://127.0.0.1:8080/v1 (see ~/.pi/agent/models.json).
+function llama_serve {
+  local session="llama-server"
+  local model="$HOME/models/qwen3.6-27b/Qwen3.6-27B-Q4_K_M.gguf"
+  local host="127.0.0.1"
+  local port="8080"
+  local ctx="32768"
+
+  if ! command -v llama-server >/dev/null 2>&1; then
+    echo "llama-server not found in PATH" >&2
+    return 1
+  fi
+  if ! command -v tmux >/dev/null 2>&1; then
+    echo "tmux not found in PATH" >&2
+    return 1
+  fi
+  if [ ! -f "$model" ]; then
+    echo "model file not found: $model" >&2
+    return 1
+  fi
+
+  if tmux has-session -t "$session" 2>/dev/null; then
+    echo "tmux session '$session' already exists. Attach with: tmux attach -t $session"
+    return 0
+  fi
+
+  tmux new-session -d -s "$session" \
+    "llama-server -m '$model' --host '$host' --port '$port' -c '$ctx' --alias qwen3.6-27b"
+  echo "Started llama-server in tmux session '$session' on $host:$port"
+  echo "Attach with: tmux attach -t $session"
+}
+
 function calcimages {
   find "$1" -type f \( -name \*.jpg -o -name \*.jpeg -o -name \*.png \) | wc -l
 }
