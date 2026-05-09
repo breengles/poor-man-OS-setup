@@ -31,7 +31,7 @@ function llama_serve {
   fi
 
   if tmux has-session -t "$session" 2>/dev/null; then
-    echo "tmux session '$session' already exists. Attach with: tmux attach -t $session"
+    tmux attach -t "$session"
     return 0
   fi
 
