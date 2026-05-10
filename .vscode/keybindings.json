@@ -612,5 +612,11 @@
     "command": "workbench.action.terminal.sendSequence",
     "args": { "text": "\u0000" },
     "when": "terminalFocus"
+  },
+  {
+    "key": "shift+enter",
+    "command": "workbench.action.terminal.sendSequence",
+    "args": { "text": "\u001b[13;2u" },
+    "when": "terminalFocus && !accessibilityModeEnabled"
   }
 ]

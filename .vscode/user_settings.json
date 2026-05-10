@@ -450,4 +450,5 @@
   "git-worktree-manager.worktreePick.showExternalTerminal": false,
   "prettier.bracketSpacing": false,
   "search.useIgnoreFiles": false,
+  "terminal.integrated.enableKittyKeyboardProtocol": false,
 }
