@@ -42,7 +42,7 @@ function llama_serve {
   tmux new-session -d -s "$session" \
     "llama-swap --config '$config' --listen '$listen'"
   echo "Started llama-swap in tmux session '$session' on $listen"
-  echo "Models: $(awk '/^models:/{f=1;next} f && /^  [a-zA-Z]/{print "  - "$1}' "$config" | tr -d ':')"
+  echo -e "Models:\n$(awk '/^models:/{f=1;next} f && /^  [a-zA-Z]/{print "  - "$1}' "$config" | tr -d ':')"
   echo "Attach with: tmux attach -t $session"
 }
 
