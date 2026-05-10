@@ -14,10 +14,6 @@ window-padding-balance = true
 # theme
 theme = dark-theme
 
-# ohmypi
-keybind = alt+backspace=text:\x1b\x7f
-keybind = shift+enter=text:\n
-
 # navigation
 keybind = alt+left=esc:b
 keybind = alt+right=esc:f
