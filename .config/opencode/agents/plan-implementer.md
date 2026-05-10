@@ -1,7 +1,7 @@
 ---
 description: Implements a single step from an in-session implementation plan. Dispatched by the plan-implement skill -- do not invoke directly.
 mode: subagent
-model: deepseek/deepseek-v4-flash
+model: deepseek/deepseek-v4-pro
 permission:
   read: allow
   edit: allow
