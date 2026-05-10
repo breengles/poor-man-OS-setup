@@ -1,5 +1,4 @@
 {
-  "editorPaddingX": 1,
   "theme": "dark",
   "defaultProvider": "llamacpp-local",
   "defaultModel": "qwen3.6-35b-a3b",
@@ -8,10 +7,13 @@
   ],
   "lastChangelogVersion": "0.74.0",
   "enableInstallTelemetry": false,
+  "hideThinkingBlock": true,
   "packages": [
     "npm:pi-subagents",
     "npm:pi-web-access",
     "npm:pi-lens",
-    "npm:pi-btw"
+    "npm:pi-btw",
+    "npm:@samfp/pi-memory",
+    "npm:pi-ask-user"
   ]
 }
