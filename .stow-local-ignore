@@ -26,3 +26,4 @@
 /\.pi/agent/sessions
 /\.pi/agent/cache
 /\.pi/agent/logs
+/\.config/opencode/node_modules
