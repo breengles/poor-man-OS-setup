@@ -13,7 +13,13 @@
         },
         {
           "id": "qwen3.6-35b-a3b",
-          "name": "Qwen3.6 35B-A3B (local, UD-Q4_K_M, 64K)",
+          "name": "Qwen3.6 35B-A3B (local, general, UD-Q4_K_M, 64K)",
+          "contextWindow": 65536,
+          "maxTokens": 8192
+        },
+        {
+          "id": "qwen3.6-35b-a3b-coder",
+          "name": "Qwen3.6 35B-A3B (local, coding, UD-Q4_K_M, 64K)",
           "contextWindow": 65536,
           "maxTokens": 8192
         }
