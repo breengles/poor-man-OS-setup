@@ -31,3 +31,10 @@ eval "$(zoxide init --cmd cd zsh)"
 if [ -d "$HOME/.opencode/bin" ]; then 
   export PATH=$HOME/.opencode/bin:$PATH
 fi
+
+# bun completions
+[ -s "/Users/artem/.bun/_bun" ] && source "/Users/artem/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
