@@ -32,7 +32,8 @@ Follow these steps:
 5. **Update the TODO file if needed** — if the analysis reveals:
    - New items not yet tracked (e.g. dependencies you discovered, prerequisite refactors), add them
    - Items that should be re-prioritized based on dependency analysis, update their priority
-   - Items that are actually resolved or no longer relevant, remove them
-   - Update the **Suggested resolution order** section to reflect your analysis
+   - Items that are actually resolved, flip their `Status` to `Done` and append a brief `_Done: ..._` completion note to the detailed section (do **not** delete them)
+   - Items that are no longer relevant, mark them `Done` with a `_Done: no longer applicable -- {reason}_` note rather than removing them
+   - Update the **Suggested resolution order** section (pending items only) to reflect your analysis
 
 6. **Present the plan to the user** — print the full analysis with the resolution order, effort estimates, and any changes made to the TODO file.

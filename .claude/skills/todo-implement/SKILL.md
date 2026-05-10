@@ -45,8 +45,9 @@ Parse the target file and identify open items from the Priority Summary table.
 
 For each item, check:
 
-- **Already done?** If an item is not in the Priority Summary table but still has a
-  detailed section, treat it as stale -- flag to user, do not implement.
+- **Already done?** Skip items whose Status column is `Done`.
+- **Blocked?** Skip items whose Status column is `Blocked` (the reason should be in
+  a `_Blocked:_` line in the item's detailed section). Report why.
 - **Dependencies**: read the "Suggested resolution order" section. If the user asked
   for a specific item whose prerequisites are still open, warn before proceeding.
 - **Priority**: note P0/P1/P2 -- used in subagent prompts and commit messages.
@@ -186,11 +187,11 @@ Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
 {summary}_` under the item's detailed section in `todos/<area>.md`. Report
   to user, move to next item.
 
-**Critical ordering:** never resolve/delete a TODO item or write its updates
-into `todos/<area>.md` until the reviewer's verdict is `APPROVED` for the batch
-that contains it. While the verdict is still `REJECTED` (across any retry
-round), leave the TODO file untouched -- the item is not done yet, and a
-premature edit would lose the source of truth driving the retry.
+**Critical ordering:** never mark a TODO item `Done` or write its completion
+note into `todos/<area>.md` until the reviewer's verdict is `APPROVED` for
+the batch that contains it. While the verdict is still `REJECTED` (across any
+retry round), leave the TODO file untouched -- the item is not done yet, and
+a premature edit would lose the source of truth driving the retry.
 
 **User disagreement escalation.** If the user interjects mid-cycle with strong
 pushback on the implementer's approach ("no, that's wrong", "this won't work",
@@ -203,40 +204,44 @@ the implementer alongside the original item context.
 Run this step **only after** step 3d returned `APPROVED` for the batch. For
 every approved item in the batch:
 
-- **Remove** the item row from the Priority Summary table.
-- **Remove** the item's detailed section entirely (per the TODO file
-  convention -- no "Resolved" section).
+- Flip its `Status` column in the Priority Summary table from `Pending` to `Done`.
+- Append a brief completion note to the item's detailed section, e.g.:
+
+  ```markdown
+  ### 5. Broken cache invalidation
+
+  ...
+
+  _Done: cache invalidation now triggered on write, tested with pytest_
+  ```
 
 Then once for the batch:
 
-- **Rebuild** the "Suggested resolution order" section so it lists **only the
-  still-pending items**. Completed items are removed from the file entirely
-  (per the convention above), so they must also disappear from the resolution
-  order -- there is no value in keeping done work there. The order is an
-  unnumbered (bullet) list, so just delete the bullets for completed items --
-  there is nothing to renumber.
+- **Prune the "Suggested resolution order" section** so it lists only the
+  still-pending items. Completed items are already tracked via their `Done`
+  status in the Priority Summary table; keeping them in the resolution order
+  just makes it harder to see what's left. The order is an unnumbered (bullet)
+  list, so just delete the bullets for completed items -- there is nothing
+  to renumber.
 - **Add follow-up items** if any implementer reported CONCERNS worth tracking
   (new bugs noticed, unrelated tech debt). Assign reasonable priority and
   include a one-line description + cited files.
-- **Delete the file entirely** if the batch closed the last open items.
 
-After editing the `.md`, run `npx prettier --write --print-width 120 todos/<area>.md` (unless the
-file was deleted).
+Never delete the TODO file, even if every item is now `Done` -- the
+historical record is useful context for future work in the area.
+
+After editing the `.md`, run `npx prettier --write --print-width 120 todos/<area>.md`.
 
 ### 3f. Commit (orchestrator does this, not subagents)
 
 Stage only the files the implementer(s) changed, plus the `todos/<area>.md`
-edits from step 3e (or its deletion). The TODO update and the implementation
-changes go in the **same commit** -- never commit code without the matching
-TODO update, and never commit a TODO update without the implementation behind
-it:
+edits from step 3e. The TODO update and the implementation changes go in the
+**same commit** -- never commit code without the matching TODO update, and
+never commit a TODO update without the implementation behind it:
 
 ```
 git add <file1> <file2> ... todos/<area>.md
 ```
-
-If step 3e deleted `todos/<area>.md`, stage the deletion with `git add` (or
-`git rm`) so it lands in the same commit.
 
 **Never** use `git add -A` or `git add .`.
 
@@ -250,9 +255,8 @@ in the commit message.
 ### 3g. Decide next step
 
 - **If item numbers were specified**: move to the next specified item (or batch).
-- **If `all` mode**: re-read `todos/<area>.md` (or list `todos/` if it was
-  deleted), find the next item (or independent-item batch per Step 2b) per
-  resolution order, continue.
+- **If `all` mode**: re-read `todos/<area>.md`, find the next pending item (or
+  independent-item batch per Step 2b) per resolution order, continue.
 - **If default mode**: ask the user whether to continue to the next item/batch
   or stop.
 
@@ -262,7 +266,7 @@ After finishing (all items done, user stops, or session limit reached), report:
 
 1. **Completed items**: list with commit hashes
 2. **Blocked items**: list with reasons
-3. **Remaining items**: count still pending (or "file deleted" if none remain)
+3. **Remaining items**: count still pending
 4. **Follow-ups filed**: any new TODO items you added from CONCERNS
 5. **Next step**: if items remain, suggest `/todo-implement {area}` in a fresh session
 

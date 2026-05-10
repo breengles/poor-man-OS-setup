@@ -21,14 +21,14 @@ For each TODO file in scope, follow these steps:
 3. **Check open issues/MRs** from the remote if available — look for newly opened or recently closed items that relate to this area.
 
 4. **Update the file:**
-   - **Remove resolved items** — if a TODO item has been addressed (code fixed, feature implemented, issue closed), delete it from both the Priority Summary table and the detailed sections entirely. Do NOT keep a "Resolved" section.
+   - **Mark resolved items as `Done`** — if a `Pending` TODO item has been addressed (code fixed, feature implemented, issue closed) since the last update, flip its `Status` column from `Pending` to `Done` and append a brief `_Done: ..._` completion note to its detailed section (e.g. `_Done: handled in commit abc1234, no tests added_`). Do **not** delete the row or the detailed section. Items that are no longer relevant should also be marked `Done` with a note like `_Done: no longer applicable -- {reason}_`.
    - **Add new items** — if you find new TODOs, bugs, or improvements not yet tracked, add them with appropriate priority and detail.
    - **Re-prioritize** — adjust priorities if the situation has changed (e.g. a P2 became a blocker, or a P1 is now less urgent). Update the row's `Priority` column and resort the Priority Summary table accordingly.
    - **Update descriptions** — refine descriptions if you now have better context or if the scope of an item has changed.
-   - **Rebuild the Suggested resolution order** — reorder based on current state (dependencies, quick wins, urgency).
+   - **Rebuild the Suggested resolution order** — reorder based on current state (dependencies, quick wins, urgency). List only still-pending items; drop any items that just flipped to `Done`.
 
-5. **Maintain format** — ensure the file still follows the TODO file format from AGENTS.md: Priority Summary table at top (three columns: `Task` link `[#N](anchor)`, `Priority`, `Status`; rows sorted by priority), detailed sections, suggested resolution order at bottom.
+5. **Maintain format** — ensure the file still follows the TODO file format from CLAUDE.md: Priority Summary table at top (three columns: `Task` link `[#N](anchor)`, `Priority`, `Status` — rows sorted by priority, all statuses tracked), suggested resolution order (pending items only), and detailed sections at the bottom (kept for `Done` and `Blocked` items too).
 
-6. **Delete empty files** — if all items in a file are resolved, delete the file entirely.
+6. **Never delete the TODO file** — even if every item is now `Done`, keep the file in place as a historical record.
 
-7. **Print a summary** of changes — list which items were added, removed, or re-prioritized in each file.
+7. **Print a summary** of changes — list which items were marked `Done`, added, or re-prioritized in each file.
