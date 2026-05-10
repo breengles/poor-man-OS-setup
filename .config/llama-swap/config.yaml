@@ -20,6 +20,7 @@ macros:
     --metrics
     --log-timestamps
     --no-warmup
+    --parallel 1
 
 models:
   qwen3.6-27b:
