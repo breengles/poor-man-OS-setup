@@ -15,5 +15,6 @@
     "npm:pi-btw",
     "npm:@samfp/pi-memory",
     "npm:pi-ask-user"
-  ]
+  ],
+  "defaultThinkingLevel": "high"
 }
