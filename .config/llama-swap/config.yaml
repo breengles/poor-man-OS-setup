@@ -33,6 +33,9 @@ models:
       --log-file ${env.HOME}/.local/state/llama.cpp/qwen3.6-27b.log
     ttl: 600
 
+  # General-tasks profile (thinking mode) per Qwen recommendation:
+  #   https://huggingface.co/Qwen/Qwen3.6-35B-A3B
+  # temp=1.0, top_p=0.95, top_k=20, min_p=0.0, presence_penalty=1.5, repeat_penalty=1.0.
   qwen3.6-35b-a3b:
     cmd: |
       ${llama-server-base}
@@ -41,5 +44,32 @@ models:
       --ctx-size 65536
       --cache-type-k q8_0
       --cache-type-v q8_0
+      --temp 1.0
+      --top-p 0.95
+      --top-k 20
+      --min-p 0.0
+      --presence-penalty 1.5
+      --repeat-penalty 1.0
       --log-file ${env.HOME}/.local/state/llama.cpp/qwen3.6-35b-a3b.log
+    ttl: 600
+
+  # Coding profile (thinking mode, e.g. WebDev) per the same Qwen recommendation:
+  #   temp=0.6, top_p=0.95, top_k=20, min_p=0.0, presence_penalty=0.0, repeat_penalty=1.0.
+  # Same GGUF as the general profile -- only sampler defaults differ. Selecting this id
+  # via pi `/model` triggers a llama-swap reload.
+  qwen3.6-35b-a3b-coder:
+    cmd: |
+      ${llama-server-base}
+      --model ${env.HOME}/models/qwen3.6-35b-a3b/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf
+      --alias qwen3.6-35b-a3b-coder
+      --ctx-size 65536
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --temp 0.6
+      --top-p 0.95
+      --top-k 20
+      --min-p 0.0
+      --presence-penalty 0.0
+      --repeat-penalty 1.0
+      --log-file ${env.HOME}/.local/state/llama.cpp/qwen3.6-35b-a3b-coder.log
     ttl: 600
