@@ -2,9 +2,7 @@
   "theme": "dark",
   "defaultProvider": "llamacpp-local",
   "defaultModel": "qwen3.6-35b-a3b",
-  "skills": [
-    "~/.claude/skills"
-  ],
+  "skills": ["~/.claude/skills"],
   "lastChangelogVersion": "0.74.0",
   "enableInstallTelemetry": false,
   "hideThinkingBlock": true,

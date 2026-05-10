@@ -370,6 +370,8 @@ dequantize
 dequantizing
 Derivables
 derivs
+Deserialise
+deserialises
 detectron
 dets
 devel
@@ -616,6 +618,7 @@ getsockname
 gfortran
 gfpgan
 gfpganv
+gguf
 ghailan
 Ghibli
 gitblame
