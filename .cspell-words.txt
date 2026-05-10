@@ -166,6 +166,7 @@ calcimages
 calcjson
 calldir
 Calluna
+calt
 capsys
 capthick
 Cascadia
@@ -403,6 +404,7 @@ DLAMCH
 DLAPACK
 dlegpoly
 dlib
+dlig
 DMATH
 DMKL
 dnnlib
@@ -799,6 +801,7 @@ keepdim
 keepdims
 keepingyouawake
 kevinrose
+keybind
 keybinds
 keymapping
 keymaps
@@ -874,6 +877,7 @@ libxext
 libxrender
 libz
 lierla
+liga
 lightx
 limegreen
 limg
@@ -893,6 +897,7 @@ lipkin
 listconfig
 listfiles
 liuhaotian
+llamacpp
 LLAVA
 lldb
 lllyasviel
@@ -1142,6 +1147,7 @@ obsts
 ofade
 Ofast
 ogrid
+ohmypi
 OLEVEL
 ollama
 olora
