@@ -1,7 +1,7 @@
 ---
 description: Reviews a single TODO item implementation against its description and acceptance criteria. Dispatched by the todo-implement skill -- do not invoke directly.
 mode: subagent
-model: llamacpp-local/qwen3.6-27b
+model: deepseek/deepseek-v4-pro
 permission:
   bash:
     "git diff": allow

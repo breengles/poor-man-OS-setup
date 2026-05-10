@@ -1,7 +1,7 @@
 ---
 description: Implements a single step from an in-session implementation plan. Dispatched by the plan-implement skill -- do not invoke directly.
 mode: subagent
-model: llamacpp-local/qwen3.6-35b-a3b-coder
+model: deepseek/deepseek-v4-flash
 permission:
   read: allow
   edit: allow
