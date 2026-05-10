@@ -554,10 +554,6 @@
     "when": "!terminalFocus"
   },
   {
-    "key": "shift+cmd+c",
-    "command": "workbench.scm.focus"
-  },
-  {
     "key": "cmd+m",
     "command": "-markdown.extension.editing.toggleMath",
     "when": "editorTextFocus && !editorReadonly && editorLangId =~ /^markdown$|^rmd$|^quarto$/"
@@ -610,13 +606,33 @@
   {
     "key": "ctrl+space",
     "command": "workbench.action.terminal.sendSequence",
-    "args": { "text": "\u0000" },
+    "args": {"text": "\u0000"},
     "when": "terminalFocus"
   },
   {
     "key": "shift+enter",
     "command": "workbench.action.terminal.sendSequence",
-    "args": { "text": "\u001b[13;2u" },
+    "args": {"text": "\u001b[13;2u"},
     "when": "terminalFocus && !accessibilityModeEnabled"
+  },
+  {
+    "key": "shift+cmd+c",
+    "command": "copyRelativeFilePath",
+    "when": "!editorFocus"
+  },
+  {
+    "key": "shift+alt+cmd+c",
+    "command": "-copyRelativeFilePath",
+    "when": "!editorFocus"
+  },
+  {
+    "key": "shift+cmd+c",
+    "command": "copyRelativeFilePath",
+    "when": "editorFocus"
+  },
+  {
+    "key": "cmd+r shift+alt+cmd+c",
+    "command": "-copyRelativeFilePath",
+    "when": "editorFocus"
   }
 ]
