@@ -11,23 +11,23 @@
       },
       "models": {
         "qwen3.6-27b": {
-          "name": "Qwen3.6 27B (local, Q4_K_M, 128K)",
+          "name": "Qwen3.6 27B (local, Q4_K_M, 200K)",
           "limit": {
-            "context": 131072,
+            "context": 200000,
             "output": 8192
           }
         },
         "qwen3.6-35b-a3b": {
-          "name": "Qwen3.6 35B-A3B (local, general, UD-Q4_K_M, 64K)",
+          "name": "Qwen3.6 35B-A3B (local, general, UD-Q4_K_M, 200K)",
           "limit": {
-            "context": 65536,
+            "context": 200000,
             "output": 8192
           }
         },
         "qwen3.6-35b-a3b-coder": {
-          "name": "Qwen3.6 35B-A3B (local, coding, UD-Q4_K_M, 64K)",
+          "name": "Qwen3.6 35B-A3B (local, coding, UD-Q4_K_M, 200K)",
           "limit": {
-            "context": 65536,
+            "context": 200000,
             "output": 8192
           }
         }
