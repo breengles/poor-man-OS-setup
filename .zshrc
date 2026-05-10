@@ -20,9 +20,10 @@ source "$HOME/.config/shell/functions.sh"
 source "$HOME/.config/shell/aliases.sh"
 source "$HOME/.config/shell/integrations.sh"  # starship, fzf, cargo, gcloud, completions, tokens
 
-# NVM (Node Version Manager)
+# NVM (Node Version Manager) — force-activate default so inherited NVM_BIN
+# from a parent process doesn't pin us to a stale node version.
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" && nvm use default --silent >/dev/null
 [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
 
 eval "$(zoxide init --cmd cd zsh)"
