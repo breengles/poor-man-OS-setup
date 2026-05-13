@@ -127,11 +127,7 @@ return {
     -- Register the colorscheme
     setup()
 
-    -- Re-apply when background changes (triggered by auto-dark-mode)
-    vim.api.nvim_create_autocmd('OptionSet', {
-      pattern = 'background',
-      callback = setup,
-    })
+
 
     -- Create a command to reload the colorscheme
     vim.api.nvim_create_user_command('MyColorscheme', setup, {})
