@@ -1,7 +1,7 @@
 ---
 description: Implements a single spec task. Dispatched by the spec-implement skill -- do not invoke directly.
 mode: subagent
-model: deepseek/deepseek-v4-pro
+model: deepseek/deepseek-v4-flash
 permission:
   read: allow
   edit: allow
