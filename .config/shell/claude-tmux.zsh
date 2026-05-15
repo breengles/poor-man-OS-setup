@@ -149,9 +149,9 @@ ccs() {
   fi
 }
 
-# fzf picker over every claude/* context: windows whose session name
-# starts with claude/ (outside-tmux launches) and windows whose window
-# name starts with claude/ (inside-tmux launches).
+# fzf picker over every claude context: windows whose session name is
+# `claude` or starts with `claude/` (outside-tmux launches), or whose
+# window name matches the same (inside-tmux launches).
 #
 # Preview: live snapshot of the target window's active pane via
 # `tmux capture-pane -ep`, refreshed every CCL_PREVIEW_REFRESH_S seconds.
@@ -184,7 +184,7 @@ ccl() {
   #   3. [cmd]          current pane command
   #   4. (Np)           pane count
   #   5. path           pane_current_path with $HOME collapsed to `~`
-  local list_cmd='tmux list-windows -a -F "#{session_name}:#{window_index}|#{session_name}|#{window_name}|#{pane_current_command}|#{window_panes}|#{pane_current_path}" 2>/dev/null | awk -F"|" '\''$2 ~ /^claude\// || $3 ~ /^claude\// { name=($3 ~ /^claude\//)?$3:$2; p=$6; sub(ENVIRON["HOME"],"~",p); printf "%-22s  %-40s  [%-10s]  (%sp)  %s\n", $1, name, $4, $5, p }'\'''
+  local list_cmd='tmux list-windows -a -F "#{session_name}:#{window_index}|#{session_name}|#{window_name}|#{pane_current_command}|#{window_panes}|#{pane_current_path}" 2>/dev/null | awk -F"|" '\''$2 ~ /^claude(\/|$)/ || $3 ~ /^claude(\/|$)/ { name=($3 ~ /^claude(\/|$)/)?$3:$2; p=$6; sub(ENVIRON["HOME"],"~",p); printf "%-22s  %-40s  [%-10s]  (%sp)  %s\n", $1, name, $4, $5, p }'\'''
 
   # Auto-refreshing preview: clear-screen + home-cursor ANSI between frames
   # so fzf (with --ansi) just overpaints the preview area.
