@@ -29,6 +29,18 @@ color_for() {
   fi
 }
 
+# Color for 7-day rate limit: green <75%, yellow 75-95%, red >=95%
+color_for_7d() {
+  local pct=$1
+  if [ "$pct" -ge 95 ]; then
+    echo "\033[31m"   # red
+  elif [ "$pct" -ge 75 ]; then
+    echo "\033[33m"   # yellow
+  else
+    echo "\033[32m"   # green
+  fi
+}
+
 # Build a progress bar of given width
 make_bar() {
   local pct=$1 width=$2
@@ -62,7 +74,7 @@ fi
 # 7-day rate limit bar (10 chars wide)
 if [ -n "$rate_7d" ] && [ "$rate_7d" != "None" ]; then
   r7_int=$(printf "%.0f" "$rate_7d")
-  r7_color=$(color_for "$r7_int")
+  r7_color=$(color_for_7d "$r7_int")
   r7_bar=$(make_bar "$r7_int" 10)
   output=$(printf "%s  7d %b%s%b %d%%" "$output" "$r7_color" "$r7_bar" "$reset" "$r7_int")
 fi
