@@ -13,6 +13,10 @@ Review the design spec for feature `$ARGUMENTS` before implementation begins.
 
 **Read all spec files** in the directory (`requirements.md`, `design.md`, `tasks.md`, `research.md` if present) before starting the review.
 
+Also read `specs/constitution.md` if it exists. Constitution principles are binding on every
+spec; the review must check that the design honors them or that any deviation is explicitly
+named and justified.
+
 ## Review checklist
 
 Work through each section below. For every item, assign a verdict:
@@ -35,6 +39,26 @@ Cite specific evidence (requirement IDs, section names, line references) for eve
 - Each requirement is testable -- you can describe a concrete test for it.
 - No implementation details leaked into requirements (requirements say WHAT, not HOW).
 - Numeric IDs are consistent (no gaps, no duplicates, no alphabetic mixing).
+
+### 2b. No unresolved clarification markers
+
+Grep `requirements.md` and `design.md` for the literal string `[NEEDS CLARIFICATION:`. Any
+remaining marker is an automatic **FAIL** -- the spec is not ready for implementation until
+every marker is either resolved with a concrete answer or the surrounding requirement /
+design element is explicitly descoped.
+
+Cite each marker with its file and line.
+
+### 2c. Constitution alignment (only if `specs/constitution.md` exists)
+
+- Every constitution principle is either honored by the design or explicitly named and
+  justified as a deviation in `design.md` (typically in a `## Constitution deviations`
+  subsection) or in `research.md`.
+- Unjustified deviations are **FAIL**.
+- Silent deviations (the design conflicts with a principle without naming it) are **FAIL**.
+- A justified deviation may still be **WARN** if the justification is weak.
+
+If `specs/constitution.md` does not exist, mark this section N/A (not FAIL).
 
 ### 3. Architecture readiness
 

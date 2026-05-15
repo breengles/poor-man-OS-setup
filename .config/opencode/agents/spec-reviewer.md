@@ -75,6 +75,17 @@ Evaluate each item. If ANY item fails, the verdict is REJECTED.
 - If design says "use X", the code uses X -- not a substitute.
 - Component structure and interfaces match the design.
 
+**7b. Constitution honored** (only if the orchestrator passed a `specs/constitution.md` path)
+
+- Read `specs/constitution.md` yourself.
+- For each numbered principle, decide whether the diff satisfies it, is silent on it
+  (acceptable), or actively violates it.
+- A violation is allowed **only** if `design.md` (or `research.md`) explicitly names the
+  principle and justifies the deviation. Re-read the relevant section to confirm.
+- Silent violations -- the diff conflicts with a principle without the spec acknowledging
+  it -- are REJECTED.
+- Unjustified violations (named in the spec but with no rationale) are REJECTED.
+
 **8. Test quality** (if tests exist)
 
 - Tests prove the required behavior, not just scaffolding.

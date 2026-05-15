@@ -23,6 +23,8 @@ the implementation and validation work for the assigned task.
 - The EARS requirements this task must satisfy (from `requirements.md`)
 - The relevant design sections (from `design.md`)
 - Notes from `research.md` (if relevant)
+- The project's `specs/constitution.md` text (if it exists) -- binding project
+  principles you must honor alongside the design
 - The project's test command (if known)
 
 ## Execution
@@ -40,6 +42,12 @@ Before writing any code, build a concrete task brief:
 
 If any of these cannot be determined from the provided context, report
 NEEDS_CONTEXT immediately with what's missing. Do not guess.
+
+If the orchestrator supplied a `specs/constitution.md` block, treat every numbered
+principle as binding -- on the same level as `design.md`. If a constitution principle
+appears to conflict with the design, do **not** silently pick one: report BLOCKED and
+describe the conflict so the spec author can either justify the deviation in the design
+or amend it. Do not paper over the conflict with a clever workaround.
 
 ### Step 2: Read existing code
 

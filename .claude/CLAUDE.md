@@ -83,10 +83,39 @@ mention a new branch - keep working in the current checkout as usual.
 
 Specs live in `specs/<feature-name>/` with up to four files:
 
-1. `requirements.md` -- What & why. EARS-format acceptance criteria (see below).
+1. `requirements.md` -- What & why. EARS-format acceptance criteria (see below). Carries the
+   spec's lifecycle frontmatter (see "Spec lifecycle").
 2. `design.md` -- How. Architecture, data flow, key decisions.
 3. `tasks.md` -- Ordered implementation checklist with checkboxes (see format below).
 4. `research.md` (optional) -- Rejected alternatives, trade-offs, constraints discovered during design. Valuable when "why not X" matters (e.g. ML architecture choices).
+
+Two repo-level files complement the per-feature directories:
+
+- `specs/constitution.md` (optional) -- non-negotiable project principles that every spec is
+  bound by (see "Project constitution").
+- `specs/INDEX.md` (maintained) -- one-line entry per spec with status, dates, and a short
+  summary, so the active vs. completed surface is visible at a glance (see "Spec lifecycle").
+
+### Project constitution (optional)
+
+A repo can declare immutable engineering principles in `specs/constitution.md`. When present,
+it acts as a compile-time gate for every spec: `spec-init` reads it before drafting,
+`spec-review` checks the design against it, and `spec-implement` passes it to every
+implementer and reviewer subagent as binding context alongside `design.md`.
+
+Good constitution entries are short, numbered, and testable. Examples:
+
+- `1. Every public function is type-annotated; CI runs pyright in strict mode.`
+- `2. No new top-level dependencies without a one-paragraph rationale in research.md.`
+- `3. Integration tests must hit a real database, not a mock.`
+- `4. CLIs accept --json and exit non-zero on failure.`
+
+The constitution is **not** a style guide. Style lives in CLAUDE.md and lint configs. The
+constitution captures architectural non-negotiables that should outlive any single spec.
+
+A spec is allowed to violate a constitution principle only if `design.md` (or `research.md`)
+explicitly names the principle and justifies the deviation. `spec-review` should call out
+unjustified deviations as FAIL.
 
 ### Requirements format (EARS)
 
@@ -101,6 +130,59 @@ and one of these forms:
 
 Use concrete component names (e.g. "the training loop", "the API gateway"), not generic
 "the system". Each requirement must be testable and describe a single behavior.
+
+**Ambiguity markers.** When drafting requirements (or design), mark unresolved questions
+inline with `[NEEDS CLARIFICATION: <what is unclear>]` rather than guessing or writing a
+plausible-but-fictional default. Examples:
+
+- `1.3 When a token expires, the API gateway shall return a [NEEDS CLARIFICATION: 401 or 419?] response.`
+- `2.1 The eval harness shall checkpoint every [NEEDS CLARIFICATION: every N steps or every N minutes?] iterations.`
+
+These markers make ambiguity legible to humans and to downstream agents. `/spec-review` treats
+any remaining `[NEEDS CLARIFICATION: ...]` marker in `requirements.md` or `design.md` as a
+FAIL: the spec is not ready for implementation until every marker is resolved (either by
+filling in the answer or by explicitly descoping the requirement).
+
+### Spec lifecycle
+
+Each `requirements.md` carries a small YAML frontmatter block describing the spec's state:
+
+```yaml
+---
+status: active # active | completed | superseded
+started: 2026-05-15 # ISO date the spec was bootstrapped
+finalized: # ISO date when /spec-finalize closed it; blank while active
+supersedes: # optional kebab-case name of a prior spec this replaces
+---
+```
+
+States:
+
+- `active` -- the spec is being designed or implemented. `tasks.md` may still mutate.
+- `completed` -- every task is `Done`, `/spec-finalize` has been run, the design + requirements
+  are frozen. New related work creates a **new spec** with `supersedes: <this-spec>`, rather
+  than re-opening this one.
+- `superseded` -- a later spec replaced this one. The directory stays in git as history.
+
+The repo-level `specs/INDEX.md` is a simple table listing every spec, its status, the start
+and finalize dates, and a one-line summary -- updated by `spec-init` on creation and by
+`spec-finalize` on closure:
+
+```markdown
+# Specs Index
+
+| Spec                            | Status     | Started    | Finalized  | Summary                       |
+| ------------------------------- | ---------- | ---------- | ---------- | ----------------------------- |
+| [token-refresh](token-refresh/) | active     | 2026-05-15 | --         | Rotate JWT tokens server-side |
+| [eval-harness](eval-harness/)   | completed  | 2026-03-01 | 2026-04-12 | Nightly model eval pipeline   |
+| [legacy-auth](legacy-auth/)     | superseded | 2025-09-10 | 2026-02-01 | Replaced by token-refresh     |
+```
+
+Once a spec is `completed`, its files are **immutable history**, not editable plans. Bug
+fixes against the implementation do not retroactively edit the spec; substantive scope
+changes create a new spec that supersedes it. Do **not** delete completed specs -- the
+EARS requirements and design rationale are valuable context for future agents reading
+the resulting code.
 
 ### Task format
 
@@ -169,12 +251,18 @@ _Boundary: RateLimiter_
 
 ### Workflow
 
-1. Create `requirements.md` first (EARS format). Review it before proceeding.
+1. Create `requirements.md` first (EARS format, lifecycle frontmatter, any
+   `[NEEDS CLARIFICATION: ...]` markers for unresolved questions). Review it before proceeding.
 2. Generate `design.md` from the requirements. Optionally capture rejected
    alternatives and trade-offs in `research.md`. Review before proceeding.
-3. Run `/spec-review` to validate design completeness against requirements.
+3. Run `/spec-review` to validate completeness, EARS compliance, constitution alignment,
+   and that no `[NEEDS CLARIFICATION: ...]` markers remain.
 4. Generate `tasks.md` from design + requirements (with traceability + parallel markers).
-5. Implement task by task. Check off each in `tasks.md` with a brief completion note.
+5. Implement task by task with `/spec-implement`. Check off each in `tasks.md` with a brief
+   completion note.
+6. When every task is `Done`, run `/spec-finalize` to freeze the spec: flip the frontmatter
+   to `status: completed`, append an Implementation Notes block to `design.md` capturing
+   what shipped vs. what was descoped, and update `specs/INDEX.md`.
 
 ## TODO Files
 

@@ -33,6 +33,13 @@ the user's CLAUDE.md wins.
    engineering artifacts (pipelines, CLIs, APIs, shared libraries), **not** experiment scripts,
    notebooks, or one-off analysis. If the feature smells like throwaway research code, say so
    and ask the user to confirm they still want a spec before proceeding.
+4. **Read the project constitution** (if it exists) at `specs/constitution.md`. Retain it in
+   context -- it is binding on this spec. If a principle is going to be hard to honor for
+   this feature, surface it in Step 1 so the user can either re-scope or explicitly opt to
+   document the deviation in `design.md` / `research.md`.
+   - If `specs/constitution.md` does **not** exist, do not block: most projects start
+     without one. Note its absence in your Step 7 wrap-up so the user can decide whether
+     this is the right moment to add one.
 
 ## Step 1: Scope-gathering interview
 
@@ -58,17 +65,32 @@ If the user's answers are thin, say what's missing before drafting.
 
 Create `specs/<feature-name>/requirements.md` with:
 
-1. **Title** — `# Requirements: <Human Readable Feature Name>`
-2. **Summary** — 2–5 sentences stating goal, users, and scope.
-3. **In scope / Out of scope** — two short bulleted lists.
-4. **Requirements** — numbered sections (`## 1. <theme>`), each with sub-numbered EARS
+1. **YAML frontmatter** at the very top, capturing the spec's lifecycle state:
+
+   ```yaml
+   ---
+   status: active
+   started: <today's ISO date, e.g. 2026-05-15>
+   finalized:
+   supersedes:
+   ---
+   ```
+
+   Leave `finalized:` blank (it is set by `/spec-finalize`). Fill `supersedes:` only if
+   this spec replaces a prior kebab-case spec name; otherwise leave it blank.
+
+2. **Title** — `# Requirements: <Human Readable Feature Name>`
+3. **Summary** — 2–5 sentences stating goal, users, and scope. Keep one sentence terse
+   enough to serve as the `specs/INDEX.md` row summary.
+4. **In scope / Out of scope** — two short bulleted lists.
+5. **Requirements** — numbered sections (`## 1. <theme>`), each with sub-numbered EARS
    acceptance criteria (`1.1`, `1.2`, ...). Use the five EARS patterns:
    - `When [event], the [component] shall [action].`
    - `While [condition], the [component] shall [action].`
    - `If [trigger], the [component] shall [action].`
    - `Where [feature is included], the [component] shall [action].`
    - `The [component] shall [action].` (ubiquitous)
-5. **Open questions** — bulleted list of things still unresolved that affect requirements.
+6. **Open questions** — bulleted list of things still unresolved that affect requirements.
 
 Rules:
 
@@ -76,12 +98,19 @@ Rules:
 - Each requirement must be testable and describe a single behavior.
 - Do not leak implementation details into requirements (WHAT, not HOW).
 - Keep IDs dense and consecutive (no gaps, no alphabetic mixing).
+- **Mark ambiguity inline**, do not invent plausible defaults. When the user's answers
+  in Step 1 did not pin down a detail (a status code, a threshold, a unit, a retention
+  policy, etc.), write `[NEEDS CLARIFICATION: <what is unclear>]` directly into the
+  requirement instead of guessing. Example:
+  `1.3 When a token expires, the API gateway shall return a [NEEDS CLARIFICATION: 401 or 419?] response.`
+  These markers are required to be resolved before `/spec-review` will pass.
 
 After writing, run `npx prettier --write --print-width 120 specs/<feature-name>/requirements.md`.
 
-Then **pause**: print the open questions, summarize the requirements, and ask the user to
-review before moving on. Do not start `design.md` until the user confirms requirements are
-good (or patches them first).
+Then **pause**: print the open questions, list every `[NEEDS CLARIFICATION: ...]` marker
+you wrote (with file + line), summarize the requirements, and ask the user to review
+before moving on. Do not start `design.md` until the user confirms requirements are good
+(or patches them first).
 
 ## Step 3: Draft `design.md`
 
@@ -111,6 +140,13 @@ Rules:
 - Respect project language/stack conventions from CLAUDE.md (Python: `uv`, ruff 120, Pyright
   basic, Pydantic/dataclasses split, etc.; shell scripts: 2-space indent, bash shebang; Lua:
   2-space indent, single quotes; etc.).
+- **Honor `specs/constitution.md` if it exists.** Every constitution principle is binding on
+  the design by default. If the design must deviate from a principle for this feature, name
+  the principle explicitly and justify the deviation in a `## Constitution deviations`
+  subsection at the bottom of `design.md` (or in `research.md` if the trade-off analysis is
+  longer). Unjustified deviations will fail `/spec-review`.
+- Use `[NEEDS CLARIFICATION: ...]` markers for any design detail that is still unresolved
+  rather than inventing a plausible default. These also block `/spec-review`.
 
 After writing, run `npx prettier --write --print-width 120 specs/<feature-name>/design.md`.
 
@@ -178,15 +214,45 @@ orphaned requirements.
 
 Format with `npx prettier --write --print-width 120 specs/<feature-name>/tasks.md`.
 
+## Step 6b: Register the spec in `specs/INDEX.md`
+
+Add (or update) a row for this spec in `specs/INDEX.md`. If the file does not exist, create
+it with this header:
+
+```markdown
+# Specs Index
+
+| Spec | Status | Started | Finalized | Summary |
+| ---- | ------ | ------- | --------- | ------- |
+```
+
+Append a row in the form:
+
+```markdown
+| [<feature>](<feature>/) | active | <started-date> | -- | <one-sentence summary> |
+```
+
+- Pull the summary from the Summary section of `requirements.md` -- shorten if necessary so
+  the table stays scannable.
+- If a row for `<feature>` already exists (e.g. user chose "augment in place" in Step 0),
+  update it rather than duplicating.
+- Keep rows roughly ordered by `Started` date (most recent first).
+
+Then format: `npx prettier --write --print-width 120 specs/INDEX.md`.
+
 ## Step 7: Wrap up
 
 Print a short summary:
 
-- Files created (with paths).
+- Files created or updated (with paths), including `specs/INDEX.md`.
 - Requirement count, task count, and how many tasks are marked `(P)`.
-- Any open questions still unresolved in `requirements.md`.
+- Any open questions or unresolved `[NEEDS CLARIFICATION: ...]` markers in `requirements.md`
+  or `design.md` (with file + line).
+- If `specs/constitution.md` was missing in Step 0, mention it once as a suggestion -- not
+  a blocker.
 - Next step: suggest `/spec-review <feature-name>` if it was skipped, otherwise
-  `/spec-implement <feature-name>` once the user is ready to start building.
+  `/spec-implement <feature-name>` once the user is ready to start building. Mention that
+  `/spec-finalize <feature-name>` is the closing ritual once every task is `Done`.
 
 Do **not** commit the spec files automatically. Tell the user the files are ready to stage
 and commit, and offer the `/commit` skill if they want help with the commit message.
@@ -196,14 +262,23 @@ and commit, and offer the `/commit` skill if they want help with the commit mess
 - **Stage-by-stage, not all at once.** Always pause after requirements, after design, and
   before tasks so the user can review. Do not generate the whole spec in one shot.
 - **No implementation.** This skill never edits source code, only files under
-  `specs/<feature-name>/`.
+  `specs/<feature-name>/` and the repo-level `specs/INDEX.md`.
 - **No overwriting.** If a spec file already exists, diff against the current content and
   ask before overwriting. Augment in place where possible.
 - **No empty files.** Skip `research.md` entirely when it has nothing meaningful to say.
 - **EARS discipline.** Every acceptance criterion in `requirements.md` must match one of the
   five EARS patterns.
+- **Mark ambiguity, don't invent.** Use `[NEEDS CLARIFICATION: ...]` markers when a detail
+  is unresolved. Never write a plausible-but-fictional default.
+- **Honor the constitution.** If `specs/constitution.md` exists, every principle is binding
+  unless `design.md` (or `research.md`) explicitly names the principle and justifies the
+  deviation.
 - **Traceability discipline.** Every requirement ID must map to at least one design section
   and at least one task.
+- **Lifecycle frontmatter.** `requirements.md` must open with the YAML frontmatter block
+  described in Step 2 (`status: active`, `started: <date>`, blank `finalized:` and
+  `supersedes:`). Other files in the spec directory carry no frontmatter.
+- **INDEX maintenance.** Every new spec creates or updates a row in `specs/INDEX.md`.
 - **ASCII only.** Follow the project rule against Unicode symbols in code and comments;
   plain prose in markdown is fine, but keep diagrams, math, and inline code ASCII.
 - **Prettier pass.** Run `npx prettier --write --print-width 120` on every markdown file you create or modify

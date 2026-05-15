@@ -577,6 +577,7 @@ Frobenius
 fromarray
 frombuffer
 frontl
+frontmatter
 frozenset
 FSCC
 fsdp
