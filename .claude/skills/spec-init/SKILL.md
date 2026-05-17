@@ -12,9 +12,10 @@ You are the **spec author**, guiding the user through Spec-Driven Development (S
 for a new feature. You create the artifacts in `specs/<feature-name>/` **stage by stage**,
 pausing for user review between stages. You do not write implementation code.
 
-Use the SDD conventions from the user's global and project CLAUDE.md (EARS requirements,
-task table format, traceability, parallel markers). If those files disagree with this skill,
-the user's CLAUDE.md wins.
+This skill is the authoritative source for SDD format and conventions (EARS requirements,
+lifecycle frontmatter, task table format, traceability, parallel markers). Project CLAUDE.md
+files provide a brief overview and language/stack style rules; this skill provides the
+detail.
 
 ## Parse arguments
 
@@ -30,10 +31,10 @@ the user's CLAUDE.md wins.
    - If it exists and is non-empty, stop and ask the user whether to (a) pick a different name,
      (b) augment the existing spec in place, or (c) abort. Do not overwrite files silently.
    - If it does not exist, create the directory.
-3. Decide whether this feature actually warrants a spec. Per CLAUDE.md, SDD is for long-lived
-   engineering artifacts (pipelines, CLIs, APIs, shared libraries), **not** experiment scripts,
-   notebooks, or one-off analysis. If the feature smells like throwaway research code, say so
-   and ask the user to confirm they still want a spec before proceeding.
+3. Decide whether this feature actually warrants a spec. SDD is for long-lived engineering
+   artifacts (pipelines, CLIs, APIs, shared libraries), **not** experiment scripts, notebooks,
+   or one-off analysis. If the feature smells like throwaway research code, say so and ask
+   the user to confirm they still want a spec before proceeding.
 4. **Read the project constitution** (if it exists) at `specs/constitution.md`. Retain it in
    context -- it is binding on this spec. If a principle is going to be hard to honor for
    this feature, surface it in Step 1 so the user can either re-scope or explicitly opt to
@@ -41,6 +42,28 @@ the user's CLAUDE.md wins.
    - If `specs/constitution.md` does **not** exist, do not block: most projects start
      without one. Note its absence in your Step 7 wrap-up so the user can decide whether
      this is the right moment to add one.
+
+### About the constitution
+
+A repo can declare immutable engineering principles in `specs/constitution.md`. When
+present, it acts as a compile-time gate for every spec: this skill reads it before
+drafting, `/spec-review` checks the design against it, and `/spec-implement` passes it
+to every implementer and reviewer subagent as binding context alongside `design.md`.
+
+Good constitution entries are short, numbered, and testable. Examples:
+
+- `1. Every public function is type-annotated; CI runs pyright in strict mode.`
+- `2. No new top-level dependencies without a one-paragraph rationale in research.md.`
+- `3. Integration tests must hit a real database, not a mock.`
+- `4. CLIs accept --json and exit non-zero on failure.`
+
+The constitution is **not** a style guide. Style lives in CLAUDE.md and lint configs.
+The constitution captures architectural non-negotiables that should outlive any single
+spec.
+
+A spec is allowed to violate a constitution principle only if `design.md` (or
+`research.md`) explicitly names the principle and justifies the deviation. `/spec-review`
+will call out unjustified deviations as FAIL.
 
 ## Step 1: Scope-gathering interview
 
@@ -182,8 +205,8 @@ If the review returns **NEEDS REVISION**, fix the cited issues in `requirements.
 
 ## Step 6: Draft `tasks.md`
 
-Generate `specs/<feature-name>/tasks.md` from the approved requirements + design. Follow the
-exact structure from CLAUDE.md:
+Generate `specs/<feature-name>/tasks.md` from the approved requirements + design. The file
+has three sections in this exact structure:
 
 1. **Task Summary table** — exactly two columns: `Task` and `Status`.
    - `Task` is a markdown link with link text `[#N](anchor)`, e.g.
