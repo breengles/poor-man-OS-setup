@@ -1527,6 +1527,7 @@ sideswept
 silu
 sinc
 sinfo
+singlenode
 sintel
 skia
 skimage
@@ -1704,6 +1705,7 @@ tsdir
 tstart
 ttft
 TTGF
+tunables
 turbosd
 twintail
 TWOINT
