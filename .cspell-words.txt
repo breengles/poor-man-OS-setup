@@ -29,6 +29,7 @@ aicv
 aidea
 aifilter
 aifilters
+aimakeup
 aimrecords
 aimrocks
 aiohttp
