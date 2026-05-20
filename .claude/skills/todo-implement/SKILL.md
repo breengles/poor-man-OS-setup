@@ -30,7 +30,13 @@ Parse `$ARGUMENTS`:
 
 - If a path is given (e.g. `todos/solver.md`), use it.
 - If an area name is given (e.g. `solver`), use `todos/<name>.md`.
-- If no argument, list files under `todos/` and ask which to target.
+- **If no argument, auto-resolve to the most recently modified file under
+  `todos/`** (e.g. `ls -1t todos/*.md | head -n 1`). If `todos/` has no files,
+  stop and report.
+
+When you auto-resolve, announce the resolved area on a single line (e.g.
+`Auto-resolved to most recent TODO file: todos/{area}.md`) so the user can
+interject if they meant a different one.
 
 If the file does not exist, stop and report.
 

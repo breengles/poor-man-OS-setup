@@ -40,9 +40,19 @@ Parse `$ARGUMENTS`:
   - The output of a recent **plan mode** session (`ExitPlanMode` payload)
   - A multi-step proposal you or the user wrote out earlier in the conversation
   - A markdown block the user pasted
+- **If neither a path nor a conversation plan is available, auto-resolve to the
+  most recently modified plan-like file on disk.** Try, in order:
+  1. `./plan.md` in the current working directory
+  2. The most recently modified file matching `plans/*.md` (if `plans/` exists)
+  3. The most recently modified file matching `*-plan.md` or `plan-*.md` in cwd
+     or `docs/`
 
-If no plan can be located, stop and ask the user to either pass a path or paste
-the plan they want implemented.
+  When you auto-resolve, announce the resolved path on a single line (e.g.
+  `Auto-resolved to most recent plan file: {path}`) so the user can interject
+  if they meant a different one.
+
+If no plan can be located by any of the above, stop and ask the user to either
+pass a path or paste the plan they want implemented.
 
 Run `git status --porcelain` and note any pre-existing uncommitted changes
 (those are not your work, do not bundle them into commits).

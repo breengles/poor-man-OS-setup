@@ -1,7 +1,7 @@
 ---
 name: spec-implement
 description: Implement tasks from an approved spec, one at a time, with independent implementer and reviewer subagents per task. The main session acts as orchestrator only.
-argument-hint: "<feature-name> [task-numbers | all]"
+argument-hint: "[feature-name] [task-numbers | all]"
 ---
 
 # spec-implement
@@ -23,7 +23,23 @@ contexts and don't accumulate here.
 - **Task numbers provided** (e.g. `my-feature 2.1 2.3`): implement those tasks in order.
 - **Keyword `all`** (e.g. `my-feature all`): implement all pending tasks sequentially.
 
-## Step 1: Gather context
+## Step 1: Resolve the target spec
+
+Parse `$ARGUMENTS` to determine `{feature}`:
+
+- If a feature name is given (e.g. `my-feature`), use `specs/{feature}/`.
+- **If no feature name is given, auto-resolve to the most recently modified spec
+  directory under `specs/`** (e.g. `ls -1t specs/ | head -n 20` then pick the
+  newest entry that is a directory containing a `requirements.md`). If `specs/`
+  contains no spec directories, stop and report.
+
+When you auto-resolve, announce the resolved feature name on a single line
+(e.g. `Auto-resolved to most recent spec: {feature}`) so the user can interject
+if they meant a different one.
+
+If the user later disambiguates by name, switch to that spec.
+
+## Step 1b: Gather context
 
 Read all spec files from `specs/{feature}/`. These reads are independent -- do them
 in parallel:
