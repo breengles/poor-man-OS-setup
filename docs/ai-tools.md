@@ -37,14 +37,14 @@ Cross-project preferences that apply in every Claude Code session:
 
 Custom skills are stow-deployed from `.claude/skills/` to `~/.claude/skills/`:
 
-| Command         | Description                                                 |
-| --------------- | ----------------------------------------------------------- |
-| `/commit`       | Analyze changes, create well-formatted Conventional Commits |
-| `/todo-init`    | Scan project and create initial TODO files by area          |
-| `/todo-revise`  | Update existing TODO files based on recent changes          |
-| `/todo-analyze` | Deep-analyze a TODO file, map dependencies, produce plan    |
-| `/docs-init`    | Generate comprehensive technical documentation              |
-| `/docs-revise`  | Update existing documentation to match codebase changes     |
+| Command           | Description                                                            |
+| ----------------- | ---------------------------------------------------------------------- |
+| `/commit`         | Analyze changes, create well-formatted Conventional Commits            |
+| `/todo-init`      | Scan project and create initial TODO files by area                     |
+| `/todo-review`    | Read-only validation of a TODO file before `/todo-implement`           |
+| `/todo-implement` | Implement TODO items via implementer/reviewer subagents (orchestrator) |
+| `/docs-init`      | Generate comprehensive technical documentation                         |
+| `/docs-revise`    | Update existing documentation to match codebase changes                |
 
 ### `/commit` Details
 
@@ -58,13 +58,18 @@ The commit command enforces:
 - No issue IDs in messages
 - Shows `git log --oneline --name-only` after committing
 
-### `/todo-init` and `/todo-revise`
+### `/todo-init`, `/todo-review`, and `/todo-implement`
 
 TODO files follow a structured format in `todos/<area>.md`:
 
 1. Priority Summary table (P0/P1/P2) with links to detail sections
-2. Detailed sections with descriptions
-3. Suggested resolution order
+2. Suggested resolution order (pending items, bullet list)
+3. Detailed sections with descriptions and acceptance criteria
+
+`/todo-init` seeds the file from a codebase scan. `/todo-review` validates format,
+freshness, and item quality without editing. `/todo-implement` runs items one at a
+time through implementer/reviewer subagents; the main session orchestrates and
+commits.
 
 ### `/docs-init` and `/docs-revise`
 
@@ -72,13 +77,13 @@ Documentation files live in `docs/<component>.md` with a `docs/README.md` index.
 
 ## Key Conventions
 
-| Convention             | Detail                                                |
-| ---------------------- | ----------------------------------------------------- |
-| Python package manager | `uv` exclusively                                      |
+| Convention             | Detail                                                     |
+| ---------------------- | ---------------------------------------------------------- |
+| Python package manager | `uv` exclusively                                           |
 | Markdown formatting    | Run `npx prettier --write --print-width 120` after editing |
-| Git commit messages    | Conventional Commits, no `#N` references              |
-| GitLab interaction     | Prefer MCP tools, fall back to `glab` CLI             |
-| TODO file format       | Priority table + detailed sections + resolution order |
+| Git commit messages    | Conventional Commits, no `#N` references                   |
+| GitLab interaction     | Prefer MCP tools, fall back to `glab` CLI                  |
+| TODO file format       | Priority table + detailed sections + resolution order      |
 
 ## Stow Deployment
 
@@ -88,8 +93,8 @@ Claude Code user-level config is stow-managed from this repo:
 .claude/CLAUDE.md              → ~/.claude/CLAUDE.md
 .claude/skills/commit/         → ~/.claude/skills/commit/
 .claude/skills/todo-init/      → ~/.claude/skills/todo-init/
-.claude/skills/todo-revise/    → ~/.claude/skills/todo-revise/
-.claude/skills/todo-analyze/   → ~/.claude/skills/todo-analyze/
+.claude/skills/todo-review/    → ~/.claude/skills/todo-review/
+.claude/skills/todo-implement/ → ~/.claude/skills/todo-implement/
 .claude/skills/docs-init/      → ~/.claude/skills/docs-init/
 .claude/skills/docs-revise/    → ~/.claude/skills/docs-revise/
 ```

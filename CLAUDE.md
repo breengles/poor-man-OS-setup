@@ -77,19 +77,12 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
 ### Claude Code
 
 - **Claude Code user prefs:** `.claude/CLAUDE.md` (stowed to `~/.claude/CLAUDE.md`)
-- **Claude Code skills:** 11 custom slash commands at `.claude/skills/` — commit, todo-init,
-  todo-revise, todo-analyze, todo-implement, docs-init, docs-revise, docs-analyze,
-  mr-description, spec-review, spec-implement
+- **Claude Code skills:** 15 custom slash commands at `.claude/skills/` — commit, todo-init,
+  todo-review, todo-implement, docs-init, docs-revise, docs-analyze, mr-description,
+  mr-review, plan-implement, resolve-conflicts, spec-init, spec-review, spec-implement,
+  spec-finalize
 - **Claude Code agents:** `.claude/agents/` — branch-code-reviewer, spec-implementer
   (Sonnet, Write/Edit), spec-reviewer (Opus, read-only + Bash), todo-implementer
   (Sonnet, Write/Edit), todo-reviewer (Opus, read-only + Bash)
 - **Claude Code settings:** `~/.claude/settings.json` (managed by Claude Code itself, not stow —
   contains MCP servers, hooks, plugins, permissions)
-
-## Key Reminders
-
-1. This repo has **no tests to run** and **no build to execute**
-2. Always use `uv` for any Python work, never pip/conda/poetry
-3. Ruff line length is **120**
-4. Shell scripts use **2-space indentation**
-5. Guard shell aliases with `[ -z "$AGENT" ] && [ -z "$CLAUDECODE" ]` when they might confuse AI agents
