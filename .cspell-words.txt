@@ -641,6 +641,7 @@ Grigorian
 groundingdino
 gruntfuggly
 gsub
+gunicorn
 hairclip
 hairvolume
 halfbody
@@ -845,6 +846,7 @@ lapi
 latexindent
 latexmk
 latlayer
+launchable
 lazydev
 lazyvim
 lbet
