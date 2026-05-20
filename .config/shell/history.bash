@@ -1,4 +1,4 @@
-HISTSIZE=20000
+HISTSIZE=100000
 HISTFILESIZE=$HISTSIZE
 HISTFILE="$HOME/.bash_history"
 HISTCONTROL=ignorespace:ignoredups:erasedups
