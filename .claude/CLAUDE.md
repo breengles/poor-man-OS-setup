@@ -20,17 +20,9 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
 
 ### Style
 
-- Type-annotate all function signatures (params + return); skip local variables.
-  Use modern syntax: `str | None`, `list[int]` (not `Optional`, `List`).
-  **Exception - pyrallis dataclasses:** pyrallis does not support expression-style unions
-  (`X | Y`) in dataclass field annotations. Use `Optional[X]` and `Union[X, Y]` from `typing`
-  instead when defining pyrallis CLI config dataclasses.
 - No `from __future__ import annotations`
-- Data modeling: Pydantic for services/APIs, dataclasses for internal, dataclasses + pyrallis for CLI apps
 - Logging: stdlib `logging` (or `loguru` if project already uses it)
-- Paths: always `pathlib.Path`, never `os.path`
 - Strings: f-strings for all interpolation
-- Docstrings: Google style (`Args:`, `Returns:`, `Raises:`); skip for trivial code
 
 ### Type checking
 
@@ -81,7 +73,7 @@ TODO files live in `todos/` organized by area: `todos/<area>.md` (e.g. `todos/so
 
 The TODO workflow mirrors the SDD task workflow above: items have a `Status` column
 (`Pending` / `Done` / `Blocked`) and resolved items stay in the file with their status
-flipped to `Done` and a brief completion note appended -- they are not deleted.
+flipped to `Done` and a brief completion note appended.
 
 When working with TODO files, follow this structure:
 
@@ -100,15 +92,10 @@ When working with TODO files, follow this structure:
    (bullet) list of item numbers in recommended tackling order with brief rationale
    per item (e.g. `- #5 -- prerequisite for #7`). List **only still-pending items** --
    completed items are already tracked via their `Done` status in the Priority Summary
-   table, so keeping them here just adds noise. Bullets (not numbers) keep the list
-   stable as items are completed.
+   table, so keeping them here just adds noise.
 3. **Detailed sections** at the bottom - one heading per item with full description,
-   context, and acceptance criteria. Sections for `Done` and `Blocked` items stay in
-   place; do not delete them.
+   context, and acceptance criteria
 4. **Completion notes** - when an item is marked `Done`, append a brief note to its
    detailed section, e.g. `_Done: invalidation now runs on write; covered by tests_`.
-   Helps when resuming across sessions.
 5. **Blocked notes** - when an item is marked `Blocked`, append a `_Blocked: {reason}_`
    line to its detailed section so the cause is visible alongside the description.
-6. **Never delete the TODO file** even when every item is `Done` -- the historical
-   record is useful context for future work in that area.
