@@ -113,7 +113,10 @@
     "gitlab-cli": {
       "type": "stdio",
       "command": "glab",
-      "args": ["mcp", "serve"],
+      "args": [
+        "mcp",
+        "serve"
+      ],
       "env": {}
     }
   }
