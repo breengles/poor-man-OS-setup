@@ -109,20 +109,23 @@ If `specs/INDEX.md` does not exist, create it with this header:
 ```markdown
 # Specs Index
 
-| Spec | Status | Started | Finalized | Summary |
-| ---- | ------ | ------- | --------- | ------- |
+_One section per spec, ordered with most recently started at the top._
 ```
 
-Then ensure exactly one row exists for this feature, in the form:
+Then ensure exactly one section exists for this feature, in the form:
 
 ```markdown
-| [<feature>](<feature>/) | completed | <started-date> | <today's-date> | <summary> |
+## [<feature>](<feature>/)
+
+- **Status:** completed
+- **Started:** <started-date> -- **Finalized:** <today's-date>
+- <summary>
 ```
 
 - The summary is a single short sentence -- pull it from the Summary section of
   `requirements.md` if present, or ask the user for one if the existing summary is too long.
-- If a row for `<feature>` already exists, update it in place (don't add a duplicate).
-- Keep rows roughly ordered by `Started` date (most recent first).
+- If a section for `<feature>` already exists, update it in place (don't add a duplicate).
+- Keep sections roughly ordered by `Started` date (most recent first).
 
 ## Step 6: Format and report
 
@@ -132,7 +135,7 @@ Then ensure exactly one row exists for this feature, in the form:
 2. Print a wrap-up summary:
    - Files modified.
    - Tasks shipped, descoped, blocked.
-   - The new INDEX row.
+   - The new INDEX section.
    - **Next step:** suggest `git add` + `/commit` with a message like
      `chore(<feature>): finalize spec` -- but do NOT commit automatically. Tell the user
      the changes are staged-ready and offer to invoke `/commit`.
@@ -147,7 +150,7 @@ Then ensure exactly one row exists for this feature, in the form:
 - **No silent edits to requirements.** The body of `requirements.md` and `tasks.md` is
   frozen as-shipped. The only allowed mutation is the frontmatter flip in step 4.
 - **No issue IDs.** Never include `#N` references in any text you write (commit messages,
-  INDEX rows, Implementation Notes). They would auto-close GitLab issues.
+  INDEX sections, Implementation Notes). They would auto-close GitLab issues.
 - **No destructive git.** Never `git reset --hard`, `git checkout .`, or similar. This
   skill only edits markdown.
 - **Prettier pass.** Every markdown file you create or modify must be formatted with

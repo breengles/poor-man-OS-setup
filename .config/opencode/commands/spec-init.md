@@ -81,7 +81,7 @@ Create `specs/<feature-name>/requirements.md` with:
 
 2. **Title** — `# Requirements: <Human Readable Feature Name>`
 3. **Summary** — 2–5 sentences stating goal, users, and scope. Keep one sentence terse
-   enough to serve as the `specs/INDEX.md` row summary.
+   enough to serve as the `specs/INDEX.md` entry summary.
 4. **In scope / Out of scope** — two short bulleted lists.
 5. **Requirements** — numbered sections (`## 1. <theme>`), each with sub-numbered EARS
    acceptance criteria (`1.1`, `1.2`, ...). Use the five EARS patterns:
@@ -216,27 +216,30 @@ Format with `npx prettier --write --print-width 120 specs/<feature-name>/tasks.m
 
 ## Step 6b: Register the spec in `specs/INDEX.md`
 
-Add (or update) a row for this spec in `specs/INDEX.md`. If the file does not exist, create
-it with this header:
+Add (or update) a section for this spec in `specs/INDEX.md`. If the file does not exist,
+create it with this header:
 
 ```markdown
 # Specs Index
 
-| Spec | Status | Started | Finalized | Summary |
-| ---- | ------ | ------- | --------- | ------- |
+_One section per spec, ordered with most recently started at the top._
 ```
 
-Append a row in the form:
+Append a section in the form:
 
 ```markdown
-| [<feature>](<feature>/) | active | <started-date> | -- | <one-sentence summary> |
+## [<feature>](<feature>/)
+
+- **Status:** active
+- **Started:** <started-date> -- **Finalized:** --
+- <one-sentence summary>
 ```
 
-- Pull the summary from the Summary section of `requirements.md` -- shorten if necessary so
-  the table stays scannable.
-- If a row for `<feature>` already exists (e.g. user chose "augment in place" in Step 0),
-  update it rather than duplicating.
-- Keep rows roughly ordered by `Started` date (most recent first).
+- Pull the summary from the Summary section of `requirements.md` -- shorten to one sentence
+  if necessary.
+- If a section for `<feature>` already exists (e.g. user chose "augment in place" in Step 0),
+  update it in place rather than duplicating.
+- Keep sections roughly ordered by `Started` date (most recent first).
 
 Then format: `npx prettier --write --print-width 120 specs/INDEX.md`.
 
@@ -278,7 +281,7 @@ and commit, and offer the `/commit` skill if they want help with the commit mess
 - **Lifecycle frontmatter.** `requirements.md` must open with the YAML frontmatter block
   described in Step 2 (`status: active`, `started: <date>`, blank `finalized:` and
   `supersedes:`). Other files in the spec directory carry no frontmatter.
-- **INDEX maintenance.** Every new spec creates or updates a row in `specs/INDEX.md`.
+- **INDEX maintenance.** Every new spec creates or updates a section in `specs/INDEX.md`.
 - **ASCII only.** Follow the project rule against Unicode symbols in code and comments;
   plain prose in markdown is fine, but keep diagrams, math, and inline code ASCII.
 - **Prettier pass.** Run `npx prettier --write --print-width 120` on every markdown file you create or modify
