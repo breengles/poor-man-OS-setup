@@ -19,6 +19,13 @@ end)
 vim.o.breakindent = true
 vim.o.undofile = true
 
+-- Indentation defaults: 2 spaces. guess-indent.nvim overrides per-buffer
+-- when it detects a different style in existing files.
+vim.o.expandtab = true
+vim.o.shiftwidth = 2
+vim.o.tabstop = 2
+vim.o.softtabstop = 2
+
 -- Case-insensitive searching UNLESS \C or capital letters in search term
 vim.o.ignorecase = true
 vim.o.smartcase = true
