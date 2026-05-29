@@ -46,6 +46,32 @@ function llama_serve {
   echo "Attach with: tmux attach -t $session"
 }
 
+# Run the Hermes Agent TUI inside the docker container (see ~/hermes-docker).
+# First arg, if a directory, becomes the session CWD; otherwise PWD is used.
+# That directory must be bind-mounted into the container — see the `volumes:`
+# block in docker-compose.yaml.
+function hermes {
+  local container="${HERMES_CONTAINER:-hermes}"
+  local dir
+
+  if [ $# -gt 0 ] && [ -d "$1" ]; then
+    dir="$(cd "$1" && pwd)"
+    shift
+  else
+    dir="$PWD"
+  fi
+
+  if ! docker ps --format '{{.Names}}' | grep -qx "$container"; then
+    echo "container '$container' is not running — try: (cd ~/hermes-docker && docker compose up -d)" >&2
+    return 1
+  fi
+
+  docker exec -it \
+    -e TERM="$TERM" -e COLORTERM="$COLORTERM" \
+    -w "$dir" \
+    "$container" /opt/hermes/.venv/bin/hermes "$@"
+}
+
 function calcimages {
   find "$1" -type f \( -name \*.jpg -o -name \*.jpeg -o -name \*.png \) | wc -l
 }

@@ -1368,6 +1368,7 @@ randperm
 ranknet
 raunet
 raycast
+rayproject
 rbet
 rcnn
 rcopy
@@ -1608,6 +1609,7 @@ subdiagonal
 subdirs
 submatch
 submitit
+subpaths
 subprompts
 subseed
 SUBSEP
