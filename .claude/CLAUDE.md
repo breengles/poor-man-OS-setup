@@ -50,8 +50,9 @@ Specs live in `specs/<feature-name>/` and are managed by dedicated slash command
 
 - `/spec-init <feature>` -- bootstrap `requirements.md` (EARS), `design.md`, optional
   `research.md`, and `tasks.md`, stage by stage
-- `/spec-review <feature>` -- validate completeness, EARS compliance, constitution
-  alignment, and readiness before implementation
+- `/spec-review <feature>` -- adversarially test the spec's soundness (is the problem
+  real, the reasoning valid, the proposed solution correct) plus constitution alignment
+  and readiness; format is a one-line afterthought
 - `/spec-implement <feature>` -- implement task-by-task via implementer/reviewer
   subagents (orchestrator pattern)
 - `/spec-finalize <feature>` -- freeze a fully-implemented spec (flip lifecycle to
