@@ -293,6 +293,7 @@ croproot
 crossattn
 crossattndim
 crossentropy
+crosstab
 crowsonkb's
 crtlnet
 cscale
@@ -456,6 +457,7 @@ dsyr
 dsyrk
 dtype
 dualbln
+duckdb
 duochrome
 dups
 DVAR
@@ -696,6 +698,7 @@ hrycrcb
 hscore
 hspace
 hstack
+httpfs
 httpx
 huggingface
 humanfriendly
@@ -1306,6 +1309,7 @@ pthread
 ptime
 pueue
 pupilcenter
+pushdown
 putalpha
 putalphas
 pyarrow
