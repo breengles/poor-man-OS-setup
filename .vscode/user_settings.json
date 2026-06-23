@@ -124,11 +124,15 @@
   "terminal.integrated.altClickMovesCursor": false,
   "terminal.integrated.macOptionIsMeta": true,
   "terminal.integrated.macOptionClickForcesSelection": true,
+  "terminal.integrated.copyOnSelection": false,
   "terminal.integrated.fontFamily": "MonaspiceNe Nerd Font, 'CaskaydiaCove Nerd Font'",
   "terminal.integrated.inheritEnv": true,
   "terminal.integrated.profiles.linux": {
     "tmux": {
-      "path": "zsh",
+      "path": [
+        "zsh",
+        "bash"
+      ],
       "args": [
         "-lc",
         "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit",
@@ -138,7 +142,10 @@
   },
   "terminal.integrated.profiles.osx": {
     "tmux": {
-      "path": "zsh",
+      "path": [
+        "zsh",
+        "bash"
+      ],
       "args": [
         "-lc",
         "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit",
@@ -184,7 +191,7 @@
   // python
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.codeActionsOnSave": {
       "source.organizeImports": "explicit",
       "source.organizeImports.ruff": "explicit",
@@ -451,4 +458,6 @@
   "prettier.bracketSpacing": false,
   "search.useIgnoreFiles": false,
   "terminal.integrated.enableKittyKeyboardProtocol": false,
+  "workbench.agentsWindowButton.enabled": false,
+  "anyscalecompute.ray-distributed-debugger.initialized": true,
 }
