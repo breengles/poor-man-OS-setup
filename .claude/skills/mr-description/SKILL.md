@@ -1,15 +1,25 @@
 ---
 name: mr-description
-description: Prepare a title and description for a GitLab Merge Request from the current branch to main/master
+description: Prepare a title and description for a GitLab Merge Request from the current branch to main/master, or apply them directly to an existing MR
+argument-hint: "[<MR URL or IID> | leave empty for current branch]"
 ---
 
-Analyze all changes in the current branch compared to the main/master branch and produce a ready-to-use GitLab Merge Request title and description.
+Analyze the changes and produce a ready-to-use GitLab Merge Request title and description following [semantic-release](https://semantic-release.gitbook.io/) / [Conventional Commits](https://www.conventionalcommits.org/) conventions.
+
+## Modes
+
+The behavior depends on the optional argument `$ARGUMENTS`:
+
+- **Generate mode** (`$ARGUMENTS` empty): analyze the **current branch** vs the base branch (`main`, fallback `master`) and output the title and description as a single copy-pasteable message. Do **not** modify any MR.
+- **Update mode** (`$ARGUMENTS` is a GitLab MR URL or IID, e.g. `123`, `!123`, or `https://gitlab.example.com/group/proj/-/merge_requests/123`): resolve the referenced MR, analyze its diff, generate the title and description, and **apply them directly to that MR** via `glab mr update`.
+
+In update mode, extract the numeric IID from a URL (the `/-/merge_requests/<iid>` segment) or use the bare number. If the argument does not resolve to an existing MR, stop and tell the user instead of falling back to generate mode.
 
 ## Workflow
 
-### Step 1: Identify the Base Branch
+### Step 1: Identify the Base Branch and (Update Mode) the MR
 
-Determine the base branch:
+**Generate mode** -- determine the base branch:
 
 ```
 git branch -a | grep -E '(main|master)' | head -1
@@ -17,7 +27,17 @@ git branch -a | grep -E '(main|master)' | head -1
 
 Use whichever of `main` or `master` exists. If both exist, prefer `main`.
 
+**Update mode** -- resolve the MR first and confirm it is the right one before overwriting anything:
+
+```
+glab mr view <iid>
+```
+
+(or the `glab` MCP tools if available). From the MR, capture its **source branch**, **target branch**, current **title**, and current **description**. The target branch is the base branch for the diff -- do not assume `main`/`master`. Briefly confirm the MR matches the work you expect (title/branches). If the MR was authored by someone else or its branches/content clearly do not match, surface that to the user before proceeding rather than overwriting it.
+
 ### Step 2: Gather Context
+
+**Generate mode** -- analyze the local branch:
 
 1. Get the current branch name:
 
@@ -53,6 +73,14 @@ Use whichever of `main` or `master` exists. If both exist, prefer `main`.
 
 6. For each changed file, read the full current version to understand context beyond the diff.
 
+**Update mode** -- analyze the MR's diff. If the MR's source branch is checked out locally, prefer the local commands above (diffing against the MR's target branch) so you can read full file versions. Otherwise, use `glab` to fetch the MR's diff and commits:
+
+```
+glab mr diff <iid>
+```
+
+Use the commit list and changed files from `glab mr view <iid>` plus the diff above as context. Also read the MR's existing description so the regenerated one improves on it rather than discarding intent.
+
 ### Step 3: Detect Breaking Changes
 
 In semantic-release terms, a `BREAKING CHANGE` is **only** a change that breaks the **user-facing layer** of the project — anything a downstream consumer (human user, calling service, integrator, or operator) directly relies on. Examples that qualify:
@@ -85,17 +113,17 @@ Collect a short, imperative-mood description for each confirmed breaking change 
 
 ### Step 4: Produce the MR Title and Description
 
-Output a single message containing the MR title and description in GitLab markdown format. The title and description follow [semantic-release](https://semantic-release.gitbook.io/) / [Conventional Commits](https://www.conventionalcommits.org/) conventions so release tooling can parse them.
+Produce the MR **title** and **description** in GitLab markdown format. The title and description follow [semantic-release](https://semantic-release.gitbook.io/) / [Conventional Commits](https://www.conventionalcommits.org/) conventions so release tooling can parse them.
 
-Use this exact structure:
+The **title** is a single line:
 
 ```
-## Title
-
 <type>(<optional scope>)<!>: <short, imperative description under 72 characters>
+```
 
-## Description
+The **description** is everything below — the optional `BREAKING CHANGE:` block followed by the sections:
 
+```
 BREAKING CHANGE: <first breaking change, one line>
 
 BREAKING CHANGE: <second breaking change, one line>
@@ -116,6 +144,32 @@ BREAKING CHANGE: <second breaking change, one line>
 ```
 
 If there are no breaking changes, omit the `BREAKING CHANGE:` block entirely (do not leave a placeholder).
+
+The `## Title` / `## Description` headers are presentation only — they delimit the two fields for copy-paste in generate mode. Never write them into the actual MR title/description fields.
+
+### Step 5: Output (Generate Mode) or Apply (Update Mode)
+
+**Generate mode** -- output a single, copy-pasteable message using this exact structure (no commentary before or after):
+
+```
+## Title
+
+<the title line>
+
+## Description
+
+<the description body>
+```
+
+**Update mode** -- apply the generated title and description directly to the MR:
+
+```
+glab mr update <iid> --title "<the title line>" --description "<the description body>"
+```
+
+Prefer the `glab_mr_update` MCP tool (pass `title` and the multi-line `description` as its flags) since it handles the multi-line description cleanly. Pass **only** the title line to `--title` and **only** the description body (BREAKING CHANGE block + sections, without the `## Title` / `## Description` headers) to `--description`. Do not change the target branch, draft status, labels, or any other MR field unless the user asked.
+
+After updating, confirm to the user with a one-line summary and the MR URL (from `glab mr view`). If breaking changes were detected, mention that the title now carries the `!` marker so the user is aware the MR will trigger a major release.
 
 ## Rules
 
@@ -140,4 +194,5 @@ If there are no breaking changes, omit the `BREAKING CHANGE:` block entirely (do
 7. If commits reference GitLab issues, include a `### Related issues` section with links (e.g. `Closes #123` or `Relates to #45`).
 8. Do NOT pad the description with boilerplate, caveats, or filler. Keep it tight and useful.
 9. Do NOT include issue references that don't actually exist — only include them if the commits or branch name clearly reference real issues.
-10. Output the title and description as a single, copy-pasteable message. Do not add commentary before or after.
+10. In **generate mode**, output the title and description as a single, copy-pasteable message (per Step 5). Do not add commentary before or after.
+11. In **update mode**, never silently overwrite an MR you did not author or that does not match the work — confirm identity first (Step 1). Apply the change directly only after the breaking-change interview (rule 6) is settled, then report what changed with the MR URL.
