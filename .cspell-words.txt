@@ -707,6 +707,7 @@ hybrilit
 hyperiqa
 hypernetworks
 hyperparams
+hyperplaneq
 idxes
 idxs
 ifail

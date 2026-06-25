@@ -14,6 +14,48 @@ NEVER use destructive commands without explicit user approval. The following are
 
 If a task seems to require one of these, stop and ask the user first.
 
+## SLURM Cluster
+
+When working on a SLURM-backed GPU cluster, **never run compute-intensive scripts on the
+login node** (training, inference, data preprocessing, large builds, profiling, etc.). The
+login node is shared and meant only for editing, lightweight setup, and job submission.
+
+Instead, run all real work through the scheduler:
+
+- **Long-running or reproducible jobs:** write a proper `sbatch` script and submit it with
+  `sbatch <script>.sh`.
+- **Short interactive/diagnostic runs:** use `srun` with explicit resource
+  flags.
+
+Always request resources explicitly. For GPU-intensive jobs, the default allocation is:
+
+- **1-2 GPUs** (or an appropriate number for the task), on the correct partition (`-p`/`--partition`)
+- **12 CPUs per GPU** (`--cpus-per-task` / `--cpus-per-gpu`)
+- **80 GB memory per GPU** (`--mem-per-gpu=80G`)
+
+Example for a 2-GPU job:
+
+```bash
+srun -p scalar100q --gpus=2 --cpus-per-gpu=12 --mem-per-gpu=80G \
+  --pty <command>
+```
+
+Scale CPU and memory with the GPU count, and tune the GPU count to the task type (e.g. a
+single GPU for small inference, more for multi-GPU training). If you are unsure which
+partition or how many GPUs a task needs, ask the user before submitting.
+
+### Partitions (pair cluster)
+
+Run `sinfo` to check live availability before submitting. The relevant partitions:
+
+- **`scalar100q`** -- 80 GB A100 GPUs. **Default choice** for most GPU work.
+- **`scalar6000q`** -- A6000 GPUs. Use when A100s are saturated or A6000s suffice.
+- **`defq`** (default partition) -- routes jobs to either `scalar100q` or `scalar6000q`.
+  **Avoid it**: the assigned hardware is non-deterministic and the resources are
+  unreliable. Always name `scalar100q` or `scalar6000q` explicitly instead.
+- **`hyperplaneq`** -- reserved for real training runs. **Do not use it** for agent
+  jobs (diagnostics, experiments, ad-hoc work).
+
 ## Python
 
 Always use `uv` (https://docs.astral.sh/uv/) for Python project management instead of pip, venv, conda, poetry, or pipenv.
