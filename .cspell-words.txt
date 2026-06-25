@@ -953,6 +953,7 @@ lpips
 lpmv
 lrelu
 LSDIR
+ltrb
 lualatex
 luarocks
 LUMO
