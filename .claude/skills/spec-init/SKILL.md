@@ -95,13 +95,13 @@ Create `specs/<feature-name>/requirements.md` with:
    ---
    status: active
    started: <today's ISO date, e.g. 2026-05-15>
-   finalized:
    supersedes:
    ---
    ```
 
-   Leave `finalized:` blank (it is set by `/spec-finalize`). Fill `supersedes:` only if
-   this spec replaces a prior kebab-case spec name; otherwise leave it blank.
+   Fill `supersedes:` only if this spec replaces a prior kebab-case spec name; otherwise
+   leave it blank. There is no `finalized:` field: `/spec-finalize` removes the spec
+   entirely rather than stamping it, since code + docs become the source of truth.
 
 2. **Title** — `# Requirements: <Human Readable Feature Name>`
 3. **Summary** — 2–5 sentences stating goal, users, and scope. Keep one sentence terse
@@ -240,13 +240,16 @@ Format with `npx prettier --write --print-width 120 specs/<feature-name>/tasks.m
 
 ## Step 6b: Register the spec in `specs/INDEX.md`
 
-Add (or update) a section for this spec in `specs/INDEX.md`. If the file does not exist,
-create it with this header:
+Add (or update) a section for this spec in `specs/INDEX.md`. The index tracks only
+**active** specs -- `/spec-finalize` removes a spec's section when it removes the spec, so
+a finalized spec leaves no entry behind. If the file does not exist, create it with this
+header:
 
 ```markdown
 # Specs Index
 
-_One section per spec, ordered with most recently started at the top._
+_One section per active spec, ordered with most recently started at the top. Specs are
+removed from this index when they are finalized._
 ```
 
 Append a section in the form:
@@ -255,7 +258,7 @@ Append a section in the form:
 ## [<feature>](<feature>/)
 
 - **Status:** active
-- **Started:** <started-date> -- **Finalized:** --
+- **Started:** <started-date>
 - <one-sentence summary>
 ```
 
@@ -279,7 +282,9 @@ Print a short summary:
   a blocker.
 - Next step: suggest `/spec-review <feature-name>` if it was skipped, otherwise
   `/spec-implement <feature-name>` once the user is ready to start building. Mention that
-  `/spec-finalize <feature-name>` is the closing ritual once every task is `Done`.
+  `/spec-finalize <feature-name>` is the closing ritual once every task is `Done` -- it
+  reconciles the docs with the shipped code and then removes the spec, leaving code +
+  up-to-date docs as the source of truth.
 
 Do **not** commit the spec files automatically. Tell the user the files are ready to stage
 and commit, and offer the `/commit` skill if they want help with the commit message.
@@ -303,9 +308,11 @@ and commit, and offer the `/commit` skill if they want help with the commit mess
 - **Traceability discipline.** Every requirement ID must map to at least one design section
   and at least one task.
 - **Lifecycle frontmatter.** `requirements.md` must open with the YAML frontmatter block
-  described in Step 2 (`status: active`, `started: <date>`, blank `finalized:` and
-  `supersedes:`). Other files in the spec directory carry no frontmatter.
+  described in Step 2 (`status: active`, `started: <date>`, blank `supersedes:`). There is
+  no `finalized:` field -- `/spec-finalize` removes the spec rather than stamping it. Other
+  files in the spec directory carry no frontmatter.
 - **INDEX maintenance.** Every new spec creates or updates a section in `specs/INDEX.md`.
+  The index lists only active specs; finalized specs are removed from it.
 - **ASCII only.** Follow the project rule against Unicode symbols in code and comments;
   plain prose in markdown is fine, but keep diagrams, math, and inline code ASCII.
 - **Prettier pass.** Run `npx prettier --write --print-width 120` on every markdown file you create or modify

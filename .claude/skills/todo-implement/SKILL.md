@@ -16,6 +16,12 @@ sequencing, committing, and updating `todos/<area>.md`.
 This keeps the main session context clean -- implementation details live in subagent
 contexts and don't accumulate here.
 
+**Code (plus its docs) is the source of truth; a TODO item is disposable scaffolding.**
+An item drives the work while it is open, but once shipped the durable record is the code
+and the project docs -- not a lingering `Done` row. So at the end of the run (Step 4) you
+reconcile any affected docs with what shipped (via opus subagents, like `/spec-finalize`)
+and then **remove** the resolved items from the file, leaving code + up-to-date docs.
+
 ## Modes
 
 - **No item numbers**: present pending items and ask which to implement (default).
@@ -207,8 +213,10 @@ the implementer alongside the original item context.
 
 ### 3e. Update the TODO file (only after APPROVED)
 
-Run this step **only after** step 3d returned `APPROVED` for the batch. For
-every approved item in the batch:
+Run this step **only after** step 3d returned `APPROVED` for the batch. This marks the
+item `Done` as a **transient** state -- it records what shipped so the wrap-up
+doc-reconciliation (Step 4) knows what changed, and the item is removed from the file at
+wrap-up. For every approved item in the batch:
 
 - Flip its `Status` column in the Priority Summary table from `Pending` to `Done`.
 - Append a brief completion note to the item's detailed section, e.g.:
@@ -233,8 +241,8 @@ Then once for the batch:
   (new bugs noticed, unrelated tech debt). Assign reasonable priority and
   include a one-line description + cited files.
 
-Never delete the TODO file, even if every item is now `Done` -- the
-historical record is useful context for future work in the area.
+Do not remove the `Done` items yet -- they are purged together in Step 4, after the
+wrap-up doc reconciliation, so the `_Done:_` notes are still available as input to it.
 
 After editing the `.md`, run `npx prettier --write --print-width 120 todos/<area>.md`.
 
@@ -266,20 +274,91 @@ in the commit message.
 - **If default mode**: ask the user whether to continue to the next item/batch
   or stop.
 
-## Step 4: Wrap up
+## Step 4: Reconcile docs and purge resolved items
 
-After finishing (all items done, user stops, or session limit reached), report:
+Run this once, after finishing (all items done, user stops, or session limit reached),
+over the items that reached `Done` this run. Code + docs are the source of truth, so
+before the resolved items leave the file, make sure the docs reflect what shipped.
 
-1. **Completed items**: list with commit hashes
-2. **Blocked items**: list with reasons
-3. **Remaining items**: count still pending
-4. **Follow-ups filed**: any new TODO items you added from CONCERNS
-5. **Next step**: if items remain, suggest `/todo-implement {area}` in a fresh session
+### 4a. Determine the doc scope
+
+Look at what the `Done` items actually changed (their `_Done:_` notes and the code paths
+touched by their commits). Decide which of them changed **documented behavior** -- public
+APIs, CLI/commands, setup, architecture, or anything covered by `docs/`, `README.md`, or
+`CLAUDE.md`. Many items (dead-code removal, internal refactors, added tests) touch no
+docs; those need no reconciliation.
+
+- If **no** `Done` item changed documented behavior, skip to Step 4c.
+- Otherwise, list the affected docs and run the update cycle in Step 4b.
+
+### 4b. Doc-update cycle (opus subagents, orchestrator loop)
+
+Mirror `/spec-finalize`'s cycle. You orchestrate; opus subagents do the writing and
+verification. You do NOT edit docs yourself.
+
+1. **Dispatch doc-updater subagent(s)** via the Agent tool
+   (`subagent_type: "general-purpose"`, `model: "opus"`), one per affected doc when the
+   files are independent (dispatched sequentially) or one combined updater when they are
+   entangled. Each prompt must include: the doc path(s) to revise/create; the shipped
+   behavior (the `_Done:_` notes and the changed code paths, with an instruction to read
+   the **real code** since it is the source of truth); the specific gap; and an
+   instruction to follow the `/docs-revise` methodology, update the `docs/README.md`
+   index if files were added/removed, run `npx prettier --write --print-width 120` on
+   each file it touches, and edit **only documentation** (`docs/`, `README.md`,
+   `CLAUDE.md`) -- never source code.
+2. **Dispatch one opus doc-reviewer** (`general-purpose`, `model: "opus"`) once the
+   updaters return. It follows the `/docs-analyze` methodology, reads code and docs
+   independently, edits nothing, and returns **ALIGNED** or **NEEDS_REVISION** with
+   specific findings.
+3. **Handle the verdict**: `ALIGNED` -> proceed to 4c. `NEEDS_REVISION` (max 2 rounds) ->
+   dispatch a fresh opus updater with the findings, then re-review. If still not aligned
+   after 2 rounds, **stop**: leave the affected items in the file (do not purge them),
+   report the outstanding doc gaps, and let the user fix docs manually and re-run.
+
+Commit the doc updates (see 4c for what goes in the commit). Keep your context clean:
+retain only a one-line summary per doc.
+
+### 4c. Purge the resolved items
+
+Purge every `Done` item **except** any whose doc cycle stalled at `NEEDS_REVISION` in 4b
+(those stay in the file until the docs can be aligned). An item that changed no docs, or
+whose docs reached `ALIGNED`, is purged. For each item being purged:
+
+- Remove its **Priority Summary row** and its **detailed section** from `todos/<area>.md`.
+  git history preserves the record -- do not keep a `Done` ledger.
+- The "Suggested resolution order" was already pruned in step 3e; confirm no removed item
+  lingers there.
+
+If the file has **no items left** (no `Pending`, no `Blocked`, no `Done`), remove the
+empty file with `git rm todos/<area>.md` (recoverable via history; never `rm -rf`).
+Otherwise run `npx prettier --write --print-width 120 todos/<area>.md`.
+
+Commit the purge together with any doc updates from 4b in a single commit, e.g.
+`docs({area}): reconcile docs and remove resolved TODO items` (or
+`chore({area}): remove resolved TODO items` if no docs changed). Stage only the docs and
+the TODO file -- never `git add -A`. Do not include issue IDs.
+
+## Step 5: Report
+
+Report:
+
+1. **Completed items**: list with commit hashes (these have been removed from the file)
+2. **Docs reconciled**: files updated/created, or "no docs affected"
+3. **Blocked items**: list with reasons (these remain in the file)
+4. **Remaining items**: count still pending
+5. **Follow-ups filed**: any new TODO items you added from CONCERNS
+6. **Next step**: if open items remain, suggest `/todo-implement {area}` in a fresh session
 
 ## Critical constraints
 
 - **You are the orchestrator.** Do NOT write implementation code in the main session.
-  All code changes come from todo-implementer subagents.
+  All code changes come from todo-implementer subagents. In the Step 4 doc-reconciliation
+  cycle you also do NOT edit docs yourself -- opus doc subagents do.
+- **Code is the source of truth.** When docs disagree with the code, the code wins; doc
+  subagents must read the real code, not trust the TODO notes or design assumptions.
+- **Resolved items are removed, not retained.** Do not keep a `Done` ledger. `Done` is a
+  transient state that exists only between step 3e and the Step 4 purge; git history is
+  the permanent record.
 - **Sequential dispatch.** Never dispatch multiple implementers simultaneously --
   even within an independent-item batch, implementers run one after another.
   "Parallel" / "independent" items only authorize batched review and committing,

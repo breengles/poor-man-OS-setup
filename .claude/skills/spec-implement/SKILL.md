@@ -44,8 +44,10 @@ If the user later disambiguates by name, switch to that spec.
 Read all spec files from `specs/{feature}/`. These reads are independent -- do them
 in parallel:
 
-1. `requirements.md` (and parse the YAML frontmatter -- if `status` is `completed` or
-   `superseded`, stop and report that the spec is frozen)
+1. `requirements.md` (and parse the YAML frontmatter -- an active spec is `status: active`;
+   if `status` is `completed` or `superseded`, stop and report that the spec is already
+   closed. Note that finalized specs are normally removed outright, so a lingering closed
+   status is unusual -- surface it rather than implementing against it.)
 2. `design.md`
 3. `tasks.md`
 4. `research.md` (if it exists)
@@ -287,9 +289,9 @@ After finishing (all tasks done or user stops), report:
 4. **Next step**:
    - If pending tasks remain, suggest `/spec-implement {feature}` in a fresh session.
    - If every task in `tasks.md` is now `Done` (no `Pending`, no unresolved `Blocked`),
-     suggest `/spec-finalize {feature}` to flip the spec's lifecycle frontmatter to
-     `completed`, append an Implementation Notes block to `design.md`, and update
-     `specs/INDEX.md`.
+     suggest `/spec-finalize {feature}` to reconcile the project docs with the shipped
+     code (updating them via opus subagents if stale) and then remove the resolved spec
+     -- leaving code + up-to-date docs as the source of truth.
 
 ## Critical constraints
 

@@ -88,6 +88,11 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
 For long-lived engineering work (pipelines, CLIs, APIs, shared libraries), use the spec
 workflow. Skip it for throwaway scripts, notebooks, or one-off analysis.
 
+**Code (plus its docs) is the source of truth; a spec is disposable scaffolding.** A spec
+drives the work while it is active, but once the feature ships the durable record is the
+code and the project docs -- not a frozen spec. `/spec-finalize` therefore reconciles the
+docs with the shipped code and then removes the resolved spec entirely.
+
 Specs live in `specs/<feature-name>/` and are managed by dedicated slash commands:
 
 - `/spec-init <feature>` -- bootstrap `requirements.md` (EARS), `design.md`, optional
@@ -97,12 +102,15 @@ Specs live in `specs/<feature-name>/` and are managed by dedicated slash command
   and readiness; format is a one-line afterthought
 - `/spec-implement <feature>` -- implement task-by-task via implementer/reviewer
   subagents (orchestrator pattern)
-- `/spec-finalize <feature>` -- freeze a fully-implemented spec (flip lifecycle to
-  `completed`, append Implementation Notes, update `specs/INDEX.md`)
+- `/spec-finalize <feature>` -- close out a fully-implemented spec: reconcile the project
+  docs with the shipped code (running an opus-subagent update cycle if they are stale),
+  then remove the resolved spec directory and its `specs/INDEX.md` entry so only code +
+  up-to-date docs remain
 
 Two repo-level files complement the per-feature directories:
 
-- `specs/INDEX.md` -- one-line entry per spec with status, dates, and a short summary
+- `specs/INDEX.md` -- one-line entry per **active** spec (status, date, short summary);
+  finalized specs are removed from it
 - `specs/constitution.md` (optional) -- non-negotiable project principles binding on
   every spec; consulted by all four slash commands above
 
@@ -114,31 +122,38 @@ rules, and the constitution-deviation protocol. Do not re-derive them from this 
 
 TODO files live in `todos/` organized by area: `todos/<area>.md` (e.g. `todos/solver.md`, `todos/api.md`, `todos/ui.md`).
 
-The TODO workflow mirrors the SDD task workflow above: items have a `Status` column
-(`Pending` / `Done` / `Blocked`) and resolved items stay in the file with their status
-flipped to `Done` and a brief completion note appended.
+The TODO workflow mirrors the SDD flow above: **code (plus its docs) is the source of
+truth, and a TODO file tracks only open work.** Items have a `Status` column
+(`Pending` / `Blocked`), plus a transient `Done` state used only while `/todo-implement`
+is closing an item out. Once an item is implemented and any affected docs have been
+reconciled, `/todo-implement` **removes** it from the file (git history keeps the record)
+-- resolved items are not retained as a `Done` ledger.
 
 When working with TODO files, follow this structure:
 
-1. **Priority Summary table** at the very top - lists every tracked item regardless of
-   status, sorted by priority (highest priority first). Exactly **three columns**:
+1. **Priority Summary table** at the very top - lists every open item (`Pending` or
+   `Blocked`), sorted by priority (highest priority first). Exactly **three columns**:
    `Task`, `Priority`, and `Status`.
    - `Task` is a markdown link to the detailed section, with the link text as
      `[#N](anchor)` (e.g. `[#5](#5-broken-cache-invalidation)`). Do not put
      descriptions in the cell.
    - `Priority` is `P0` / `P1` / `P2`.
-   - `Status` is one of `Pending`, `Done`, or `Blocked`.
+   - `Status` is `Pending` or `Blocked`. `Done` appears only transiently while
+     `/todo-implement` closes an item out, before the item is removed from the file.
    - **Never use HTML anchors** (`<a id="N"></a>`) -- they are invisible in plain
      markdown and don't navigate reliably in VS Code. **Never use strikethrough**
      (`~~text~~`) on item titles -- update the `Status` column instead.
 2. **Suggested resolution order** - after the Priority Summary table, an unnumbered
    (bullet) list of item numbers in recommended tackling order with brief rationale
-   per item (e.g. `- #5 -- prerequisite for #7`). List **only still-pending items** --
-   completed items are already tracked via their `Done` status in the Priority Summary
-   table, so keeping them here just adds noise.
+   per item (e.g. `- #5 -- prerequisite for #7`). It naturally lists only still-open
+   items, since resolved items are removed from the file entirely.
 3. **Detailed sections** at the bottom - one heading per item with full description,
    context, and acceptance criteria
-4. **Completion notes** - when an item is marked `Done`, append a brief note to its
-   detailed section, e.g. `_Done: invalidation now runs on write; covered by tests_`.
+4. **Completion notes** - when `/todo-implement` marks an item `Done`, it appends a
+   brief `_Done: ..._` note to the item's detailed section (e.g.
+   `_Done: invalidation now runs on write; covered by tests_`). This note is transient:
+   it records what shipped so the wrap-up doc-reconciliation step knows what changed, and
+   it is removed along with the rest of the item when the item is purged from the file.
 5. **Blocked notes** - when an item is marked `Blocked`, append a `_Blocked: {reason}_`
    line to its detailed section so the cause is visible alongside the description.
+   Blocked items stay in the file (they are still open work).

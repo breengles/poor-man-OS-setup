@@ -10,9 +10,9 @@ Initialize a TODO tracking system for this project. Follow these steps:
 2. **Identify areas** — group discovered items semantically by project area (e.g. `solver`, `api`, `ui`, `cli`, `tests`, `docs`, `infra`). Use names that match the project's own module/directory structure.
 
 3. **Create `todos/<area>.md` files** — one file per area. Each file must follow the TODO file format from CLAUDE.md:
-   - **Priority Summary table** at the top with all items sorted by priority (highest first). Exactly **three columns**: `Task` (link `[#N](anchor)` to the detailed section), `Priority` (`P0` / `P1` / `P2`), and `Status` (one of `Pending`, `Done`, or `Blocked` — newly seeded items are `Pending`).
-   - **Suggested resolution order** below the table — an unnumbered (bullet) list of item numbers in recommended tackling order with brief rationale (e.g. `- #5 -- prerequisite for #7`). List only `Pending` items; bullets keep the list stable as items are completed.
-   - **Detailed sections** at the bottom — one heading per item with a clear description, context, and acceptance criteria where possible. When an item is later marked `Done` or `Blocked`, a `_Done: ..._` or `_Blocked: ..._` note is appended to its section (the section itself is not deleted).
+   - **Priority Summary table** at the top with all items sorted by priority (highest first). Exactly **three columns**: `Task` (link `[#N](anchor)` to the detailed section), `Priority` (`P0` / `P1` / `P2`), and `Status` (`Pending` or `Blocked` — newly seeded items are `Pending`; `Done` is only a transient state used by `/todo-implement` before it removes the item).
+   - **Suggested resolution order** below the table — an unnumbered (bullet) list of item numbers in recommended tackling order with brief rationale (e.g. `- #5 -- prerequisite for #7`). List only open items; bullets keep the list stable as items are completed.
+   - **Detailed sections** at the bottom — one heading per item with a clear description, context, and acceptance criteria where possible. Code (plus its docs) is the source of truth: once an item is implemented and any affected docs are reconciled, `/todo-implement` removes the item from the file entirely (git history keeps the record). A `Blocked` item stays, with a `_Blocked: ..._` note appended to its section.
 
 4. **Populate from all sources** — include items from:
    - `TODO`, `FIXME`, `HACK`, `XXX` comments in source code (cite file and line)
