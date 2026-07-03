@@ -22,8 +22,4 @@
 /\.claude/shell-snapshots
 /\.claude/todos
 /\.claude/history\.jsonl
-/\.pi/agent/auth\.json
-/\.pi/agent/sessions
-/\.pi/agent/cache
-/\.pi/agent/logs
 /\.config/opencode/node_modules

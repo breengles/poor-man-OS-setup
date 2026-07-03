@@ -16,7 +16,7 @@
 
 The `ccs`/`ccp`/`cct` launchers in `.config/shell/claude-tmux.zsh` spawn a pane/window via
 `zsh -ic 'claude; exec zsh -i'`. That means `.zshrc` is sourced twice over the context's
-lifecycle: once by the outer `zsh -ic` (so the `claude` shell function is defined), and again
+lifecycle: once by the outer `zsh -ic`, and again
 by `exec zsh -i` after claude exits. On macOS this is roughly 100-300ms of extra work per
 context.
 
@@ -26,11 +26,11 @@ Options to explore:
   so it runs once per process, and keep `.zshrc` focused on interactive-only state
   (aliases, prompt, completions, keybindings). Note that `.zshenv` runs for every zsh
   invocation including scripts, so anything put there must be cheap and side-effect-free.
-- Alternatively, detect in `_claude_go` whether the real `claude` binary can be invoked
-  without pre-sourcing the shell function (e.g. call `~/.claude/update-theme.sh` from the
-  launcher itself, then `exec claude` in the pane), eliminating the first zsh entirely.
-  Trade-off: loses the theme-sync wrapper for manual `claude` invocations inside the pane
-  after the first exit.
+- Alternatively, drop the interactive flag on the outer shell. The `-i` in `zsh -ic` existed
+  to source `.zshrc` so the `claude` shell wrapper was defined before launch; that wrapper is
+  gone, so the outer shell no longer needs `.zshrc` -- provided `claude` is on `PATH` without
+  it (which the `.zshenv` move above ensures). Then only the post-exit `exec zsh -i` sources
+  `.zshrc`.
 
 Acceptance criteria:
 

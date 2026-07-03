@@ -1,49 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "llamacpp-local/qwen3.6-35b-a3b",
   "permission": {
     "bash": {
       "rm *": "deny"
-    }
-  },
-  "provider": {
-    "llamacpp-local": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "llama.cpp (local, llama-swap @ 127.0.0.1:8080)",
-      "options": {
-        "baseURL": "http://127.0.0.1:8080/v1",
-        "apiKey": "not-needed"
-      },
-      "models": {
-        "qwen3.6-27b": {
-          "name": "Qwen3.6 27B (local, Q4_K_M, 200K)",
-          "limit": {
-            "context": 200000,
-            "output": 8192
-          }
-        },
-        "qwen3.6-27b-coder": {
-          "name": "Qwen3.6 27B-Coder (local, Q4_K_M, 200K)",
-          "limit": {
-            "context": 200000,
-            "output": 8192
-          }
-        },
-        "qwen3.6-35b-a3b": {
-          "name": "Qwen3.6 35B-A3B (local, general, UD-Q4_K_M, 200K)",
-          "limit": {
-            "context": 200000,
-            "output": 8192
-          }
-        },
-        "qwen3.6-35b-a3b-coder": {
-          "name": "Qwen3.6 35B-A3B (local, coding, UD-Q4_K_M, 200K)",
-          "limit": {
-            "context": 200000,
-            "output": 8192
-          }
-        }
-      }
     }
   }
 }

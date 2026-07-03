@@ -922,7 +922,6 @@ lipkin
 listconfig
 listfiles
 liuhaotian
-llamacpp
 LLAVA
 lldb
 lllyasviel

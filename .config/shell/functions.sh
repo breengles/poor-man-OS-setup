@@ -1,51 +1,5 @@
 #!/usr/bin/env bash
 
-# Sync Claude Code theme with system appearance before each launch.
-# Locally: detects macOS light/dark mode.
-# Remotely: reads $MACOS_SYSTEM_THEME env var (forwarded via SSH, see ~/.ssh/config).
-function claude {
-  ~/.claude/update-theme.sh 2>/dev/null
-  command claude "$@"
-}
-
-# Launch llama.cpp server with the local Qwen model in a detached tmux session.
-# Connects to pi via http://127.0.0.1:8080/v1 (see ~/.pi/agent/models.json).
-function llama_serve {
-  local session="llama-swap"
-  local config="${LLAMA_SWAP_CONFIG:-$HOME/.config/llama-swap/config.yaml}"
-  local listen="${LLAMA_SWAP_LISTEN:-127.0.0.1:8080}"
-
-  if ! command -v llama-swap >/dev/null 2>&1; then
-    echo "llama-swap not found in PATH (brew install mostlygeek/llama-swap/llama-swap)" >&2
-    return 1
-  fi
-  if ! command -v llama-server >/dev/null 2>&1; then
-    echo "llama-server not found in PATH" >&2
-    return 1
-  fi
-  if ! command -v tmux >/dev/null 2>&1; then
-    echo "tmux not found in PATH" >&2
-    return 1
-  fi
-  if [ ! -f "$config" ]; then
-    echo "llama-swap config not found: $config" >&2
-    return 1
-  fi
-
-  if tmux has-session -t "$session" 2>/dev/null; then
-    tmux attach -t "$session"
-    return 0
-  fi
-
-  mkdir -p "$HOME/.local/state/llama.cpp"
-
-  tmux new-session -d -s "$session" \
-    "llama-swap --config '$config' --listen '$listen'"
-  echo "Started llama-swap in tmux session '$session' on $listen"
-  echo -e "Models:\n$(awk '/^models:/{f=1;next} f && /^  [a-zA-Z]/{print "  - "$1}' "$config" | tr -d ':')"
-  echo "Attach with: tmux attach -t $session"
-}
-
 # Run the Hermes Agent TUI inside the docker container (see ~/hermes-docker).
 # First arg, if a directory, becomes the session CWD; otherwise PWD is used.
 # That directory must be bind-mounted into the container — see the `volumes:`
