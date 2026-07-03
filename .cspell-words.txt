@@ -124,6 +124,7 @@ bbox
 bboxes
 bchw
 bdist
+bertopic
 betag
 betap
 bfloat
@@ -1748,6 +1749,7 @@ umap
 unadjust
 unclickable
 uncond
+undecoded
 Unet
 unets
 unflatten

@@ -77,10 +77,10 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
 ### Claude Code
 
 - **Claude Code user prefs:** `.claude/CLAUDE.md` (stowed to `~/.claude/CLAUDE.md`)
-- **Claude Code skills:** 15 custom slash commands at `.claude/skills/` — commit, todo-init,
+- **Claude Code skills:** 16 custom slash commands at `.claude/skills/` — commit, todo-init,
   todo-review, todo-implement, docs-init, docs-revise, docs-analyze, mr-description,
   mr-review, plan-implement, resolve-conflicts, spec-init, spec-review, spec-implement,
-  spec-finalize
+  spec-finalize, dataset-readme
 - **Claude Code agents:** `.claude/agents/` — branch-code-reviewer, spec-implementer
   (Sonnet, Write/Edit), spec-reviewer (Opus, read-only + Bash), todo-implementer
   (Sonnet, Write/Edit), todo-reviewer (Opus, read-only + Bash)
