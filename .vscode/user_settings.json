@@ -33,7 +33,7 @@
   "explorer.openEditors.visible": 10,
   "explorer.confirmDragAndDrop": false,
   // "workbench.preferredLightColorTheme": "Default Light Modern",
-  "workbench.preferredDarkColorTheme": "Default Dark Modern",
+  "workbench.preferredDarkColorTheme": "Dark Modern",
   "workbench.activityBar.orientation": "vertical",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.tree.enableStickyScroll": true,
@@ -57,7 +57,7 @@
     },
   },
   "workbench.editorLargeFileConfirmation": 50,
-  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.colorTheme": "Dark Modern",
   "workbench.editor.autoLockGroups": {
     "terminalEditor": false,
   },
@@ -70,16 +70,18 @@
   },
   "files.autoSave": "onWindowChange",
   "files.watcherExclude": {
-    "**/build/**": true,
-    "**/node_modules/**": true,
-    "**/.venv/**": true,
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
+    "**/build/**": true,
+    "**/node_modules/**": true,
     "**/node_modules/*/**": true,
+    "**/.venv*/**": true,
+    "**/__pycache__/**": true,
+    "**/.pytest_cache/**": true,
+    "**/.ruff_cache/**": true,
     "**/.aim/**": true,
     "**/logs/**": true,
     "**/output/**": true,
-    "**/__pycache__/**": true,
   },
   "files.insertFinalNewline": true,
   //editor
@@ -139,6 +141,14 @@
       ],
       "icon": "terminal-tmux",
     },
+    "tmux-bash": {
+      "path": "bash",
+      "args": [
+        "-lc",
+        "ses=${PWD##*/} && tmux new -dAs ${ses//[.:]/_} && tmux attach; exit",
+      ],
+      "icon": "terminal-tmux",
+    },
   },
   "terminal.integrated.profiles.osx": {
     "tmux": {
@@ -153,7 +163,7 @@
       "icon": "terminal-tmux",
     },
   },
-  "terminal.integrated.defaultProfile.linux": "tmux",
+  "terminal.integrated.defaultProfile.linux": "tmux-bash",
   "terminal.integrated.defaultProfile.osx": "tmux",
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.env.linux": {
@@ -458,6 +468,8 @@
   "prettier.bracketSpacing": false,
   "search.useIgnoreFiles": false,
   "terminal.integrated.enableKittyKeyboardProtocol": false,
-  "workbench.agentsWindowButton.enabled": false,
   "anyscalecompute.ray-distributed-debugger.initialized": true,
+  "git.detectWorktrees": true,
+  "scm.repositories.selectionMode": "single",
+  "workbench.startupEditor": "none",
 }
