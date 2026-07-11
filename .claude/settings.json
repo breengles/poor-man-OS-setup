@@ -66,6 +66,8 @@
       "Bash(glab *)",
       "Bash(rm /tmp*)",
       "Bash(rm -rf /tmp*)",
+      "Bash(rm -r /tmp*)",
+      "Bash(rm -f /tmp*)",
       "Write(~/.claude/settings.json)",
       "Write(~/.claude/settings.local.json)",
       "Write(**/.claude/settings.json)",
