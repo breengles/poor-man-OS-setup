@@ -570,6 +570,7 @@ flaskwebgui
 flathub
 flipud
 floatfmt
+flowy
 fname
 Fock
 followlinks
@@ -1610,6 +1611,7 @@ stopwords
 stqdm
 strd
 Streamlit
+streetwear
 STREQUAL
 strikethrough
 stylegan
