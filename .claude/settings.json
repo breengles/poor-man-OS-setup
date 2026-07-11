@@ -64,6 +64,8 @@
       "Bash(df *)",
       "Bash(npx prettier *)",
       "Bash(glab *)",
+      "Bash(rm /tmp*)",
+      "Bash(rm -rf /tmp*)",
       "Write(~/.claude/settings.json)",
       "Write(~/.claude/settings.local.json)",
       "Write(**/.claude/settings.json)",
@@ -116,10 +118,7 @@
     "gitlab-cli": {
       "type": "stdio",
       "command": "glab",
-      "args": [
-        "mcp",
-        "serve"
-      ],
+      "args": ["mcp", "serve"],
       "env": {}
     }
   }
