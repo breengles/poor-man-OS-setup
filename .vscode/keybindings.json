@@ -437,12 +437,12 @@
   },
   {
     "key": "shift+cmd+v",
-    "command": "markdown.showPreview",
+    "command": "markdown-preview-enhanced.openPreviewToTheSide",
     "when": "!notebookEditorFocused && editorLangId == 'markdown'"
   },
   {
     "key": "shift+cmd+v",
-    "command": "-markdown.showPreview",
+    "command": "-markdown-preview-enhanced.openPreviewToTheSide",
     "when": "!notebookEditorFocused && editorLangId == 'markdown'"
   },
   {
