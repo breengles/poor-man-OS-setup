@@ -196,6 +196,7 @@ charliermarsh
 chatgtp
 checkhealth
 checkpointing
+checkwinsize
 Chervontsev
 chibi
 Chilingaryan
@@ -213,6 +214,7 @@ ckptroot
 ckpts
 clangd
 classmethod
+CLAUDECODE
 cldm
 clipiqa
 clipseg

@@ -10,12 +10,18 @@ esac
 # Trampoline: prefer zsh when available.
 # On machines where chsh is unavailable, bash starts first and exec's zsh.
 # Add hostname prefixes below to keep bash (e.g. nodes that break under exec).
+# Skip the exec entirely when an AI agent is driving the shell (Claude Code
+# sets CLAUDECODE=1; $AGENT is the generic marker) so agent bash commands stay
+# in bash instead of being handed off to an interactive zsh.
 # ---------------------------------------------------------------------------
 _no_zsh_patterns=(
   "login-"
 )
 
 _use_zsh=true
+if [ -n "$CLAUDECODE" ] || [ -n "$AGENT" ]; then
+  _use_zsh=false
+fi
 _hostname=$(hostname)
 for _pat in "${_no_zsh_patterns[@]}"; do
   case "$_hostname" in
