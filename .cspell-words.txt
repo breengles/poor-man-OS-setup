@@ -1790,6 +1790,7 @@ upscalers
 ureg
 urlcolor
 urllib
+usecases
 usecolormap
 usecols
 usepackage
