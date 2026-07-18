@@ -1748,6 +1748,7 @@ typer
 tzdata
 uigroup
 ultradetailed
+ultralytics
 ULTRASR
 umap
 unadjust
