@@ -1,6 +1,6 @@
 ---
 name: spec-finalize
-description: Close out an implemented spec by reconciling the project docs with the shipped code (updating them via opus subagents if stale), then removing the resolved spec directory and its INDEX entry so code + up-to-date docs remain the source of truth.
+description: Close out an implemented spec by reconciling the project docs with the shipped code (updating them via opus subagents if stale), then removing the resolved spec directory so code + up-to-date docs remain the source of truth.
 argument-hint: "<feature-name>"
 ---
 
@@ -15,7 +15,7 @@ job is to
 
 1. make sure the docs reflect what actually shipped -- running an opus-subagent update
    cycle if they are stale -- and then
-2. remove the resolved spec entirely (its directory and its `specs/INDEX.md` entry),
+2. remove the resolved spec entirely (its `specs/<feature-name>/` directory),
 
 so the repository ends up with code + up-to-date docs and no lingering spec.
 
@@ -38,7 +38,6 @@ Read every file under `specs/<feature-name>/` in parallel:
 2. `design.md`
 3. `tasks.md`
 4. `research.md` (if it exists)
-5. `specs/constitution.md` (if it exists)
 
 Also read the project's documentation surface so you know what "docs" means here:
 `docs/README.md` and the other files under `docs/` (if the directory exists), the root
@@ -167,28 +166,19 @@ The prompt must include:
 The spec has served its purpose -- the truth now lives in code + docs -- so remove it.
 
 **Removal is destructive; get explicit confirmation first.** Print exactly what will be
-removed:
-
-- the `specs/<feature-name>/` directory (list its files), and
-- the `specs/<feature-name>` section in `specs/INDEX.md` (if present).
+removed: the `specs/<feature-name>/` directory (list its files).
 
 Ask the user to confirm the removal explicitly. Do not proceed without a clear yes.
 
-On confirmation:
+On confirmation, remove the spec directory with **git** so it stays recoverable via history
+-- never `rm -rf`:
 
-1. Remove the spec directory with **git** so it stays recoverable via history -- never
-   `rm -rf`:
+```
+git rm -r specs/<feature-name>/
+```
 
-   ```
-   git rm -r specs/<feature-name>/
-   ```
-
-   If `git rm` reports untracked files, list them and ask the user before removing
-   anything untracked. Never force-remove.
-
-2. Remove the spec's section from `specs/INDEX.md`. If no spec sections remain afterward,
-   remove the now-empty index too (`git rm specs/INDEX.md`) so nothing dangles.
-   Otherwise run `npx prettier --write --print-width 120 specs/INDEX.md`.
+If `git rm` reports untracked files, list them and ask the user before removing anything
+untracked. Never force-remove.
 
 ## Step 6: Report
 
@@ -196,7 +186,7 @@ Print a wrap-up:
 
 - **Docs:** each file updated or created (one line), or "docs already current".
 - **Doc-reviewer verdict:** ALIGNED (or the reason the cycle stopped, if it did).
-- **Spec removed:** the directory and INDEX section that were deleted.
+- **Spec removed:** the directory that was deleted.
 - **Follow-ups (informational only):** list any known gaps, deferred work, or
   code/design deviations you noticed. Print them for the user but do **not** file them
   anywhere. If the user wants them tracked, suggest a `todos/<area>.md` entry.
@@ -219,10 +209,10 @@ Print a wrap-up:
   via history until committed.
 - **Bounded doc-review retries.** Max 2 revision rounds. If the docs cannot be aligned,
   leave the spec in place and report.
-- **INDEX tracks active specs only.** After removal there is no lingering "completed"
-  entry -- the section is deleted along with the spec.
+- **No index.** There is no `specs/INDEX.md` to maintain; the spec directory's existence
+  is the only record, and removing it is what marks the feature done.
 - **No issue IDs.** Never include `#N` references in any text you write (commit messages,
-  INDEX edits, reports). They would auto-close GitLab issues.
+  doc edits, reports). They would auto-close GitLab issues.
 - **ASCII only** in code and diagrams; plain prose in markdown is fine. Run
   `npx prettier --write --print-width 120` on every markdown file you or a subagent
   modifies.

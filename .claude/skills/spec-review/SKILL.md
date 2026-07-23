@@ -24,10 +24,6 @@ priority and gets exactly one sentence at the end -- see **Format check**.
 
 **Read all spec files** in the directory (`requirements.md`, `design.md`, `tasks.md`, `research.md` if present) before starting the review.
 
-Also read `specs/constitution.md` if it exists. Constitution principles are binding on every
-spec; the review must check that the design honors them or that any deviation is explicitly
-named and justified.
-
 Where the design makes a factual claim about the codebase (a module exists, an interface
 has this shape, a library does X), **verify it against the actual code** rather than trusting
 the spec. A design built on a wrong assumption about what already exists is unsound no matter
@@ -84,24 +80,14 @@ This is the heart of the review. For the design:
 - Architecture integrity: is the dependency direction sane (no circular deps), and are
   component boundaries real seams rather than arbitrary splits?
 
-### 4. Constitution alignment (only if `specs/constitution.md` exists)
-
-- Every constitution principle is either honored by the design or explicitly named and
-  justified as a deviation in `design.md` (typically a `## Constitution deviations`
-  subsection) or in `research.md`.
-- Unjustified deviations are **FAIL**. Silent deviations (the design conflicts with a
-  principle without naming it) are **FAIL**. A named deviation with weak justification is **WARN**.
-
-If `specs/constitution.md` does not exist, mark this section N/A (not FAIL).
-
-### 5. Research quality (if research.md exists)
+### 4. Research quality (if research.md exists)
 
 - Are rejected alternatives documented with rationale that actually withstands scrutiny, or
   is it a post-hoc rationalization of a decision already made?
 - Are the key constraints and risks the *real* ones, or convenient ones?
 - Are trade-offs honest ("we chose X over Y because Z, and we accept cost W"), not just "we chose X"?
 
-### 6. Readiness to implement
+### 5. Readiness to implement
 
 - Can the design be decomposed into bounded, independently verifiable tasks (~1-3 hours
   each)? If not, the spec isn't ready regardless of how sound the idea is.

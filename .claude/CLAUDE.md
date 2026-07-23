@@ -95,28 +95,25 @@ docs with the shipped code and then removes the resolved spec entirely.
 
 Specs live in `specs/<feature-name>/` and are managed by dedicated slash commands:
 
-- `/spec-init <feature>` -- bootstrap `requirements.md` (EARS), `design.md`, optional
-  `research.md`, and `tasks.md`, stage by stage
+- `/spec-init <feature>` -- bootstrap the full spec (`requirements.md` (EARS), `design.md`,
+  optional `research.md`, `tasks.md`) in one pass, then run `/spec-review` once on the
+  finished spec
 - `/spec-review <feature>` -- adversarially test the spec's soundness (is the problem
-  real, the reasoning valid, the proposed solution correct) plus constitution alignment
-  and readiness; format is a one-line afterthought
+  real, the reasoning valid, the proposed solution correct) plus readiness; format is a
+  one-line afterthought
 - `/spec-implement <feature>` -- implement task-by-task via implementer/reviewer
   subagents (orchestrator pattern)
 - `/spec-finalize <feature>` -- close out a fully-implemented spec: reconcile the project
   docs with the shipped code (running an opus-subagent update cycle if they are stale),
-  then remove the resolved spec directory and its `specs/INDEX.md` entry so only code +
-  up-to-date docs remain
+  then remove the resolved spec directory so only code + up-to-date docs remain
 
-Two repo-level files complement the per-feature directories:
-
-- `specs/INDEX.md` -- one-line entry per **active** spec (status, date, short summary);
-  finalized specs are removed from it
-- `specs/constitution.md` (optional) -- non-negotiable project principles binding on
-  every spec; consulted by all four slash commands above
+There is no repo-level index: the presence of a `specs/<feature-name>/` directory _is_ the
+record. A spec exists while the feature is active or not yet fully implemented; once it
+ships, `/spec-finalize` removes the directory, so no spec means the work is done.
 
 Each skill file (`~/.claude/skills/spec-*/SKILL.md`) is the source of truth for the
-format details: EARS patterns, lifecycle frontmatter, task table layout, traceability
-rules, and the constitution-deviation protocol. Do not re-derive them from this file.
+format details: EARS patterns, lifecycle frontmatter, task table layout, and traceability
+rules. Do not re-derive them from this file.
 
 ## TODO Files
 

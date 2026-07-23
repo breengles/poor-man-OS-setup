@@ -32,17 +32,13 @@ in parallel:
 2. `design.md`
 3. `tasks.md`
 4. `research.md` (if it exists)
-5. `specs/constitution.md` (if it exists) -- this is the project's binding principles.
-   Retain its full text. You will pass it to every implementer and reviewer subagent
-   as additional context alongside the design.
 
 If the spec directory does not exist, list available specs under `specs/` and stop.
 
 Also run `git status --porcelain` to note any pre-existing uncommitted changes.
 
-Retain the spec content (plus the constitution, if present) in your context -- you need
-it to construct subagent prompts. This is the only large payload you keep; everything
-else is summaries.
+Retain the spec content in your context -- you need it to construct subagent prompts. This
+is the only large payload you keep; everything else is summaries.
 
 ## Step 2: Build the task queue
 
@@ -121,9 +117,6 @@ The prompt must include:
 - The relevant design sections from `design.md` (components, interfaces, data
   models that this task touches based on its boundary)
 - Any relevant notes from `research.md`
-- The full text of `specs/constitution.md` if it exists, labelled as binding
-  project principles alongside the design (skip this block entirely if the file
-  is absent)
 - The project's test command if known (e.g. `pytest`, `npm test`)
 
 For a separate-implementers batch, dispatch each implementer **sequentially** (wait
@@ -166,8 +159,6 @@ The prompt must include:
   the combined diff against all of them.
 - Paths to the spec files: `specs/{feature}/requirements.md` and
   `specs/{feature}/design.md` (the reviewer reads them independently)
-- The path to `specs/constitution.md` if it exists, with an instruction to verify
-  the diff against the constitution principles (skip this entirely if absent).
 - The implementer's status report (for reference -- the reviewer verifies
   independently by running `git diff`). For a separate-implementers batch,
   concatenate every implementer's status report.
@@ -270,9 +261,8 @@ After finishing (all tasks done or user stops), report:
 4. **Next step**:
    - If pending tasks remain, suggest `/spec-implement {feature}` in a fresh session.
    - If every task in `tasks.md` is now `Done` (no `Pending`, no unresolved `Blocked`),
-     suggest `/spec-finalize {feature}` to flip the spec's lifecycle frontmatter to
-     `completed`, append an Implementation Notes block to `design.md`, and update
-     `specs/INDEX.md`.
+     suggest `/spec-finalize {feature}` to remove the resolved spec, leaving code +
+     up-to-date docs as the source of truth.
 
 ## Critical constraints
 
