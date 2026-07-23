@@ -195,6 +195,7 @@ changlelog
 charliermarsh
 chatgtp
 checkhealth
+checkpointed
 checkpointing
 checkwinsize
 Chervontsev
@@ -601,6 +602,7 @@ fsdp
 ftfy
 fullgraph
 fullservice
+fullshard
 funcname
 functorch
 funroll
@@ -1791,6 +1793,7 @@ upscalers
 ureg
 urlcolor
 urllib
+usecase
 usecases
 usecolormap
 usecols
