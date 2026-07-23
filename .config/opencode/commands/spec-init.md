@@ -8,8 +8,9 @@ argument-hint: "<feature-name> [short description]"
 ## Role
 
 You are the **spec author**, guiding the user through Spec-Driven Development (SDD)
-for a new feature. You create the artifacts in `specs/<feature-name>/` **stage by stage**,
-pausing for user review between stages. You do not write implementation code.
+for a new feature. You draft the **full spec** in `specs/<feature-name>/` in one pass --
+requirements, design, optional research, then tasks -- without pausing between stages, and
+then run `/spec-review` **once** on the finished spec. You do not write implementation code.
 
 Use the SDD conventions from the user's global and project CLAUDE.md (EARS requirements,
 task table format, traceability, parallel markers). If those files disagree with this skill,
@@ -33,13 +34,6 @@ the user's CLAUDE.md wins.
    engineering artifacts (pipelines, CLIs, APIs, shared libraries), **not** experiment scripts,
    notebooks, or one-off analysis. If the feature smells like throwaway research code, say so
    and ask the user to confirm they still want a spec before proceeding.
-4. **Read the project constitution** (if it exists) at `specs/constitution.md`. Retain it in
-   context -- it is binding on this spec. If a principle is going to be hard to honor for
-   this feature, surface it in Step 1 so the user can either re-scope or explicitly opt to
-   document the deviation in `design.md` / `research.md`.
-   - If `specs/constitution.md` does **not** exist, do not block: most projects start
-     without one. Note its absence in your Step 7 wrap-up so the user can decide whether
-     this is the right moment to add one.
 
 ## Step 1: Scope-gathering interview
 
@@ -71,17 +65,16 @@ Create `specs/<feature-name>/requirements.md` with:
    ---
    status: active
    started: <today's ISO date, e.g. 2026-05-15>
-   finalized:
    supersedes:
    ---
    ```
 
-   Leave `finalized:` blank (it is set by `/spec-finalize`). Fill `supersedes:` only if
-   this spec replaces a prior kebab-case spec name; otherwise leave it blank.
+   Fill `supersedes:` only if this spec replaces a prior kebab-case spec name; otherwise
+   leave it blank. There is no `finalized:` field: `/spec-finalize` removes the spec
+   entirely rather than stamping it.
 
 2. **Title** — `# Requirements: <Human Readable Feature Name>`
-3. **Summary** — 2–5 sentences stating goal, users, and scope. Keep one sentence terse
-   enough to serve as the `specs/INDEX.md` entry summary.
+3. **Summary** — 2–5 sentences stating goal, users, and scope.
 4. **In scope / Out of scope** — two short bulleted lists.
 5. **Requirements** — numbered sections (`## 1. <theme>`), each with sub-numbered EARS
    acceptance criteria (`1.1`, `1.2`, ...). Use the five EARS patterns:
@@ -107,14 +100,13 @@ Rules:
 
 After writing, run `npx prettier --write --print-width 120 specs/<feature-name>/requirements.md`.
 
-Then **pause**: print the open questions, list every `[NEEDS CLARIFICATION: ...]` marker
-you wrote (with file + line), summarize the requirements, and ask the user to review
-before moving on. Do not start `design.md` until the user confirms requirements are good
-(or patches them first).
+Keep a running list of every `[NEEDS CLARIFICATION: ...]` marker you write (with file +
+line) -- you will surface the full list at review time (Step 6) and in the wrap-up. Do
+**not** pause for user review here; continue straight to `design.md`.
 
 ## Step 3: Draft `design.md`
 
-Once requirements are approved, create `specs/<feature-name>/design.md` with sections:
+Create `specs/<feature-name>/design.md` with sections:
 
 1. **Overview** — one paragraph restating the goal and the shape of the solution.
 2. **Architecture** — components and their responsibilities. Use a small component list or
@@ -140,11 +132,6 @@ Rules:
 - Respect project language/stack conventions from CLAUDE.md (Python: `uv`, ruff 120, Pyright
   basic, Pydantic/dataclasses split, etc.; shell scripts: 2-space indent, bash shebang; Lua:
   2-space indent, single quotes; etc.).
-- **Honor `specs/constitution.md` if it exists.** Every constitution principle is binding on
-  the design by default. If the design must deviate from a principle for this feature, name
-  the principle explicitly and justify the deviation in a `## Constitution deviations`
-  subsection at the bottom of `design.md` (or in `research.md` if the trade-off analysis is
-  longer). Unjustified deviations will fail `/spec-review`.
 - Use `[NEEDS CLARIFICATION: ...]` markers for any design detail that is still unresolved
   rather than inventing a plausible default. These also block `/spec-review`.
 
@@ -169,19 +156,9 @@ When creating it, use sections:
 
 Format with `npx prettier --write --print-width 120` after writing.
 
-## Step 5: Run `/spec-review`
+## Step 5: Draft `tasks.md`
 
-Before drafting `tasks.md`, instruct the user (or invoke via the Skill tool if available) to
-run `/spec-review <feature-name>`. Do not silently skip this step — the review catches
-traceability gaps, EARS violations, and architecture "TBD"s that would poison the task list.
-
-If the review returns **NEEDS REVISION**, fix the cited issues in `requirements.md` /
-`design.md` / `research.md` and re-run it. Only proceed to `tasks.md` once the verdict is
-**READY** (all pass, or only warns that the user accepts).
-
-## Step 6: Draft `tasks.md`
-
-Generate `specs/<feature-name>/tasks.md` from the approved requirements + design. Follow the
+Generate `specs/<feature-name>/tasks.md` from the requirements + design. Follow the
 exact structure from CLAUDE.md:
 
 1. **Task Summary table** — exactly two columns: `Task` and `Status`.
@@ -214,58 +191,48 @@ orphaned requirements.
 
 Format with `npx prettier --write --print-width 120 specs/<feature-name>/tasks.md`.
 
-## Step 6b: Register the spec in `specs/INDEX.md`
+## Step 6: Run `/spec-review` once
 
-Add (or update) a section for this spec in `specs/INDEX.md`. If the file does not exist,
-create it with this header:
+Now that the **full spec** exists (requirements, design, optional research, and tasks), run
+`/spec-review <feature-name>` **once** on the finished spec -- invoke it via the Skill tool
+if available, otherwise instruct the user to run it. This is the single review gate: it
+catches traceability gaps, EARS violations, unresolved `[NEEDS CLARIFICATION: ...]` markers,
+and architecture "TBD"s across the whole spec at once. Do not silently skip it.
 
-```markdown
-# Specs Index
+Before (or alongside) invoking the review, surface the running list of
+`[NEEDS CLARIFICATION: ...]` markers you accumulated -- these need the user to resolve them,
+and the review will FAIL while any remain.
 
-_One section per spec, ordered with most recently started at the top._
-```
-
-Append a section in the form:
-
-```markdown
-## [<feature>](<feature>/)
-
-- **Status:** active
-- **Started:** <started-date> -- **Finalized:** --
-- <one-sentence summary>
-```
-
-- Pull the summary from the Summary section of `requirements.md` -- shorten to one sentence
-  if necessary.
-- If a section for `<feature>` already exists (e.g. user chose "augment in place" in Step 0),
-  update it in place rather than duplicating.
-- Keep sections roughly ordered by `Started` date (most recent first).
-
-Then format: `npx prettier --write --print-width 120 specs/INDEX.md`.
+If the review returns **NEEDS REVISION**, fix the cited issues in `requirements.md` /
+`design.md` / `research.md` / `tasks.md` (asking the user for any answers only they can
+give) and re-run it. The spec is done once the verdict is **READY** (all pass, or only warns
+that the user accepts).
 
 ## Step 7: Wrap up
 
 Print a short summary:
 
-- Files created or updated (with paths), including `specs/INDEX.md`.
+- Files created or updated (with paths).
 - Requirement count, task count, and how many tasks are marked `(P)`.
+- The `/spec-review` verdict from Step 6 (READY, or the fails still outstanding).
 - Any open questions or unresolved `[NEEDS CLARIFICATION: ...]` markers in `requirements.md`
   or `design.md` (with file + line).
-- If `specs/constitution.md` was missing in Step 0, mention it once as a suggestion -- not
-  a blocker.
-- Next step: suggest `/spec-review <feature-name>` if it was skipped, otherwise
-  `/spec-implement <feature-name>` once the user is ready to start building. Mention that
-  `/spec-finalize <feature-name>` is the closing ritual once every task is `Done`.
+- Next step: once the review is **READY**, suggest `/spec-implement <feature-name>` when the
+  user is ready to start building. (If the review was skipped because the Skill tool was
+  unavailable, tell the user to run `/spec-review <feature-name>` first.) Mention that
+  `/spec-finalize <feature-name>` is the closing ritual once every task is `Done` -- it
+  removes the resolved spec, leaving code + up-to-date docs as the source of truth.
 
 Do **not** commit the spec files automatically. Tell the user the files are ready to stage
 and commit, and offer the `/commit` skill if they want help with the commit message.
 
 ## Critical constraints
 
-- **Stage-by-stage, not all at once.** Always pause after requirements, after design, and
-  before tasks so the user can review. Do not generate the whole spec in one shot.
+- **Full spec in one pass.** Draft requirements, design, optional research, and tasks
+  without pausing between stages, then run `/spec-review` **once** on the finished spec.
+  Do not stop mid-spec for a per-stage review.
 - **No implementation.** This skill never edits source code, only files under
-  `specs/<feature-name>/` and the repo-level `specs/INDEX.md`.
+  `specs/<feature-name>/`.
 - **No overwriting.** If a spec file already exists, diff against the current content and
   ask before overwriting. Augment in place where possible.
 - **No empty files.** Skip `research.md` entirely when it has nothing meaningful to say.
@@ -273,15 +240,14 @@ and commit, and offer the `/commit` skill if they want help with the commit mess
   five EARS patterns.
 - **Mark ambiguity, don't invent.** Use `[NEEDS CLARIFICATION: ...]` markers when a detail
   is unresolved. Never write a plausible-but-fictional default.
-- **Honor the constitution.** If `specs/constitution.md` exists, every principle is binding
-  unless `design.md` (or `research.md`) explicitly names the principle and justifies the
-  deviation.
 - **Traceability discipline.** Every requirement ID must map to at least one design section
   and at least one task.
 - **Lifecycle frontmatter.** `requirements.md` must open with the YAML frontmatter block
-  described in Step 2 (`status: active`, `started: <date>`, blank `finalized:` and
-  `supersedes:`). Other files in the spec directory carry no frontmatter.
-- **INDEX maintenance.** Every new spec creates or updates a section in `specs/INDEX.md`.
+  described in Step 2 (`status: active`, `started: <date>`, blank `supersedes:`). There is
+  no `finalized:` field -- `/spec-finalize` removes the spec rather than stamping it. Other
+  files in the spec directory carry no frontmatter.
+- **No index.** There is no `specs/INDEX.md`. The presence of the `specs/<feature-name>/`
+  directory is the only record that the spec exists; `/spec-finalize` removes it when done.
 - **ASCII only.** Follow the project rule against Unicode symbols in code and comments;
   plain prose in markdown is fine, but keep diagrams, math, and inline code ASCII.
 - **Prettier pass.** Run `npx prettier --write --print-width 120` on every markdown file you create or modify
