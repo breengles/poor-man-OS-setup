@@ -10,6 +10,7 @@
 /misc
 /todos
 /.vscode
+/.cursor
 /.config/yazi/plugins
 /\.claude/settings\.local\.json
 /\.claude/backups

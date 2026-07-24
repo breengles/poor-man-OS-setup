@@ -55,6 +55,7 @@ Anikin
 animatediff
 aniso
 annos
+anyscalecompute
 anysphere
 AOTI
 apfs
@@ -120,6 +121,7 @@ baseroot
 bashcompinit
 basicsr
 batchify
+battlecook
 bbox
 bboxes
 bchw
@@ -669,6 +671,7 @@ Hankel
 hansyan
 hardlight
 hardlinks
+harrydowning
 hartree
 hasattr
 hasface
