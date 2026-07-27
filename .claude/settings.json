@@ -115,7 +115,7 @@
   },
   "effortLevel": "xhigh",
   "awaySummaryEnabled": false,
-  "tui": "default",
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
   "skipAutoPermissionPrompt": true,
