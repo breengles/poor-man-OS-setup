@@ -196,6 +196,7 @@ CFOUR
 changlelog
 charliermarsh
 chatgtp
+chdir
 checkhealth
 checkpointed
 checkpointing
@@ -1081,6 +1082,7 @@ multirun
 mushan
 musiq
 mybucket
+mypkg
 mypy
 nabla
 namelist
