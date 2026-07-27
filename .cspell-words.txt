@@ -1216,6 +1216,7 @@ orjson
 osascript
 otomo
 outdir
+outpaint
 outputdir
 outscale
 overfit
