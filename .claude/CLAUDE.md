@@ -44,6 +44,17 @@ Scale CPU and memory with the GPU count, and tune the GPU count to the task type
 single GPU for small inference, more for multi-GPU training). If you are unsure which
 partition or how many GPUs a task needs, ask the user before submitting.
 
+### Login-node traps
+
+- **The agent scratchpad is login-node-local and invisible to compute nodes.** Never write
+  run outputs, configs a job will read, or project dirs there. Use a shared filesystem path.
+- **Hugging Face Xet uploads hang on the login node** -- they need a compute node, so run
+  them under a CPU `srun` (`defq` is fine for a pure upload). The HF token is cached in the
+  shared `HF_HOME` on the cluster filesystem; do not expect an `HF_TOKEN` in `.env`.
+- Job logs land in the submit directory unless `--chdir`/`--output` says otherwise, and
+  `sbatch` snapshots the batch script at submit time -- editing the `.sbatch` afterwards does
+  not affect an already-queued job (source files it calls at runtime DO pick up edits).
+
 ### Partitions (pair cluster)
 
 Run `sinfo` to check live availability before submitting. The relevant partitions:
@@ -65,18 +76,43 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
 - No `from __future__ import annotations`
 - Logging: stdlib `logging` (or `loguru` if project already uses it)
 - Strings: f-strings for all interpolation
+- **Module layout: public at the top, private at the bottom.** Put public/consumer-facing
+  definitions first and underscored helpers at the end, so a reader meets the API before
+  the implementation details.
+- **Prefer relative imports within a package** -- `from .foo import X`, not
+  `from mypkg.foo import X`.
+
+### Environments
+
+- Extra/variant envs live in the **project root** as `.venv-<variant>`, selected via
+  `UV_PROJECT_ENVIRONMENT`. Never put them on a shared filesystem or under `/tmp`, and
+  leave the project's main `.venv` untouched.
+- **`uv pip` ignores `UV_PROJECT_ENVIRONMENT`.** Use `uv sync`/`uv run`, or activate the
+  target env explicitly, or the install silently lands in the wrong place.
 
 ### Type checking
 
 - Always invoke pyright via `uv run pyright <files>` so it picks up the project's `.venv`.
 - For projects without a `pyrightconfig.json` / `[tool.pyright]` block, prefer adding one
   (`venvPath = "."`, `venv = ".venv"`) over relying on the `uv run` prefix.
+- **Do not contort code to satisfy pyright.** No asserts, casts, or restructuring added
+  purely to silence it; a false-positive fire is acceptable and preferable to obscuring
+  the real logic.
+- Pyright IS the right tool after a rebase across a base-class refactor, but **scope it to
+  the changed files** -- a repo-wide run in a codebase with pre-existing errors drowns the
+  signal.
 
 ## Code and Comments
 
 - **No Unicode symbols in code or comments.** Use plain ASCII equivalents instead.
   Examples: `*` not `·`, `->` not `→`, `>=` not `≥`, `<=` not `≤`, `!=` not `≠`,
   `sum(...)` or `\sum` not `∑`. Wrong: `# g·f + f·g = 2∫gf dr` - Right: `# g * f + f * g = 2 * \int gf dr`
+
+## Tests
+
+- **Do not add tests unless asked.** If tests were added proactively, remove them.
+- **Never delete or weaken pre-existing coverage unprompted.** If a change makes an
+  existing test fail, fix the code or raise it -- do not quietly drop the test.
 
 ## Git Commits
 
