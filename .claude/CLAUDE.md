@@ -119,6 +119,14 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
 - Never include issue IDs or numbers (e.g. `#5`, `#123`) in commit messages - GitLab interprets
   `#N` as an issue reference and may auto-close issues unintentionally.
 
+## Ultracode Mode
+
+When operating in ultracode mode (workflows and other multi-agent fan-out), keep the
+subagent fleet small: **at most 3 Opus subagents or 6 Sonnet subagents** in flight at
+once. For a mixed fleet, count 1 Opus as 2 Sonnet slots against the same budget (so
+1 Opus + 4 Sonnet is the ceiling). If a task looks like it needs a wider fan-out,
+interview a user for unclear or complex parts.
+
 ## Spec-Driven Development (SDD)
 
 For long-lived engineering work (pipelines, CLIs, APIs, shared libraries), use the spec

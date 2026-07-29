@@ -1757,6 +1757,7 @@ twxs
 typer
 tzdata
 uigroup
+Ultracode
 ultradetailed
 ultralytics
 ULTRASR
