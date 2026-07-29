@@ -206,6 +206,7 @@ chibi
 Chilingaryan
 chima
 chkp
+chpwd
 chsh
 chuncking
 chunksize

@@ -28,6 +28,17 @@ export NVM_DIR="$HOME/.nvm"
 
 eval "$(zoxide init --cmd cd zsh)"
 
+# Don't memorize $HOME's direct children (~/Downloads, ~/.config, ...), but keep
+# memorizing anything deeper (~/projects/foo). _ZO_EXCLUDE_DIRS can't express
+# this: its globs are depth-blind ('*' crosses '/'), so "$HOME/*" would exclude
+# the whole tree. Filter in zoxide's own chpwd hook instead.
+function __zoxide_hook() {
+  local dir
+  dir="$(__zoxide_pwd)" || return 0
+  [[ "${dir%/*}" == "$HOME" ]] && return 0
+  command zoxide add -- "$dir"
+}
+
 # opencode
 if [ -d "$HOME/.opencode/bin" ]; then 
   export PATH=$HOME/.opencode/bin:$PATH
