@@ -721,6 +721,7 @@ hyperiqa
 hypernetworks
 hyperparams
 hyperplaneq
+icecream
 idxes
 idxs
 ifail
@@ -1896,6 +1897,7 @@ yamldata
 yamlpath
 yamls
 yapf
+Yarats
 yarl
 yazi
 ycbcr
