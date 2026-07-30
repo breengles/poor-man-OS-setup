@@ -29,6 +29,15 @@ __pycache__
 /.claude/shell-snapshots
 /.claude/todos
 /.claude/history.jsonl
+# Codex writes credentials, databases, caches, sessions, packages, and plugins
+# beside its durable configuration. Track only the configuration allowlist.
+/.codex/*
+!/.codex/AGENTS.md
+!/.codex/config.toml
+!/.codex/agents/
+!/.codex/agents/**
+!/.codex/rules/
+!/.codex/rules/**
 
 /.config/opencode/package-lock.json
 

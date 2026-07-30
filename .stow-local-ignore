@@ -23,4 +23,7 @@
 /\.claude/shell-snapshots
 /\.claude/todos
 /\.claude/history\.jsonl
+# Under .codex, deploy only AGENTS.md, config.toml, agents/, and rules/.
+# The negative lookahead excludes all current and future Codex runtime state.
+^/\.codex/(?!(?:AGENTS\.md|config\.toml)$|(?:agents|rules)(?:/|$)).+
 /\.config/opencode/node_modules

@@ -15,6 +15,7 @@ no build system, no test framework, and no CI/CD pipeline.
 .zshrc                     # Primary shell config (sources everything in .config/shell/)
 .gitconfig                 # Git config (delta pager, aliases, LFS)
 .tmux.conf                 # tmux config (C-Space prefix, TPM plugin manager)
+.stowrc                    # Disables directory folding so ignore rules apply per file
 .config/
   nvim/                    # Neovim config (Kickstart-based, lazy.nvim)
     init.lua               # Main config (~500 lines)
@@ -23,10 +24,11 @@ no build system, no test framework, and no CI/CD pipeline.
   shell/                   # Shell modules (aliases, functions, env, completions, keybindings)
   starship.toml            # Starship prompt config
   yazi/                    # Yazi file manager config + plugins
-.Codex/
-  AGENTS.md                # User-level Codex preferences (stowed to ~/.Codex/)
-  skills/                  # Custom slash commands (commit, todo-*, docs-*, mr-description, spec-review, spec-implement)
-  agents/                  # Custom agent definitions (branch-code-reviewer)
+.codex/
+  AGENTS.md                # User-level Codex preferences (stowed to ~/.codex/)
+  config.toml              # Codex defaults, agents, TUI, status line, and MCP
+  agents/                  # Custom subagent definitions
+.agents/skills/            # User-level reusable Codex workflows
 .vscode/
   user_settings.json       # Cursor/VS Code settings
   keybindings.json         # Cursor/VS Code keybindings
@@ -55,7 +57,7 @@ stow .
 stow -n -v .
 ```
 
-Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `docs/`, `misc/`, `todos/`, `.vscode/`, and many `.Codex/` transient dirs).
+Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `docs/`, `misc/`, `todos/`, `.vscode/`, and Codex runtime state under `.codex/`). `.stowrc` disables directory folding so Stow deploys only the allowlisted Codex configuration rather than symlinking the entire runtime directory.
 
 ## Environment Notes
 
@@ -76,13 +78,15 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
 
 ### Codex
 
-- **Codex user prefs:** `.Codex/AGENTS.md` (stowed to `~/.Codex/AGENTS.md`)
-- **Codex skills:** 16 custom slash commands at `.Codex/skills/` — commit, todo-init,
+- **Codex user prefs:** `.codex/AGENTS.md` (stowed to `~/.codex/AGENTS.md`)
+- **Codex skills:** 16 reusable workflows at `.agents/skills/` — commit, todo-init,
   todo-review, todo-implement, docs-init, docs-revise, docs-analyze, mr-description,
   mr-review, plan-implement, resolve-conflicts, spec-init, spec-review, spec-implement,
   spec-finalize, dataset-readme
-- **Codex agents:** `.Codex/agents/` — branch-code-reviewer, spec-implementer
-  (Sonnet, Write/Edit), spec-reviewer (Opus, read-only + Bash), todo-implementer
-  (Sonnet, Write/Edit), todo-reviewer (Opus, read-only + Bash)
-- **Codex settings:** `~/.Codex/settings.json` (managed by Codex itself, not stow —
-  contains MCP servers, hooks, plugins, permissions)
+- **Codex agents:** `.codex/agents/` — plan/spec/TODO implementer and reviewer roles.
+- **Codex settings:** `.codex/config.toml` (stowed to `~/.codex/config.toml`) contains
+  sandbox and approval defaults, multi-agent limits, TUI keybindings, the native
+  status line, and the GitLab CLI MCP server.
+- **Invocation:** use `$skill-name` in a prompt or choose a workflow with `/skills`.
+  Codex custom prompts are deprecated, so Claude-style slash commands are represented
+  as skills rather than duplicated under `.codex/prompts/`.
