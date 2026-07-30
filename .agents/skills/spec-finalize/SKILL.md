@@ -1,7 +1,6 @@
 ---
 name: spec-finalize
-description: Close out an implemented spec by reconciling the project docs with the shipped code (updating them via opus subagents if stale), then removing the resolved spec directory so code + up-to-date docs remain the source of truth.
-argument-hint: "<feature-name>"
+description: Close out an implemented spec by reconciling project docs with shipped code through updater and reviewer subagents, then remove the resolved spec directory so code plus current docs remain the source of truth.
 ---
 
 # spec-finalize
@@ -13,19 +12,20 @@ You are the **closer**. The implementation phase is over. In this project's spec
 ships, the durable record is the code plus the project docs -- not a frozen spec. Your
 job is to
 
-1. make sure the docs reflect what actually shipped -- running an opus-subagent update
+1. make sure the docs reflect what actually shipped -- running a subagent update
    cycle if they are stale -- and then
 2. remove the resolved spec entirely (its `specs/<feature-name>/` directory),
 
 so the repository ends up with code + up-to-date docs and no lingering spec.
 
 For the doc-update cycle you are the **orchestrator**: you do NOT edit docs yourself.
-Opus subagents revise the docs; an opus reviewer subagent verifies alignment against the
-code. You never edit application/source code in this skill.
+High-reasoning Codex subagents revise the docs; an independent reviewer subagent
+verifies alignment against the code. You never edit application/source code in
+this skill.
 
 ## Parse arguments
 
-- `$ARGUMENTS` should be the kebab-case feature name (matching `specs/<feature-name>/`).
+- The user's request should name the kebab-case feature (matching `specs/<feature-name>/`).
 - If no argument is provided, list the spec directories under `specs/` (each is a
   candidate, since finalized specs are removed rather than kept) and ask which to
   finalize.
@@ -82,7 +82,7 @@ continuing.
 
 ## Step 3: Check whether the docs are up to date
 
-Compare the shipped **code** against the in-scope docs, following the `/docs-analyze`
+Compare the shipped **code** against the in-scope docs, following the `$docs-analyze`
 methodology: read each doc, read the source it describes, diff the documented behavior
 against the real code, and gauge staleness via git. Produce a short internal verdict per
 doc file: **current**, **stale** (with the specific gap), or **missing**.
@@ -94,24 +94,30 @@ user can interject.
   go to Step 5.
 - Otherwise, run the update cycle in Step 4.
 
-## Step 4: Doc-update cycle (opus subagents, orchestrator loop)
+## Step 4: Doc-update cycle (high-reasoning subagents, orchestrator loop)
 
-Run an updater + reviewer loop over the stale/missing docs. You orchestrate; opus
+Run an updater + reviewer loop over the stale/missing docs. You orchestrate;
 subagents do the writing and the verification. Keep your own context clean: after each
 doc settles, retain only a one-line summary (e.g. "docs/api.md: ALIGNED, rewrote auth
 section") and discard the full subagent reports.
 
 ### 4a. Dispatch doc-updater subagent(s)
 
-Dispatch opus subagents via the Agent tool:
+Dispatch fresh doc workers with `spawn_agent`:
 
 ```
-Agent({
-  subagent_type: "general-purpose",
-  model: "opus",
-  prompt: <doc-update context below>
-})
+spawn_agent(
+  task_name="spec_docs_<doc>_update_r<round>",
+  agent_type="worker",
+  model="gpt-5.6-sol",
+  reasoning_effort="xhigh",
+  fork_turns="none",
+  message=<doc-update context below>,
+)
 ```
+
+Wait for each updater with `wait_agent`. Keep doc workers sequential when their
+files overlap.
 
 Prefer **one updater per doc file** when the files are independent -- dispatch them
 sequentially, accumulating edits in the working tree. Use a **single combined updater**
@@ -123,7 +129,7 @@ when the docs are entangled (shared sections, one refactor). The prompt must inc
   the real code -- the code is the source of truth, and `design.md` is only a hint that
   may have drifted from what shipped.
 - The specific gap you found in Step 3 for each doc.
-- Instruction to follow the `/docs-revise` methodology: reconcile the doc with the
+- Instruction to follow the `$docs-revise` methodology: reconcile the doc with the
   current code, remove stale content, add coverage for new behavior, fix examples,
   update the `docs/README.md` index if files were added or removed, and run
   `npx prettier --write --print-width 120` on each file it touches.
@@ -132,21 +138,24 @@ when the docs are entangled (shared sections, one refactor). The prompt must inc
 
 ### 4b. Dispatch doc-reviewer subagent
 
-Once every updater has returned, dispatch one opus reviewer:
+Once every updater has returned, dispatch one independent reviewer:
 
 ```
-Agent({
-  subagent_type: "general-purpose",
-  model: "opus",
-  prompt: <review context below>
-})
+spawn_agent(
+  task_name="spec_docs_review_r<round>",
+  agent_type="explorer",
+  model="gpt-5.6-sol",
+  reasoning_effort="high",
+  fork_turns="none",
+  message=<review context below>,
+)
 ```
 
 The prompt must include:
 
 - The doc file paths that were changed or created.
 - The feature's code paths (the source of truth).
-- Instruction to follow the `/docs-analyze` methodology and return one of two verdicts:
+- Instruction to follow the `$docs-analyze` methodology and return one of two verdicts:
   **ALIGNED** (the docs now match the shipped code -- no critical inaccuracies and no
   coverage gaps for this feature) or **NEEDS_REVISION** with specific findings.
 - Instruction that the reviewer reads code and docs independently (git + Read) and does
@@ -155,11 +164,11 @@ The prompt must include:
 ### 4c. Handle the verdict
 
 - **ALIGNED** -> proceed to Step 5.
-- **NEEDS_REVISION (round 1 or 2)** -> dispatch a fresh opus doc-updater with the
+- **NEEDS_REVISION (round 1 or 2)** -> dispatch a fresh doc-updater with the
   reviewer's specific findings only, then re-dispatch the reviewer.
 - **Still NEEDS_REVISION after 2 revision rounds** -> stop the cycle. Report the
   outstanding doc gaps and **do not remove the spec**. The spec stays in place until the
-  docs can be aligned; the user can fix the docs manually and re-run `/spec-finalize`.
+  docs can be aligned; the user can fix the docs manually and re-run `$spec-finalize`.
 
 ## Step 5: Confirm and remove the resolved spec
 
@@ -190,7 +199,7 @@ Print a wrap-up:
 - **Follow-ups (informational only):** list any known gaps, deferred work, or
   code/design deviations you noticed. Print them for the user but do **not** file them
   anywhere. If the user wants them tracked, suggest a `todos/<area>.md` entry.
-- **Next step:** the removals and doc edits are staged-ready. Suggest `/commit` with a
+- **Next step:** the removals and doc edits are staged-ready. Suggest `$commit` with a
   message like `chore(<feature>): finalize spec, reconcile docs` -- but do NOT commit
   automatically.
 
@@ -198,7 +207,7 @@ Print a wrap-up:
 
 - **Code is the source of truth.** When the docs or `design.md` disagree with the code,
   the code wins. Every subagent must read the real code, not trust `design.md`.
-- **Orchestrator only for docs.** You do NOT edit docs yourself -- opus subagents do. You
+- **Orchestrator only for docs.** You do NOT edit docs yourself -- doc worker subagents do. You
   never edit application/source code in this skill; updaters touch only `docs/`,
   `README.md`, and `AGENTS.md`.
 - **Removal needs explicit approval.** Never delete the spec directory without the user's

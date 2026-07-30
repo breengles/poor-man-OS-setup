@@ -1,7 +1,6 @@
 ---
 name: todo-implement
 description: Implement items from a TODO file, one at a time, with independent implementer and reviewer subagents per item. The main session acts as orchestrator only.
-argument-hint: "<area or path> [item-numbers | all]"
 ---
 
 # todo-implement
@@ -19,7 +18,8 @@ contexts and don't accumulate here.
 **Code (plus its docs) is the source of truth; a TODO item is disposable scaffolding.**
 An item drives the work while it is open, but once shipped the durable record is the code
 and the project docs -- not a lingering `Done` row. So at the end of the run (Step 4) you
-reconcile any affected docs with what shipped (via opus subagents, like `/spec-finalize`)
+reconcile any affected docs with what shipped (via high-reasoning subagents, like
+`$spec-finalize`)
 and then **remove** the resolved items from the file, leaving code + up-to-date docs.
 
 ## Modes
@@ -32,7 +32,7 @@ and then **remove** the resolved items from the file, leaving code + up-to-date 
 
 ## Step 1: Resolve target file
 
-Parse `$ARGUMENTS`:
+Parse the TODO area/path and optional item selectors from the user's request:
 
 - If a path is given (e.g. `todos/solver.md`), use it.
 - If an area name is given (e.g. `solver`), use `todos/<name>.md`.
@@ -105,14 +105,17 @@ abc1234") and discard the full subagent reports from your working memory.
 
 ### 3a. Dispatch implementer(s)
 
-Dispatch the **todo-implementer** subagent via the Agent tool:
+Dispatch a fresh **todo-implementer** with `spawn_agent`:
 
 ```
-Agent({
-  subagent_type: "todo-implementer",
-  prompt: <item-specific context below>
-})
+spawn_agent(
+  task_name="todo_<area>_<item>_impl_r<round>",
+  agent_type="todo-implementer",
+  message=<item-specific context below>,
+)
 ```
+
+Wait for it with `wait_agent` before interpreting its report.
 
 The prompt must include:
 
@@ -154,14 +157,17 @@ they noticed, you will file those as new TODO items in step 3f.
 
 ### 3c. Dispatch reviewer
 
-Dispatch the **todo-reviewer** subagent via the Agent tool:
+Dispatch a fresh **todo-reviewer** with `spawn_agent`:
 
 ```
-Agent({
-  subagent_type: "todo-reviewer",
-  prompt: <item-specific context below>
-})
+spawn_agent(
+  task_name="todo_<area>_<item>_review_r<round>",
+  agent_type="todo-reviewer",
+  message=<item-specific context below>,
+)
 ```
+
+Wait for it with `wait_agent` before interpreting its verdict.
 
 The prompt must include:
 
@@ -183,19 +189,18 @@ do not repeat them in the prompt.
 Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
 
 - **APPROVED**: proceed to update the TODO file (step 3e), then commit (step 3f).
-- **REJECTED (round 1)**: dispatch a **new** todo-implementer subagent (default
-  Sonnet) with:
+- **REJECTED (round 1)**: dispatch a **new** todo-implementer subagent with:
   - The original item context
   - The reviewer's specific FINDINGS and REMEDIATION
   - Instruction to fix the cited issues only
     Then re-dispatch the todo-reviewer.
-- **REJECTED (round 2)**: **escalate to Opus** -- dispatch a new todo-implementer
-  with `model: "opus"` passed to the Agent tool (this overrides the agent's
-  frontmatter default). Include the original item context, all accumulated
-  FINDINGS from both prior rounds, and a note that this is an escalated attempt
-  after two Sonnet rounds failed. Then re-dispatch the todo-reviewer.
+- **REJECTED (round 2)**: escalate by spawning a new todo-implementer with
+  `model="gpt-5.6-sol"`, `reasoning_effort="xhigh"`, and `fork_turns="none"`.
+  Include the original item context, all accumulated FINDINGS from both prior
+  rounds, and a note that this is an escalated attempt after two implementation
+  rounds failed. Then re-dispatch the todo-reviewer.
 - **REJECTED (round 3)**: flip the item's Status column to `Blocked` and add
-  `_Blocked: reviewer rejected after 2 fix rounds (including Opus escalation) --
+  `_Blocked: reviewer rejected after 2 fix rounds (including model escalation) --
 {summary}_` under the item's detailed section in `todos/<area>.md`. Report
   to user, move to next item.
 
@@ -207,7 +212,7 @@ a premature edit would lose the source of truth driving the retry.
 
 **User disagreement escalation.** If the user interjects mid-cycle with strong
 pushback on the implementer's approach ("no, that's wrong", "this won't work",
-"stop and rethink"), treat the next retry as an escalated Opus round regardless
+"stop and rethink"), treat the next retry as an escalated `gpt-5.6-sol` xhigh round regardless
 of rejection count. Pass the user's specific objection as additional input to
 the implementer alongside the original item context.
 
@@ -291,27 +296,29 @@ docs; those need no reconciliation.
 - If **no** `Done` item changed documented behavior, skip to Step 4c.
 - Otherwise, list the affected docs and run the update cycle in Step 4b.
 
-### 4b. Doc-update cycle (opus subagents, orchestrator loop)
+### 4b. Doc-update cycle (high-reasoning subagents, orchestrator loop)
 
-Mirror `/spec-finalize`'s cycle. You orchestrate; opus subagents do the writing and
+Mirror `$spec-finalize`'s cycle. You orchestrate; worker subagents do the writing and
 verification. You do NOT edit docs yourself.
 
-1. **Dispatch doc-updater subagent(s)** via the Agent tool
-   (`subagent_type: "general-purpose"`, `model: "opus"`), one per affected doc when the
+1. **Dispatch doc-updater subagent(s)** with `spawn_agent`
+   (`agent_type="worker"`, `model="gpt-5.6-sol"`,
+   `reasoning_effort="xhigh"`, `fork_turns="none"`), one per affected doc when the
    files are independent (dispatched sequentially) or one combined updater when they are
    entangled. Each prompt must include: the doc path(s) to revise/create; the shipped
    behavior (the `_Done:_` notes and the changed code paths, with an instruction to read
    the **real code** since it is the source of truth); the specific gap; and an
-   instruction to follow the `/docs-revise` methodology, update the `docs/README.md`
+   instruction to follow the `$docs-revise` methodology, update the `docs/README.md`
    index if files were added/removed, run `npx prettier --write --print-width 120` on
    each file it touches, and edit **only documentation** (`docs/`, `README.md`,
    `AGENTS.md`) -- never source code.
-2. **Dispatch one opus doc-reviewer** (`general-purpose`, `model: "opus"`) once the
-   updaters return. It follows the `/docs-analyze` methodology, reads code and docs
+2. **Dispatch one independent doc-reviewer** (`agent_type="explorer"`,
+   `model="gpt-5.6-sol"`, `reasoning_effort="high"`, `fork_turns="none"`) once the
+   updaters return. It follows the `$docs-analyze` methodology, reads code and docs
    independently, edits nothing, and returns **ALIGNED** or **NEEDS_REVISION** with
    specific findings.
 3. **Handle the verdict**: `ALIGNED` -> proceed to 4c. `NEEDS_REVISION` (max 2 rounds) ->
-   dispatch a fresh opus updater with the findings, then re-review. If still not aligned
+   dispatch a fresh updater with the findings, then re-review. If still not aligned
    after 2 rounds, **stop**: leave the affected items in the file (do not purge them),
    report the outstanding doc gaps, and let the user fix docs manually and re-run.
 
@@ -347,13 +354,13 @@ Report:
 3. **Blocked items**: list with reasons (these remain in the file)
 4. **Remaining items**: count still pending
 5. **Follow-ups filed**: any new TODO items you added from CONCERNS
-6. **Next step**: if open items remain, suggest `/todo-implement {area}` in a fresh session
+6. **Next step**: if open items remain, suggest `$todo-implement {area}` in a fresh session
 
 ## Critical constraints
 
 - **You are the orchestrator.** Do NOT write implementation code in the main session.
   All code changes come from todo-implementer subagents. In the Step 4 doc-reconciliation
-  cycle you also do NOT edit docs yourself -- opus doc subagents do.
+  cycle you also do NOT edit docs yourself -- doc worker subagents do.
 - **Code is the source of truth.** When docs disagree with the code, the code wins; doc
   subagents must read the real code, not trust the TODO notes or design assumptions.
 - **Resolved items are removed, not retained.** Do not keep a `Done` ledger. `Done` is a

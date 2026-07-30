@@ -1,10 +1,10 @@
 ---
 name: spec-review
 description: Adversarially test a design spec's soundness -- is the problem real, the reasoning valid, and the proposed solution correct -- before implementation begins
-argument-hint: "<feature-name>"
 ---
 
-Review the design spec for feature `$ARGUMENTS` before implementation begins.
+Review the design spec for the feature named in the user's request before
+implementation begins.
 
 **The goal is to adversarially test the proposal, not to grade its grammar.** Assume the
 spec is wrong somewhere and go find it. Interrogate three things, in this order of priority:
@@ -19,7 +19,7 @@ priority and gets exactly one sentence at the end -- see **Format check**.
 
 **Determine scope:**
 
-- The spec lives at `specs/$ARGUMENTS/`.
+- The spec lives at `specs/<feature-name>/`, using the name from the request.
 - If the directory does not exist, list available specs under `specs/` and ask the user which one to review.
 
 **Read all spec files** in the directory (`requirements.md`, `design.md`, `tasks.md`, `research.md` if present) before starting the review.

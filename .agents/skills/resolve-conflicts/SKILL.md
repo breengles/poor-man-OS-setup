@@ -3,7 +3,6 @@ name: resolve-conflicts
 description:
   Resolve in-progress merge, rebase, cherry-pick, or revert conflicts. Inspect repo state, understand each side's intent
   from commit history, edit files to a correct combined result, verify with build/tests, and finalize the operation.
-argument-hint: "[<file path or directory to scope to> | leave empty to resolve all conflicts]"
 ---
 
 Resolve conflicts left behind by an in-progress merge, rebase, cherry-pick, or revert. Read both sides of each conflict,
@@ -15,8 +14,8 @@ discard the wrong side. Confirm operation type before resolving anything.
 
 ## Scope
 
-- If `$ARGUMENTS` is empty: resolve every conflicted path reported by `git status`.
-- If `$ARGUMENTS` is a file or directory path: resolve only conflicts inside that path. Leave other conflicts for a
+- If the user supplied no path: resolve every conflicted path reported by `git status`.
+- If the user supplied a file or directory path: resolve only conflicts inside that path. Leave other conflicts for a
   later pass and do not finalize the operation until everything is resolved.
 - If there is no operation in progress (no `MERGE_HEAD`, `REBASE_HEAD`, `CHERRY_PICK_HEAD`, or `REVERT_HEAD`), stop and
   ask the user what they want to do (start a merge/rebase, abort, etc.) rather than guessing.
@@ -166,7 +165,7 @@ them to escape a stuck conflict. Use the operation's own `--abort` if a reset is
 4. **Regenerate lockfiles and generated artifacts** -- do not hand-merge them.
 5. **Verify with build / typecheck / lint / tests** before finalizing. Report what you ran and the outcome.
 6. **Do not skip pre-commit or commit hooks** to push the operation through. A failing hook is signal, not friction.
-7. **Confirm before `--abort` or any destructive recovery.** The forbidden commands listed in `~/.Codex/AGENTS.md`
+7. **Confirm before `--abort` or any destructive recovery.** The forbidden commands listed in `~/.codex/AGENTS.md`
    (`git reset --hard`, `git checkout .`, `git restore .`, `git clean -f`, `git push --force*`, `rm -rf`) require
    explicit user approval -- conflict resolution does not justify them.
 8. **Stage only resolved files** (`git add <path>` per file). Do not run `git add .` / `-A` -- it sweeps in unrelated

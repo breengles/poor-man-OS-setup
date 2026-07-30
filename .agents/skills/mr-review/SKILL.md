@@ -3,7 +3,6 @@ name: mr-review
 description:
   Adversarial review of a GitLab Merge Request -- raise correctness, edge-case, security, and code-quality issues by
   reading the diff and, where feasible, running the code.
-argument-hint: "[<MR URL or IID> | leave empty for current branch]"
 ---
 
 Review a GitLab Merge Request for correctness, edge cases, potential failures, security, and code quality. Be
@@ -12,8 +11,8 @@ axis -- behavior, edge cases, and runtime correctness matter at least as much.
 
 ## Scope
 
-- If `$ARGUMENTS` is empty: review the **current branch** vs the base branch (`main`, fallback `master`).
-- If `$ARGUMENTS` is a GitLab MR URL or IID (e.g. `123`, `!123`, or `https://gitlab.example.com/group/proj/-/merge_requests/123`):
+- If the user supplied no MR reference: review the **current branch** vs the base branch (`main`, fallback `master`).
+- If the user supplied a GitLab MR URL or IID (e.g. `123`, `!123`, or `https://gitlab.example.com/group/proj/-/merge_requests/123`):
   fetch the MR via `glab mr view <iid>` (or the `glab` MCP tools if available) and review the diff between the source
   and target branches. If the MR's source branch is checked out locally, prefer the local checkout so you can run code.
 

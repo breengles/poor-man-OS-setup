@@ -1,7 +1,6 @@
 ---
 name: plan-implement
 description: Implement an in-session implementation plan, one step at a time, with independent implementer and reviewer subagents per step. The main session acts as orchestrator only. Use when the user has just drafted a plan (in plan mode or in chat) or pointed at a plan file and now wants it executed step-by-step with an implementer/reviewer loop -- as opposed to ad-hoc coding in the main session.
-argument-hint: "[plan-file-path] [step-numbers | all]"
 ---
 
 # plan-implement
@@ -16,7 +15,7 @@ step sequencing, committing, and progress tracking.
 This keeps the main session context clean -- implementation details live in
 subagent contexts and don't accumulate here.
 
-This skill is the free-form counterpart to `/spec-implement` and `/todo-implement`.
+This skill is the free-form counterpart to `$spec-implement` and `$todo-implement`.
 Use it when the plan exists in the conversation or in a one-off file rather than
 in a `specs/<feature>/` or `todos/<area>.md` artifact.
 
@@ -31,13 +30,13 @@ in a `specs/<feature>/` or `todos/<area>.md` artifact.
 
 ## Step 1: Resolve the plan source
 
-Parse `$ARGUMENTS`:
+Parse the plan path and optional step selectors from the user's request:
 
 - If the first argument is a path that exists (e.g. `plan.md`,
   `docs/refactor-plan.md`), read it and treat its contents as the plan.
 - Otherwise, look for a plan in the current conversation context. The plan is
   typically:
-  - The output of a recent **plan mode** session (`ExitPlanMode` payload)
+  - The output of a recent Codex **plan mode** session
   - A multi-step proposal you or the user wrote out earlier in the conversation
   - A markdown block the user pasted
 - **If neither a path nor a conversation plan is available, auto-resolve to the
@@ -76,8 +75,8 @@ each step is:
 If the plan is already cleanly numbered, keep its numbering. Otherwise assign
 your own (1, 2, 3, ...).
 
-Track the step list using `TaskCreate` (one task per step) so the user can
-follow progress live. The task list is the orchestrator's working tracker; it is
+Track the step list using `update_plan` (one plan item per step) so the user can
+follow progress live. The plan is the orchestrator's working tracker; it is
 ephemeral and lives only for this session.
 
 Present the normalized step list to the user and **ask for confirmation** before
@@ -121,19 +120,22 @@ completed batch, retain only a **one-line summary** (e.g. "step 2: APPROVED,
 3 files changed, commit abc1234"; or "batch [3, 4, 5]: APPROVED, commit
 abc1234") and discard the full subagent reports from your working memory.
 
-Mark the corresponding `TaskCreate` entries `in_progress` when you dispatch and
+Mark the corresponding plan items `in_progress` when you dispatch and
 `completed` when the batch is approved and committed.
 
 ### 3a. Dispatch implementer(s)
 
-Dispatch the **plan-implementer** subagent via the Agent tool:
+Dispatch a fresh **plan-implementer** with `spawn_agent`:
 
 ```
-Agent({
-  subagent_type: "plan-implementer",
-  prompt: <step-specific context below>
-})
+spawn_agent(
+  task_name="plan_step_<number>_impl_r<round>",
+  agent_type="plan-implementer",
+  message=<step-specific context below>,
+)
 ```
+
+Wait for it with `wait_agent` before interpreting its report.
 
 The prompt must include:
 
@@ -167,8 +169,8 @@ Parse the implementer's `STATUS` from its `## Status Report` block:
   separate-implementers batch, dispatch the next step's implementer; only
   proceed to the reviewer once every implementer in the batch is
   `READY_FOR_REVIEW`.
-- **BLOCKED**: mark the step's `TaskCreate` entry `cancelled` (with the
-  blocker as a note) and report to the user. If this was one step in a
+- **BLOCKED**: leave the step pending, add the blocker to the plan update, and
+  report to the user. If this was one step in a
   separate-implementers batch, drop only that step from the batch and continue
   with the rest; if the batch becomes empty, skip to the next batch.
 - **NEEDS_CONTEXT**: re-dispatch once with the requested context; if still
@@ -179,14 +181,17 @@ issues they noticed, you will surface those at wrap-up (step 4).
 
 ### 3c. Dispatch reviewer
 
-Dispatch the **plan-reviewer** subagent via the Agent tool:
+Dispatch a fresh **plan-reviewer** with `spawn_agent`:
 
 ```
-Agent({
-  subagent_type: "plan-reviewer",
-  prompt: <step-specific context below>
-})
+spawn_agent(
+  task_name="plan_step_<number>_review_r<round>",
+  agent_type="plan-reviewer",
+  message=<step-specific context below>,
+)
 ```
+
+Wait for it with `wait_agent` before interpreting its verdict.
 
 The prompt must include:
 
@@ -208,22 +213,21 @@ file -- do not repeat them in the prompt.
 
 Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
 
-- **APPROVED**: proceed to commit (step 3e). Mark the step's `TaskCreate`
-  entry `completed`.
+- **APPROVED**: proceed to commit (step 3e). Mark the step's plan item
+  `completed`.
 - **REJECTED (round 1)**: dispatch a **new** plan-implementer subagent
-  (default Sonnet) with:
+  with:
   - The original step context
   - The reviewer's specific FINDINGS and REMEDIATION
   - Instruction to fix the cited issues only
     Then re-dispatch the plan-reviewer.
-- **REJECTED (round 2)**: **escalate to Opus** -- dispatch a new
-  plan-implementer with `model: "opus"` passed to the Agent tool (this
-  overrides the agent's frontmatter default). Include the original step
-  context, all accumulated FINDINGS from both prior rounds, and a note that
-  this is an escalated attempt after two Sonnet rounds failed. Then
-  re-dispatch the plan-reviewer.
-- **REJECTED (round 3)**: mark the step's `TaskCreate` entry `cancelled`
-  with note `reviewer rejected after 2 fix rounds (incl. Opus escalation) --
+- **REJECTED (round 2)**: escalate by spawning a new plan-implementer with
+  `model="gpt-5.6-sol"`, `reasoning_effort="xhigh"`, and `fork_turns="none"`.
+  Include the original step context, all accumulated FINDINGS from both prior
+  rounds, and a note that this is an escalated attempt after two implementation
+  rounds failed. Then re-dispatch the plan-reviewer.
+- **REJECTED (round 3)**: leave the step pending with note
+  `reviewer rejected after 2 fix rounds (including model escalation) --
 {summary}`. Report to the user and move to the next step.
 
 **Critical ordering:** never mark a step `completed` in the tracker, and never
@@ -233,7 +237,7 @@ keep the step `in_progress` -- it is not done yet.
 
 **User disagreement escalation.** If the user interjects mid-cycle with strong
 pushback on the implementer's approach ("no, that's wrong", "this won't work",
-"stop and rethink"), treat the next retry as an escalated Opus round
+"stop and rethink"), treat the next retry as an escalated `gpt-5.6-sol` xhigh round
 regardless of rejection count. Pass the user's specific objection as
 additional input to the implementer alongside the original step context.
 
@@ -305,7 +309,7 @@ After finishing (all steps done, user stops, or session limit reached), report:
 - **No silent bundling.** If the implementer fixed something unrelated, either
   split it out into a follow-up commit (with user approval) or surface it at
   wrap-up -- don't bury it in the current commit.
-- **Bounded retries.** Max 2 fix rounds per reviewer rejection (plus one Opus
+- **Bounded retries.** Max 2 fix rounds per reviewer rejection (plus one model
   escalation), then block.
 - **Context hygiene.** After each step, retain only the one-line summary. Do
   NOT carry forward the full implementer/reviewer reports into the next step's

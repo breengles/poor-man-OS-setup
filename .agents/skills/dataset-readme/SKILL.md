@@ -1,17 +1,12 @@
 ---
 name: dataset-readme
 description: Generate a comprehensive install.md documentation file for an image dataset. Use when asked to document a dataset, create a dataset readme, or prepare dataset documentation.
-argument-hint: <path-to-dataset-root>
-allowed-tools: Bash, Read, Glob, Grep, Write, Edit
 ---
 
 # Dataset Documentation Generator
 
-Generate a comprehensive `install.md` for the image dataset located at:
-
-```
-$ARGUMENTS
-```
+Generate a comprehensive `install.md` for the image dataset path supplied in
+the user's request.
 
 ## CRITICAL SAFETY RULES
 

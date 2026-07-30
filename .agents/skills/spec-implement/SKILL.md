@@ -1,7 +1,6 @@
 ---
 name: spec-implement
 description: Implement tasks from an approved spec, one at a time, with independent implementer and reviewer subagents per task. The main session acts as orchestrator only.
-argument-hint: "[feature-name] [task-numbers | all]"
 ---
 
 # spec-implement
@@ -25,7 +24,7 @@ contexts and don't accumulate here.
 
 ## Step 1: Resolve the target spec
 
-Parse `$ARGUMENTS` to determine `{feature}`:
+Parse the feature name and optional task selectors from the user's request:
 
 - If a feature name is given (e.g. `my-feature`), use `specs/{feature}/`.
 - **If no feature name is given, auto-resolve to the most recently modified spec
@@ -116,14 +115,17 @@ and discard the full subagent reports from your working memory.
 
 ### 3a. Dispatch implementer(s)
 
-Dispatch the **spec-implementer** subagent via the Agent tool:
+Dispatch a fresh **spec-implementer** with `spawn_agent`:
 
 ```
-Agent({
-  subagent_type: "spec-implementer",
-  prompt: <task-specific context below>
-})
+spawn_agent(
+  task_name="spec_<task-id>_impl_r<round>",
+  agent_type="spec-implementer",
+  message=<task-specific context below>,
+)
 ```
+
+Wait for it with `wait_agent` before interpreting its report.
 
 The prompt must include:
 
@@ -162,14 +164,17 @@ Parse the implementer's `STATUS` from its `## Status Report` block:
 
 ### 3c. Dispatch reviewer
 
-Dispatch the **spec-reviewer** subagent via the Agent tool:
+Dispatch a fresh **spec-reviewer** with `spawn_agent`:
 
 ```
-Agent({
-  subagent_type: "spec-reviewer",
-  prompt: <task-specific context below>
-})
+spawn_agent(
+  task_name="spec_<task-id>_review_r<round>",
+  agent_type="spec-reviewer",
+  message=<task-specific context below>,
+)
 ```
+
+Wait for it with `wait_agent` before interpreting its verdict.
 
 The prompt must include:
 
@@ -190,19 +195,18 @@ do not repeat them in the prompt.
 Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
 
 - **APPROVED**: proceed to update `tasks.md` (step 3e), then commit (step 3f).
-- **REJECTED (round 1)**: dispatch a **new** spec-implementer subagent (default
-  Sonnet) with:
+- **REJECTED (round 1)**: dispatch a **new** spec-implementer subagent with:
   - The original task context
   - The reviewer's specific FINDINGS and REMEDIATION
   - Instruction to fix the cited issues only
     Then re-dispatch the spec-reviewer.
-- **REJECTED (round 2)**: **escalate to Opus** -- dispatch a new spec-implementer
-  with `model: "opus"` passed to the Agent tool (this overrides the agent's
-  frontmatter default). Include the original task context, all accumulated
-  FINDINGS from both prior rounds, and a note that this is an escalated attempt
-  after two Sonnet rounds failed. Then re-dispatch the spec-reviewer.
+- **REJECTED (round 2)**: escalate by spawning a new spec-implementer with
+  `model="gpt-5.6-sol"`, `reasoning_effort="xhigh"`, and `fork_turns="none"`.
+  Include the original task context, all accumulated FINDINGS from both prior
+  rounds, and a note that this is an escalated attempt after two implementation
+  rounds failed. Then re-dispatch the spec-reviewer.
 - **REJECTED (round 3)**: flip the task's Status column to `Blocked` and append
-  `_Blocked: reviewer rejected after 2 fix rounds (including Opus escalation) --
+  `_Blocked: reviewer rejected after 2 fix rounds (including model escalation) --
 {summary}_` to the task's detailed section in `tasks.md`. Report to user, move
   to next task.
 
@@ -214,7 +218,7 @@ would lose the source of truth driving the retry.
 
 **User disagreement escalation.** If the user interjects mid-cycle with strong
 pushback on the implementer's approach ("no, that's wrong", "this won't work",
-"stop and rethink"), treat the next retry as an escalated Opus round regardless
+"stop and rethink"), treat the next retry as an escalated `gpt-5.6-sol` xhigh round regardless
 of rejection count. Pass the user's specific objection as additional input to
 the implementer alongside the original task context.
 
@@ -278,10 +282,10 @@ After finishing (all tasks done or user stops), report:
 2. **Blocked tasks**: list with reasons
 3. **Remaining tasks**: count still pending
 4. **Next step**:
-   - If pending tasks remain, suggest `/spec-implement {feature}` in a fresh session.
+   - If pending tasks remain, suggest `$spec-implement {feature}` in a fresh session.
    - If every task in `tasks.md` is now `Done` (no `Pending`, no unresolved `Blocked`),
-     suggest `/spec-finalize {feature}` to reconcile the project docs with the shipped
-     code (updating them via opus subagents if stale) and then remove the resolved spec
+     suggest `$spec-finalize {feature}` to reconcile the project docs with the shipped
+     code (updating them via reviewer subagents if stale) and then remove the resolved spec
      -- leaving code + up-to-date docs as the source of truth.
 
 ## Critical constraints

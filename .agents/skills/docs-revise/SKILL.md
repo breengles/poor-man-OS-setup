@@ -1,10 +1,11 @@
 ---
 name: docs-revise
 description: Revise existing documentation to match current codebase state
-argument-hint: "[component or path]"
 ---
 
-Revise existing project documentation to reflect the current state of the codebase. The user may provide an optional scope argument: $ARGUMENTS
+Revise existing project documentation to reflect the current state of the
+codebase. Treat any component or path in the user's request as the optional
+scope.
 
 **Determine scope:**
 

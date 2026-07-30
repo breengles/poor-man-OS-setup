@@ -1,7 +1,6 @@
 ---
 name: spec-init
-description: Bootstrap a new spec under `specs/<feature-name>/` by walking the user through requirements, design, (optional) research, and tasks in EARS/SDD format
-argument-hint: "<feature-name> [short description]"
+description: Bootstrap a new feature spec under the specs directory by walking the user through requirements, design, optional research, and tasks in EARS/SDD format
 ---
 
 # spec-init
@@ -11,7 +10,7 @@ argument-hint: "<feature-name> [short description]"
 You are the **spec author**, guiding the user through Spec-Driven Development (SDD)
 for a new feature. You draft the **full spec** in `specs/<feature-name>/` in one pass --
 requirements, design, optional research, then tasks -- without pausing between stages, and
-then run `/spec-review` **once** on the finished spec. You do not write implementation code.
+then run `$spec-review` **once** on the finished spec. You do not write implementation code.
 
 This skill is the authoritative source for SDD format and conventions (EARS requirements,
 lifecycle frontmatter, task table format, traceability, parallel markers). Project AGENTS.md
@@ -20,7 +19,7 @@ detail.
 
 ## Parse arguments
 
-- `$ARGUMENTS` should start with a feature name (kebab-case, e.g. `token-refresh`,
+- The user's request should start with a feature name (kebab-case, e.g. `token-refresh`,
   `nightly-eval-harness`). Anything after the name is an optional one-line description.
 - If no argument is provided, ask the user for a feature name and a one-line description.
 - If the feature name is not kebab-case, suggest a kebab-case version and confirm.
@@ -72,7 +71,7 @@ Create `specs/<feature-name>/requirements.md` with:
    ```
 
    Fill `supersedes:` only if this spec replaces a prior kebab-case spec name; otherwise
-   leave it blank. There is no `finalized:` field: `/spec-finalize` removes the spec
+   leave it blank. There is no `finalized:` field: `$spec-finalize` removes the spec
    entirely rather than stamping it, since code + docs become the source of truth.
 
 2. **Title** — `# Requirements: <Human Readable Feature Name>`
@@ -98,7 +97,7 @@ Rules:
   policy, etc.), write `[NEEDS CLARIFICATION: <what is unclear>]` directly into the
   requirement instead of guessing. Example:
   `1.3 When a token expires, the API gateway shall return a [NEEDS CLARIFICATION: 401 or 419?] response.`
-  These markers are required to be resolved before `/spec-review` will pass.
+  These markers are required to be resolved before `$spec-review` will pass.
 
 After writing, run `npx prettier --write --print-width 120 specs/<feature-name>/requirements.md`.
 
@@ -135,7 +134,7 @@ Rules:
   basic, Pydantic/dataclasses split, etc.; shell scripts: 2-space indent, bash shebang; Lua:
   2-space indent, single quotes; etc.).
 - Use `[NEEDS CLARIFICATION: ...]` markers for any design detail that is still unresolved
-  rather than inventing a plausible default. These also block `/spec-review`.
+  rather than inventing a plausible default. These also block `$spec-review`.
 
 After writing, run `npx prettier --write --print-width 120 specs/<feature-name>/design.md`.
 
@@ -193,11 +192,10 @@ orphaned requirements.
 
 Format with `npx prettier --write --print-width 120 specs/<feature-name>/tasks.md`.
 
-## Step 6: Run `/spec-review` once
+## Step 6: Run `$spec-review` once
 
 Now that the **full spec** exists (requirements, design, optional research, and tasks), run
-`/spec-review <feature-name>` **once** on the finished spec -- invoke it via the Skill tool
-if available, otherwise instruct the user to run it. This is the single review gate: it
+`$spec-review <feature-name>` **once** on the finished spec. This is the single review gate: it
 catches traceability gaps, EARS violations, unresolved `[NEEDS CLARIFICATION: ...]` markers,
 and architecture "TBD"s across the whole spec at once. Do not silently skip it.
 
@@ -216,23 +214,23 @@ Print a short summary:
 
 - Files created or updated (with paths).
 - Requirement count, task count, and how many tasks are marked `(P)`.
-- The `/spec-review` verdict from Step 6 (READY, or the fails still outstanding).
+- The `$spec-review` verdict from Step 6 (READY, or the fails still outstanding).
 - Any open questions or unresolved `[NEEDS CLARIFICATION: ...]` markers in `requirements.md`
   or `design.md` (with file + line).
-- Next step: once the review is **READY**, suggest `/spec-implement <feature-name>` when the
-  user is ready to start building. (If the review was skipped because the Skill tool was
-  unavailable, tell the user to run `/spec-review <feature-name>` first.) Mention that
-  `/spec-finalize <feature-name>` is the closing ritual once every task is `Done` -- it
+- Next step: once the review is **READY**, suggest `$spec-implement <feature-name>` when the
+  user is ready to start building. If the review could not run, tell the user to run
+  `$spec-review <feature-name>` first. Mention that `$spec-finalize <feature-name>` is the
+  closing ritual once every task is `Done` -- it
   reconciles the docs with the shipped code and then removes the spec, leaving code +
   up-to-date docs as the source of truth.
 
 Do **not** commit the spec files automatically. Tell the user the files are ready to stage
-and commit, and offer the `/commit` skill if they want help with the commit message.
+and commit, and offer the `$commit` skill if they want help with the commit message.
 
 ## Critical constraints
 
 - **Full spec in one pass.** Draft requirements, design, optional research, and tasks
-  without pausing between stages, then run `/spec-review` **once** on the finished spec.
+  without pausing between stages, then run `$spec-review` **once** on the finished spec.
   Do not stop mid-spec for a per-stage review.
 - **No implementation.** This skill never edits source code, only files under
   `specs/<feature-name>/`.
@@ -247,10 +245,10 @@ and commit, and offer the `/commit` skill if they want help with the commit mess
   and at least one task.
 - **Lifecycle frontmatter.** `requirements.md` must open with the YAML frontmatter block
   described in Step 2 (`status: active`, `started: <date>`, blank `supersedes:`). There is
-  no `finalized:` field -- `/spec-finalize` removes the spec rather than stamping it. Other
+  no `finalized:` field -- `$spec-finalize` removes the spec rather than stamping it. Other
   files in the spec directory carry no frontmatter.
 - **No index.** There is no `specs/INDEX.md`. The presence of the `specs/<feature-name>/`
-  directory is the only record that the spec exists; `/spec-finalize` removes it when done.
+  directory is the only record that the spec exists; `$spec-finalize` removes it when done.
 - **ASCII only.** Follow the project rule against Unicode symbols in code and comments;
   plain prose in markdown is fine, but keep diagrams, math, and inline code ASCII.
 - **Prettier pass.** Run `npx prettier --write --print-width 120` on every markdown file you create or modify

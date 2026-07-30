@@ -1,10 +1,9 @@
 ---
 name: todo-review
 description: Adversarially test a TODO file's items -- is each problem real, the reasoning valid, and the proposed fix correct -- before implementation begins
-argument-hint: "[area or path]"
 ---
 
-Review a TODO file before running `/todo-implement` against it. This is a **read-only**
+Review a TODO file before running `$todo-implement` against it. This is a **read-only**
 audit -- it does not edit the file. If it finds problems, the fix is either a manual edit or
 a follow-up pass with your own judgement (no separate revise command exists).
 
@@ -21,7 +20,7 @@ priority and gets exactly one sentence at the end -- see **Format check**.
 
 ## Determine scope
 
-Parse `$ARGUMENTS`:
+Parse the optional TODO area or path from the user's request:
 
 - If a path is provided (e.g. `todos/solver.md`), review that file.
 - If an area name is provided (e.g. `solver`), review `todos/<name>.md`.

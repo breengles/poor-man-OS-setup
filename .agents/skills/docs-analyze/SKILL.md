@@ -1,17 +1,17 @@
 ---
 name: docs-analyze
 description: Analyze existing project documentation for accuracy, completeness, and staleness
-argument-hint: "[component or path]"
 ---
 
-Analyze existing project documentation and produce a detailed quality report. The user may provide an optional scope argument: $ARGUMENTS
+Analyze existing project documentation and produce a detailed quality report.
+Treat any component or path in the user's request as the optional scope.
 
 **Determine scope:**
 
 - If a path is provided (e.g. `docs/api.md`), analyze that file.
 - If a component name is provided (e.g. `api`, `auth`), analyze `docs/<name>.md`.
 - If no argument is provided, analyze ALL files in `docs/`.
-- If no `docs/` directory exists, inform the user and suggest running `/docs-init` first.
+- If no `docs/` directory exists, inform the user and suggest running `$docs-init` first.
 
 Follow these steps:
 
@@ -39,4 +39,4 @@ Follow these steps:
    - **Staleness ranking** — order doc files from most stale to least stale, with commit counts
    - **Recommended actions** — a prioritized list of what to fix first (critical inaccuracies > coverage gaps > minor staleness)
 
-8. **Do NOT modify any files** — this is a read-only analysis. Suggest running `/docs-revise` to apply fixes.
+8. **Do NOT modify any files** — this is a read-only analysis. Suggest running `$docs-revise` to apply fixes.

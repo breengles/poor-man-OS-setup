@@ -1,17 +1,16 @@
 ---
 name: mr-description
 description: Prepare a title and description for a GitLab Merge Request from the current branch to main/master, or apply them directly to an existing MR
-argument-hint: "[<MR URL or IID> | leave empty for current branch]"
 ---
 
 Analyze the changes and produce a ready-to-use GitLab Merge Request title and description following [semantic-release](https://semantic-release.gitbook.io/) / [Conventional Commits](https://www.conventionalcommits.org/) conventions.
 
 ## Modes
 
-The behavior depends on the optional argument `$ARGUMENTS`:
+The behavior depends on the optional MR reference in the user's request:
 
-- **Generate mode** (`$ARGUMENTS` empty): analyze the **current branch** vs the base branch (`main`, fallback `master`) and output the title and description as a single copy-pasteable message. Do **not** modify any MR.
-- **Update mode** (`$ARGUMENTS` is a GitLab MR URL or IID, e.g. `123`, `!123`, or `https://gitlab.example.com/group/proj/-/merge_requests/123`): resolve the referenced MR, analyze its diff, generate the title and description, and **apply them directly to that MR** via `glab mr update`.
+- **Generate mode** (no MR reference): analyze the **current branch** vs the base branch (`main`, fallback `master`) and output the title and description as a single copy-pasteable message. Do **not** modify any MR.
+- **Update mode** (a GitLab MR URL or IID, e.g. `123`, `!123`, or `https://gitlab.example.com/group/proj/-/merge_requests/123`): resolve the referenced MR, analyze its diff, generate the title and description, and **apply them directly to that MR** via `glab mr update`.
 
 In update mode, extract the numeric IID from a URL (the `/-/merge_requests/<iid>` segment) or use the bare number. If the argument does not resolve to an existing MR, stop and tell the user instead of falling back to generate mode.
 
