@@ -89,6 +89,21 @@ done
 stow .
 ```
 
+## Codex
+
+Stow deploys a portable base config plus two host profiles:
+
+```bash
+# Local macOS machine
+codex --profile macos
+
+# Remote non-macOS machine
+codex --profile server
+```
+
+The base config is always loaded. Profile files contain only the settings that differ
+between local macOS and remote server environments.
+
 ## Yazi
 
 ```bash

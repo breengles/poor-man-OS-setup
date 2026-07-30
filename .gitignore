@@ -34,6 +34,7 @@ __pycache__
 /.codex/*
 !/.codex/AGENTS.md
 !/.codex/config.toml
+!/.codex/*.config.toml
 !/.codex/agents/
 !/.codex/agents/**
 !/.codex/rules/

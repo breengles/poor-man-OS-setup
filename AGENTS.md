@@ -85,9 +85,11 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
   mr-review, plan-implement, resolve-conflicts, spec-init, spec-review, spec-implement,
   spec-finalize, dataset-readme
 - **Codex agents:** `.codex/agents/` — plan/spec/TODO implementer and reviewer roles.
-- **Codex settings:** `.codex/config.toml` (stowed to `~/.codex/config.toml`) contains
-  permission and approval defaults, multi-agent limits, TUI keybindings, the native
-  status line, and the GitLab CLI MCP server.
+- **Codex settings:** `.codex/config.toml` is the portable base configuration.
+  `.codex/macos.config.toml` and `.codex/server.config.toml` provide host-specific
+  profile overrides. Stow deploys all three under `~/.codex/`.
+- **Codex profiles:** use `codex --profile macos` on the local macOS machine and
+  `codex --profile server` on remote non-macOS machines.
 - **Invocation:** use `$skill-name` in a prompt or choose a workflow with `/skills`.
   Codex custom prompts are deprecated, so Claude-style slash commands are represented
   as skills rather than duplicated under `.codex/prompts/`.

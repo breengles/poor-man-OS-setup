@@ -1,19 +1,15 @@
+approvals_reviewer = "user"
 model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "high"
+service_tier = "default"
 approval_policy = "on-request"
 default_permissions = "claude-auto"
 web_search = "live"
-file_opener = "cursor"
 
 [permissions.claude-auto]
 description = "Workspace access with writable Codex settings and rules."
 extends = ":workspace"
-
-[permissions.claude-auto.filesystem]
-"/home/artem.kotov/poor-man-OS-setup/.codex" = "write"
-"/home/artem.kotov/poor-man-OS-setup/.codex/AGENTS.md" = "read"
-"/home/artem.kotov/poor-man-OS-setup/.codex/agents" = "read"
 
 [permissions.claude-auto.filesystem.":workspace_roots"]
 ".codex" = "write"
@@ -21,12 +17,6 @@ extends = ":workspace"
 ".codex/agents" = "read"
 ".codex/config.toml" = "write"
 ".codex/rules" = "write"
-
-[shell_environment_policy]
-inherit = "core"
-
-[shell_environment_policy.set]
-CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY = "1"
 
 [agents]
 enabled = true
@@ -36,17 +26,29 @@ default_subagent_reasoning_effort = "high"
 
 [features]
 fast_mode = false
-memories = false
+js_repl = false
+memories = true
 multi_agent = true
+
+[mcp_servers.gitlab-cli]
+command = "glab"
+args = ["mcp", "serve"]
+default_tools_approval_mode = "approve"
+
+[shell_environment_policy]
+inherit = "core"
+
+[shell_environment_policy.set]
+CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY = "1"
 
 [tui]
 alternate_screen = "always"
 status_line = [
-  "model-with-reasoning",
-  "context-used",
-  "five-hour-limit",
-  "weekly-limit",
-  "git-branch",
+    "model-with-reasoning",
+    "context-used",
+    "five-hour-limit",
+    "weekly-limit",
+    "git-branch",
 ]
 terminal_title = ["spinner", "project", "git-branch"]
 
@@ -57,10 +59,6 @@ open_external_editor = "ctrl-g"
 [tui.keymap.chat]
 interrupt_turn = "ctrl-x"
 
-[mcp_servers.gitlab-cli]
-command = "glab"
-args = ["mcp", "serve"]
-default_tools_approval_mode = "approve"
-
-[projects."/home/artem.kotov/poor-man-OS-setup"]
-trust_level = "trusted"
+[memories]
+generate_memories = true
+use_memories = true
