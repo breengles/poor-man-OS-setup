@@ -2,9 +2,25 @@ model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "high"
 approval_policy = "on-request"
-sandbox_mode = "workspace-write"
+default_permissions = "claude-auto"
 web_search = "live"
 file_opener = "cursor"
+
+[permissions.claude-auto]
+description = "Workspace access with writable Codex settings and rules."
+extends = ":workspace"
+
+[permissions.claude-auto.filesystem]
+"/home/artem.kotov/poor-man-OS-setup/.codex" = "write"
+"/home/artem.kotov/poor-man-OS-setup/.codex/AGENTS.md" = "read"
+"/home/artem.kotov/poor-man-OS-setup/.codex/agents" = "read"
+
+[permissions.claude-auto.filesystem.":workspace_roots"]
+".codex" = "write"
+".codex/AGENTS.md" = "read"
+".codex/agents" = "read"
+".codex/config.toml" = "write"
+".codex/rules" = "write"
 
 [shell_environment_policy]
 inherit = "core"
@@ -44,6 +60,7 @@ interrupt_turn = "ctrl-x"
 [mcp_servers.gitlab-cli]
 command = "glab"
 args = ["mcp", "serve"]
+default_tools_approval_mode = "approve"
 
 [projects."/home/artem.kotov/poor-man-OS-setup"]
 trust_level = "trusted"

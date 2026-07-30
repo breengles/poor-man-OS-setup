@@ -1,0 +1,100 @@
+# Command permissions migrated from .claude/settings.json.
+#
+# These rules apply when a command needs to run outside the sandbox. Commands
+# that stay inside the workspace or /tmp are governed by the workspace sandbox
+# and do not need an allow rule.
+
+prefix_rule(
+    pattern = [[
+        "pre-commit",
+        "ruff",
+        "uv",
+        "grep",
+        "cat",
+        "head",
+        "tail",
+        "less",
+        "wc",
+        "file",
+        "tree",
+        "ls",
+        "sed",
+        "find",
+        "stat",
+        "du",
+        "diff",
+        "realpath",
+        "readlink",
+        "which",
+        "type",
+        "env",
+        "echo",
+        "pwd",
+        "basename",
+        "dirname",
+        "id",
+        "whoami",
+        "hostname",
+        "date",
+        "uname",
+        "printenv",
+        "sort",
+        "uniq",
+        "cut",
+        "awk",
+        "xargs",
+        "jq",
+        "yq",
+        "shasum",
+        "md5",
+        "df",
+    ]],
+    decision = "allow",
+    justification = "Match the general command access granted in Claude Code.",
+    match = [
+        "uv run pyright src",
+        "find . -type f",
+    ],
+    not_match = [
+        "bash -lc pwd",
+        "npx prettier README.md",
+        "rg is intentionally excluded",
+    ],
+)
+
+prefix_rule(
+    pattern = ["chmod", "+x"],
+    decision = "allow",
+    justification = "Match Claude Code's permission to mark files executable.",
+    match = ["chmod +x script.sh"],
+    not_match = ["chmod 777 script.sh"],
+)
+
+prefix_rule(
+    pattern = ["npx", "prettier"],
+    decision = "allow",
+    justification = "Match Claude Code's permission to format files with Prettier.",
+    match = ["npx prettier --write README.md"],
+    not_match = ["npx eslint ."],
+)
+
+prefix_rule(
+    pattern = ["git"],
+    decision = "allow",
+    justification = "Match Claude Code's general Git permission; destructive overrides remain prompts.",
+    match = [
+        "git status --short",
+        "git add README.md",
+        "git commit -m docs",
+    ],
+)
+
+prefix_rule(
+    pattern = ["glab"],
+    decision = "allow",
+    justification = "Match Claude Code's general GitLab CLI permission; destructive overrides remain prompts.",
+    match = [
+        "glab mr view 12",
+        "glab mr create --fill",
+    ],
+)

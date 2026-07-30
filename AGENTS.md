@@ -28,6 +28,7 @@ no build system, no test framework, and no CI/CD pipeline.
   AGENTS.md                # User-level Codex preferences (stowed to ~/.codex/)
   config.toml              # Codex defaults, agents, TUI, status line, and MCP
   agents/                  # Custom subagent definitions
+  rules/                   # Command allow and prompt policies
 .agents/skills/            # User-level reusable Codex workflows
 .vscode/
   user_settings.json       # Cursor/VS Code settings
@@ -85,7 +86,7 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
   spec-finalize, dataset-readme
 - **Codex agents:** `.codex/agents/` — plan/spec/TODO implementer and reviewer roles.
 - **Codex settings:** `.codex/config.toml` (stowed to `~/.codex/config.toml`) contains
-  sandbox and approval defaults, multi-agent limits, TUI keybindings, the native
+  permission and approval defaults, multi-agent limits, TUI keybindings, the native
   status line, and the GitLab CLI MCP server.
 - **Invocation:** use `$skill-name` in a prompt or choose a workflow with `/skills`.
   Codex custom prompts are deprecated, so Claude-style slash commands are represented

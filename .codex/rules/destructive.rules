@@ -1,8 +1,13 @@
-# Require explicit approval before commands that can discard work or rewrite history.
+# Require explicit approval before commands that can discard work, rewrite
+# history, or destructively change GitLab state.
 prefix_rule(
-    pattern = ["rm", "-rf"],
+    pattern = ["rm"],
     decision = "prompt",
-    justification = "Confirm the exact recursive deletion target before proceeding.",
+    justification = "Confirm deletion outside the writable workspace or /tmp.",
+    match = [
+        "rm /home/user/file",
+        "rm -rf /weka/project",
+    ],
 )
 
 prefix_rule(
@@ -30,19 +35,67 @@ prefix_rule(
 )
 
 prefix_rule(
+    pattern = ["git", "checkout", "."],
+    decision = "prompt",
+    justification = "This discards local changes across the current directory.",
+)
+
+prefix_rule(
     pattern = ["git", "restore"],
     decision = "prompt",
     justification = "Restoring files can discard local changes.",
 )
 
 prefix_rule(
-    pattern = ["git", "push", "--force"],
+    pattern = ["git", "push"],
     decision = "prompt",
-    justification = "Force-pushing rewrites shared history.",
+    justification = "Review the remote and refspec before publishing Git changes.",
+    match = [
+        "git push origin main",
+        "git push origin feature --force-with-lease",
+    ],
 )
 
 prefix_rule(
-    pattern = ["git", "push", "--force-with-lease"],
+    pattern = ["git", "pull"],
     decision = "prompt",
-    justification = "Force-with-lease still rewrites shared history.",
+    justification = "Pulling changes mutates the worktree and may merge or rebase.",
+)
+
+prefix_rule(
+    pattern = ["git", "merge"],
+    decision = "prompt",
+    justification = "Merging changes can modify the worktree and create a commit.",
+)
+
+prefix_rule(
+    pattern = ["rmdir"],
+    decision = "prompt",
+    justification = "Confirm the exact directory before deleting it.",
+)
+
+prefix_rule(
+    pattern = ["glab", ["issue", "mr"], ["close", "delete"]],
+    decision = "prompt",
+    justification = "Confirm before closing or deleting a GitLab issue or merge request.",
+    match = [
+        "glab issue close 12",
+        "glab mr delete 34",
+    ],
+    not_match = [
+        "glab issue view 12",
+        "glab mr create --fill",
+    ],
+)
+
+prefix_rule(
+    pattern = ["glab", "mr", "merge"],
+    decision = "prompt",
+    justification = "Confirm the target merge request before merging it.",
+)
+
+prefix_rule(
+    pattern = ["glab", ["repo", "release", "label"], "delete"],
+    decision = "prompt",
+    justification = "Confirm before deleting GitLab repository resources.",
 )
