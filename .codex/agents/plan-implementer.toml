@@ -1,5 +1,7 @@
 name = "plan-implementer"
 description = "Implements a single step from an in-session implementation plan. Dispatched by the plan-implement skill -- do not invoke directly."
+model = "gpt-5.6-terra"
+model_reasoning_effort = "high"
 developer_instructions = """
 # Plan Step Implementer
 

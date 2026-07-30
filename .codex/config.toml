@@ -1,5 +1,49 @@
+model = "gpt-5.6-sol"
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "live"
+file_opener = "cursor"
+
 [shell_environment_policy]
 inherit = "core"
 
 [shell_environment_policy.set]
 CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY = "1"
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 6
+default_subagent_model = "gpt-5.6-terra"
+default_subagent_reasoning_effort = "high"
+
+[features]
+fast_mode = false
+memories = false
+multi_agent = true
+
+[tui]
+alternate_screen = "always"
+status_line = [
+  "model-with-reasoning",
+  "context-used",
+  "five-hour-limit",
+  "weekly-limit",
+  "git-branch",
+]
+terminal_title = ["spinner", "project", "git-branch"]
+
+[tui.keymap.global]
+open_transcript = "ctrl-t"
+open_external_editor = "ctrl-g"
+
+[tui.keymap.chat]
+interrupt_turn = "ctrl-x"
+
+[mcp_servers.gitlab-cli]
+command = "glab"
+args = ["mcp", "serve"]
+
+[projects."/home/artem.kotov/poor-man-OS-setup"]
+trust_level = "trusted"

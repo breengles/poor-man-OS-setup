@@ -1,0 +1,48 @@
+# Require explicit approval before commands that can discard work or rewrite history.
+prefix_rule(
+    pattern = ["rm", "-rf"],
+    decision = "prompt",
+    justification = "Confirm the exact recursive deletion target before proceeding.",
+)
+
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "prompt",
+    justification = "This discards working-tree and index changes.",
+)
+
+prefix_rule(
+    pattern = ["git", "clean"],
+    decision = "prompt",
+    justification = "This can permanently delete untracked files.",
+)
+
+prefix_rule(
+    pattern = ["git", "branch", "-D"],
+    decision = "prompt",
+    justification = "Force-deleting a branch can discard unmerged commits.",
+)
+
+prefix_rule(
+    pattern = ["git", "checkout", "--"],
+    decision = "prompt",
+    justification = "This can discard local changes; prefer a scoped, recoverable edit.",
+)
+
+prefix_rule(
+    pattern = ["git", "restore"],
+    decision = "prompt",
+    justification = "Restoring files can discard local changes.",
+)
+
+prefix_rule(
+    pattern = ["git", "push", "--force"],
+    decision = "prompt",
+    justification = "Force-pushing rewrites shared history.",
+)
+
+prefix_rule(
+    pattern = ["git", "push", "--force-with-lease"],
+    decision = "prompt",
+    justification = "Force-with-lease still rewrites shared history.",
+)

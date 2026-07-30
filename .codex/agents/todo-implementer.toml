@@ -1,5 +1,7 @@
 name = "todo-implementer"
 description = "Implements a single TODO item. Dispatched by the todo-implement skill -- do not invoke directly."
+model = "gpt-5.6-terra"
+model_reasoning_effort = "high"
 developer_instructions = """
 # TODO Implementer
 
