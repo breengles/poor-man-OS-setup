@@ -2,58 +2,5 @@
 
 file_opener = "cursor"
 
-[marketplaces.ast-index-plugins]
-source_type = "git"
-source = "https://github.com/defendend/Claude-ast-index-search.git"
 
-[marketplaces.claude-plugins-official]
-source_type = "git"
-source = "https://github.com/anthropics/claude-plugins-official.git"
 
-[plugins."browser@openai-bundled"]
-enabled = true
-
-[plugins."visualize@openai-bundled"]
-enabled = true
-
-[plugins."documents@openai-primary-runtime"]
-enabled = true
-
-[plugins."pdf@openai-primary-runtime"]
-enabled = true
-
-[plugins."spreadsheets@openai-primary-runtime"]
-enabled = true
-
-[plugins."presentations@openai-primary-runtime"]
-enabled = true
-
-[plugins."template-creator@openai-primary-runtime"]
-enabled = true
-
-[plugins."ast-index@ast-index-plugins"]
-enabled = true
-
-[plugins."code-review@claude-plugins-official"]
-enabled = true
-
-[plugins."code-simplifier@claude-plugins-official"]
-enabled = true
-
-[plugins."feature-dev@claude-plugins-official"]
-enabled = true
-
-[plugins."pyright-lsp@claude-plugins-official"]
-enabled = true
-
-[plugins."anthropic-skills@claude-cowork"]
-enabled = true
-
-[plugins."cowork-plugin-management@claude-cowork"]
-enabled = true
-
-[plugins."engineering@claude-cowork"]
-enabled = true
-
-[plugins."sites@openai-bundled"]
-enabled = true
