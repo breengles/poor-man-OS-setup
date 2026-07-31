@@ -52,3 +52,6 @@ use_memories = true
 
 [projects."/home/artem.kotov/projects/qwent"]
 trust_level = "trusted"
+
+[projects."/home/artem.kotov"]
+trust_level = "trusted"

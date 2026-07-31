@@ -7,6 +7,7 @@ if [[ -f "/opt/homebrew/bin/brew" ]]; then
 fi
 
 # Zsh-specific modules
+[[ -d "$HOME/.zfunc" ]] && fpath+=("$HOME/.zfunc")
 source "$HOME/.config/shell/zinit.zsh"
 source "$HOME/.config/shell/cluster.zsh"
 source "$HOME/.config/shell/history.zsh"
@@ -20,11 +21,31 @@ source "$HOME/.config/shell/functions.sh"
 source "$HOME/.config/shell/aliases.sh"
 source "$HOME/.config/shell/integrations.sh"  # starship, fzf, cargo, gcloud, completions, tokens
 
-# NVM (Node Version Manager) — force-activate default so inherited NVM_BIN
-# from a parent process doesn't pin us to a stale node version.
+# NVM (Node Version Manager) is expensive to initialize, especially when HOME
+# is on a network filesystem. Load it only when a Node-related command is used.
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" && nvm use default --silent >/dev/null
-[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
+if [[ -n "${NVM_BIN:-}" ]]; then
+  path=("${(@)path:#$NVM_BIN}")
+  unset NVM_BIN NVM_INC
+fi
+
+_load_nvm() {
+  if [[ ! -s "$NVM_DIR/nvm.sh" ]]; then
+    print -u2 "NVM is not installed under $NVM_DIR"
+    return 127
+  fi
+
+  unfunction nvm node npm npx corepack 2>/dev/null
+  source "$NVM_DIR/nvm.sh" --no-use
+  nvm use default --silent >/dev/null || return
+  [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+}
+
+nvm() { _load_nvm || return; nvm "$@" }
+node() { _load_nvm || return; command node "$@" }
+npm() { _load_nvm || return; command npm "$@" }
+npx() { _load_nvm || return; command npx "$@" }
+corepack() { _load_nvm || return; command corepack "$@" }
 
 eval "$(zoxide init --cmd cd zsh)"
 
@@ -51,11 +72,4 @@ fi
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-fpath+=~/.zfunc; autoload -Uz compinit; compinit
-
 zstyle ':completion:*' menu select
-# The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=($HOME/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
-# End of Docker CLI completions
