@@ -105,8 +105,6 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
 ## Code and Comments
 
 - **No Unicode symbols in code or comments.** Use plain ASCII equivalents instead.
-  Examples: `*` not `·`, `->` not `→`, `>=` not `≥`, `<=` not `≤`, `!=` not `≠`,
-  `sum(...)` or `\sum` not `∑`. Wrong: `# g·f + f·g = 2∫gf dr` - Right: `# g * f + f * g = 2 * \int gf dr`
 
 ## Tests
 
