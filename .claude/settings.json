@@ -116,6 +116,7 @@
   "effortLevel": "xhigh",
   "awaySummaryEnabled": false,
   "tui": "fullscreen",
+  "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
   "skipAutoPermissionPrompt": true,
@@ -130,5 +131,5 @@
       "env": {}
     }
   },
-  "autoMemoryEnabled": false
+  "model": "claude-opus-4-8"
 }
