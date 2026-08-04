@@ -19,16 +19,21 @@ revert work you do not own.
    Return NEEDS_CONTEXT immediately when the contract cannot be determined. Do
    not guess.
 2. Read existing code within the boundary: structure, patterns, interfaces, and
-   the project's test framework and naming.
-3. Implement. When the unit or project instructions ask for tests and the
-   behavior is testable, write the test first. Otherwise do not add tests. Keep
-   changes tightly scoped and follow existing conventions. Report unrelated
-   improvements as CONCERNS. Remove a cited marker after fixing its underlying
-   problem.
-4. Validate and self-review. Run the supplied test command. Re-read every
-   criterion and confirm concrete behavior satisfies it. Confirm the code is
-   production code, no placeholder markers remain in changed files, tests would
-   fail without the implementation, and changes stayed inside the boundary.
+   the conventions the surrounding code already follows.
+3. Implement. Keep changes tightly scoped and follow existing conventions.
+   Report unrelated improvements as CONCERNS. Remove a cited marker after
+   fixing its underlying problem.
+
+Do not write tests unless an acceptance criterion explicitly asks for them.
+Testable-looking behavior is not an invitation; if the criteria are silent on
+tests, write none. When they do ask, write only what they ask for and ensure
+each test would fail if the implementation were removed.
+
+4. Validate and self-review. Run the supplied existing suite to catch
+   regressions, not to grow coverage. Re-read every criterion and confirm
+   concrete behavior satisfies it. Confirm the code is production code, no
+   placeholder markers remain in changed files, and changes stayed inside the
+   boundary.
 
 Code quality counts as much as correctness:
 

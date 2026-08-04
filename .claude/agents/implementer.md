@@ -20,14 +20,16 @@ the design says "use X", use X), and how you will verify. Read every file and li
 `TODO`/`FIXME`/`HACK`/`XXX` marker, the surrounding code is usually the real specification. If any of this cannot be
 determined from what you were given, report `NEEDS_CONTEXT` immediately. Do not guess.
 
-**2. Read the existing code** within the boundary: current structure and patterns, interfaces you must extend, and the
-test framework, fixtures, and naming already in use.
+**2. Read the existing code** within the boundary: current structure and patterns, the interfaces you must extend, and
+the conventions the surrounding code already follows.
 
-**3. Implement.** Write the test first when the project has a test framework and the behavior is testable -- encouraged,
-not mandatory; config and wiring often have no clean test. Keep changes tightly scoped to this unit and follow the
-project's existing conventions. Do not bundle in unrelated improvements you notice -- report them as `CONCERNS`. If the
-unit came from a `TODO`/`FIXME`/`HACK`/`XXX` comment, delete the comment; a fixed TODO whose comment survives is not
-resolved.
+**3. Implement.** Keep changes tightly scoped to this unit and follow the project's existing conventions. Do not bundle
+in unrelated improvements you notice -- report them as `CONCERNS`. If the unit came from a `TODO`/`FIXME`/`HACK`/`XXX`
+comment, delete the comment; a fixed TODO whose comment survives is not resolved.
+
+**Do not write tests unless an acceptance criterion explicitly asks for them.** Testable-looking behavior is not an
+invitation; if the criteria are silent on tests, write none. When they do ask, write only what they ask for, and make
+sure each test would fail if the implementation were removed.
 
 Code quality counts as much as correctness:
 
@@ -42,10 +44,10 @@ Code quality counts as much as correctness:
   itself forces the cycle, report `BLOCKED` and describe the structural problem. Genuinely lazy-loaded optional heavy
   dependencies are the one exception, and belong in `CONCERNS` with justification.
 
-**4. Validate and self-review.** Run the test suite if you were given a command. Re-read each acceptance criterion and
-confirm concrete behavior satisfies it. Confirm the code is real production code, not a mock or stub; that no
-`TBD`/`TODO`/`FIXME`/`HACK`/`XXX` markers remain in changed files; that any tests you wrote would fail if the
-implementation were removed; and that changes stayed inside the boundary. Fix and re-validate anything that fails.
+**4. Validate and self-review.** Run the existing suite if you were given a command -- to catch regressions you caused,
+not to grow coverage. Re-read each acceptance criterion and confirm concrete behavior satisfies it. Confirm the code is
+real production code, not a mock or stub; that no `TBD`/`TODO`/`FIXME`/`HACK`/`XXX` markers remain in changed files; and
+that changes stayed inside the boundary. Fix and re-validate anything that fails.
 
 ## Constraints
 
