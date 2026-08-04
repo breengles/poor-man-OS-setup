@@ -71,10 +71,6 @@ BREAKING CHANGE: <second one, blank line between>
 ### Changes
 
 <bulleted list of meaningful changes, grouped logically -- not a file-by-file dump>
-
-### Impact
-
-<what a reviewer should check, with concrete commands where they apply>
 ```
 
 Omit the breaking-change block entirely when there are none -- no placeholder. If any exist, the title MUST carry `!`.

@@ -5,9 +5,9 @@ description: Create a well-formatted git commit
 
 # commit
 
-Review `git diff` and `git diff --cached`, then create Conventional Commits-formatted commits (`feat:`, `fix:`,
-`refactor:`, `docs:`, `chore:`, `test:`). Subject line max 72 characters; add a body explaining the "why" when the
-change is complex.
+Review `git diff` and `git diff --cached`, then create well-formed commits. Subject line imperative, lowercase, ~50
+characters, and **no type prefix** -- `feat:` / `fix:` / `refactor:` are not used. Describe what changed and why, not
+the category. Add a body for the "why" when the change is complex.
 
 - **Only commit changes made during this session.** Leave pre-existing uncommitted work alone unless the user explicitly
   asks to include it.

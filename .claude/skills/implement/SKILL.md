@@ -1,9 +1,9 @@
 ---
 name: implement
 description:
-  Implement tracked work -- spec tasks from `specs/<feature>/tasks.md` or TODO items from `todos/<area>.md` -- one unit
-  at a time via an independent implementer subagent. The main session orchestrates only.
-argument-hint: "[<feature> | <area> | path] [numbers | all]"
+  Implement tracked work at a given path -- spec tasks from a spec directory's `tasks.md`, or items from a TODO file --
+  one unit at a time via an independent implementer subagent. The main session orchestrates only.
+argument-hint: "<path to spec dir or TODO file> [numbers | all]"
 ---
 
 # implement
@@ -13,17 +13,19 @@ You are the **orchestrator**. You do NOT write implementation code. For each uni
 
 ## Step 1: Resolve the target
 
-Parse `$ARGUMENTS` to find the tracking artifact:
+The first argument is a **path**, relative or absolute; anything after it is unit numbers or `all`.
 
-- A feature name or `specs/<feature>` -> spec mode, units are sub-tasks (`1.1`, `2.3`) in `specs/<feature>/tasks.md`.
-  Major numbers (`1.`, `2.`) are grouping headers, not units.
-- An area name or `todos/<area>.md` -> todo mode, units are items in the Priority Summary table.
-- **No argument** -> auto-resolve to the most recently modified `specs/*/` (needs a `requirements.md`), else the most
-  recently modified `todos/*.md`. Announce what you resolved on one line so the user can redirect you, and stop if
-  neither exists.
+- A **directory** -> spec mode. It must contain `tasks.md`; units are its sub-tasks (`1.1`, `2.3`), and major numbers
+  (`1.`, `2.`) are grouping headers, not units.
+- A **file** -> todo mode. Units are the items in its Priority Summary table.
+- **No path** -> list the spec directories and TODO files you can find and ask which one. Do not auto-pick.
 
-Read the artifact in full -- in spec mode also `design.md`, `requirements.md`, and `research.md` if present, in parallel.
-Keep this content; it is what you build subagent prompts from. Run `git status --porcelain` for pre-existing changes.
+There is no name-to-path guessing: if the path does not exist, stop and say so rather than searching for something
+similar. Resolve every other path in this skill against the artifact's own location, not the repo root -- a spec at
+`packages/solver/specs/cache/` belongs to `packages/solver`.
+
+Read the artifact in full -- in spec mode also `design.md`, `requirements.md`, and `research.md` if present, in
+parallel. Keep it; it is what you build subagent prompts from. Run `git status --porcelain` for pre-existing changes.
 
 ## Step 2: Build the queue
 
@@ -53,15 +55,14 @@ artifact, the specific requirements/design excerpts it references (spec mode) or
 do not restate them. Dispatch strictly sequentially; never run implementers concurrently.
 
 **Handle the reported STATUS.** `COMPLETE` -> continue. `BLOCKED` -> set Status to `Blocked`, append
-`_Blocked: {reason}_` to the unit's section, drop it from the batch. `NEEDS_CONTEXT` -> re-dispatch once with the missing
-context, then block if still unresolved. Capture any `CONCERNS`; in todo mode file the trackable ones as new items.
+`_Blocked: {reason}_` to the unit's section, drop it from the batch. `NEEDS_CONTEXT` -> re-dispatch once with the
+missing context, then block if unresolved. Capture any `CONCERNS`; in todo mode file the trackable ones as new items.
 
 **Scope-check the diff yourself.** Run `git diff --stat` and `git status --porcelain` and confirm every changed file was
 in the declared scope, no pre-existing changes got swept in, and the diff is not empty or a stub. Unexpected files are a
-stop-and-ask, not a commit. This is a scope and sanity check, not a code review.
-
-If the user objects mid-cycle ("that's wrong", "stop and rethink"), re-dispatch a fresh implementer with
-`model: "opus"`, the original context, and their specific objection.
+stop-and-ask, not a commit. This is a scope and sanity check, not a code review. If the user objects mid-cycle ("that's
+wrong", "stop and rethink"), re-dispatch a fresh implementer with `model: "opus"`, the original context, and the
+objection.
 
 **Update the artifact** once every implementer in the batch is `COMPLETE`: flip each Status to `Done`, append a one-line
 `_Done: <what shipped>_` note to each detailed section, and prune the completed units from "Suggested resolution order"
@@ -69,9 +70,8 @@ If the user objects mid-cycle ("that's wrong", "stop and rethink"), re-dispatch 
 `npx prettier --write --print-width 120 <artifact>`.
 
 **Commit.** Stage only the files the implementer changed plus the artifact (`git add <files> <artifact>`) -- never
-`git add -A` or `git add .`. The artifact update and the code go in the same commit. Message:
-`feat(<scope>): <description>` (or `fix:` / `refactor:` / `chore:` as fits); for a batch, one message summarizing all of
-it. No issue IDs.
+`git add -A` or `git add .`. The artifact update and the code go in the same commit. Write the message imperative and
+lowercase, ~50 chars, no type prefix; for a batch, one message covering all of it. No issue IDs.
 
 ## Step 4: Verify criteria, then finalize
 
@@ -80,13 +80,13 @@ implementer verified against its own reading of its criteria, so a misread crite
 first independent reader. Point at the concrete observable behavior satisfying each criterion, or report the gap. Do not
 fix anything; report and let the user decide.
 
-Then hand off to `/finalize` to reconcile the docs with what shipped and remove the resolved units. Do not purge them
-yourself.
+Then hand off to `/finalize <same path>` to reconcile the docs with what shipped and remove the resolved units. Do not
+purge them yourself.
 
 ## Report
 
 Completed units with commit hashes; blocked units with reasons; count still pending; any follow-ups filed; the
-criteria-verification result. Suggest re-running in a fresh session if units remain, else `/finalize`.
+criteria-verification result. Suggest re-running in a fresh session if units remain, else `/finalize <path>`.
 
 ## Constraints
 

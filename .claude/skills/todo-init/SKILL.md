@@ -1,22 +1,27 @@
 ---
 name: todo-init
 description: Scan the project and create initial TODO files organized by area
-argument-hint: "[area or path to scope to]"
+argument-hint: "[path to output dir, default todos/]"
 ---
 
 # todo-init
 
-Seed `todos/<area>.md` files for this project. This skill is the source of truth for TODO file format.
+Seed `<area>.md` files for this project, one per area. This skill is the source of truth for TODO file format.
+
+`$ARGUMENTS` is the **directory to write them into**, relative or absolute, defaulting to `todos/` at the repo root
+(e.g. `/todo-init packages/solver/todos`). Create it if it does not exist. If it already holds TODO files, read them
+first and add only genuinely new items -- never overwrite or duplicate an existing one.
 
 ## Gather
 
-Explore the codebase: project structure, source files, README, CLAUDE.md, and every `TODO`/`FIXME`/`HACK`/`XXX` comment
-(cite file and line). Skim `git log` for recent activity, and pull open issues/MRs if a remote is configured. Also
-collect known bugs and limitations mentioned in docs or comments, missing or thin test coverage, code-quality problems
-(dead code, unclear naming, missing docs), and refactors worth doing.
+Explore the code the output directory belongs to -- for `packages/solver/todos` that is `packages/solver`, not the whole
+repo. Read its structure, source files, README, CLAUDE.md, and every `TODO`/`FIXME`/`HACK`/`XXX` comment (cite file and
+line). Skim `git log` for recent activity, and pull open issues/MRs if a remote is configured. Also collect known bugs
+and limitations mentioned in docs or comments, missing or thin test coverage, code-quality problems (dead code, unclear
+naming, missing docs), and refactors worth doing.
 
-Group findings by project area, using names that match the project's own module and directory structure (`solver`,
-`api`, `cli`, `infra`). One file per area -- **never create an empty file**.
+Group findings by area, using names that match the project's own module and directory structure (`solver`, `api`, `cli`,
+`infra`). One file per area -- **never create an empty file**.
 
 Assign priorities: **P0** for bugs, broken functionality, and blockers; **P1** for missing features, significant
 improvements, and tech debt that slows development; **P2** for minor and cosmetic improvements.
@@ -43,5 +48,5 @@ A `Blocked` item stays in the file with a `_Blocked: <reason>_` line appended to
 **removed** entirely by `/finalize` once any affected docs are reconciled -- git history is the record, so there is no
 `Done` ledger.
 
-Run `npx prettier --write --print-width 120` on each file, then print a summary: files created, item counts, and
-priority breakdown.
+Run `npx prettier --write --print-width 120` on each file, then print a summary: files created **with their full
+paths**, item counts, and priority breakdown. Mention that `/implement <path to one of these files>` is the next step.

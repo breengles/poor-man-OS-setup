@@ -1,21 +1,22 @@
 ---
 name: spec-init
 description:
-  Bootstrap a new spec under `specs/<feature-name>/` -- requirements (EARS), design, optional research, and tasks -- in
-  one pass
-argument-hint: "<feature-name> [short description]"
+  Bootstrap a new spec at a given path -- requirements (EARS), design, optional research, and tasks -- in one pass
+argument-hint: "<path to spec dir> [short description]"
 ---
 
 # spec-init
 
 You are the **spec author**. Draft the full spec in one pass without pausing between stages. You never write
-implementation code -- only files under `specs/<feature-name>/`. This skill is the source of truth for spec format.
+implementation code -- only files inside the spec directory. This skill is the source of truth for spec format.
 
-`$ARGUMENTS` starts with a kebab-case feature name; anything after it is a one-line description. Ask for both if
-missing, and confirm a kebab-case version if the name is not. If `specs/<feature-name>/` already exists and is
-non-empty, stop and ask whether to rename, augment in place, or abort -- never overwrite silently. Specs are for
-long-lived engineering artifacts (pipelines, CLIs, APIs, libraries), **not** experiment scripts or one-off analysis; if
-this smells like throwaway research code, say so and get confirmation first.
+The first argument is the **path of the spec directory to create**, relative or absolute (e.g. `specs/token-refresh`,
+`packages/solver/specs/cache-warmup`); anything after it is a one-line description. The feature name is the path's
+basename and must be kebab-case -- suggest a kebab-case path and confirm if it is not. Ask for the path if it is
+missing. Create parent directories as needed, but if the target exists and is non-empty, stop and ask whether to pick a
+different path, augment in place, or abort -- never overwrite silently. Specs are for long-lived engineering artifacts
+(pipelines, CLIs, APIs, libraries), **not** experiment scripts or one-off analysis; if this smells like throwaway
+research code, say so and get confirmation first.
 
 ## Step 1: Interview
 
@@ -27,8 +28,8 @@ not implementation detail. If the answers come back thin, say what is missing be
 
 ## Step 2: `requirements.md`
 
-Open with YAML frontmatter -- `status: active`, `started: <today's ISO date>`, and `supersedes:` (the prior kebab-case
-spec name, or blank). There is no `finalized:` field: `/finalize` removes the spec rather than stamping it. Then:
+Open with YAML frontmatter -- `status: active`, `started: <today's ISO date>`, and `supersedes:` (the prior spec's path,
+or blank). There is no `finalized:` field: `/finalize` removes the spec rather than stamping it. Then:
 `# Requirements: <Human Readable Name>`; a 2-5 sentence **Summary** (goal, users, scope); **In scope** / **Out of
 scope** as two short lists; **Requirements** as numbered themes (`## 1. <theme>`) with sub-numbered acceptance criteria
 (`1.1`, `1.2`); and **Open questions**. Every criterion matches one of the five EARS patterns:
@@ -79,9 +80,8 @@ risks**. Otherwise skip it -- no empty stubs.
    prerequisites, and for tasks with no dependency on the immediately preceding one a leading `(P)` marker plus
    `_Boundary: <ComponentName>_`.
 
-Order Foundation -> Core -> Integration -> Validation. Size each task at 1-3 hours of focused work -- split what is
-bigger, merge what is trivial. **Every requirement ID must appear in at least one `_Requirements:_` line**; cross-check
-and report orphans.
+Order Foundation -> Core -> Integration -> Validation. Size each task at 1-3 hours -- split what is bigger, merge what
+is trivial. **Every requirement ID must appear in at least one `_Requirements:_` line**; cross-check and report orphans.
 
 ## Step 6: Wrap up
 
@@ -90,11 +90,11 @@ least one task, no design element exists without a requirement behind it, and no
 survives. Surface the accumulated marker list -- only the user can resolve those, and the spec is not ready while any
 remain.
 
-Report files created, requirement and task counts, how many tasks are `(P)`, orphaned requirements, and every unresolved
-marker with file and line. Suggest `/implement <feature-name>` once the markers are settled, and
-`/finalize <feature-name>` as the closing ritual. Do **not** commit -- offer `/commit`.
+Report the files created **with their full paths**, requirement and task counts, how many tasks are `(P)`, orphaned
+requirements, and every unresolved marker with file and line. Suggest `/implement <spec path>` once the markers are
+settled, and `/finalize <spec path>` as the closing ritual. Do **not** commit -- offer `/commit`.
 
 ## Constraints
 
 Run `npx prettier --write --print-width 120` on every markdown file you touch. ASCII only in diagrams, math, and inline
-code. No `specs/INDEX.md` -- the directory's existence is the record. No `#N` issue references anywhere.
+code. No spec index file -- the directory's existence is the record. No `#N` issue references anywhere.
