@@ -19,33 +19,8 @@ source "$HOME/.config/shell/tmux.zsh"
 # Shared modules (shell-agnostic)
 source "$HOME/.config/shell/functions.sh"
 source "$HOME/.config/shell/aliases.sh"
+source "$HOME/.config/shell/node.sh"
 source "$HOME/.config/shell/integrations.sh"  # starship, fzf, cargo, gcloud, completions, tokens
-
-# NVM (Node Version Manager) is expensive to initialize, especially when HOME
-# is on a network filesystem. Load it only when a Node-related command is used.
-export NVM_DIR="$HOME/.nvm"
-if [[ -n "${NVM_BIN:-}" ]]; then
-  path=("${(@)path:#$NVM_BIN}")
-  unset NVM_BIN NVM_INC
-fi
-
-_load_nvm() {
-  if [[ ! -s "$NVM_DIR/nvm.sh" ]]; then
-    print -u2 "NVM is not installed under $NVM_DIR"
-    return 127
-  fi
-
-  unfunction nvm node npm npx corepack 2>/dev/null
-  source "$NVM_DIR/nvm.sh" --no-use
-  nvm use default --silent >/dev/null || return
-  [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-}
-
-nvm() { _load_nvm || return; nvm "$@" }
-node() { _load_nvm || return; command node "$@" }
-npm() { _load_nvm || return; command npm "$@" }
-npx() { _load_nvm || return; command npx "$@" }
-corepack() { _load_nvm || return; command corepack "$@" }
 
 eval "$(zoxide init --cmd cd zsh)"
 

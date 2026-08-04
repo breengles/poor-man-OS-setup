@@ -20,7 +20,7 @@ framework, and no CI/CD pipeline.
     init.lua               # Main config (~500 lines)
     lua/custom/plugins/    # Custom plugins (git, colorscheme)
     lua/kickstart/         # Kickstart modules
-  shell/                   # Shell modules (aliases, functions, env, completions, keybindings)
+  shell/                   # Shell modules (aliases, functions, env, node, completions, keybindings)
   starship.toml            # Starship prompt config
   yazi/                    # Yazi file manager config + plugins
 .claude/
@@ -38,11 +38,16 @@ framework, and no CI/CD pipeline.
 Shell config uses a split pattern: **shared** (`.sh`) vs **shell-specific** (`.zsh`/`.bash`).
 
 - `.zshrc` sources zsh-specific modules first (zinit, cluster, history, keybindings, completions), then shared modules
-  (functions, aliases, integrations)
+  (functions, aliases, node, integrations)
 - `.bashrc` auto-switches to zsh if available; otherwise sources shared modules directly
 - `integrations.sh` detects the running shell via `$ZSH_VERSION`/`$BASH_VERSION` and loads the correct shell-specific
   completion/integration files
 - Aliases in `aliases.sh` conditionally guard `eza`/`bat` replacements behind `[ -z "$AGENT" ] && [ -z "$CLAUDECODE" ]`
+- `node.sh` puts nvm's default Node version on `PATH` by globbing `$NVM_DIR`, without sourcing `nvm.sh` (~10ms per shell
+  instead of ~600ms for `nvm use default`). Only `nvm` itself is a lazy-load function shim, and it is deliberately self-contained: agent harnesses
+  snapshot shell functions but drop underscore-prefixed ones, so a shim calling a `_helper` breaks in agent shells.
+  Never reintroduce `node`/`npm`/`npx` shim functions - they masked the real node behind a broken shim and fell through
+  to the distro's ancient `/usr/bin/node`.
 
 ## Build / Lint / Test Commands
 
