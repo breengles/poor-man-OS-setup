@@ -110,10 +110,9 @@
     "feature-dev@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
-    "ast-index@ast-index-marketplace": true,
-    "picsart@picsart-marketplace": true
+    "ast-index@ast-index-marketplace": true
   },
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "awaySummaryEnabled": false,
   "tui": "fullscreen",
   "autoMemoryEnabled": false,
@@ -130,6 +129,5 @@
       ],
       "env": {}
     }
-  },
-  "model": "claude-opus-4-8"
+  }
 }

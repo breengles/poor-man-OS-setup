@@ -1,6 +1,6 @@
 ---
 name: spec-implement
-description: Implement tasks from an approved spec, one at a time, with independent implementer and reviewer subagents per task. The main session acts as orchestrator only.
+description: Implement tasks from an approved spec, one at a time, via an independent implementer subagent per task. The main session acts as orchestrator only.
 argument-hint: "[feature-name] [task-numbers | all]"
 ---
 
@@ -9,12 +9,8 @@ argument-hint: "[feature-name] [task-numbers | all]"
 ## Role
 
 You are the **orchestrator**. You do NOT write implementation code yourself. For each
-task you dispatch a fresh **spec-implementer** subagent that writes the code, then a
-fresh **spec-reviewer** subagent that verifies it. You handle spec reading, task
-sequencing, committing, and updating `tasks.md`.
-
-This keeps the main session context clean -- implementation details live in subagent
-contexts and don't accumulate here.
+task you dispatch a fresh **spec-implementer** subagent that writes the code. You
+handle spec reading, task sequencing, committing, and updating `tasks.md`.
 
 ## Modes
 
@@ -79,39 +75,36 @@ Present the task queue to the user and ask for confirmation before proceeding.
 
 ## Step 2b: Plan batches for parallel tasks
 
-A **batch** is one or more tasks reviewed and committed together. Most batches are
+A **batch** is one or more tasks committed together. Most batches are
 size 1. You may batch only when consecutive queued tasks are parallel-eligible --
 in spec-implement that means they are marked `(P)` (no dependency on the preceding
 task) and have non-overlapping or compatible `_Boundary:_` annotations.
 
-Batching is a **logical** grouping. Implementers and reviewers still run **strictly
+Batching is a **logical** grouping. Implementers still run **strictly
 sequentially** -- never dispatch implementers concurrently. What batching changes
-is the _unit of review and commit_: one reviewer verdict and one commit cover the
-whole batch.
+is the _unit of commit_: one commit covers the whole batch.
 
 For a multi-task batch, choose ONE strategy:
 
-- **Separate implementers, one reviewer.** Dispatch implementers sequentially (one
+- **Separate implementers.** Dispatch implementers sequentially (one
   per task), accumulating their changes in the working tree. Once every implementer
-  in the batch has returned `READY_FOR_REVIEW`, dispatch a single reviewer for the
-  combined diff.
-- **One combined implementer, one reviewer.** If the tasks are semantically
+  in the batch has returned `COMPLETE`, commit the combined diff.
+- **One combined implementer.** If the tasks are semantically
   entangled (overlap on files, share a refactor, only make sense together), pass
-  the whole batch to a single implementer in one prompt, then dispatch one reviewer
-  for the combined diff.
+  the whole batch to a single implementer in one prompt and commit the combined diff.
 
 Prefer the combined-implementer strategy when splitting would force implementers to
 duplicate context or step on each other's edits. Prefer separate implementers when
 boundaries are clean.
 
-"Parallel" here only authorizes batching of review and commit -- it does NOT mean
+"Parallel" here only authorizes batching of commits -- it does NOT mean
 multiple implementers run at the same time.
 
 ## Step 3: Execute tasks (one batch at a time)
 
 For each batch (size 1 by default; see Step 2b), execute this cycle. After each
-completed batch, retain only a **one-line summary** (e.g. "1.1: APPROVED, 3 files
-changed, commit abc1234"; or "batch [3.1, 3.2, 3.3]: APPROVED, commit abc1234")
+completed batch, retain only a **one-line summary** (e.g. "1.1: 3 files
+changed, commit abc1234"; or "batch [3.1, 3.2, 3.3]: commit abc1234")
 and discard the full subagent reports from your working memory.
 
 ### 3a. Dispatch implementer(s)
@@ -140,8 +133,7 @@ The prompt must include:
 
 For a separate-implementers batch, dispatch each implementer **sequentially** (wait
 for each to return before dispatching the next), repeating step 3b after each one.
-Only proceed to the reviewer (step 3c) once every implementer in the batch has
-returned `READY_FOR_REVIEW`.
+Only proceed to step 3c once every implementer in the batch has returned `COMPLETE`.
 
 The implementer's role, execution protocol, and status report format are defined
 in its agent file -- do not repeat them in the prompt.
@@ -150,9 +142,9 @@ in its agent file -- do not repeat them in the prompt.
 
 Parse the implementer's `STATUS` from its `## Status Report` block:
 
-- **READY_FOR_REVIEW**: in a size-1 batch, proceed to reviewer (step 3c). In a
+- **COMPLETE**: in a size-1 batch, proceed to step 3c. In a
   separate-implementers batch, dispatch the next task's implementer; only proceed
-  to the reviewer once every implementer in the batch is `READY_FOR_REVIEW`.
+  to step 3c once every implementer in the batch is `COMPLETE`.
 - **BLOCKED**: flip the task's Status column to `Blocked` and append a
   `_Blocked: {reason}_` line to its detailed section in `tasks.md`. If this was
   one task in a separate-implementers batch, drop only that task from the batch
@@ -160,68 +152,28 @@ Parse the implementer's `STATUS` from its `## Status Report` block:
 - **NEEDS_CONTEXT**: re-dispatch once with the requested context; if still unresolved,
   block the task
 
-### 3c. Dispatch reviewer
+**Scope check (you do this yourself -- do not delegate it).** Before touching any
+tracking file or staging a commit, run `git diff --stat` and `git status --porcelain`
+and confirm:
 
-Dispatch the **spec-reviewer** subagent via the Agent tool:
+- Every changed file was in the declared scope for this batch. Unexpected files are a
+  stop-and-ask, not a commit.
+- No pre-existing uncommitted changes from before the run got swept in.
+- The change is not obviously empty or a stub (a batch reporting `COMPLETE` with no
+  diff, or only comment churn, is a red flag -- re-dispatch or ask).
 
-```
-Agent({
-  subagent_type: "spec-reviewer",
-  prompt: <task-specific context below>
-})
-```
+This is a scope and sanity check on the diff, not a code review. If you want a real
+review of the implementation, run `/impl-review` after the run.
 
-The prompt must include:
+**User pushback.** If the user interjects mid-cycle with strong objections to the
+implementer's approach ("no, that's wrong", "this won't work", "stop and rethink"),
+re-dispatch a fresh implementer with `model: "opus"` passed to the Agent tool, the
+original context, and the user's specific objection.
 
-- The task description, boundary, and requirement IDs. For a multi-task batch,
-  include every task in the batch and make clear that the reviewer must verify
-  the combined diff against all of them.
-- Paths to the spec files: `specs/{feature}/requirements.md` and
-  `specs/{feature}/design.md` (the reviewer reads them independently)
-- The implementer's status report (for reference -- the reviewer verifies
-  independently by running `git diff`). For a separate-implementers batch,
-  concatenate every implementer's status report.
+### 3c. Update tasks.md
 
-The reviewer's role, checklist, and verdict format are defined in its agent file --
-do not repeat them in the prompt.
-
-### 3d. Handle the verdict
-
-Parse the reviewer's `VERDICT` from its `## Review Verdict` block:
-
-- **APPROVED**: proceed to update `tasks.md` (step 3e), then commit (step 3f).
-- **REJECTED (round 1)**: dispatch a **new** spec-implementer subagent (default
-  Sonnet) with:
-  - The original task context
-  - The reviewer's specific FINDINGS and REMEDIATION
-  - Instruction to fix the cited issues only
-    Then re-dispatch the spec-reviewer.
-- **REJECTED (round 2)**: **escalate to Opus** -- dispatch a new spec-implementer
-  with `model: "opus"` passed to the Agent tool (this overrides the agent's
-  frontmatter default). Include the original task context, all accumulated
-  FINDINGS from both prior rounds, and a note that this is an escalated attempt
-  after two Sonnet rounds failed. Then re-dispatch the spec-reviewer.
-- **REJECTED (round 3)**: flip the task's Status column to `Blocked` and append
-  `_Blocked: reviewer rejected after 2 fix rounds (including Opus escalation) --
-{summary}_` to the task's detailed section in `tasks.md`. Report to user, move
-  to next task.
-
-**Critical ordering:** never mark a task `Done` or write its completion note
-into `tasks.md` until the reviewer's verdict is `APPROVED` for the batch that
-contains it. While the verdict is still `REJECTED` (across any retry round),
-leave `tasks.md` untouched -- the task is not done yet, and a premature edit
-would lose the source of truth driving the retry.
-
-**User disagreement escalation.** If the user interjects mid-cycle with strong
-pushback on the implementer's approach ("no, that's wrong", "this won't work",
-"stop and rethink"), treat the next retry as an escalated Opus round regardless
-of rejection count. Pass the user's specific objection as additional input to
-the implementer alongside the original task context.
-
-### 3e. Update tasks.md (only after APPROVED)
-
-Run this step **only after** step 3d returned `APPROVED` for the batch. For
-every approved task in the batch:
+Run this step **only after** every implementer in the batch has returned
+`COMPLETE`. For every completed task in the batch:
 
 - Flip its `Status` column in the Task Summary table from `Pending` to `Done`.
 - Append a brief completion note to the task's detailed section, e.g.:
@@ -242,10 +194,10 @@ delete the bullets for completed tasks -- there is nothing to renumber.
 
 After editing `tasks.md`, run `npx prettier --write --print-width 120 specs/{feature}/tasks.md`.
 
-### 3f. Commit (orchestrator does this, not subagents)
+### 3d. Commit (orchestrator does this, not subagents)
 
 Stage only the files the implementer(s) changed, plus the `tasks.md` edits
-from step 3e. The `tasks.md` update and the implementation changes go in the
+from step 3c. The `tasks.md` update and the implementation changes go in the
 **same commit** -- never commit code without the matching `tasks.md` update,
 and never commit a `tasks.md` update without the implementation behind it:
 
@@ -262,7 +214,7 @@ message that summarizes the batch (e.g. `feat({feature}): {shared theme} (tasks
 
 Do not include issue IDs in the commit message.
 
-### 3g. Decide next step
+### 3e. Decide next step
 
 - **If task numbers were specified**: move to the next specified task (or batch).
 - **If `all` mode**: re-read `tasks.md`, find the next pending task (or parallel
@@ -290,7 +242,7 @@ After finishing (all tasks done or user stops), report:
   All code changes come from spec-implementer subagents.
 - **Sequential dispatch.** Never dispatch multiple implementers simultaneously --
   even within a parallel-task batch, implementers run one after another. "Parallel"
-  in `(P)` markers authorizes batched review and committing, not concurrent
+  in `(P)` markers authorizes batched committing, not concurrent
   execution.
 - **Fresh subagents.** Each dispatch is a new Agent call with a new context.
   Never reuse or continue a prior subagent.
@@ -300,6 +252,5 @@ After finishing (all tasks done or user stops), report:
   do NOT commit those changes. Flag it and ask the user.
 - **Spec conflicts.** If the implementer reports a spec conflict (API doesn't exist,
   design is wrong), block the task rather than silently working around it.
-- **Bounded retries.** Max 2 fix rounds per reviewer rejection, then block.
 - **Context hygiene.** After each task, retain only the one-line summary. Do NOT
-  carry forward the full implementer/reviewer reports into the next task's context.
+  carry forward the full implementer reports into the next task's context.

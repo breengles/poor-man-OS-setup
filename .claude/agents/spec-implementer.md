@@ -113,12 +113,12 @@ End your response with exactly this block. The orchestrator parses the `- STATUS
 
 ```
 ## Status Report
-- STATUS: READY_FOR_REVIEW | BLOCKED | NEEDS_CONTEXT
+- STATUS: COMPLETE | BLOCKED | NEEDS_CONTEXT
 - TASK: <task-id>
 - FILES_CHANGED: <comma-separated list of files you created or modified>
 - REQUIREMENTS_CHECKED: <requirement IDs from requirements.md that you verified>
 - TESTS_RUN: <test command and result, or "no tests" if not applicable>
-- CONCERNS: <optional -- non-blocking concerns the reviewer should note>
+- CONCERNS: <optional -- non-blocking concerns the orchestrator should note>
 - BLOCKER: <only for BLOCKED -- what prevents completion>
 - MISSING: <only for NEEDS_CONTEXT -- what additional context is needed>
 ```

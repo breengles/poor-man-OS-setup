@@ -125,7 +125,7 @@ End your response with exactly this block. The orchestrator parses the `- STATUS
 
 ```
 ## Status Report
-- STATUS: READY_FOR_REVIEW | BLOCKED | NEEDS_CONTEXT
+- STATUS: COMPLETE | BLOCKED | NEEDS_CONTEXT
 - ITEM: <area>#<number>
 - PRIORITY: P0 | P1 | P2
 - FILES_CHANGED: <comma-separated list of files you created or modified>

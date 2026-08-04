@@ -25,8 +25,9 @@ no build system, no test framework, and no CI/CD pipeline.
   yazi/                    # Yazi file manager config + plugins
 .claude/
   CLAUDE.md                # User-level Claude Code preferences (stowed to ~/.claude/)
-  skills/                  # Custom slash commands (commit, todo-*, docs-*, mr-description, spec-review, spec-implement)
-  agents/                  # Custom agent definitions (branch-code-reviewer)
+  skills/                  # Custom slash commands (commit, todo-*, docs-*, mr-*, plan-*, spec-*)
+  agents/                  # Custom agent definitions (implementer/reviewer pairs for plan/spec/todo)
+  settings.json            # Claude Code settings (stowed to ~/.claude/settings.json)
 .vscode/
   user_settings.json       # Cursor/VS Code settings
   keybindings.json         # Cursor/VS Code keybindings
@@ -79,10 +80,13 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
 - **Claude Code user prefs:** `.claude/CLAUDE.md` (stowed to `~/.claude/CLAUDE.md`)
 - **Claude Code skills:** 16 custom slash commands at `.claude/skills/` — commit, todo-init,
   todo-review, todo-implement, docs-init, docs-revise, docs-analyze, mr-description,
-  mr-review, plan-implement, resolve-conflicts, spec-init, spec-review, spec-implement,
-  spec-finalize, dataset-readme
-- **Claude Code agents:** `.claude/agents/` — branch-code-reviewer, spec-implementer
-  (Sonnet, Write/Edit), spec-reviewer (Opus, read-only + Bash), todo-implementer
-  (Sonnet, Write/Edit), todo-reviewer (Opus, read-only + Bash)
-- **Claude Code settings:** `~/.claude/settings.json` (managed by Claude Code itself, not stow —
-  contains MCP servers, hooks, plugins, permissions)
+  mr-review, resolve-conflicts, spec-init, spec-review, spec-implement, spec-finalize,
+  dataset-readme, impl-review
+- **Claude Code agents:** `.claude/agents/` — one implementer per workflow
+  (`spec-implementer`, `todo-implementer`), both Sonnet with Write/Edit.
+  The implement skills run orchestrator + implementer only; there is no reviewer subagent.
+  Code review is the separate, user-invoked `/impl-review` command, which runs in the main
+  session. See "Review is a separate step" in `.claude/CLAUDE.md`.
+- **Claude Code settings:** `.claude/settings.json` (stowed to `~/.claude/settings.json` —
+  contains MCP servers, plugins, permissions, effort level). Claude Code writes to this
+  file directly, so edits land in the repo and show up in `git status`.

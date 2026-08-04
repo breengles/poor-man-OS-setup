@@ -14,58 +14,33 @@ NEVER use destructive commands without explicit user approval. The following are
 
 If a task seems to require one of these, stop and ask the user first.
 
+## Response Style
+
+Keep responses focused, brief, and concise. Put most of the response on the main answer;
+keep disclaimers and caveats short. When asked to explain something, give a high-level
+summary unless an in-depth one is specifically requested.
+
+Lead with the outcome -- the first sentence after finishing work should answer "what
+happened" or "what did you find". Supporting detail and reasoning come after, for readers
+who want them. Readable beats terse: keep output short by dropping details that don't
+change what the reader would do next, not by compressing prose into fragments,
+abbreviations, arrow chains, or jargon. Match the response to the question -- a simple
+question gets a direct answer in prose, not headers and sections.
+
+**Written deliverables** (Markdown files, reports, docs) follow the same rule: match length
+to what the task needs. Cover the substance, but do not pad with filler sections, redundant
+summaries, or boilerplate.
+
+Do not narrate routine actions between tool calls ("Now I'll...", "Let me check..."). Write
+when there is something to report: a finding, a change of direction, or a blocker.
+
 ## SLURM Cluster
 
 When working on a SLURM-backed GPU cluster, **never run compute-intensive scripts on the
 login node** (training, inference, data preprocessing, large builds, profiling, etc.). The
 login node is shared and meant only for editing, lightweight setup, and job submission.
 
-Instead, run all real work through the scheduler:
-
-- **Long-running or reproducible jobs:** write a proper `sbatch` script and submit it with
-  `sbatch <script>.sh`.
-- **Short interactive/diagnostic runs:** use `srun` with explicit resource
-  flags.
-
-Always request resources explicitly. For GPU-intensive jobs, the default allocation is:
-
-- **1-2 GPUs** (or an appropriate number for the task), on the correct partition (`-p`/`--partition`)
-- **12 CPUs per GPU** (`--cpus-per-task` / `--cpus-per-gpu`)
-- **80 GB memory per GPU** (`--mem-per-gpu=80G`)
-
-Example for a 2-GPU job:
-
-```bash
-srun -p scalar100q --gpus=2 --cpus-per-gpu=12 --mem-per-gpu=80G \
-  --pty <command>
-```
-
-Scale CPU and memory with the GPU count, and tune the GPU count to the task type (e.g. a
-single GPU for small inference, more for multi-GPU training). If you are unsure which
-partition or how many GPUs a task needs, ask the user before submitting.
-
-### Login-node traps
-
-- **The agent scratchpad is login-node-local and invisible to compute nodes.** Never write
-  run outputs, configs a job will read, or project dirs there. Use a shared filesystem path.
-- **Hugging Face Xet uploads hang on the login node** -- they need a compute node, so run
-  them under a CPU `srun` (`defq` is fine for a pure upload). The HF token is cached in the
-  shared `HF_HOME` on the cluster filesystem; do not expect an `HF_TOKEN` in `.env`.
-- Job logs land in the submit directory unless `--chdir`/`--output` says otherwise, and
-  `sbatch` snapshots the batch script at submit time -- editing the `.sbatch` afterwards does
-  not affect an already-queued job (source files it calls at runtime DO pick up edits).
-
-### Partitions (pair cluster)
-
-Run `sinfo` to check live availability before submitting. The relevant partitions:
-
-- **`scalar100q`** -- 80 GB A100 GPUs. **Default choice** for most GPU work.
-- **`scalar6000q`** -- A6000 GPUs. Use when A100s are saturated or A6000s suffice.
-- **`defq`** (default partition) -- routes jobs to either `scalar100q` or `scalar6000q`.
-  **Avoid it**: the assigned hardware is non-deterministic and the resources are
-  unreliable. Always name `scalar100q` or `scalar6000q` explicitly instead.
-- **`hyperplaneq`** -- reserved for real training runs. **Do not use it** for agent
-  jobs (diagnostics, experiments, ad-hoc work).
+Instead, run all real work through the scheduler via `sbatch` or `srun`. Default partition is `scalar100q`.
 
 ## Python
 
@@ -81,14 +56,6 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
   the implementation details.
 - **Prefer relative imports within a package** -- `from .foo import X`, not
   `from mypkg.foo import X`.
-
-### Environments
-
-- Extra/variant envs live in the **project root** as `.venv-<variant>`, selected via
-  `UV_PROJECT_ENVIRONMENT`. Never put them on a shared filesystem or under `/tmp`, and
-  leave the project's main `.venv` untouched.
-- **`uv pip` ignores `UV_PROJECT_ENVIRONMENT`.** Use `uv sync`/`uv run`, or activate the
-  target env explicitly, or the install silently lands in the wrong place.
 
 ### Type checking
 
@@ -114,8 +81,7 @@ Always use `uv` (https://docs.astral.sh/uv/) for Python project management inste
 
 ## Git Commits
 
-- Never include issue IDs or numbers (e.g. `#5`, `#123`) in commit messages - GitLab interprets
-  `#N` as an issue reference and may auto-close issues unintentionally.
+- Never include issue IDs or numbers (e.g. `#5`, `#123`) in commit messages.
 
 ## Ultracode Mode
 
@@ -143,8 +109,10 @@ Specs live in `specs/<feature-name>/` and are managed by dedicated slash command
 - `/spec-review <feature>` -- adversarially test the spec's soundness (is the problem
   real, the reasoning valid, the proposed solution correct) plus readiness; format is a
   one-line afterthought
-- `/spec-implement <feature>` -- implement task-by-task via implementer/reviewer
-  subagents (orchestrator pattern)
+- `/spec-implement <feature>` -- implement task-by-task via implementer subagents
+  (orchestrator pattern); no reviewer in the loop
+- `/impl-review spec <feature>` -- review the shipped code against the spec's acceptance
+  criteria. Separate, user-invoked, and optional; run it when you want the work checked
 - `/spec-finalize <feature>` -- close out a fully-implemented spec: reconcile the project
   docs with the shipped code (running an opus-subagent update cycle if they are stale),
   then remove the resolved spec directory so only code + up-to-date docs remain
