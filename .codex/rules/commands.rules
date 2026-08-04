@@ -48,6 +48,8 @@ prefix_rule(
         "shasum",
         "md5",
         "df",
+        "squeue",
+        "tmux",
     ]],
     decision = "allow",
     justification = "Match the general command access granted in Claude Code.",
@@ -90,11 +92,62 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern = ["glab"],
+    pattern = ["glab", "auth", "status"],
     decision = "allow",
-    justification = "Match Claude Code's general GitLab CLI permission; destructive overrides remain prompts.",
+    justification = "Allow read-only GitLab authentication checks.",
+    match = [
+        "glab auth status",
+    ],
+)
+
+prefix_rule(
+    pattern = ["glab", "mr", ["view", "list", "diff"]],
+    decision = "allow",
+    justification = "Allow read-only merge request inspection.",
     match = [
         "glab mr view 12",
-        "glab mr create --fill",
+        "glab mr list",
+        "glab mr diff 12",
     ],
+)
+
+prefix_rule(
+    pattern = ["glab", "issue", ["view", "list"]],
+    decision = "allow",
+    justification = "Allow read-only issue inspection.",
+    match = [
+        "glab issue view 12",
+        "glab issue list",
+    ],
+)
+
+prefix_rule(
+    pattern = ["glab", "repo", "view"],
+    decision = "allow",
+    justification = "Allow read-only repository inspection.",
+    match = [
+        "glab repo view",
+    ],
+)
+
+prefix_rule(
+    pattern = ["glab", "release", ["view", "list"]],
+    decision = "allow",
+    justification = "Allow read-only release inspection.",
+    match = [
+        "glab release view v1.0.0",
+        "glab release list",
+    ],
+)
+
+prefix_rule(
+    pattern = ["node", ".codex/skills/.system/openai-docs/scripts/fetch-codex-manual.mjs"],
+    decision = "allow",
+    justification = "Allow the bundled OpenAI documentation helper to refresh its cache.",
+)
+
+prefix_rule(
+    pattern = ["/bin/bash", "-lc", "GIT_EDITOR=true git rebase --continue"],
+    decision = "allow",
+    justification = "Allow the established non-interactive rebase continuation command.",
 )

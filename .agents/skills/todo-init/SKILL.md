@@ -1,32 +1,39 @@
 ---
 name: todo-init
-description: Scan the project and create initial TODO files organized by area
+description: Scan a project and create structured TODO files grouped by area in a user-provided output directory.
 ---
 
-Initialize a TODO tracking system for this project. Follow these steps:
+# TODO Init
 
-1. **Explore the codebase thoroughly** — read the project structure, source files, existing issues, AGENTS.md, README, and any existing TODO/FIXME/HACK/XXX comments in the code. Check git log for recent activity and open issues/MRs if a remote is configured.
+Treat the user-provided path as the relative or absolute output directory,
+defaulting to `todos/` at the repository root. Create it when absent. If it
+already contains TODO files, read them first and add only genuinely new items;
+never overwrite or duplicate existing work.
 
-2. **Identify areas** — group discovered items semantically by project area (e.g. `solver`, `api`, `ui`, `cli`, `tests`, `docs`, `infra`). Use names that match the project's own module/directory structure.
+Infer project scope from the output directory: `packages/solver/todos` belongs
+to `packages/solver`, not automatically to the whole repository. Inspect that
+project's structure, source, README, applicable `AGENTS.md`, open
+`TODO`/`FIXME`/`HACK`/`XXX` markers, recent history, and configured remote issues
+or merge requests. Include evidenced bugs, limitations, missing functionality,
+important test or documentation gaps, and worthwhile refactors. Cite paths and
+lines and group findings by existing project area. Never create an empty file.
 
-3. **Create `todos/<area>.md` files** — one file per area. Each file must follow the TODO file format from AGENTS.md:
-   - **Priority Summary table** at the top with all items sorted by priority (highest first). Exactly **three columns**: `Task` (link `[#N](anchor)` to the detailed section), `Priority` (`P0` / `P1` / `P2`), and `Status` (`Pending` or `Blocked` — newly seeded items are `Pending`; `Done` is only a transient state used by `$todo-implement` before it removes the item).
-   - **Suggested resolution order** below the table — an unnumbered (bullet) list of item numbers in recommended tackling order with brief rationale (e.g. `- #5 -- prerequisite for #7`). List only open items; bullets keep the list stable as items are completed.
-   - **Detailed sections** at the bottom — one heading per item with a clear description, context, and acceptance criteria where possible. Code (plus its docs) is the source of truth: once an item is implemented and any affected docs are reconciled, `$todo-implement` removes the item from the file entirely (git history keeps the record). A `Blocked` item stays, with a `_Blocked: ..._` note appended to its section.
+Assign `P0` to bugs, blockers, and broken behavior; `P1` to missing features,
+significant improvements, or costly debt; `P2` to minor improvements.
 
-4. **Populate from all sources** — include items from:
-   - `TODO`, `FIXME`, `HACK`, `XXX` comments in source code (cite file and line)
-   - Known bugs or limitations mentioned in docs/comments
-   - Missing tests or incomplete test coverage you can identify
-   - Code quality issues (dead code, unclear naming, missing docs)
-   - Potential improvements or refactors you notice
-   - Open issues/MRs from the remote if available
+Each `<area>.md` contains, in order:
 
-5. **Assign priorities** — use this scale:
-   - **P0 (Critical)**: Bugs, broken functionality, blockers
-   - **P1 (Important)**: Missing features, significant improvements, tech debt that affects development
-   - **P2 (Nice-to-have)**: Minor improvements, cosmetic issues, optional enhancements
+1. A Priority Summary table with exactly `Task`, `Priority`, and `Status`, sorted
+   by priority. Task cells are links such as `[#5](#5-title)`. Persistent status
+   is `Pending` or `Blocked`; `Done` is transient during closeout.
+2. An unnumbered Suggested resolution order containing open items only.
+3. One `###` section per item with a clear problem statement, evidence and
+   context, and observable acceptance criteria.
 
-6. **Do NOT create empty files** — only create a `todos/<area>.md` if there are actual items for that area.
+A blocked section ends with `_Blocked: <reason>_`. Do not use HTML anchors or
+strikethrough. `$finalize` removes completed items after documentation is
+reconciled; Git history is the record.
 
-7. **Print a summary** at the end — list all created files with item counts and priority breakdown.
+Run `npx prettier --write --print-width 120` on every created or updated file.
+Report full paths, counts, and priority breakdown, then suggest
+`$implement <path to one TODO file>`. Do not commit.

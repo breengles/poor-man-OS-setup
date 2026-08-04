@@ -27,4 +27,6 @@
 # Under .codex, deploy only AGENTS.md, config files, agents/, and rules/.
 # The negative lookahead excludes all current and future Codex runtime state.
 ^/\.codex/(?!(?:AGENTS\.md|config\.toml|[^/]+\.config\.toml)$|(?:agents|rules)(?:/|$)).+
+# Codex mutates remembered TUI approvals at runtime; do not deploy them.
+/\.codex/rules/default\.rules
 /\.config/opencode/node_modules

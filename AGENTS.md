@@ -80,14 +80,19 @@ Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `d
 ### Codex
 
 - **Codex user prefs:** `.codex/AGENTS.md` (stowed to `~/.codex/AGENTS.md`)
-- **Codex skills:** 16 reusable workflows at `.agents/skills/` — commit, todo-init,
-  todo-review, todo-implement, docs-init, docs-revise, docs-analyze, mr-description,
-  mr-review, plan-implement, resolve-conflicts, spec-init, spec-review, spec-implement,
-  spec-finalize, dataset-readme
-- **Codex agents:** `.codex/agents/` — plan/spec/TODO implementer and reviewer roles.
+- **Codex skills:** seven reusable workflows at `.agents/skills/` -- `spec-init`
+  and `todo-init` create tracked work, `implement` executes it, `finalize` closes
+  it out, and `commit`, `mr-description`, and `dataset-readme` cover standalone
+  operations. Built-in Codex behavior handles ordinary docs, conflict resolution,
+  and code review (`/review` or `codex review`).
+- **Codex agents:** `.codex/agents/implementer.toml` -- one focused Terra/medium
+  implementer shared by spec and TODO workflows. The Sol/high main session owns
+  orchestration and final acceptance-criteria verification.
 - **Codex settings:** `.codex/config.toml` is the portable base configuration.
   `.codex/macos.config.toml` and `.codex/server.config.toml` provide host-specific
   profile overrides. Stow deploys all three under `~/.codex/`.
+- **Codex approvals:** routine workspace actions run directly; eligible escalation
+  prompts are routed to Codex Auto Review while sandbox boundaries remain active.
 - **Codex profiles:** use `codex --profile macos` on the local macOS machine and
   `codex --profile server` on remote non-macOS machines.
 - **Invocation:** use `$skill-name` in a prompt or choose a workflow with `/skills`.
