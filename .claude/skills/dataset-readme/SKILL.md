@@ -1,146 +1,74 @@
 ---
 name: dataset-readme
-description: Generate a comprehensive install.md documentation file for an image dataset. Use when asked to document a dataset, create a dataset readme, or prepare dataset documentation.
+description:
+  Generate a comprehensive install.md documentation file for an image dataset. Use when asked to document a dataset,
+  create a dataset readme, or prepare dataset documentation.
 argument-hint: <path-to-dataset-root>
 allowed-tools: Bash, Read, Glob, Grep, Write, Edit
 ---
 
-# Dataset Documentation Generator
+# dataset-readme
 
-Generate a comprehensive `install.md` for the image dataset located at:
+Document the image dataset at `$ARGUMENTS`.
 
-```
-$ARGUMENTS
-```
+## Safety
 
-## CRITICAL SAFETY RULES
+**The only file you may create or edit is `install.md` or `install-new.md` in the dataset root.**
 
-**The ONLY file you may create or edit is `install.md` or `install-new.md` in the dataset root directory.**
+Do not create, modify, move, rename, or delete any other file in the dataset, and write no temporary files inside it --
+use the scratchpad directory. All inspection is read-only: open images to read dimensions, read JSONs, load `.npz`
+files, never write back. If you are unsure whether an action would modify dataset files, do not do it.
 
-- **DO NOT** create, modify, move, rename, or delete ANY other file in the dataset.
-- **DO NOT** write any temporary files inside the dataset directory.
-- All dataset inspection MUST be read-only: open images to check dimensions, read JSONs, load `.npz` files — never write back.
-- Use the scratchpad directory for any temporary scripts or intermediate files.
-- If you are unsure whether an action modifies dataset files, DO NOT do it.
+## If `install.md` already exists
 
-## When `install.md` Already Exists
+Check before exploring. If it does not exist, explore and write `install.md`. If it does, read it in full, run the same
+exploration anyway, and compare your findings against it -- file count mismatches, new or deleted files, undocumented
+file types or directories, metadata schema changes (new/removed JSON keys, changed NPZ shapes), resolution or format
+changes, new or removed shards. If the existing file is accurate and complete, report that no update is needed and list
+what you verified. If there are real discrepancies, write **`install-new.md`** and summarize what changed.
 
-Before starting exploration, check whether `install.md` already exists in the dataset root directory.
+## Exploration
 
-- If `install.md` does **NOT** exist → proceed with the full exploration below and write **`install.md`**.
-- If `install.md` **already exists** → follow the **verification workflow**:
+Use `uv run --with <deps>` for Python one-liners.
 
-### Verification Workflow
-
-1. **Read the existing `install.md`** in full.
-2. **Run the same exploration steps** described below (directory structure, file counts, image checks, metadata schemas, etc.).
-3. **Compare your findings against the existing documentation.** Check for:
-   - File count mismatches (new or deleted files, changed totals)
-   - New file types or directories not documented
-   - Schema changes in metadata (new/removed JSON keys, changed NPZ shapes)
-   - Resolution or format changes in images
-   - New or removed shards/subsets
-   - Incorrect or outdated descriptions
-4. **If the existing `install.md` is accurate and complete** → report to the user that no updates are needed, listing what you verified.
-5. **If there are actual discrepancies or new data** → write **`install-new.md`** with the corrected/updated documentation. Summarize what changed for the user.
-
-## Exploration Procedure
-
-Work through these steps systematically. Use `uv run --with <deps>` for any Python one-liners.
-
-### Step 1: Directory Structure
-
-- List top-level directories and files.
-- Recursively explore subdirectories to understand the hierarchy (shards, splits, subsets).
-- Count files by extension at each level.
-- Identify the naming convention (e.g., `NNNNN_face=0.png`, `sample_001.jpg`).
-
-### Step 2: Count Samples
-
-- Count total files per extension (`.png`, `.jpg`, `.json`, `.npz`, `.npy`, `.txt`, `.csv`, `.parquet`, etc.).
-- Count unique sample IDs (strip suffixes/extensions to find the base ID).
-- Note if the dataset is sharded and how many shards exist.
-- Report any discrepancies (e.g., images without metadata, missing masks).
-
-### Step 3: Image Data
-
-For each distinct image type found (main images, masks, segmentation maps, visualizations, augmented versions):
-
-- Check resolution, color mode (RGB, L, RGBA), and format using:
-  ```
-  uv run --with Pillow python3 -c "from PIL import Image; img = Image.open('<path>'); print(f'size={img.size}, mode={img.mode}')"
-  ```
-- For images that look like segmentation maps or masks (few unique colors, binary patterns), analyze the color palette:
-  ```
-  uv run --with "Pillow,numpy" python3 -c "
-  from PIL import Image; import numpy as np
-  img = np.array(Image.open('<path>'))
-  colors = np.unique(img.reshape(-1, img.shape[-1]) if img.ndim == 3 else img.reshape(-1), axis=0)
-  print(f'unique values: {len(colors)}')
-  for c in colors: print(f'  {c}')
-  "
-  ```
-- Sample multiple files (at least 5-10 from different shards) to confirm consistency.
-
-### Step 4: Metadata Files
-
-- Read 2-3 sample `.json` files and document the full schema (all keys, value types, nesting).
-- For `.npz`/`.npy` files, load and report keys, shapes, dtypes:
-  ```
-  uv run --with numpy python3 -c "
-  import numpy as np
-  d = np.load('<path>', allow_pickle=True)
-  for k in d: print(f'{k}: shape={d[k].shape}, dtype={d[k].dtype}')
-  "
-  ```
-- For `.csv`/`.parquet`/`.txt` files, show headers and a few sample rows.
-- For `.yaml` files, read and summarize the configuration schema.
-- Document what each metadata field means based on field names and values.
-
-### Step 5: Paired/Related Data
-
-- Identify relationships between files (e.g., image + mask, source + augmented, original + caption).
-- Check for cross-references in metadata (e.g., `source_image` fields pointing to other files).
-- Note any subset/split organization (train/val/test, filtered subsets).
-
-### Step 6: Context from Scripts (if available)
-
-- Check if the toolbox project at `/home/artem.kotov/projects/toolbox/` has relevant generation scripts (in `scripts/`, `src/`) that explain how the data was produced.
-- Look for class name mappings, color tables, enum definitions that document label meanings.
-- Reference these findings in the documentation.
+1. **Structure** -- list top-level entries, recurse into subdirectories (shards, splits, subsets), count files by
+   extension at each level, and identify the naming convention (e.g. `NNNNN_face=0.png`).
+2. **Counts** -- total files per extension (`.png`, `.jpg`, `.json`, `.npz`, `.npy`, `.txt`, `.csv`, `.parquet`), unique
+   sample IDs (strip suffixes and extensions), shard count. Report discrepancies such as images without metadata or
+   missing masks.
+3. **Images** -- per distinct image type (main, masks, segmentation maps, visualizations, augmentations), check
+   resolution, color mode, and format:
+   ```
+   uv run --with Pillow python3 -c "from PIL import Image; i=Image.open('<path>'); print(i.size, i.mode)"
+   ```
+   For anything that looks like a mask or segmentation map, enumerate the palette with numpy
+   (`np.unique(arr.reshape(-1, arr.shape[-1]), axis=0)`) so you can build a class table. Sample 5-10 files from
+   different shards to confirm consistency.
+4. **Metadata** -- read 2-3 sample `.json` files and document the full schema (every key, value type, nesting). For
+   `.npz`/`.npy`, load with `allow_pickle=True` and report each key's shape and dtype. For `.csv`/`.parquet`/`.txt`,
+   show headers and sample rows. For `.yaml`, summarize the config schema. Explain what each field means from its name
+   and values.
+5. **Relationships** -- pair related files (image + mask, source + augmented, original + caption), follow
+   cross-references in metadata (`source_image`-style fields), and note any train/val/test or filtered-subset
+   organization.
+6. **Provenance** -- if a generation script for this data exists in a sibling project, read it for class-name mappings,
+   color tables, and enum definitions that document label meanings, and cite what you find.
 
 ## Output
 
-Write the output file (`install.md` or `install-new.md`, as determined above) in the dataset root with these sections:
+Write the file in the dataset root with these sections:
 
-### Required Sections
+1. **Title and summary** -- dataset name, one-paragraph description, key highlights.
+2. **Statistics** -- a table of counts: total samples, files per type, unique IDs, shards.
+3. **Directory structure** -- an ASCII tree with inline comments explaining each file type.
+4. **File formats** -- per type: format, resolution or shape, dtype; the full schema for structured data; color/class
+   mapping tables for segmentation maps; truncated example content.
+5. **Usage with PyTorch** -- ready-to-use `torch.utils.data.Dataset` subclasses (a basic image + metadata one, plus any
+   specialized cases the data supports: segmentation, landmarks, paired data) with proper imports, `__len__`,
+   `__getitem__`, and a minimal `DataLoader` example.
 
-1. **Title and Summary** — Dataset name, one-paragraph description, key highlights.
-
-2. **Dataset Statistics** — Table with counts: total samples, files per type, unique IDs, shards.
-
-3. **Directory Structure** — ASCII tree showing the layout with inline comments explaining each file type.
-
-4. **File Formats** — For each file type, document:
-   - Format, resolution/shape, data type
-   - Full schema for structured data (JSON keys, NPZ arrays, CSV columns)
-   - Color/class mapping tables for segmentation maps
-   - Example content (truncated JSON, array shapes)
-
-5. **Usage with PyTorch** — Provide ready-to-use `torch.utils.data.Dataset` subclass(es):
-   - A basic dataset class that loads images + metadata
-   - Additional dataset classes for specialized use cases (segmentation, landmarks, paired data, etc.)
-   - Include proper imports, `__len__`, `__getitem__`
-   - Show a minimal working example with `DataLoader`
-   - Use `uv run` compatible imports (standard PyTorch + torchvision + PIL + numpy)
-
-### Style Guidelines
-
-- Use GitHub-flavored Markdown with tables, code blocks, and ASCII trees.
-- Keep it factual — describe what IS in the data, not speculation.
-- Include exact numbers from your counts.
-- For JSON schemas, show a real (but potentially truncated) example with `...` for long arrays.
-- For class/label mappings, always use a table with ID, name, and any visual identifier (color, etc.).
-- PyTorch code should be clean, typed, and copy-pasteable.
+GitHub-flavored Markdown. Stay factual -- describe what IS in the data, never speculate. Use exact numbers from your
+counts. Show real (truncated with `...`) JSON examples. Always use a table for class or label mappings, with ID, name,
+and any visual identifier. PyTorch code must be clean, typed, and copy-pasteable.
 
 See [example.md](example.md) for a reference output.

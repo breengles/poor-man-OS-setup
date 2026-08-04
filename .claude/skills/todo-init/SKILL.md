@@ -1,32 +1,47 @@
 ---
 name: todo-init
 description: Scan the project and create initial TODO files organized by area
+argument-hint: "[area or path to scope to]"
 ---
 
-Initialize a TODO tracking system for this project. Follow these steps:
+# todo-init
 
-1. **Explore the codebase thoroughly** — read the project structure, source files, existing issues, AGENTS.md, README, and any existing TODO/FIXME/HACK/XXX comments in the code. Check git log for recent activity and open issues/MRs if a remote is configured.
+Seed `todos/<area>.md` files for this project. This skill is the source of truth for TODO file format.
 
-2. **Identify areas** — group discovered items semantically by project area (e.g. `solver`, `api`, `ui`, `cli`, `tests`, `docs`, `infra`). Use names that match the project's own module/directory structure.
+## Gather
 
-3. **Create `todos/<area>.md` files** — one file per area. Each file must follow the TODO file format from CLAUDE.md:
-   - **Priority Summary table** at the top with all items sorted by priority (highest first). Exactly **three columns**: `Task` (link `[#N](anchor)` to the detailed section), `Priority` (`P0` / `P1` / `P2`), and `Status` (`Pending` or `Blocked` — newly seeded items are `Pending`; `Done` is only a transient state used by `/todo-implement` before it removes the item).
-   - **Suggested resolution order** below the table — an unnumbered (bullet) list of item numbers in recommended tackling order with brief rationale (e.g. `- #5 -- prerequisite for #7`). List only open items; bullets keep the list stable as items are completed.
-   - **Detailed sections** at the bottom — one heading per item with a clear description, context, and acceptance criteria where possible. Code (plus its docs) is the source of truth: once an item is implemented and any affected docs are reconciled, `/todo-implement` removes the item from the file entirely (git history keeps the record). A `Blocked` item stays, with a `_Blocked: ..._` note appended to its section.
+Explore the codebase: project structure, source files, README, CLAUDE.md, and every `TODO`/`FIXME`/`HACK`/`XXX` comment
+(cite file and line). Skim `git log` for recent activity, and pull open issues/MRs if a remote is configured. Also
+collect known bugs and limitations mentioned in docs or comments, missing or thin test coverage, code-quality problems
+(dead code, unclear naming, missing docs), and refactors worth doing.
 
-4. **Populate from all sources** — include items from:
-   - `TODO`, `FIXME`, `HACK`, `XXX` comments in source code (cite file and line)
-   - Known bugs or limitations mentioned in docs/comments
-   - Missing tests or incomplete test coverage you can identify
-   - Code quality issues (dead code, unclear naming, missing docs)
-   - Potential improvements or refactors you notice
-   - Open issues/MRs from the remote if available
+Group findings by project area, using names that match the project's own module and directory structure (`solver`,
+`api`, `cli`, `infra`). One file per area -- **never create an empty file**.
 
-5. **Assign priorities** — use this scale:
-   - **P0 (Critical)**: Bugs, broken functionality, blockers
-   - **P1 (Important)**: Missing features, significant improvements, tech debt that affects development
-   - **P2 (Nice-to-have)**: Minor improvements, cosmetic issues, optional enhancements
+Assign priorities: **P0** for bugs, broken functionality, and blockers; **P1** for missing features, significant
+improvements, and tech debt that slows development; **P2** for minor and cosmetic improvements.
 
-6. **Do NOT create empty files** — only create a `todos/<area>.md` if there are actual items for that area.
+## File format
 
-7. **Print a summary** at the end — list all created files with item counts and priority breakdown.
+Three sections, in this order:
+
+1. **Priority Summary table** at the very top -- every open item, highest priority first, with exactly three columns:
+   `Task`, `Priority`, `Status`.
+   - `Task` is a markdown link with link text `[#N](anchor)`, e.g. `[#5](#5-broken-cache-invalidation)`. No descriptions
+     in the cell.
+   - `Priority` is `P0` / `P1` / `P2`.
+   - `Status` is `Pending` or `Blocked`. Newly seeded items are `Pending`. `Done` exists only transiently, while
+     `/implement` and `/finalize` close an item out before removing it.
+   - **Never** use HTML anchors (`<a id="5">`) -- invisible in plain markdown and unreliable in VS Code. **Never**
+     strikethrough an item title -- change the `Status` instead.
+2. **Suggested resolution order** -- a bullet list (not numbered, so removing a completed item forces no renumbering) of
+   item numbers in recommended order with brief rationale per item: `- #5 -- prerequisite for #7`. Open items only.
+3. **Detailed sections** -- one `###` heading per item with a clear description, the context and cited files/lines, and
+   acceptance criteria wherever they can be stated.
+
+A `Blocked` item stays in the file with a `_Blocked: <reason>_` line appended to its section. Resolved items are
+**removed** entirely by `/finalize` once any affected docs are reconciled -- git history is the record, so there is no
+`Done` ledger.
+
+Run `npx prettier --write --print-width 120` on each file, then print a summary: files created, item counts, and
+priority breakdown.
