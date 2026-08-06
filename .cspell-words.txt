@@ -1441,6 +1441,7 @@ respace
 Restic
 resultdir
 Resumability
+rewarddance
 reweight
 rgaussroots
 rgaussweights
