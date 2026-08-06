@@ -42,7 +42,7 @@ git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
 
 # rust https://github.com/rust-lang/cargo/blob/master/src/doc/src/getting-started/installation.md
 curl https://sh.rustup.rs -sSf | sh
-cargo install --locked cargo-update ripgrep dua-cli eza zoxide bat fd-find starship pueue
+cargo install --locked cargo-update ripgrep dua-cli eza zoxide bat fd-find starship
 cargo install --force yazi-build
 
 # uv https://docs.astral.sh/uv/getting-started/installation/

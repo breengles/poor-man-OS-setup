@@ -40,31 +40,51 @@ _gen_completion() {
   case "$tool" in
     delta)    delta --generate-completion "$sh" ;;
     glab)     glab completion -s "$sh" ;;
-    pueue)    pueue completions "$sh" ;;
     rg)       rg --generate "complete-${sh}" ;;
     uv)       uv generate-shell-completion "$sh" ;;
     *)        return 1 ;;
   esac
 }
 
-# Tool completions
-# For each tool, try shell-specific file (.zsh/.bash) first, then generic (.sh).
-# If no pre-generated file exists, attempt to generate and cache one.
-_completion_tools=(adkb uv glab pueue pcpctl delta rg ollama)
-for _tool in "${_completion_tools[@]}"; do
+# True if the cache file is missing or older than a week.
+_completion_stale() {
+  [ -f "$1" ] || return 0
+  [ -n "$(find "$1" -mtime +7 2>/dev/null)" ]
+}
+
+# Tool completions, generated kind: cached at ~/.completion.<tool>.<shell> and
+# refreshed weekly, so the cache follows the installed version. Regenerating all
+# of them costs ~0.6s, paid once a week by whichever shell starts first.
+# The generic .sh name is deliberately not consulted here: a leftover one used to
+# shadow the shell-specific file forever, pinning uv's completion to a 2025 build
+# whose `uv run` spec offered no completion for the command being run.
+_completion_generated=(uv glab delta rg)
+for _tool in "${_completion_generated[@]}"; do
+  command -v "$_tool" >/dev/null 2>&1 || continue
+  _comp_file="$HOME/.completion.${_tool}.${_sh}"
+  if _completion_stale "$_comp_file"; then
+    # Write to a temp file so a failed generator can't truncate a working cache.
+    if _gen_completion "$_tool" "$_sh" > "${_comp_file}.new" 2>/dev/null && [ -s "${_comp_file}.new" ]; then
+      mv -f "${_comp_file}.new" "$_comp_file"
+    else
+      # Keep the stale file and back off a week instead of retrying every shell.
+      rm -f "${_comp_file}.new"
+      [ -f "$_comp_file" ] && touch "$_comp_file"
+    fi
+  fi
+  [ -f "$_comp_file" ] && source "$_comp_file"
+done
+
+# Tool completions, hand-placed kind: no generator, so whatever is on disk wins.
+# Shell-specific file first, then the generic .sh.
+_completion_static=(adkb pcpctl ollama)
+for _tool in "${_completion_static[@]}"; do
   if [ -f "$HOME/.completion.${_tool}.${_sh}" ]; then
     source "$HOME/.completion.${_tool}.${_sh}"
   elif [ -f "$HOME/.completion.${_tool}.sh" ]; then
     source "$HOME/.completion.${_tool}.sh"
-  elif command -v "$_tool" >/dev/null 2>&1; then
-    _comp_file="$HOME/.completion.${_tool}.${_sh}"
-    if _gen_completion "$_tool" "$_sh" > "$_comp_file" 2>/dev/null && [ -s "$_comp_file" ]; then
-      source "$_comp_file"
-    else
-      rm -f "$_comp_file"
-    fi
   fi
 done
 
-unset _sh _fzf _gcloud_path _gcloud_comp _completion_tools _tool _comp_file
-unset -f _gen_completion
+unset _sh _fzf _gcloud_path _gcloud_comp _completion_generated _completion_static _tool _comp_file
+unset -f _gen_completion _completion_stale

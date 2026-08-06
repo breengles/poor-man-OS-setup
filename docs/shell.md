@@ -183,7 +183,13 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview '...'  # Directory preview f
 
 ### Tool Completions
 
-The integrations module loads completions for: `adkb`, `uv`, `glab`, `pueue`, `pcpctl`. It looks for shell-specific completion files (`~/.completion.<tool>.zsh` or `~/.completion.<tool>.bash`) falling back to generic `.sh` variants.
+The integrations module loads completions from `~/.completion.<tool>.<shell>`, in two groups:
+
+- **Generated** (`uv`, `glab`, `delta`, `rg`): `_gen_completion` knows how to produce these from the tool itself, so the
+  cache is regenerated whenever it is older than a week and the tool tracks its installed version. The generic `.sh`
+  name is deliberately not consulted here - a leftover one used to shadow the shell-specific file permanently.
+- **Hand-placed** (`adkb`, `pcpctl`, `ollama`): no generator exists, so the file on disk wins. Shell-specific
+  (`~/.completion.<tool>.zsh` / `.bash`) first, falling back to the generic `~/.completion.<tool>.sh`.
 
 ## Integrations
 

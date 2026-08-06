@@ -96,7 +96,7 @@ brew install --cask keepingyouawake raycast mactex dockey transmission obsidian 
 
 # 4. Install Rust toolchain
 curl https://sh.rustup.rs -sSf | sh
-cargo install --locked cargo-update ripgrep dua-cli eza zoxide bat fd-find starship pueue
+cargo install --locked cargo-update ripgrep dua-cli eza zoxide bat fd-find starship
 cargo install --force yazi-build
 
 # 5. Install uv (Python)
