@@ -44,8 +44,8 @@ Otherwise you orchestrate -- **you do not edit docs yourself**:
    are independent (sequentially) or one combined updater when they are entangled. Each prompt gives the doc path(s),
    the specific gap, the `_Done:_` notes and the code paths that changed, and an instruction to **read the real code**
    -- `design.md` is only a hint and may have drifted from what shipped. The updater removes stale content, covers new
-   behavior, fixes examples, updates the `docs/README.md` index if files were added or removed, runs
-   `npx prettier --write --print-width 120` on what it touches, and edits **only** documentation -- never source code.
+   behavior, fixes examples, runs `npx prettier --write --print-width 120` on what it touches, and edits **only**
+   documentation -- never source code.
 2. **Dispatch one opus reviewer** once the updaters return. It reads code and docs independently, edits nothing, and
    returns **ALIGNED** or **NEEDS_REVISION** with specific findings.
 3. **ALIGNED** -> continue. **NEEDS_REVISION** -> dispatch a fresh updater with those findings only and re-review,
