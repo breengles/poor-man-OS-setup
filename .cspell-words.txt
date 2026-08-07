@@ -1365,6 +1365,7 @@ pytorch
 pywavelets
 pyyaml
 pyzmq
+qalign
 qdict
 qdrt
 qfloat
