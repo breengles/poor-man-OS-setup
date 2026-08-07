@@ -67,7 +67,11 @@
       "Bash(rm /tmp*)",
       "Bash(rm -rf /tmp*)",
       "Bash(rm -r /tmp*)",
-      "Bash(rm -f /tmp*)"
+      "Bash(rm -f /tmp*)",
+      "Bash(rm /home/artem.kotov/.claude/*)",
+      "Bash(rm -f /home/artem.kotov/.claude/*)",
+      "Bash(rm -r /home/artem.kotov/.claude/*)",
+      "Bash(rm -rf /home/artem.kotov/.claude/*)"
     ],
     "deny": [],
     "ask": [
