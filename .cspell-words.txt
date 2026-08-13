@@ -992,6 +992,7 @@ mappa
 marginparwidth
 markupsafe
 marp
+Marqo
 masic
 maskdir
 maskpredictor
@@ -1416,6 +1417,7 @@ Reiter
 relativenumber
 relcc
 releaserc
+relitigate
 relu
 relvis
 relwithdebinfo
