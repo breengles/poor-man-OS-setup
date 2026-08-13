@@ -1,7 +1,6 @@
 ---
 name: spec-init
-description:
-  Bootstrap a new spec at a given path -- requirements (EARS), design, optional research, and tasks -- in one pass
+description: Bootstrap a new spec at a given path -- requirements (EARS), design, optional research, and tasks -- in one pass
 argument-hint: "<path to spec dir> [short description]"
 ---
 
@@ -24,7 +23,8 @@ Ask concise, targeted questions in a **single message** -- do not drip-feed. Cov
 in and out of scope; primary users or callers; inputs, outputs, and success criteria including performance targets;
 known constraints (existing systems, platforms, deadlines); non-functional requirements (reliability, observability,
 security); and unknowns or risks. Skim the repo (README, layout, CLAUDE.md, neighboring specs) for grounding -- context,
-not implementation detail. If the answers come back thin, say what is missing before drafting.
+not implementation detail. If the answers come back thin, say what is missing before drafting; if the idea itself is
+still fuzzy, suggest a `/grill` session first and fold its settled decisions in as interview answers.
 
 ## Step 2: `requirements.md`
 
@@ -88,7 +88,7 @@ is trivial. **Every requirement ID must appear in at least one `_Requirements:_`
 Before reporting, check the spec against itself: every requirement ID appears in at least one design section and at
 least one task, no design element exists without a requirement behind it, and no `[NEEDS CLARIFICATION: ...]` marker
 survives. Surface the accumulated marker list -- only the user can resolve those, and the spec is not ready while any
-remain.
+remain; offer a `/grill` round to settle them.
 
 Report the files created **with their full paths**, requirement and task counts, how many tasks are `(P)`, orphaned
 requirements, and every unresolved marker with file and line. Suggest `/implement <spec path>` once the markers are

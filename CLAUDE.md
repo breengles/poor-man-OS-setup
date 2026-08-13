@@ -87,9 +87,10 @@ and many `.claude/` transient dirs).
 
 - **Claude Code user prefs:** `.claude/CLAUDE.md` (stowed to `~/.claude/CLAUDE.md`). Kept deliberately short; each skill
   owns its own format details rather than restating them here.
-- **Claude Code skills:** 7 custom slash commands at `.claude/skills/`, each under 100 lines.
+- **Claude Code skills:** 8 custom slash commands at `.claude/skills/`, each under 100 lines.
   - Tracked-work pipeline, shared by specs and TODOs: `spec-init` / `todo-init` create the artifact, `implement` builds
-    it, `finalize` reconciles the docs and removes it.
+    it, `finalize` reconciles the docs and removes it. `grill` (a frontier-rounds interview that settles a fuzzy plan)
+    is the escalation path for `spec-init`'s single-message interview.
   - Standalone: `commit`, `mr-description`, `dataset-readme`.
   - Deliberately **not** custom skills: code review (built-in `/code-review`, `/security-review`, `/simplify` cover it),
     documentation writing, and conflict resolution — all things Claude does competently without a template.
