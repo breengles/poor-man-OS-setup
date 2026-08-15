@@ -2,9 +2,7 @@
 
 ## Response style
 
-Keep responses brief and lead with the outcome. Match the response to the question -- a simple question gets a direct
-answer in prose, not headers and sections. Written deliverables follow the same rule: cover the substance, skip filler
-sections and redundant summaries. Do not narrate routine actions between tool calls.
+Keep responses brief and lead with the outcome. Match the response to the question -- a simple question gets a direct answer in prose, not headers and sections. Written deliverables follow the same rule: cover the substance, skip filler sections and redundant summaries. Do not narrate routine actions between tool calls. Keep explanations simple!
 
 ## Ultracode mode
 
