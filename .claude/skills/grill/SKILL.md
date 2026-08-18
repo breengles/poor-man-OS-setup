@@ -18,17 +18,28 @@ visit every branch rather than to fire questions at random.
 ## Rounds
 
 Work the tree in rounds. The **frontier** is every decision whose prerequisites are already settled -- the questions you
-can ask now without guessing at answers you have not heard yet. Ask the whole frontier in a single message, then stop
-and wait for answers. Number the questions and give your recommended answer for each:
+can ask now without guessing at answers you have not heard yet. Ask the whole frontier, then stop and wait for answers.
 
-```
-**Q1 -- <question title>**: <question body, possibly multiple paragraphs, with concrete options where they exist>
+Ask through the **AskUserQuestion tool**, not plain text. Each question becomes an interactive block the user answers by
+picking, so give every question real options instead of an open prompt:
 
--> <your recommended answer, one or two sentences>
-```
+- Put your recommended option **first**, with `(Recommended)` at the end of its label. The `description` is where the
+  trade-off goes -- what choosing this means, not a restatement of the label.
+- The tool always appends an "Other" escape hatch, so a question with no clean enumeration still works as a block: list
+  the two or three answers you actually expect and let the user type past them. Prefer this over prose.
+- `header` is a chip, 12 characters at most -- `Storage`, `Auth model`, `Rollout`.
+- Set `multiSelect: true` when the options are not mutually exclusive (which subsystems to cover, which risks matter).
+- Use `preview` when the choice is between concrete artifacts the user should compare side by side -- a schema, a
+  snippet, two layouts. Single-select only, and skip it for plain preference questions.
 
-When a round is at most four questions and each has clean enumerable options, ask it via the AskUserQuestion tool
-instead, putting your recommendation first marked `(Recommended)`; otherwise use the plain-text format above.
+There is no limit on how many questions a round may hold -- only on how many fit one call. The tool takes at most 4
+questions per call with 2-4 options each, so chunk the frontier into consecutive calls of four, most blocking first,
+until it is drained. Nine open decisions is three calls and one round, not a reason to ask fewer. Never trim, merge, or
+defer a frontier question to fit a call.
+
+Drop to plain text only when a question genuinely cannot be reduced to options -- it needs several paragraphs of setup,
+or the answer is a design sketch rather than a choice. Even then, prefer posting the context as a message and following
+it with an AskUserQuestion block for the actual decision.
 
 Each round of answers reshapes the tree: settled decisions push the frontier outward and unblock the questions that
 depended on them. Recompute the frontier and ask the next round. A question whose answer depends on another question
