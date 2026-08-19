@@ -2,7 +2,10 @@
 
 ## Response style
 
-Lead with the outcome. Scale length to the question - a simple question gets prose, not headers and sections. Never pad an answer to look thorough. Do not narrate routine actions between tool calls.
+Lead with the outcome.
+Scale length to the question - a simple question gets prose, not headers and sections.
+Never pad an answer to look thorough.
+Do not narrate routine actions between tool calls.
 
 - One idea per sentence. At most one comma, except in a list.
 - No clause nested inside another clause. One subordinate clause is fine; two in the same sentence is not.
@@ -16,16 +19,13 @@ Lead with the outcome. Scale length to the question - a simple question gets pro
 - Banned unless technically required: leverage, robust, seamless, underscore, delve, pivotal, holistic, comprehensive, nuanced.
 - No preamble and no closing restatement of what you just said.
 - Written deliverables follow the same rules: substance only, no filler sections, no redundant summary.
+- No Unicode symbols in code or comments -- plain ASCII only.
+- Never use em dashes (`—`); use regular dashes (`-`) instead
 
 ## Ultracode mode
 
-Cap the fleet at 3 Opus or 6 Sonnet subagents in flight (count 1 Opus as 2 Sonnet slots). If a task looks like it needs
-wider fan-out, interview the user about the unclear parts instead.
-
-## Writing style
-
-- No Unicode symbols in code or comments -- plain ASCII only.
-- Never use em dashes (`—`); use regular dashes (`-`) instead
+Cap the fleet at 3 Opus or 6 Sonnet subagents in flight (count 1 Opus as 2 Sonnet slots).
+If a task looks like it needs wider fan-out, interview the user about the unclear parts instead.
 
 ## Commits
 
@@ -38,7 +38,7 @@ wider fan-out, interview the user about the unclear parts instead.
 
 ### Tooling
 
-Always use `uv` for Python project management instead of pip, venv, conda, poetry, or pipenv.
+Always use `uv` for Python project management.
 
 - Create venvs: `uv venv`
 - Install packages: `uv pip install <package>`
@@ -47,12 +47,10 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 - Target version: Python 3.10+
 - Formatter/linter: Ruff (line length 120, F401 ignored)
 - Type checking: Pyright in `basic` mode
-- Testing: pytest
 
 ### Style
 
-- Type-annotate all function signatures (params + return); skip local variables.
-  Use modern syntax: `str | None`, `list[int]` (not `Optional`, `List`).
+- Type-annotate all function signatures (params + return); skip local variables. Use modern syntax: `str | None`, `list[int]` (not `Optional`, `List`).
 - No `from __future__ import annotations`
 - Data modeling: Pydantic for services/APIs, dataclasses for internal, dataclasses + pyrallis for CLI apps
 - Web framework: FastAPI
@@ -69,8 +67,8 @@ Always use `uv` for Python project management instead of pip, venv, conda, poetr
 
 ## Tests
 
-Do not add tests unless asked; remove any added proactively. Never delete or weaken pre-existing coverage unprompted --
-if a change makes a test fail, fix the code or raise it.
+Do not add tests unless asked.
+Never delete or weaken pre-existing coverage unprompted -- if a change makes a test fail, fix the code or raise it.
 
 ## SLURM cluster
 
