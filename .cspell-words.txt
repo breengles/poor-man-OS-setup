@@ -103,6 +103,7 @@ autofetch
 autofix
 autoflake
 autograd
+autoheal
 autolabel
 autopad
 autopct
@@ -1135,6 +1136,7 @@ nofreckles
 noheader
 nolora
 nomakeup
+nominalizations
 nonadiabatic
 nondiag
 noneu
@@ -1805,6 +1807,7 @@ upscalers
 ureg
 urlcolor
 urllib
+urlopen
 usecase
 usecases
 usecolormap
