@@ -22,6 +22,9 @@ source "$HOME/.config/shell/aliases.sh"
 source "$HOME/.config/shell/node.sh"
 source "$HOME/.config/shell/integrations.sh"  # starship, fzf, cargo, gcloud, completions, tokens
 
+# Must come after integrations.sh: it rebinds ^R, which ~/.fzf.zsh claims there.
+source "$HOME/.config/shell/cwd-history.zsh"
+
 eval "$(zoxide init --cmd cd zsh)"
 
 # Don't memorize $HOME's direct children (~/Downloads, ~/.config, ...), but keep
