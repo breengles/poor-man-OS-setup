@@ -142,6 +142,21 @@ anything past it, so a larger window declared in `models.json` would quietly dro
 of erroring. `env_vars.sh` pins `OLLAMA_CONTEXT_LENGTH=262144` and `pi_sync_models` caps each declared `contextWindow`
 at that value, so the client and the server always agree. Raising the variable costs KV-cache memory per loaded model.
 
+The rest of the serving settings live next to it in `env_vars.sh`, tuned for one interactive agent rather than for
+throughput:
+
+| Variable                   | Value  | Why                                                                   |
+| -------------------------- | ------ | --------------------------------------------------------------------- |
+| `OLLAMA_FLASH_ATTENTION`   | `1`    | Cuts attention memory; also the prerequisite for a quantized KV cache |
+| `OLLAMA_KV_CACHE_TYPE`     | `q8_0` | Halves the KV cache, which dominates memory at a 256K window          |
+| `OLLAMA_NUM_PARALLEL`      | `1`    | One request at a time, so a single agent gets the whole window        |
+| `OLLAMA_MAX_LOADED_MODELS` | `1`    | One resident model; a second eviction candidate just thrashes         |
+| `OLLAMA_KEEP_ALIVE`        | `30m`  | Avoids reloading tens of GB between turns of the same session         |
+
+`q8_0` without flash attention is silently ignored, so those two go together. The macOS Ollama app picks these up from
+the login shell environment; confirm what the running server actually got with
+`grep -m1 'server config' ~/.ollama/logs/server.log`.
+
 `pi_sync_models` writes through the stow symlinks with `cat >` rather than `mv`, because `mv` would replace the symlink
 with a regular file and detach the deployed config from the repo.
 

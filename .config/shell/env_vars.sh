@@ -11,6 +11,18 @@ export OLLAMA_API_BASE="http://127.0.0.1:11434"
 # the two. The KV cache grows with whatever window actually ends up in use.
 export OLLAMA_CONTEXT_LENGTH=262144
 
+# Serving settings, tuned for one interactive agent on a single machine rather
+# than for throughput. A 256K window makes the KV cache the memory bottleneck,
+# so flash attention plus an 8-bit cache halve it at negligible quality cost;
+# q8_0 needs flash attention to take effect at all. One request at a time and
+# one resident model keep a single agent's cache from competing with a second
+# copy of itself. 30m of keep-alive avoids reloading tens of GB between turns.
+export OLLAMA_FLASH_ATTENTION=1
+export OLLAMA_KV_CACHE_TYPE=q8_0
+export OLLAMA_NUM_PARALLEL=1
+export OLLAMA_MAX_LOADED_MODELS=1
+export OLLAMA_KEEP_ALIVE=30m
+
 # Skip auto-sync of .venv on `uv run`. Sync explicitly with `uv sync` instead.
 export UV_NO_SYNC=1
 
