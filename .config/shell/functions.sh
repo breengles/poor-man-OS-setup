@@ -517,7 +517,7 @@ function pi_sync_models {
   # conversation without a word. Cap at what the server will really allocate.
   local cap="${OLLAMA_CONTEXT_LENGTH:-4096}"
 
-  local entries='[]' name info ctx window max_tokens sampling
+  local entries='[]' name info ctx window max_tokens sampling thinking_level_map reasoning_effort
   while IFS= read -r name; do
     [ -n "$name" ] || continue
     info="$(curl -sf -m 20 "$base/api/show" -d "$(jq -nc --arg m "$name" '{model:$m}')")" || {
@@ -533,12 +533,22 @@ function pi_sync_models {
     max_tokens=$(( window / 4 ))
     [ "$max_tokens" -lt 1024 ] && max_tokens=1024
 
-    # Gemma 4's family-wide best practice is temperature=1.0, top_p=0.95,
-    # top_k=64 (ollama.com/library/gemma4). Pin it here so the generated entry
-    # stays correct even if a model's baked-in defaults drift.
+    # Family-scoped best practices. samplingParams pins temperature/top_p,
+    # which ollama's OpenAI shim honors; top_k is dropped by that shim and
+    # rides on the model's baked-in default, so it records the family's
+    # recommended value rather than overriding it. reasoning_effort is only
+    # meaningful for families that expose it (qwen3.8), so its level map and
+    # supportsReasoningEffort flag are set per family.
     sampling='null'
+    thinking_level_map='null'
+    reasoning_effort='false'
     case "$name" in
-      gemma4:*) sampling='{"temperature":1.0,"top_p":0.95,"top_k":64}' ;;
+      gemma4:*)
+        sampling='{"temperature":1.0,"top_p":0.95,"top_k":64}' ;;
+      qwen3.8:*)
+        sampling='{"temperature":1.0,"top_p":0.95,"top_k":20}'
+        thinking_level_map='{"off":"none","minimal":null,"low":"low","medium":"medium","high":"high","xhigh":null,"max":null}'
+        reasoning_effort='true' ;;
     esac
 
     entries="$(printf '%s' "$info" | jq -c \
@@ -546,7 +556,9 @@ function pi_sync_models {
       --arg id "$name" \
       --argjson window "$window" \
       --argjson maxTokens "$max_tokens" \
-      --argjson samplingParams "$sampling" '
+      --argjson samplingParams "$sampling" \
+      --argjson thinkingLevelMap "$thinking_level_map" \
+      --argjson reasoningEffort "$reasoning_effort" '
       $acc + [({
         id: $id,
         name: ($id + " (" + (.details.parameter_size // "?") + " " + (.details.quantization_level // "?") + ", local)"),
@@ -555,7 +567,9 @@ function pi_sync_models {
         contextWindow: $window,
         maxTokens: $maxTokens,
         cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }
-      } + (if $samplingParams != null then { samplingParams: $samplingParams } else {} end))]')"
+      } + (if $samplingParams != null then { samplingParams: $samplingParams } else {} end)
+        + (if $thinkingLevelMap != null then { thinkingLevelMap: $thinkingLevelMap } else {} end)
+        + (if $reasoningEffort then { compat: { supportsReasoningEffort: true } } else {} end))]')"
   done <<< "$names"
 
   # `cat >` writes through the stow symlink; `mv` would replace it with a

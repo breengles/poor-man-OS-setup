@@ -136,9 +136,14 @@ and rewrites the provider's `models` array only. It does not touch `defaultModel
 hand.
 Per model it derives the display name from parameter size and quantization, sets `reasoning` from the `thinking`
 capability, sets `input` from the `vision` capability, and zeroes the cost fields so the footer reads `$0.00`.
-For `gemma4:*` models it also pins `samplingParams` to the family's published best practice (`temperature=1.0`,
-`top_p=0.95`, `top_k=64` from ollama.com/library/gemma4), so a model's baked-in defaults can drift without changing
-pi's behavior.
+For `gemma4:*` and `qwen3.8:*` models it also pins `samplingParams` to each family's published best practice
+(`temperature=1.0`, `top_p=0.95` for both; `top_k=64` for Gemma 4, `top_k=20` for Qwen3.8). The `top_k` is recorded for
+documentation only: ollama's OpenAI shim drops it, so the model's baked-in default supplies the actual value. Only
+`temperature` and `top_p` are honored through that shim.
+
+`qwen3.8:*` additionally sets `compat.supportsReasoningEffort` and a `thinkingLevelMap` (off/low/medium/high), because
+Qwen3.8 exposes `reasoning_effort` and ollama's OpenAI endpoint honors it -- unlike Gemma 4, which gates thinking
+behind the `<|think|>` system-prompt token.
 
 Context length is the one value that needs care. Ollama serves `OLLAMA_CONTEXT_LENGTH` tokens and silently truncates
 anything past it, so a larger window declared in `models.json` would quietly drop the head of the conversation instead
