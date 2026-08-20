@@ -16,5 +16,6 @@
   "packages": [
     "npm:pi-subagents",
     "npm:pi-web-access"
-  ]
+  ],
+  "defaultModel": "qwen3.8:latest"
 }

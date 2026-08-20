@@ -8,7 +8,42 @@
         "supportsDeveloperRole": false,
         "supportsReasoningEffort": false
       },
-      "models": []
+      "models": [
+        {
+          "id": "qwen3.8:latest",
+          "name": "qwen3.8:latest (27.3B Q4_K_M, local)",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 262144,
+          "maxTokens": 65536,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        },
+        {
+          "id": "gemma4:latest",
+          "name": "gemma4:latest (8.0B Q4_K_M, local)",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 131072,
+          "maxTokens": 32768,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
     }
   }
 }

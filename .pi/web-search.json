@@ -1,3 +1,4 @@
 {
-  "workflow": "auto-summary"
+  "workflow": "auto-summary",
+  "summaryModel": "ollama/qwen3.8:latest"
 }
