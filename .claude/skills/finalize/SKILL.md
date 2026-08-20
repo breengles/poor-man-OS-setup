@@ -56,20 +56,23 @@ Keep your context clean -- one line per doc (`docs/api.md: ALIGNED, rewrote auth
 
 ## Step 4: Remove the resolved artifact
 
-The artifact has served its purpose. **Removal is destructive -- print exactly what will go and get an explicit yes
-first.** For a spec, that is the whole `specs/<feature>/` directory (list its files); for TODOs, the Priority Summary
-rows and detailed sections of every purged unit. Skip any unit whose doc cycle stalled at `NEEDS_REVISION` -- those
-stay.
-
-On confirmation, use **git** so the work stays recoverable through history -- never `rm -rf`:
+The artifact has served its purpose, so remove it without asking. **`git rm` every fully resolved artifact** -- the
+work stays recoverable through history, so no confirmation is needed. Never `rm`, never `rm -rf`, and never leave an
+emptied-out file behind:
 
 ```
-git rm -r specs/<feature>/        # spec
-git rm todos/<area>.md            # TODO file left with no units at all
+git rm -r specs/<feature>/        # spec closed out: the whole directory goes
+git rm todos/<area>.md            # TODO file whose every unit is now resolved
 ```
 
-Otherwise edit the TODO file in place and run `npx prettier --write --print-width 120` on it. If `git rm` reports
-untracked files, list them and ask before removing anything untracked. Never force-remove.
+A resolved spec directory and a TODO file with no surviving units are both **always** `git rm`, not an edit. Only a
+TODO file that still has unresolved units is edited in place -- purge the resolved rows and sections, then run
+`npx prettier --write --print-width 120` on it. If that edit leaves the file with nothing but headers, `git rm` it
+instead.
+
+Skip any unit whose doc cycle stalled at `NEEDS_REVISION` -- those stay. Untracked files under the artifact path are
+not covered by history: leave them in place, `git rm` the tracked ones around them, and report what you left. Never
+force-remove.
 
 ## Step 5: Commit
 
@@ -78,8 +81,7 @@ skill so the message follows the repo's convention; a subject like `finalize <fe
 only the doc changes and the artifact removal. If unrelated changes are in the working tree, stage the finalize paths
 explicitly and leave the rest alone.
 
-Do not commit if the doc cycle stalled at `NEEDS_REVISION` or the user declined the artifact removal -- report and stop
-instead.
+Do not commit if the doc cycle stalled at `NEEDS_REVISION` -- report and stop instead.
 
 ## Step 6: Report
 
