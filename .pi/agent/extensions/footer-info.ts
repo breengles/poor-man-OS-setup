@@ -34,6 +34,31 @@ function formatContextK(tokens: number): string {
 	return `${k.toString().padStart(3, "0")}k`;
 }
 
+/** Percentage of context window used. */
+function formatPct(tokens: number, window: number): string {
+	if (window <= 0) return "??%";
+	const pct = Math.min(100, Math.max(0, (tokens / window) * 100));
+	return `${Math.round(pct)}%`;
+}
+
+/** Progress bar for context usage. Width in cells. */
+function formatProgressBar(tokens: number, window: number, width: number, theme: any): string {
+	if (window <= 0 || tokens === null) return " ".repeat(width);
+	const pct = Math.min(1, Math.max(0, tokens / window));
+	const filledWidth = Math.round(pct * width);
+	const emptyWidth = width - filledWidth;
+
+	// Semantic theme keys, not raw color names: theme.fg() only knows the keys in
+	// the theme JSON, and throws on anything else.
+	let color = "success";
+	if (pct >= 0.95) color = "error";
+	else if (pct >= 0.8) color = "warning";
+
+	const filled = theme.fg(color, "█".repeat(filledWidth));
+	const empty = theme.fg("dim", "░".repeat(emptyWidth));
+	return filled + empty;
+}
+
 function formatWindow(window: number): string {
 	if (window >= 1_000_000) return `[${(window / 1_000_000).toFixed(0)}m]`;
 	if (window >= 1_000) return `[${Math.round(window / 1_000)}k]`;
@@ -148,8 +173,10 @@ export default function (pi: ExtensionAPI) {
 					const usage = ctx.getContextUsage();
 					const window = usage?.contextWindow ?? contextWindow;
 					const tokens = usage?.tokens ?? null;
+
+					const progress = tokens !== null ? formatProgressBar(tokens, window, 10, theme) : " ".repeat(10);
 					const tokensStr =
-						tokens !== null ? formatContextK(tokens) : "???k";
+						tokens !== null ? `${formatContextK(tokens)} ${progress} ${formatPct(tokens, window)}` : "???k (??%)";
 
 					const branch = getBranch();
 					const cwd = formatCwd(ctx.cwd, process.env.HOME || "");
