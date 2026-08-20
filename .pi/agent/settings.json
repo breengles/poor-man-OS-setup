@@ -8,7 +8,7 @@
   "enableAnalytics": false,
   "skills": [
     "~/.claude/skills",
-    "!/Users/artem/.agents/skills/**"
+    "!~/.agents/skills/**"
   ],
   "enableSkillCommands": true,
   "extensions": [
