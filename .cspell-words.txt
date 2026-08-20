@@ -1626,6 +1626,7 @@ stochasticity
 stopword
 stopwords
 stqdm
+straightline
 strd
 Streamlit
 streetwear
