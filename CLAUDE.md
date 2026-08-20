@@ -55,7 +55,7 @@ Shell config uses a split pattern: **shared** (`.sh`) vs **shell-specific** (`.z
   snapshot shell functions but drop underscore-prefixed ones, so a shim calling a `_helper` breaks in agent shells.
   Never reintroduce `node`/`npm`/`npx` shim functions - they masked the real node behind a broken shim and fell through
   to the distro's ancient `/usr/bin/node`.
-- `cwd-history.zsh` must be sourced *after* `integrations.sh`, because that is where `~/.fzf.zsh` binds `^R`. It logs every
+- `cwd-history.zsh` must be sourced _after_ `integrations.sh`, because that is where `~/.fzf.zsh` binds `^R`. It logs every
   command with its directory to `~/.local/share/cwd-history.tsv`, then ranks `^R` in four tiers (this dir, below it, rest of
   the git repo, everything else) and prepends a `cwd_history` strategy to `ZSH_AUTOSUGGEST_STRATEGY`. Each row carries a
   colored gutter cell naming its tier. Inside the picker `^R` cycles the scope (all -> here -> below -> repo -> all) and
