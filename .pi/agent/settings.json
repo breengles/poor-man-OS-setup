@@ -19,6 +19,6 @@
     "npm:pi-subagents",
     "npm:pi-web-access"
   ],
-  "defaultModel": "qwen3.8:27b-mlx",
+  "defaultModel": "gemma4:26b-mlx",
   "lastChangelogVersion": "0.84.2"
 }
