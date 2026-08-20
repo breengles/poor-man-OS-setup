@@ -7,7 +7,7 @@ Scale length to the question - a simple question gets prose, not headers and sec
 Never pad an answer to look thorough.
 Do not narrate routine actions between tool calls.
 
-- One idea per sentence. At most one comma, except in a list.
+- One idea per sentence.
 - No clause nested inside another clause. One subordinate clause is fine; two in the same sentence is not.
 - No parenthetical asides. No "not just X but Y" framing.
 - Keep subject and verb adjacent - no interruption between them.
@@ -33,6 +33,13 @@ If a task looks like it needs wider fan-out, interview the user about the unclea
 - Use imperative mood, lowercase, ~50 char first line
 - Describe what changed and why, not the category
 - Never include issue IDs (`#5`, `#123`) in commit messages
+
+## Code comments
+
+- Never cite tracking artifacts in code: no requirement/unit/item numbers, no paths under `specs/` or `todos/`.
+- This holds while implementing them, not just afterwards. The artifact is deleted when the work ships, so the citation dies with it.
+- Cite durable surfaces instead: a `docs/` page and section by name, or a named invariant. Never a line number.
+- If the reason lives only in the spec, state the reason in the comment itself.
 
 ## Python
 
