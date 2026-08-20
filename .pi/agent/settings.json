@@ -18,5 +18,6 @@
     "npm:pi-subagents",
     "npm:pi-web-access"
   ],
-  "defaultModel": "qwen3.8:latest"
+  "defaultModel": "qwen3.8:27b-mlx",
+  "lastChangelogVersion": "0.84.2"
 }
