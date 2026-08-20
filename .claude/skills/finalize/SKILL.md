@@ -71,14 +71,24 @@ git rm todos/<area>.md            # TODO file left with no units at all
 Otherwise edit the TODO file in place and run `npx prettier --write --print-width 120` on it. If `git rm` reports
 untracked files, list them and ask before removing anything untracked. Never force-remove.
 
-## Step 5: Report
+## Step 5: Commit
 
-Docs updated or created (one line each, or "already current"); the reviewer verdict; what was removed; and any gaps,
-deferred work, or code/design deviations you noticed -- print those for the user but do **not** file them anywhere
-(suggest a `todos/<area>.md` entry if they want them tracked). The edits and removals are staged-ready: suggest
-`/commit` with something like `chore(<scope>): finalize, reconcile docs`, but do not commit automatically.
+Commit the doc edits and the artifact removal yourself -- do not leave them staged for the user. Invoke the `commit`
+skill so the message follows the repo's convention; a subject like `finalize <feature>, reconcile docs` fits. Commit
+only the doc changes and the artifact removal. If unrelated changes are in the working tree, stage the finalize paths
+explicitly and leave the rest alone.
+
+Do not commit if the doc cycle stalled at `NEEDS_REVISION` or the user declined the artifact removal -- report and stop
+instead.
+
+## Step 6: Report
+
+Docs updated or created (one line each, or "already current"); the reviewer verdict; what was removed; the commit SHA
+and subject; and any gaps, deferred work, or code/design deviations you noticed -- print those for the user but do
+**not** file them anywhere (suggest a `todos/<area>.md` entry if they want them tracked).
 
 ## Constraints
 
-Code wins over docs and over `design.md`, always. No destructive git beyond the `git rm` above. Doc subagents touch only
-`docs/`, `README.md`, and `CLAUDE.md`. No issue IDs in anything you write. ASCII only in code and diagrams.
+Code wins over docs and over `design.md`, always. No git beyond the `git rm` and the commit above -- never push,
+rebase, or amend an existing commit. Doc subagents touch only `docs/`, `README.md`, and `CLAUDE.md`. No issue IDs in
+anything you write. ASCII only in code and diagrams.
