@@ -1,6 +1,7 @@
 {
   "defaultProvider": "ollama",
   "defaultThinkingLevel": "high",
+  "hideThinkingBlock": true,
   "theme": "dark",
   "quietStartup": true,
   "enableInstallTelemetry": false,

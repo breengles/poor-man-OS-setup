@@ -1,11 +1,14 @@
 /**
- * Compact footer: cwd + git branch on the left, session cost, context use,
- * model, generation speed and thinking level on the right.
+ * Compact footer: cwd + git branch/status on the left, context use, model
+ * (with its window and thinking effort) and generation speed on the right.
  *
- *   ~/poor-man-OS-setup on main        $0.00 for 012k on qwen3:30b[262k] | 47t/s | off
+ *    ~/poor-man-OS-setup main ~2 ?1            ▓░░░░░░░░░ 7% (12k) qwen3:30b[262k, high] | 47t/s
  *
- * Adapted from JanRocketMan/dotfiles. Differences: git only (no jujutsu),
- * cost keeps cents, ASCII separators.
+ * Adapted from JanRocketMan/dotfiles. Differences: git only (no jujutsu) with a
+ * colored short status; ASCII separators; everything is space-padded so it does
+ * not jitter; context is space-padded (no leading zeros) and sits after the bar
+ * and percent; the thinking effort lives in the model bracket; session cost
+ * removed.
  */
 
 import { execSync } from "node:child_process";
@@ -23,15 +26,15 @@ function formatTps(tps: number): string {
 	return `${clamped.toString().padStart(2, "0")}t/s`;
 }
 
-/** Two decimals, capped at 99.99 so the field never grows past 6 cells. */
-function formatCost(cost: number): string {
-	return `$${Math.min(99.99, Math.max(0, cost)).toFixed(2)}`;
-}
-
-/** Always 3 digits + k, capped at 999k: 96000 -> 096k, 1500000 -> 999k. */
-function formatContextK(tokens: number): string {
+/**
+ * Context tokens used, as a fixed 4-cell field, space-padded with no leading
+ * zeros: 12000 -> " 12k", 900 -> "  1k", 1500000 -> "999k". Space padding
+ * (instead of zero padding) keeps the field the same width as the count grows,
+ * so the right block does not jitter between repaints.
+ */
+function formatContextPlain(tokens: number): string {
 	const k = Math.min(999, Math.max(0, Math.round(tokens / 1000)));
-	return `${k.toString().padStart(3, "0")}k`;
+	return `${k.toString().padStart(3, " ")}k`;
 }
 
 /** Percentage of context window used. */
@@ -59,10 +62,20 @@ function formatProgressBar(tokens: number, window: number, width: number, theme:
 	return filled + empty;
 }
 
-function formatWindow(window: number): string {
-	if (window >= 1_000_000) return `[${(window / 1_000_000).toFixed(0)}m]`;
-	if (window >= 1_000) return `[${Math.round(window / 1_000)}k]`;
-	return `[${window}]`;
+/**
+ * Model-meta bracket: "[262k]", or "[262k, high]" when the model supports
+ * reasoning and `thinking` is the active effort (moved here from the old
+ * trailing "| <effort>" slot). Skips the window when it is unknown (0).
+ */
+function formatWindow(window: number, thinking: string, hasReasoning: boolean): string {
+	const parts: string[] = [];
+	if (window > 0) {
+		if (window >= 1_000_000) parts.push(`${(window / 1_000_000).toFixed(0)}m`);
+		else if (window >= 1_000) parts.push(`${Math.round(window / 1_000)}k`);
+		else parts.push(`${window}`);
+	}
+	if (hasReasoning) parts.push(thinking);
+	return parts.length ? `[${parts.join(", ")}]` : "";
 }
 
 function formatCwd(cwd: string, home: string): string {
@@ -74,25 +87,60 @@ function formatCwd(cwd: string, home: string): string {
 	return rel === "" ? "~" : `~${sep}${rel}`;
 }
 
-function getBranch(): string {
+/**
+ * Branch label + a compact working-tree status. Returns an empty `branch` when
+ * there is no repo (or its root is $HOME). The status summarizes
+ * `git status --porcelain` as "+N" staged, "~N" worktree-modified and
+ * "?N" untracked, each shown only when non-zero. Detached HEAD falls back to
+ * the short SHA. `|| true` keeps a non-zero exit from one subcommand from
+ * throwing and wiping the branch, too.
+ */
+function gitInfo(): { branch: string; status: string } {
+	const run = (cmd: string): string =>
+		execSync(cmd, {
+			timeout: 2000,
+			stdio: ["ignore", "pipe", "pipe"],
+		})
+			.toString()
+			.trim();
 	try {
-		const root = execSync("git rev-parse --show-toplevel 2>/dev/null", {
-			timeout: 2000,
-			stdio: ["ignore", "pipe", "pipe"],
-		})
-			.toString()
-			.trim();
-		if (!root || root === process.env.HOME) return "";
-		const branch = execSync("git symbolic-ref --short HEAD 2>/dev/null", {
-			timeout: 2000,
-			stdio: ["ignore", "pipe", "pipe"],
-		})
-			.toString()
-			.trim();
-		return branch ? `on ${branch}` : "";
+		const root = run("git rev-parse --show-toplevel 2>/dev/null || true");
+		if (!root || root === process.env.HOME) return { branch: "", status: "" };
+		let branch = run("git symbolic-ref --short HEAD 2>/dev/null || true");
+		if (!branch) branch = run("git rev-parse --short HEAD 2>/dev/null || true");
+		const porcelain = run("git status --porcelain 2>/dev/null || true");
+		return { branch, status: summarizeStatus(porcelain) };
 	} catch {
-		return "";
+		return { branch: "", status: "" };
 	}
+}
+
+/**
+ * Summarize `git status --porcelain` (XY status code + filename per line) into
+ * a "+staged ~modified ?untracked" string, omitting zero-count categories.
+ * X is the index (staged) code, Y the worktree (unstaged) code; "??" is
+ * untracked.
+ */
+function summarizeStatus(porcelain: string): string {
+	let staged = 0;
+	let modified = 0;
+	let untracked = 0;
+	for (const line of porcelain.split("\n")) {
+		if (line.length < 2) continue;
+		const x = line[0]; // index (staged)
+		const y = line[1]; // worktree (unstaged)
+		if (x === "?" && y === "?") {
+			untracked++;
+			continue;
+		}
+		if (x !== " " && x !== "?") staged++;
+		if (y !== " " && y !== "?") modified++;
+	}
+	const parts: string[] = [];
+	if (staged) parts.push(`+${staged}`);
+	if (modified) parts.push(`~${modified}`);
+	if (untracked) parts.push(`?${untracked}`);
+	return parts.join(" ");
 }
 
 export default function (pi: ExtensionAPI) {
@@ -163,42 +211,44 @@ export default function (pi: ExtensionAPI) {
 			return {
 				invalidate() {},
 				render(width: number): string[] {
-					let totalCost = 0;
-					for (const entry of ctx.sessionManager.getBranch()) {
-						if (entry.type !== "message") continue;
-						if (entry.message.role !== "assistant") continue;
-						totalCost += (entry.message as AssistantMessage).usage.cost.total;
-					}
-
 					const usage = ctx.getContextUsage();
 					const window = usage?.contextWindow ?? contextWindow;
 					const tokens = usage?.tokens ?? null;
 
-					const progress = tokens !== null ? formatProgressBar(tokens, window, 10, theme) : " ".repeat(10);
+					// Bar first, then percent, then the fixed-width token count.
 					const tokensStr =
-						tokens !== null ? `${formatContextK(tokens)} ${progress} ${formatPct(tokens, window)}` : "???k (??%)";
+						tokens !== null
+							? `${formatProgressBar(tokens, window, 10, theme)} ${formatPct(tokens, window)} (${formatContextPlain(tokens)})`
+							: `${" ".repeat(10)} ??% (???k)`;
 
-					const branch = getBranch();
+					// Left block: cwd dim, then branch in the accent color and, when
+					// the tree is dirty, a short porcelain status in the warning
+					// color. Each sub-field has its own color; visibleWidth() strips
+					// the ANSI so the padding and truncation math still holds.
 					const cwd = formatCwd(ctx.cwd, process.env.HOME || "");
-					const left = branch ? `${cwd} ${branch}` : cwd;
+					const git = gitInfo();
+					let left = theme.fg("dim", cwd);
+					if (git.branch) {
+						left += ` ${theme.fg("accent", git.branch)}`;
+						if (git.status) left += ` ${theme.fg("warning", git.status)}`;
+					}
 
 					const tps = lastTps !== null ? formatTps(lastTps) : "--t/s";
-					const thinking = hasReasoning ? thinkingLevel : "off";
+					const bracket = formatWindow(window, thinkingLevel, hasReasoning);
 					const right =
-						`${formatCost(totalCost)} for ${tokensStr} on ` +
-						`${modelId || "no-model"}${formatWindow(window)} | ${tps} | ${thinking}`;
+						`${tokensStr} ` +
+						`${modelId || "no-model"}${bracket} | ${tps}`;
 
-					const leftDim = theme.fg("dim", left);
 					const rightDim = theme.fg("dim", right);
-					const leftW = visibleWidth(leftDim);
+					const leftW = visibleWidth(left);
 					const rightW = visibleWidth(rightDim);
 
 					if (leftW + rightW <= width) {
 						const pad = " ".repeat(width - leftW - rightW);
-						return [truncateToWidth(leftDim + pad + rightDim, width)];
+						return [truncateToWidth(left + pad + rightDim, width)];
 					}
 					// Right block does not fit: drop it, truncate the left if needed.
-					return [truncateToWidth(leftDim, width)];
+					return [truncateToWidth(left, width)];
 				},
 			};
 		});
