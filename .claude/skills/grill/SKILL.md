@@ -25,8 +25,14 @@ picking, so give every question real options instead of an open prompt:
 
 - Put your recommended option **first**, with `(Recommended)` at the end of its label. The `description` is where the
   trade-off goes -- what choosing this means, not a restatement of the label.
-- The tool always appends an "Other" escape hatch, so a question with no clean enumeration still works as a block: list
-  the two or three answers you actually expect and let the user type past them. Prefer this over prose.
+- Never treat your options as the whole answer space. The tool always appends an "Other" escape hatch that takes typed
+  text, so every question is already open-ended -- your job is to make sure the user knows it. When the enumeration is a
+  guess rather than a closed set, say so in the question itself ("... or describe your own"), and never phrase a question
+  so that picking one of your suggestions is the only way to answer it.
+- That escape hatch is also what makes a question with no clean enumeration work as a block: list the two or three
+  answers you actually expect and let the user type past them. Prefer this over prose.
+- If an answer comes back as "Other" with text that reframes the decision, treat it as the real answer and follow it --
+  the branch you sketched was wrong, not the user.
 - `header` is a chip, 12 characters at most -- `Storage`, `Auth model`, `Rollout`.
 - Set `multiSelect: true` when the options are not mutually exclusive (which subsystems to cover, which risks matter).
 - Use `preview` when the choice is between concrete artifacts the user should compare side by side -- a schema, a
