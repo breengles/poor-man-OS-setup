@@ -6,7 +6,8 @@
   "enableInstallTelemetry": false,
   "enableAnalytics": false,
   "skills": [
-    "~/.claude/skills"
+    "~/.claude/skills",
+    "!/Users/artem/.agents/skills/**"
   ],
   "enableSkillCommands": true,
   "extensions": [
