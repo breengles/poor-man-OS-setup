@@ -1,8 +1,9 @@
 /**
- * Compact footer: cwd + git branch/status on the left, context use, model
- * (with its window and thinking effort) and generation speed on the right.
+ * Compact footer: cwd + git branch, sync (ahead/behind) and status on the
+ * left, context use, model (with its window and thinking effort) and
+ * generation speed on the right.
  *
- *    ~/poor-man-OS-setup main ~2 ?1            ▓░░░░░░░░░ 7% (12k) qwen3:30b[262k, high] | 47t/s
+ *    ~/poor-man-OS-setup main ↑2↓1~2?1           ▓░░░░░░░░░ 7% (12k) qwen3:30b[262k, high] | 47t/s
  *
  * Adapted from JanRocketMan/dotfiles. Differences: git only (no jujutsu) with a
  * colored short status; ASCII separators; everything is space-padded so it does
@@ -88,14 +89,23 @@ function formatCwd(cwd: string, home: string): string {
 }
 
 /**
- * Branch label + a compact working-tree status. Returns an empty `branch` when
- * there is no repo (or its root is $HOME). The status summarizes
- * `git status --porcelain` as "+N" staged, "~N" worktree-modified and
- * "?N" untracked, each shown only when non-zero. Detached HEAD falls back to
- * the short SHA. `|| true` keeps a non-zero exit from one subcommand from
- * throwing and wiping the branch, too.
+ * Branch label + a compact sync/working-tree status. Returns an empty `branch`
+ * when there is no repo (or its root is $HOME). `ahead`/`behind` count commits
+ * not pushed/pulled relative to the upstream (via
+ * `git rev-list --left-right --count @{u}...HEAD`); both are 0 when there is
+ * no upstream. `staged`/`modified`/`untracked` count working-tree changes from
+ * `git status --porcelain`. Detached HEAD falls back to the short SHA. `|| true`
+ * keeps a non-zero exit from one subcommand from throwing and wiping the
+ * branch, too.
  */
-function gitInfo(): { branch: string; status: string } {
+function gitInfo(): {
+	branch: string;
+	ahead: number;
+	behind: number;
+	staged: number;
+	modified: number;
+	untracked: number;
+} {
 	const run = (cmd: string): string =>
 		execSync(cmd, {
 			timeout: 2000,
@@ -105,23 +115,30 @@ function gitInfo(): { branch: string; status: string } {
 			.trim();
 	try {
 		const root = run("git rev-parse --show-toplevel 2>/dev/null || true");
-		if (!root || root === process.env.HOME) return { branch: "", status: "" };
+		if (!root || root === process.env.HOME)
+			return { branch: "", ahead: 0, behind: 0, staged: 0, modified: 0, untracked: 0 };
 		let branch = run("git symbolic-ref --short HEAD 2>/dev/null || true");
 		if (!branch) branch = run("git rev-parse --short HEAD 2>/dev/null || true");
 		const porcelain = run("git status --porcelain 2>/dev/null || true");
-		return { branch, status: summarizeStatus(porcelain) };
+		// Left count = upstream-only commits (behind), right = HEAD-only (ahead).
+		const ab = run("git rev-list --left-right --count @{u}...HEAD 2>/dev/null || true");
+		const [behind = 0, ahead = 0] = ab.split(/\s+/).map((n) => Number(n) || 0);
+		return { branch, ahead, behind, ...summarizeStatus(porcelain) };
 	} catch {
-		return { branch: "", status: "" };
+		return { branch: "", ahead: 0, behind: 0, staged: 0, modified: 0, untracked: 0 };
 	}
 }
 
 /**
  * Summarize `git status --porcelain` (XY status code + filename per line) into
- * a "+staged ~modified ?untracked" string, omitting zero-count categories.
- * X is the index (staged) code, Y the worktree (unstaged) code; "??" is
- * untracked.
+ * staged/modified/untracked counts. X is the index (staged) code, Y the
+ * worktree (unstaged) code; "??" is untracked.
  */
-function summarizeStatus(porcelain: string): string {
+function summarizeStatus(porcelain: string): {
+	staged: number;
+	modified: number;
+	untracked: number;
+} {
 	let staged = 0;
 	let modified = 0;
 	let untracked = 0;
@@ -136,11 +153,7 @@ function summarizeStatus(porcelain: string): string {
 		if (x !== " " && x !== "?") staged++;
 		if (y !== " " && y !== "?") modified++;
 	}
-	const parts: string[] = [];
-	if (staged) parts.push(`+${staged}`);
-	if (modified) parts.push(`~${modified}`);
-	if (untracked) parts.push(`?${untracked}`);
-	return parts.join(" ");
+	return { staged, modified, untracked };
 }
 
 export default function (pi: ExtensionAPI) {
@@ -221,16 +234,23 @@ export default function (pi: ExtensionAPI) {
 							? `${formatProgressBar(tokens, window, 10, theme)} ${formatPct(tokens, window)} (${formatContextPlain(tokens)})`
 							: `${" ".repeat(10)} ??% (???k)`;
 
-					// Left block: cwd dim, then branch in the accent color and, when
-					// the tree is dirty, a short porcelain status in the warning
-					// color. Each sub-field has its own color; visibleWidth() strips
-					// the ANSI so the padding and truncation math still holds.
+					// Left block: cwd dim, then the branch in the accent color followed
+					// by a glued run of colored symbol-number pairs (↑ ahead, ↓ behind,
+					// + staged, ~ modified, ? untracked). Each pair gets its own color;
+					// visibleWidth() strips the ANSI so the padding and truncation math
+					// still holds.
 					const cwd = formatCwd(ctx.cwd, process.env.HOME || "");
 					const git = gitInfo();
 					let left = theme.fg("dim", cwd);
 					if (git.branch) {
 						left += ` ${theme.fg("accent", git.branch)}`;
-						if (git.status) left += ` ${theme.fg("warning", git.status)}`;
+						const chips: string[] = [];
+						if (git.ahead) chips.push(theme.fg("accent", `↑${git.ahead}`));
+						if (git.behind) chips.push(theme.fg("muted", `↓${git.behind}`));
+						if (git.staged) chips.push(theme.fg("success", `+${git.staged}`));
+						if (git.modified) chips.push(theme.fg("warning", `~${git.modified}`));
+						if (git.untracked) chips.push(theme.fg("error", `?${git.untracked}`));
+						if (chips.length) left += ` ${chips.join("")}`;
 					}
 
 					const tps = lastTps !== null ? formatTps(lastTps) : "--t/s";
