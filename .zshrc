@@ -51,5 +51,3 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 zstyle ':completion:*' menu select
-
-eval "$(_HF_COMPLETE=zsh_source hf)"

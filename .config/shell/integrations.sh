@@ -40,6 +40,7 @@ _gen_completion() {
   case "$tool" in
     delta)    delta --generate-completion "$sh" ;;
     glab)     glab completion -s "$sh" ;;
+    hf)       _HF_COMPLETE="source_${sh}" hf ;;
     rg)       rg --generate "complete-${sh}" ;;
     uv)       uv generate-shell-completion "$sh" ;;
     *)        return 1 ;;
@@ -58,7 +59,7 @@ _completion_stale() {
 # The generic .sh name is deliberately not consulted here: a leftover one used to
 # shadow the shell-specific file forever, pinning uv's completion to a 2025 build
 # whose `uv run` spec offered no completion for the command being run.
-_completion_generated=(uv glab delta rg)
+_completion_generated=(uv glab delta rg hf)
 for _tool in "${_completion_generated[@]}"; do
   command -v "$_tool" >/dev/null 2>&1 || continue
   _comp_file="$HOME/.completion.${_tool}.${_sh}"
