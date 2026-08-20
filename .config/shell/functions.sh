@@ -517,7 +517,7 @@ function pi_sync_models {
   # conversation without a word. Cap at what the server will really allocate.
   local cap="${OLLAMA_CONTEXT_LENGTH:-4096}"
 
-  local entries='[]' name info ctx window max_tokens
+  local entries='[]' name info ctx window max_tokens sampling
   while IFS= read -r name; do
     [ -n "$name" ] || continue
     info="$(curl -sf -m 20 "$base/api/show" -d "$(jq -nc --arg m "$name" '{model:$m}')")" || {
@@ -533,12 +533,21 @@ function pi_sync_models {
     max_tokens=$(( window / 4 ))
     [ "$max_tokens" -lt 1024 ] && max_tokens=1024
 
+    # Gemma 4's family-wide best practice is temperature=1.0, top_p=0.95,
+    # top_k=64 (ollama.com/library/gemma4). Pin it here so the generated entry
+    # stays correct even if a model's baked-in defaults drift.
+    sampling='null'
+    case "$name" in
+      gemma4:*) sampling='{"temperature":1.0,"top_p":0.95,"top_k":64}' ;;
+    esac
+
     entries="$(printf '%s' "$info" | jq -c \
       --argjson acc "$entries" \
       --arg id "$name" \
       --argjson window "$window" \
-      --argjson maxTokens "$max_tokens" '
-      $acc + [{
+      --argjson maxTokens "$max_tokens" \
+      --argjson samplingParams "$sampling" '
+      $acc + [({
         id: $id,
         name: ($id + " (" + (.details.parameter_size // "?") + " " + (.details.quantization_level // "?") + ", local)"),
         reasoning: (((.capabilities // []) | index("thinking")) != null),
@@ -546,7 +555,7 @@ function pi_sync_models {
         contextWindow: $window,
         maxTokens: $maxTokens,
         cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }
-      }]')"
+      } + (if $samplingParams != null then { samplingParams: $samplingParams } else {} end))]')"
   done <<< "$names"
 
   # `cat >` writes through the stow symlink; `mv` would replace it with a
