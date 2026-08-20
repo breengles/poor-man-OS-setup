@@ -1,0 +1,6 @@
+{
+  "app.model.select": "alt+p",
+  "app.interrupt": "ctrl+c",
+  "app.clear": "escape",
+  "app.exit": "ctrl+d"
+}

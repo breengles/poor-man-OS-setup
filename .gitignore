@@ -52,6 +52,7 @@ __pycache__
 /.pi/agent/*
 !/.pi/agent/settings.json
 !/.pi/agent/models.json
+!/.pi/agent/keybindings.json
 !/.pi/agent/agents/
 !/.pi/agent/agents/**
 !/.pi/agent/extensions/
