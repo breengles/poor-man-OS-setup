@@ -28,7 +28,7 @@ See [Stow / Deployment](stow.md) for full prerequisites and platform-specific se
 | [Yazi](yazi.md)              | `.config/yazi/`                       | File manager: vim keybindings, fzf/zoxide integration, plugins         |
 | [Git](git.md)                | `.gitconfig`                          | Aliases, delta pager, LFS, local config include                        |
 | [Editor (GUI)](editor.md)    | `.vscode/`                            | Cursor/VS Code settings, keybindings, Python/LaTeX/Markdown            |
-| [AI Tools](ai-tools.md)      | `.claude/`, `AGENTS.md`               | Claude Code config, slash commands, MCP servers                        |
+| [AI Tools](ai-tools.md)      | `.claude/`, `.pi/`                    | Claude Code and pi config, slash commands, MCP servers, local models   |
 | [Stow / Deployment](stow.md) | `.stow-local-ignore`                  | How the repo deploys, exclusions, prerequisites, cross-platform        |
 
 ## Architecture

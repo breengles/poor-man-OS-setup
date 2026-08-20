@@ -3,6 +3,14 @@ export PATH="$HOME/go/bin:$HOME/google-cloud-sdk/bin:$HOME/.local/bin:$PATH"
 
 export OLLAMA_API_BASE="http://127.0.0.1:11434"
 
+# Ollama serves 4096 tokens of context by default and silently truncates past
+# it. pi declares each model's window in ~/.pi/agent/models.json, and
+# `pi_sync_models` caps that declaration at this value, so the two agree.
+# 256K is the ceiling, not a promise: a model whose native window is smaller
+# still gets its own window, because `pi_sync_models` takes the minimum of
+# the two. The KV cache grows with whatever window actually ends up in use.
+export OLLAMA_CONTEXT_LENGTH=262144
+
 # Skip auto-sync of .venv on `uv run`. Sync explicitly with `uv sync` instead.
 export UV_NO_SYNC=1
 

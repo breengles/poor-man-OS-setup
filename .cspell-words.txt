@@ -322,6 +322,7 @@ cudagraphs
 cudatoolkit
 cudnn
 cumprod
+curator
 curr
 cursorpyright
 cutn
@@ -477,6 +478,7 @@ dvcfile
 dvcstorage
 dyall
 DYLD
+earendil
 easydict
 ebad
 edgecolor
@@ -522,6 +524,7 @@ ESRGAN
 ESSL
 evals
 EVCCNV
+Exa
 excludesfile
 execdir
 Executability
@@ -1634,6 +1637,7 @@ STREQUAL
 strikethrough
 stylegan
 styleganex
+subagents
 subcmd
 subconfigs
 subdata

@@ -2,7 +2,10 @@
 
 ## Overview
 
-The repository configures **Claude Code** (Anthropic's CLI agent) as the AI coding assistant, using Claude Opus 4.6 as the primary model.
+The repository configures **Claude Code** (Anthropic's CLI agent) as the primary AI coding assistant, using
+Claude Opus 4.6 as the primary model, and **pi** (`@earendil-works/pi-coding-agent`) as a second harness that
+runs local models served by ollama. pi reuses Claude Code's skills and its `implementer` agent rather than
+keeping a parallel copy of them.
 
 ## File Structure
 
@@ -75,6 +78,116 @@ commits.
 
 Documentation files live in `docs/<component>.md` with a `docs/README.md` index.
 
+## pi (local-model harness)
+
+pi is a second agent CLI, installed from npm as `@earendil-works/pi-coding-agent`. It reads its global configuration
+from `~/.pi/agent/`, and this repo owns the hand-authored part of that directory.
+
+| File                                  | Description                                                     |
+| ------------------------------------- | --------------------------------------------------------------- |
+| `.pi/agent/settings.json`             | Provider, thinking level, skills path, extensions, packages     |
+| `.pi/agent/models.json`               | The `ollama` provider and its model list (generated, see below) |
+| `.pi/agent/extensions/footer-info.ts` | Footer: cwd, branch, cost, context use, model, t/s, thinking    |
+| `.pi/agent/extensions/pi-context.ts`  | `/context` command: inspect the live system prompt              |
+| `.pi/agent/agents/implementer.md`     | pi-subagents shim pointing at the Claude `implementer` contract |
+| `.pi/web-search.json`                 | pi-web-access settings: workflow and summary model              |
+
+Everything else under `.pi/` is runtime state: `auth.json` and `trust.json` hold credentials and trust decisions,
+`sessions/` holds transcripts, and `models-store.json` is a fetched catalog. All of it is excluded from both stow and
+git, the same way `.codex/` is handled.
+
+### Shared skills and agents
+
+`settings.json` sets `skills: ["~/.claude/skills"]` with `enableSkillCommands: true`, so every skill in
+[Slash Commands](#slash-commands-skills) is also a pi command. The skills are written once and both harnesses read the
+same files.
+
+`packages: ["npm:pi-subagents"]` supplies the subagent primitive that `/implement` needs, since pi has none built in.
+pi's agent frontmatter is close to Claude Code's but not identical: tool names are lowercase (`read`, `write`, `edit`,
+`bash`, `grep`, `find`, `ls`) and Claude model aliases do not resolve. Rather than duplicate the contract,
+`.pi/agent/agents/implementer.md` carries only the pi frontmatter and tells the child to read
+`~/.claude/agents/implementer.md` for the rest. One source of truth, one extra read per dispatch.
+
+### Local models via ollama
+
+pi has no ollama discovery. Every local model has to be declared in `models.json` under a provider that speaks
+OpenAI Chat Completions:
+
+```json
+{
+  "providers": {
+    "ollama": {
+      "baseUrl": "http://127.0.0.1:11434/v1",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "compat": { "supportsDeveloperRole": false, "supportsReasoningEffort": false },
+      "models": []
+    }
+  }
+}
+```
+
+The `apiKey` is a placeholder that ollama ignores, but pi treats every model as needing auth before it appears in
+`/model`, so it cannot be omitted. The two `compat` flags are off because ollama's OpenAI shim understands neither the
+`developer` role nor `reasoning_effort`.
+
+Run `pi_sync_models` (in `.config/shell/functions.sh`) after every `ollama pull`. It reads `/api/tags` and `/api/show`,
+rewrites the provider's `models` array, and keeps `defaultModel` and pi-web-access's `summaryModel` pointed at the
+same installed tag.
+Per model it derives the display name from parameter size and quantization, sets `reasoning` from the `thinking`
+capability, sets `input` from the `vision` capability, and zeroes the cost fields so the footer reads `$0.00`.
+
+Context length is the one value that needs care. Ollama serves `OLLAMA_CONTEXT_LENGTH` tokens and silently truncates
+anything past it, so a larger window declared in `models.json` would quietly drop the head of the conversation instead
+of erroring. `env_vars.sh` pins `OLLAMA_CONTEXT_LENGTH=262144` and `pi_sync_models` caps each declared `contextWindow`
+at that value, so the client and the server always agree. Raising the variable costs KV-cache memory per loaded model.
+
+`pi_sync_models` writes through the stow symlinks with `cat >` rather than `mv`, because `mv` would replace the symlink
+with a regular file and detach the deployed config from the repo.
+
+### Web access
+
+pi has no web tool of its own. Its built-in tools are `read`, `bash`, `edit`, `write`, `grep`, `find`, and `ls`, so
+without a package the only way out to the network is shelling out to `curl`. `packages` therefore includes
+[`npm:pi-web-access`](https://pi.dev/packages/pi-web-access), which registers `web_search`, `fetch_content`,
+`source_check`, and `get_search_content`. It needs no API key: search falls back to Exa MCP, and page extraction falls
+back to a local Readability pass.
+
+Its config is `~/.pi/web-search.json`, and two keys matter here.
+
+`workflow` is `auto-summary`. The default, `summary-review`, opens a curator page in a browser for every search, which
+is wrong for a terminal-first setup. `auto-summary` returns a model-written summary inline instead. Set it to `none` to
+get raw results with no model call at all.
+
+`summaryModel` is the reason `pi_sync_models` touches this file. Summarization is a real completion call, and the
+package's default candidate list is hosted models (Claude Haiku, then Codex tiers, then DeepSeek V4 Flash). Left alone
+on a local setup it would either reach for a hosted model or, if you point it at a second ollama tag, make ollama evict
+the session's model and reload on every search. So `pi_sync_models` writes `ollama/<tag>` using the same tag as
+`defaultModel`. One model stays resident.
+
+Query rewriting cannot be pinned the same way. Its candidate list is hardcoded to `anthropic/claude-haiku-4-5`,
+`google/gemini-3.6-flash`, and `openai/gpt-5-mini`, with no config key. On a local-only setup none of those resolve, so
+the rewrite step fails and the raw query is searched as typed. That is a degradation, not a break.
+
+**Never put an API key in `.pi/web-search.json`.** The file is tracked in this repo. pi-web-access reads
+`BRAVE_API_KEY`, `EXA_API_KEY`, `GEMINI_API_KEY` and the rest from the environment, and env vars take precedence over
+literal values in the file, so keys belong in `.env-global.sh` instead. The package also writes this file itself when
+you change the search provider at runtime, so expect it to show up in `git status`.
+
+### Extensions
+
+`footer-info.ts` replaces pi's footer with one line: cwd and git branch on the left, then session cost, context use,
+model id with its window, generation speed, and thinking level on the right. Speed is measured per turn from
+`message_start` to `message_end`. Tools run between turns, so tool time never enters the denominator and the number
+stays pure generation speed, which is the signal that matters when the model is running locally. All fields are
+fixed-width so the right block does not jitter between repaints.
+
+`pi-context.ts` adds `/context`, a scrollable pane showing the live system prompt plus the context files, skills, and
+options that produced it.
+
+Both are adapted from [JanRocketMan/dotfiles](https://github.com/JanRocketMan/dotfiles). The upstream footer also
+resolves jujutsu bookmarks, and the upstream `/context` shipped alongside a Linux sandbox shim; neither applies here.
+
 ## Key Conventions
 
 | Convention             | Detail                                                     |
@@ -106,7 +219,9 @@ The `.stow-local-ignore` excludes Claude Code's auto-generated project files (`s
 ## Dependencies
 
 - **Claude Code** (`claude` CLI)
+- **pi** (`pi` CLI, npm `@earendil-works/pi-coding-agent`) plus the `pi-subagents` and `pi-web-access` packages
 - **glab** CLI (for GitLab MCP server)
+- **ollama** and **jq** (for the pi local-model provider and `pi_sync_models`)
 - Anthropic API key (for Claude models)
 
 ## Relationship to Other Components

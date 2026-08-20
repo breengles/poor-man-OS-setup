@@ -1,0 +1,20 @@
+{
+  "defaultProvider": "ollama",
+  "defaultThinkingLevel": "high",
+  "theme": "dark",
+  "quietStartup": true,
+  "enableInstallTelemetry": false,
+  "enableAnalytics": false,
+  "skills": [
+    "~/.claude/skills"
+  ],
+  "enableSkillCommands": true,
+  "extensions": [
+    "extensions/footer-info.ts",
+    "extensions/pi-context.ts"
+  ],
+  "packages": [
+    "npm:pi-subagents",
+    "npm:pi-web-access"
+  ]
+}

@@ -42,6 +42,21 @@ __pycache__
 # Codex appends remembered TUI approvals here at runtime.
 /.codex/rules/default.rules
 
+# pi writes credentials, trust decisions, sessions, caches, npm packages, and a
+# fetched model catalog beside its durable configuration. Track only the
+# configuration allowlist.
+/.pi/*
+!/.pi/agent/
+# Model and workflow settings only. API keys belong in env vars, never here.
+!/.pi/web-search.json
+/.pi/agent/*
+!/.pi/agent/settings.json
+!/.pi/agent/models.json
+!/.pi/agent/agents/
+!/.pi/agent/agents/**
+!/.pi/agent/extensions/
+!/.pi/agent/extensions/**
+
 /.config/opencode/package-lock.json
 
 # Sensitive local config files (safety net)

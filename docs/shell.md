@@ -156,6 +156,7 @@ Aliases are only defined when the underlying tool is installed:
 | `act [path]`       | Activates a Python venv (default: `.venv`)                |
 | `calcimages <dir>` | Counts image files (jpg/jpeg/png) in a directory          |
 | `calcjson <dir>`   | Counts JSON files in a directory                          |
+| `pi_sync_models`   | Regenerates pi's ollama model list                        |
 
 ### SLURM Cluster Functions
 
@@ -168,6 +169,18 @@ Aliases are only defined when the underlying tool is installed:
 | `gpu_alloc [-p part] [-n node]` | Per-node GPU allocation table with optional filters                |
 
 The `scancel` command has tab completion that shows job IDs with job names as descriptions (implemented for both Bash and Zsh).
+
+### `pi_sync_models`
+
+`pi_sync_models` rebuilds the `ollama` provider's model list in `~/.pi/agent/models.json` from `/api/tags` and
+`/api/show`, because pi cannot discover local models on its own. Run it after every `ollama pull`. Each declared
+`contextWindow` is capped at `$OLLAMA_CONTEXT_LENGTH` (set in `env_vars.sh`), since ollama truncates longer requests
+without reporting an error.
+
+It also pins two model selections to the same tag: `defaultModel` in `~/.pi/agent/settings.json` and `summaryModel` in
+`~/.pi/web-search.json`. Keeping them equal stops a web search from making ollama evict the session's model. A tag you
+picked by hand is kept as long as it is still installed; only a missing one is repointed. See `docs/ai-tools.md` for
+the provider layout.
 
 ## Completions
 

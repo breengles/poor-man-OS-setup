@@ -30,3 +30,9 @@
 # Codex mutates remembered TUI approvals at runtime; do not deploy them.
 /\.codex/rules/default\.rules
 /\.config/opencode/node_modules
+# Under .pi, deploy only web-search.json, agent/{settings,models}.json,
+# agent/agents/, and agent/extensions/. The negative lookaheads exclude all
+# current and future pi runtime state (auth, trust, sessions, cache, npm,
+# models-store).
+^/\.pi/(?!agent(?:/|$)|web-search\.json$).+
+^/\.pi/agent/(?!(?:settings\.json|models\.json)$|(?:agents|extensions)(?:/|$)).+

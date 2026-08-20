@@ -494,3 +494,102 @@ function git_cleanup {
   echo ""
   echo "Done. Deleted $merged_deleted merged and $gone_deleted gone branch(es)."
 }
+
+# Regenerate the `ollama` provider block in pi's models.json from whatever
+# ollama currently serves. pi has no ollama discovery -- every local model must
+# be declared by hand -- so this runs after every `ollama pull`. Also keeps
+# settings.json's defaultModel and web-search.json's summaryModel pointed at the
+# same installed tag. See docs/ai-tools.md, "Local models via ollama".
+function pi_sync_models {
+  local models_json="$HOME/.pi/agent/models.json"
+  local settings_json="$HOME/.pi/agent/settings.json"
+  local web_search_json="$HOME/.pi/web-search.json"
+  local base="${OLLAMA_API_BASE:-http://127.0.0.1:11434}"
+
+  command -v jq >/dev/null 2>&1 || { echo "pi_sync_models: jq not found" >&2; return 1; }
+  [ -f "$models_json" ] || { echo "pi_sync_models: $models_json missing -- run 'stow .' in the dotfiles repo" >&2; return 1; }
+
+  local names
+  names="$(curl -sf -m 5 "$base/api/tags" | jq -r '.models[].name')" \
+    || { echo "pi_sync_models: no ollama server at $base" >&2; return 1; }
+  [ -n "$names" ] || { echo "pi_sync_models: ollama has no models installed" >&2; return 1; }
+
+  # Ollama silently truncates anything past OLLAMA_CONTEXT_LENGTH, so declaring
+  # a model's native window in models.json would just drop the head of the
+  # conversation without a word. Cap at what the server will really allocate.
+  local cap="${OLLAMA_CONTEXT_LENGTH:-4096}"
+
+  local entries='[]' name info ctx window max_tokens
+  while IFS= read -r name; do
+    [ -n "$name" ] || continue
+    info="$(curl -sf -m 20 "$base/api/show" -d "$(jq -nc --arg m "$name" '{model:$m}')")" || {
+      echo "pi_sync_models: skipping $name (show failed)" >&2
+      continue
+    }
+
+    # Context length is keyed by architecture, e.g. "qwen3.context_length".
+    ctx="$(printf '%s' "$info" | jq -r '
+      [.model_info // {} | to_entries[] | select(.key | endswith(".context_length")) | .value] | first // empty')"
+    [ -n "$ctx" ] || ctx="$cap"
+    window=$(( ctx < cap ? ctx : cap ))
+    max_tokens=$(( window / 4 ))
+    [ "$max_tokens" -lt 1024 ] && max_tokens=1024
+
+    entries="$(printf '%s' "$info" | jq -c \
+      --argjson acc "$entries" \
+      --arg id "$name" \
+      --argjson window "$window" \
+      --argjson maxTokens "$max_tokens" '
+      $acc + [{
+        id: $id,
+        name: ($id + " (" + (.details.parameter_size // "?") + " " + (.details.quantization_level // "?") + ", local)"),
+        reasoning: (((.capabilities // []) | index("thinking")) != null),
+        input: (if ((.capabilities // []) | index("vision")) != null then ["text", "image"] else ["text"] end),
+        contextWindow: $window,
+        maxTokens: $maxTokens,
+        cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }
+      }]')"
+  done <<< "$names"
+
+  # `cat >` writes through the stow symlink; `mv` would replace it with a
+  # regular file and detach the deployed config from the repo.
+  local tmp
+  tmp="$(mktemp)" || return 1
+  jq --argjson models "$entries" '.providers.ollama.models = $models' "$models_json" > "$tmp" \
+    && cat "$tmp" > "$models_json"
+  rm -f "$tmp"
+
+  # Keep one model selected everywhere. pi-web-access draws its summary model
+  # from its own config, and pointing it at a second tag would make ollama evict
+  # the session's model and reload on every search.
+  local chosen=""
+  if [ -f "$settings_json" ]; then
+    chosen="$(jq -r '.defaultModel // empty' "$settings_json")"
+  fi
+  if [ -z "$chosen" ] || ! printf '%s' "$entries" | jq -e --arg m "$chosen" 'any(.id == $m)' >/dev/null; then
+    chosen="$(printf '%s' "$entries" | jq -r '.[0].id // empty')"
+  fi
+
+  if [ -n "$chosen" ] && [ -f "$settings_json" ]; then
+    if [ "$(jq -r '.defaultModel // empty' "$settings_json")" != "$chosen" ]; then
+      tmp="$(mktemp)" || return 1
+      jq --arg model "$chosen" '.defaultModel = $model' "$settings_json" > "$tmp" \
+        && cat "$tmp" > "$settings_json"
+      rm -f "$tmp"
+      echo "pi_sync_models: defaultModel -> $chosen"
+    fi
+  fi
+
+  if [ -n "$chosen" ] && [ -f "$web_search_json" ]; then
+    if [ "$(jq -r '.summaryModel // empty' "$web_search_json")" != "ollama/$chosen" ]; then
+      tmp="$(mktemp)" || return 1
+      jq --arg model "ollama/$chosen" '.summaryModel = $model' "$web_search_json" > "$tmp" \
+        && cat "$tmp" > "$web_search_json"
+      rm -f "$tmp"
+      echo "pi_sync_models: summaryModel -> ollama/$chosen"
+    fi
+  fi
+
+  printf '%s' "$entries" | jq -r '.[] | "  " + .id + "  " + (.contextWindow | tostring) + " ctx"'
+  echo "pi_sync_models: wrote $(printf '%s' "$entries" | jq 'length') model(s) to $models_json"
+}
