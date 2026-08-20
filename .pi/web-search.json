@@ -1,4 +1,5 @@
 {
-  "workflow": "auto-summary",
-  "summaryModel": "ollama/qwen3.8:27b-mlx"
+  "tools": {
+    "webSearch": { "enabled": false }
+  }
 }
