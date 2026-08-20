@@ -8,6 +8,10 @@ developer_instructions = """
 Implement one assigned spec task or TODO item. The parent owns sequencing,
 commits, and the tracking artifact. Own only implementation and validation.
 
+You receive the unit's full text, its acceptance criteria (EARS requirements and
+design sections for a spec task; description, context, and cited files for a TODO
+item), its boundary, and the project's test command if known.
+
 Treat the working tree as shared state: preserve pre-existing changes and never
 revert work you do not own.
 

@@ -1,23 +1,24 @@
 ---
 name: commit
-description: Create one or more well-scoped git commits from changes made in the current session.
+description: Create a well-formatted git commit
 ---
 
-# Commit
+# commit
 
-Inspect `git status --short`, `git diff`, and `git diff --cached` before staging.
-Commit only changes made in this session unless the user explicitly includes
-pre-existing work.
+Review `git diff` and `git diff --cached`, then create well-formed commits. Subject line imperative, lowercase, ~50
+characters, and **no type prefix** -- `feat:` / `fix:` / `refactor:` are not used. Describe what changed and why, not
+the category. Add a body for the "why" when the change is complex.
 
-- Split cleanly separable changes into logical commits. Keep intertwined changes
-  together rather than stashing or creating a knowingly broken intermediate state.
-- Stage explicit paths with `git add <paths>`. Do not use `git add .` or
-  `git add -A` unless every visible change unquestionably belongs to one commit.
-- Use an imperative, lowercase subject of about 50 characters. Do not add a
-  conventional-commit prefix such as `feat:` or `fix:`.
-- Add a body when the motivation or trade-off is not obvious from the subject.
-- Never include issue IDs, secrets, credentials, or unrelated generated files.
-- Use plain `git` commands from the repository root.
+- **Only commit changes made during this session.** Leave pre-existing uncommitted work alone unless the user explicitly
+  asks to include it.
+- **Split into logical commits** when changes are cleanly separable -- different files or independent hunks. A bug fix
+  and a new feature are separate commits; a refactor and its test updates are one. When unrelated changes are
+  intertwined in the same hunks, commit them together with a message covering both. Never `git stash` or make
+  intermediate broken commits just to split something inseparable.
+- **Stage selectively** with `git add <files>`. No `git add .` or `-A` unless everything genuinely belongs to one
+  commit.
+- Never commit secrets (`.env`, credentials, API keys).
+- Never include issue IDs (`#5`, `#123`) -- GitLab may auto-close the referenced issue.
+- Use plain `git ...`, not `git -C <path> ...`, inside the project.
 
-After committing, show `git log --oneline --name-only -n <count>` and report any
-changes intentionally left uncommitted.
+Finish with `git log --oneline --name-only -n <commits made>`.
