@@ -131,9 +131,9 @@ The `apiKey` is a placeholder that ollama ignores, but pi treats every model as 
 `/model`, so it cannot be omitted. The two `compat` flags are off because ollama's OpenAI shim understands neither the
 `developer` role nor `reasoning_effort`.
 
-Run `pi_sync_models` (in `.config/shell/functions.sh`) after every `ollama pull`. It reads `/api/tags` and `/api/show`,
-rewrites the provider's `models` array, and keeps `defaultModel` and pi-web-access's `summaryModel` pointed at the
-same installed tag.
+Run `pi_sync_models` (in `.config/shell/functions.sh`) after every `ollama pull`. It reads `/api/tags` and `/api/show`
+and rewrites the provider's `models` array only. It does not touch `defaultModel` or `summaryModel`; those are set by
+hand.
 Per model it derives the display name from parameter size and quantization, sets `reasoning` from the `thinking`
 capability, sets `input` from the `vision` capability, and zeroes the cost fields so the footer reads `$0.00`.
 
@@ -174,11 +174,11 @@ Its config is `~/.pi/web-search.json`, and two keys matter here.
 is wrong for a terminal-first setup. `auto-summary` returns a model-written summary inline instead. Set it to `none` to
 get raw results with no model call at all.
 
-`summaryModel` is the reason `pi_sync_models` touches this file. Summarization is a real completion call, and the
-package's default candidate list is hosted models (Claude Haiku, then Codex tiers, then DeepSeek V4 Flash). Left alone
-on a local setup it would either reach for a hosted model or, if you point it at a second ollama tag, make ollama evict
-the session's model and reload on every search. So `pi_sync_models` writes `ollama/<tag>` using the same tag as
-`defaultModel`. One model stays resident.
+`summaryModel` must be set by hand. Summarization is a real completion call, and the package's default candidate list
+is hosted models (Claude Haiku, then Codex tiers, then DeepSeek V4 Flash), so on a local setup it must be pointed at an
+ollama tag. Picking a tag that differs from the session's active model makes ollama evict the resident model and reload
+on every search (`OLLAMA_MAX_LOADED_MODELS` is `1`), so either keep it on the active model's tag or use a small
+summarizer so the reload stays cheap.
 
 Query rewriting cannot be pinned the same way. Its candidate list is hardcoded to `anthropic/claude-haiku-4-5`,
 `google/gemini-3.6-flash`, and `openai/gpt-5-mini`, with no config key. On a local-only setup none of those resolve, so

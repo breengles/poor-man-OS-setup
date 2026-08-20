@@ -177,10 +177,8 @@ The `scancel` command has tab completion that shows job IDs with job names as de
 `contextWindow` is capped at `$OLLAMA_CONTEXT_LENGTH` (set in `env_vars.sh`), since ollama truncates longer requests
 without reporting an error.
 
-It also pins two model selections to the same tag: `defaultModel` in `~/.pi/agent/settings.json` and `summaryModel` in
-`~/.pi/web-search.json`. Keeping them equal stops a web search from making ollama evict the session's model. A tag you
-picked by hand is kept as long as it is still installed; only a missing one is repointed. See `docs/ai-tools.md` for
-the provider layout.
+It only writes `models.json`; `defaultModel` and `summaryModel` are managed by hand and never touched. See
+`docs/ai-tools.md` for the provider layout.
 
 ## Completions
 

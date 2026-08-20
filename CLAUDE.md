@@ -135,6 +135,6 @@ and the transient state under `.claude/`, `.codex/`, and `.pi/`).
 - **Models are declared, not discovered.** pi has no ollama discovery, so `.pi/agent/models.json` lists every local
   model. Regenerate it with `pi_sync_models` after `ollama pull`; do not hand-edit the `models` array. Declared
   `contextWindow` is capped at `$OLLAMA_CONTEXT_LENGTH` because ollama truncates past it without erroring.
-- **Web access** comes from the `pi-web-access` package, configured in `.pi/web-search.json`. `pi_sync_models` keeps its
-  `summaryModel` on the same tag as `defaultModel`, so a search never makes ollama swap models. That file is tracked
-  here, so API keys must go in the environment, never in it.
+- **Web access** comes from the `pi-web-access` package, configured in `.pi/web-search.json`. `summaryModel` is set by
+  hand (`pi_sync_models` only writes models.json); point it at an ollama tag. That file is tracked here, so API keys
+  must go in the environment, never in it.

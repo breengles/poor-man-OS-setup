@@ -497,13 +497,11 @@ function git_cleanup {
 
 # Regenerate the `ollama` provider block in pi's models.json from whatever
 # ollama currently serves. pi has no ollama discovery -- every local model must
-# be declared by hand -- so this runs after every `ollama pull`. Also keeps
-# settings.json's defaultModel and web-search.json's summaryModel pointed at the
-# same installed tag. See docs/ai-tools.md, "Local models via ollama".
+# be declared by hand -- so this runs after every `ollama pull`. It never
+# touches defaultModel or web-search.json's summaryModel. See docs/ai-tools.md,
+# "Local models via ollama".
 function pi_sync_models {
   local models_json="$HOME/.pi/agent/models.json"
-  local settings_json="$HOME/.pi/agent/settings.json"
-  local web_search_json="$HOME/.pi/web-search.json"
   local base="${OLLAMA_API_BASE:-http://127.0.0.1:11434}"
 
   command -v jq >/dev/null 2>&1 || { echo "pi_sync_models: jq not found" >&2; return 1; }
@@ -558,37 +556,6 @@ function pi_sync_models {
   jq --argjson models "$entries" '.providers.ollama.models = $models' "$models_json" > "$tmp" \
     && cat "$tmp" > "$models_json"
   rm -f "$tmp"
-
-  # Keep one model selected everywhere. pi-web-access draws its summary model
-  # from its own config, and pointing it at a second tag would make ollama evict
-  # the session's model and reload on every search.
-  local chosen=""
-  if [ -f "$settings_json" ]; then
-    chosen="$(jq -r '.defaultModel // empty' "$settings_json")"
-  fi
-  if [ -z "$chosen" ] || ! printf '%s' "$entries" | jq -e --arg m "$chosen" 'any(.id == $m)' >/dev/null; then
-    chosen="$(printf '%s' "$entries" | jq -r '.[0].id // empty')"
-  fi
-
-  if [ -n "$chosen" ] && [ -f "$settings_json" ]; then
-    if [ "$(jq -r '.defaultModel // empty' "$settings_json")" != "$chosen" ]; then
-      tmp="$(mktemp)" || return 1
-      jq --arg model "$chosen" '.defaultModel = $model' "$settings_json" > "$tmp" \
-        && cat "$tmp" > "$settings_json"
-      rm -f "$tmp"
-      echo "pi_sync_models: defaultModel -> $chosen"
-    fi
-  fi
-
-  if [ -n "$chosen" ] && [ -f "$web_search_json" ]; then
-    if [ "$(jq -r '.summaryModel // empty' "$web_search_json")" != "ollama/$chosen" ]; then
-      tmp="$(mktemp)" || return 1
-      jq --arg model "ollama/$chosen" '.summaryModel = $model' "$web_search_json" > "$tmp" \
-        && cat "$tmp" > "$web_search_json"
-      rm -f "$tmp"
-      echo "pi_sync_models: summaryModel -> ollama/$chosen"
-    fi
-  fi
 
   printf '%s' "$entries" | jq -r '.[] | "  " + .id + "  " + (.contextWindow | tostring) + " ctx"'
   echo "pi_sync_models: wrote $(printf '%s' "$entries" | jq 'length') model(s) to $models_json"
