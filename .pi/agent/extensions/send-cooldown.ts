@@ -64,6 +64,8 @@ class CooldownOverlay extends Container {
 			this.theme.fg("muted", "sending in ") +
 				this.theme.fg("accent", `${seconds}s`) +
 				this.theme.fg("muted", "  •  ") +
+				this.theme.fg("warning", "Enter") +
+				this.theme.fg("muted", " to send now, ") +
 				this.theme.fg("warning", "Esc") +
 				this.theme.fg("muted", " to cancel"),
 		);
@@ -78,7 +80,9 @@ class CooldownOverlay extends Container {
 	}
 
 	handleInput(data: string): void {
-		if (matchesKey(data, "escape") || matchesKey(data, "ctrl+c")) {
+		if (matchesKey(data, "enter")) {
+			this.finish("send");
+		} else if (matchesKey(data, "escape") || matchesKey(data, "ctrl+c")) {
 			this.finish("cancel");
 		}
 	}
