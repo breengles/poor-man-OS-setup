@@ -8,6 +8,8 @@ default_permissions = ":workspace"
 web_search = "cached"
 
 
+notify = ["/Users/artem/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
+
 [agents]
 enabled = true
 max_concurrent_threads_per_session = 6
@@ -18,14 +20,45 @@ default_subagent_reasoning_effort = "medium"
 fast_mode = false
 memories = true
 multi_agent = true
+js_repl = false
 
 [mcp_servers.gitlab-cli]
 command = "glab"
 args = ["mcp", "serve"]
 default_tools_approval_mode = "writes"
 
+[mcp_servers.node_repl]
+args = []
+command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/artem/.codex:/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+CODEX_HOME = "/Users/artem/.codex"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+BROWSER_USE_TINYSKY_ENABLED = "0"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = "Control desktop apps on macOS through Computer Use."
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.818.21641"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/artem/.codex/plugins/cache/openai-bundled/browser/26.818.21641/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
+
+[mcp_servers.computer-use]
+command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
+args = ["mcp"]
+cwd = "."
+enabled = false
+
 [shell_environment_policy]
 inherit = "core"
+
+[shell_environment_policy.set]
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "9230e2bd8b24b7ac7a0ba6774c64bf0d78ecdabbdd91d0ed627b02a587bae2df"
 
 
 [tui]
@@ -67,3 +100,55 @@ trust_level = "trusted"
 
 [projects."/home/artem.kotov/poor-man-OS-setup"]
 trust_level = "trusted"
+
+[projects."/Users/artem/projects/data-studio"]
+trust_level = "trusted"
+
+[desktop]
+followUpQueueMode = "queue"
+conversationDetailMode = "STEPS_PROSE"
+
+[marketplaces.openai-bundled]
+last_updated = "2026-08-21T13:55:50Z"
+source_type = "local"
+source = "/Users/artem/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-08-20T09:54:11Z"
+source_type = "local"
+source = "/Users/artem/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[marketplaces.claude-cowork]
+last_updated = "2026-08-21T13:41:05Z"
+source_type = "local"
+source = "/Users/artem/.codex/plugins/cache/claude-cowork"
+
+[plugins."sites@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."codex-app-tools@openai-bundled"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true

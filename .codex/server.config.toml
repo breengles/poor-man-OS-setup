@@ -1,6 +1,0 @@
-# Remote non-macOS profile. Select with: codex --profile server
-
-file_opener = "none"
-
-[projects."/home/artem.kotov/poor-man-OS-setup"]
-trust_level = "trusted"
