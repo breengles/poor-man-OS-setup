@@ -1,25 +1,37 @@
 /**
- * Compact footer: cwd + git branch, sync (ahead/behind) and status on the
- * left, last request duration and context use, model (with its window and
- * thinking effort) and generation speed on the right.
+ * Editor metadata + single-line footer. Model info and exec time are rendered
+ * inside the message box (below the input line, above its bottom border); the
+ * footer keeps cwd/git/status on the left and context bar, in/out tokens and
+ * generation speed on the right.
  *
- *    ~/poor-man-OS-setup main ↑2↓1~2?1   1m23s ▓░░░░░░░░░ 7% (12k) qwen3:30b[262k, high] | 47t/s
+ *    ─────────────────────────────────────────────
+ *    > message
+ *
+ *      qwen3:30b[262k] | high | 1m23s
+ *    ─────────────────────────────────────────────
+ *    ~/poor-man-OS-setup main ↑2↓1~2?1    ▓░░░░░░░░░ 7% (↑41k ↓543) | 47t/s
  *
  * Adapted from JanRocketMan/dotfiles. Differences: git only (no jujutsu) with a
  * colored short status; ASCII separators; everything is space-padded so it does
  * not jitter; context is space-padded (no leading zeros) and sits after the bar
  * and percent; the thinking effort lives in the model bracket; session cost
- * removed.
+ * removed. Model info and exec time moved from the footer into the message box.
  */
 
 import { execSync } from "node:child_process";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 import type { AssistantMessage } from "@earendil-works/pi-ai";
-import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import {
+	CustomEditor,
+	type ExtensionAPI,
+	type ExtensionContext,
+	type Theme,
+	type ThemeColor,
+} from "@earendil-works/pi-coding-agent";
+import { stripTerminalSequences, truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 
-// Fixed-width formatters. The footer is one line and repaints on every render,
-// so a field that changes width makes the whole right block jitter.
+// Fixed-width formatters. The footer repaints on every render, so a field that
+// changes width makes the right block jitter.
 
 /** Always 2 digits, capped at 99: 4 -> 04, 47 -> 47, 150 -> 99. */
 function formatTps(tps: number): string {
@@ -76,6 +88,11 @@ function formatDuration(ms: number): string {
 	return text.padStart(6, " ");
 }
 
+/** Same as formatDuration but without the leading padding, for inline use. */
+function formatDurationCompact(ms: number): string {
+	return formatDuration(ms).trim();
+}
+
 /** Percentage of context window used. */
 function formatPct(tokens: number, window: number): string {
 	if (window <= 0) return "??%";
@@ -84,7 +101,7 @@ function formatPct(tokens: number, window: number): string {
 }
 
 /** Progress bar for context usage. Width in cells. */
-function formatProgressBar(tokens: number, window: number, width: number, theme: any): string {
+function formatProgressBar(tokens: number, window: number, width: number, theme: Theme): string {
 	if (window <= 0 || tokens === null) return " ".repeat(width);
 	const pct = Math.min(1, Math.max(0, tokens / window));
 	const filledWidth = Math.round(pct * width);
@@ -92,7 +109,7 @@ function formatProgressBar(tokens: number, window: number, width: number, theme:
 
 	// Semantic theme keys, not raw color names: theme.fg() only knows the keys in
 	// the theme JSON, and throws on anything else.
-	let color = "success";
+	let color: ThemeColor = "success";
 	if (pct >= 0.95) color = "error";
 	else if (pct >= 0.8) color = "warning";
 
@@ -102,19 +119,14 @@ function formatProgressBar(tokens: number, window: number, width: number, theme:
 }
 
 /**
- * Model-meta bracket: "[262k]", or "[262k, high]" when the model supports
- * reasoning and `thinking` is the active effort (moved here from the old
- * trailing "| <effort>" slot). Skips the window when it is unknown (0).
+ * Model window bracket: "[262k]", or "" when the window is unknown (0).
+ * The thinking effort is rendered separately after the bracket.
  */
-function formatWindow(window: number, thinking: string, hasReasoning: boolean): string {
-	const parts: string[] = [];
-	if (window > 0) {
-		if (window >= 1_000_000) parts.push(`${(window / 1_000_000).toFixed(0)}m`);
-		else if (window >= 1_000) parts.push(`${Math.round(window / 1_000)}k`);
-		else parts.push(`${window}`);
-	}
-	if (hasReasoning) parts.push(thinking);
-	return parts.length ? `[${parts.join(", ")}]` : "";
+function formatWindow(window: number): string {
+	if (window <= 0) return "";
+	if (window >= 1_000_000) return `[${(window / 1_000_000).toFixed(0)}m]`;
+	if (window >= 1_000) return `[${Math.round(window / 1_000)}k]`;
+	return `[${window}]`;
 }
 
 function formatCwd(cwd: string, home: string): string {
@@ -124,6 +136,25 @@ function formatCwd(cwd: string, home: string): string {
 		(rel !== ".." && !rel.startsWith(`..${sep}`) && !isAbsolute(rel));
 	if (!inside) return cwd;
 	return rel === "" ? "~" : `~${sep}${rel}`;
+}
+
+/** Right-pad a line to `width` visible cells (ANSI-aware). */
+function padRight(line: string, width: number): string {
+	const w = visibleWidth(line);
+	if (w >= width) return truncateToWidth(line, width, "");
+	return line + " ".repeat(width - w);
+}
+
+/**
+ * True for the editor's horizontal border rows: a full-width run of "─", or a
+ * scroll-indicator border ("─── ↑ N more ───" / "─── ↓ N more ───"). Used to
+ * find the bottom border so metadata can be inserted inside the message box.
+ */
+function isBottomBorderLine(line: string): boolean {
+	const s = stripTerminalSequences(line);
+	if (s.length === 0) return false;
+	if ([...s].every((ch) => ch === "─")) return true;
+	return /^─+\s*[↑↓]\s+\d+\s+more/.test(s);
 }
 
 /**
@@ -278,21 +309,67 @@ export default function (pi: ExtensionAPI) {
 		}
 		thinkingLevel = pi.getThinkingLevel();
 
+		const thm = ctx.ui.theme;
+
+		// Model + exec time live inside the message box, below the input line.
+		class MetaEditor extends CustomEditor {
+			render(width: number): string[] {
+				const lines = super.render(width);
+				if (lines.length < 2 || width <= 0) return lines;
+
+				const modelInfo = `${modelId || "no-model"}${formatWindow(contextWindow)}`;
+				const thinkingStr =
+					hasReasoning && thinkingLevel !== "off" ? thinkingLevel : "";
+				const durationStr =
+					agentStartTs !== null
+						? formatDurationCompact(Date.now() - agentStartTs)
+						: lastRequestMs !== null
+							? formatDurationCompact(lastRequestMs)
+							: "--";
+				const meta =
+					`${thm.fg("accent", modelInfo)}` +
+					(thinkingStr
+						? `${thm.fg("dim", " | ")}${thm.fg("muted", thinkingStr)}`
+						: "") +
+					`${thm.fg("dim", " | ")}` +
+					`${thm.fg("muted", durationStr)}`;
+				const blank = " ".repeat(width);
+
+				// The bottom border is the last horizontal rule; autocomplete rows
+				// are appended after it and never look like a border.
+				let borderIndex = -1;
+				for (let i = 1; i < lines.length; i++) {
+					if (isBottomBorderLine(lines[i]!)) borderIndex = i;
+				}
+				if (borderIndex === -1) borderIndex = lines.length - 1;
+
+				lines.splice(borderIndex, 0, blank, padRight(meta, width));
+				return lines;
+			}
+		}
+
+		ctx.ui.setEditorComponent((tui, theme, kb) => {
+			renderRequester = tui;
+			return new MetaEditor(tui, theme, kb);
+		});
+
 		ctx.ui.setFooter((tui, theme, _footerData) => {
 			renderRequester = tui;
 			return {
 				invalidate() {},
 				render(width: number): string[] {
+					if (width <= 0) return [""];
+
 					const usage = ctx.getContextUsage();
 					const window = usage?.contextWindow ?? contextWindow;
 					const tokens = usage?.tokens ?? null;
 					const { input, output } = sumSessionTokens(ctx);
 
-					// Bar first, then percent, then the formatted input/output tokens.
-					const tokensStr =
+					// Context bar + percent (first line, right-aligned).
+					const barPct =
 						tokens !== null
-							? `${formatProgressBar(tokens, window, 10, theme)} ${formatPct(tokens, window)} ${formatContextTokens(input, output)}`
-							: `${" ".repeat(10)} ??% ${formatContextTokens(input, output)}`;
+							? `${formatProgressBar(tokens, window, 10, theme)} ${formatPct(tokens, window)}`
+							: `${" ".repeat(10)} ??%`;
 
 					// Left block: cwd dim, then the branch in the accent color followed
 					// by a glued run of colored symbol-number pairs (↑ ahead, ↓ behind,
@@ -314,25 +391,14 @@ export default function (pi: ExtensionAPI) {
 					}
 
 					const tps = lastTps !== null ? formatTps(lastTps) : "--t/s";
-					const bracket = formatWindow(window, thinkingLevel, hasReasoning);
-					// Live elapsed time while a request runs, the settled duration of
-					// the last request once idle, or a fixed-width placeholder before
-					// any request has completed.
-					const durationStr =
-						agentStartTs !== null
-							? formatDuration(Date.now() - agentStartTs)
-							: lastRequestMs !== null
-								? formatDuration(lastRequestMs)
-								: "    --";
+					// Right block: context bar + in/out tokens + generation speed,
+					// all kept together on the single footer line.
 					const right =
-						`${durationStr} ` +
-						`${tokensStr} ` +
-						`${modelId || "no-model"}${bracket} | ${tps}`;
-
+						`${barPct} ${formatContextTokens(input, output)} | ${tps}`;
 					const rightDim = theme.fg("dim", right);
+
 					const leftW = visibleWidth(left);
 					const rightW = visibleWidth(rightDim);
-
 					if (leftW + rightW <= width) {
 						const pad = " ".repeat(width - leftW - rightW);
 						return [truncateToWidth(left + pad + rightDim, width)];
