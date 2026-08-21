@@ -7,8 +7,7 @@ tools: read, write, edit, bash, grep, find, ls
 # Implementer
 
 The full contract for this role lives in `~/.claude/agents/implementer.md`. Read that file before anything else, then
-follow it exactly, including its `## Status Report` block. It is shared with Claude Code so the two harnesses cannot
-drift; nothing in it is restated here.
+follow it exactly.
 
 Two harness differences apply while you run under pi:
 
