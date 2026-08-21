@@ -1,9 +1,9 @@
 /**
  * Compact footer: cwd + git branch, sync (ahead/behind) and status on the
- * left, context use, model (with its window and thinking effort) and
- * generation speed on the right.
+ * left, last request duration and context use, model (with its window and
+ * thinking effort) and generation speed on the right.
  *
- *    ~/poor-man-OS-setup main ↑2↓1~2?1           ▓░░░░░░░░░ 7% (12k) qwen3:30b[262k, high] | 47t/s
+ *    ~/poor-man-OS-setup main ↑2↓1~2?1   1m23s ▓░░░░░░░░░ 7% (12k) qwen3:30b[262k, high] | 47t/s
  *
  * Adapted from JanRocketMan/dotfiles. Differences: git only (no jujutsu) with a
  * colored short status; ASCII separators; everything is space-padded so it does
@@ -15,7 +15,7 @@
 import { execSync } from "node:child_process";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 import type { AssistantMessage } from "@earendil-works/pi-ai";
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 
 // Fixed-width formatters. The footer is one line and repaints on every render,
@@ -28,14 +28,52 @@ function formatTps(tps: number): string {
 }
 
 /**
- * Context tokens used, as a fixed 4-cell field, space-padded with no leading
- * zeros: 12000 -> " 12k", 900 -> "  1k", 1500000 -> "999k". Space padding
- * (instead of zero padding) keeps the field the same width as the count grows,
- * so the right block does not jitter between repaints.
+ * Context tokens used: (↑input ↓output)
+ * e.g. (↑41k ↓543)
  */
-function formatContextPlain(tokens: number): string {
-	const k = Math.min(999, Math.max(0, Math.round(tokens / 1000)));
-	return `${k.toString().padStart(3, " ")}k`;
+function formatContextTokens(input: number, output: number): string {
+	const formatK = (n: number) => {
+		if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}m`;
+		if (n >= 1_000) return `${Math.round(n / 1000)}k`;
+		return `${n}`;
+	};
+
+	return `(↑${formatK(input)} ↓${formatK(output)})`;
+}
+
+/**
+ * Sum input/output tokens across assistant messages in the current session
+ * branch. `ctx.getContextUsage()` only reports a total context estimate
+ * (`tokens`/`contextWindow`/`percent`) and has no input/output breakdown, so
+ * reading `usage.inputTokens`/`usage.outputTokens` from it always yielded 0.
+ * The real per-message counts live in `usage.input`/`usage.output` (see
+ * examples/extensions/custom-footer.ts).
+ */
+function sumSessionTokens(ctx: ExtensionContext): { input: number; output: number } {
+	let input = 0;
+	let output = 0;
+	for (const e of ctx.sessionManager.getBranch()) {
+		if (e.type === "message" && e.message.role === "assistant") {
+			const m = e.message as AssistantMessage;
+			input += m.usage.input;
+			output += m.usage.output;
+		}
+	}
+	return { input, output };
+}
+
+/**
+ * Request duration as a fixed 6-cell field, space-padded with no leading
+ * zeros: 42000 -> "  42s", 83000 -> "1m23s". Seconds stay bare ("42s"),
+ * minutes use "M:SS" ("1m23s").
+ */
+function formatDuration(ms: number): string {
+	// Capped at 99m59s so the field never outgrows its 6 cells.
+	const totalSec = Math.min(99 * 60 + 59, Math.max(0, Math.round(ms / 1000)));
+	const m = Math.floor(totalSec / 60);
+	const s = totalSec % 60;
+	const text = m > 0 ? `${m}m${s.toString().padStart(2, "0")}s` : `${s}s`;
+	return text.padStart(6, " ");
 }
 
 /** Percentage of context window used. */
@@ -169,6 +207,13 @@ export default function (pi: ExtensionAPI) {
 	let lastTps: number | null = null;
 	let renderRequester: { requestRender: () => void } | null = null;
 
+	// Whole-request timing: agent_start -> agent_settled covers the full run
+	// (every turn, tool call, retry and compaction). agentStartTs is non-null
+	// while a request is in flight, so render() can show a live elapsed time;
+	// lastRequestMs keeps the settled duration after it completes.
+	let agentStartTs: number | null = null;
+	let lastRequestMs: number | null = null;
+
 	pi.on("model_select", (event) => {
 		const model = event.model as any;
 		modelId = model.id || "";
@@ -210,6 +255,20 @@ export default function (pi: ExtensionAPI) {
 		renderRequester?.requestRender();
 	});
 
+	pi.on("agent_start", () => {
+		// A retry/compaction/follow-up run re-fires agent_start without an
+		// intervening agent_settled; keep the original start so the clock
+		// measures the whole request, not just the last run.
+		if (agentStartTs === null) agentStartTs = Date.now();
+	});
+
+	pi.on("agent_settled", () => {
+		if (agentStartTs === null) return;
+		lastRequestMs = Date.now() - agentStartTs;
+		agentStartTs = null;
+		renderRequester?.requestRender();
+	});
+
 	pi.on("session_start", (_event, ctx) => {
 		if (ctx.model) {
 			const model = ctx.model as any;
@@ -227,12 +286,13 @@ export default function (pi: ExtensionAPI) {
 					const usage = ctx.getContextUsage();
 					const window = usage?.contextWindow ?? contextWindow;
 					const tokens = usage?.tokens ?? null;
+					const { input, output } = sumSessionTokens(ctx);
 
-					// Bar first, then percent, then the fixed-width token count.
+					// Bar first, then percent, then the formatted input/output tokens.
 					const tokensStr =
 						tokens !== null
-							? `${formatProgressBar(tokens, window, 10, theme)} ${formatPct(tokens, window)} (${formatContextPlain(tokens)})`
-							: `${" ".repeat(10)} ??% (???k)`;
+							? `${formatProgressBar(tokens, window, 10, theme)} ${formatPct(tokens, window)} ${formatContextTokens(input, output)}`
+							: `${" ".repeat(10)} ??% ${formatContextTokens(input, output)}`;
 
 					// Left block: cwd dim, then the branch in the accent color followed
 					// by a glued run of colored symbol-number pairs (↑ ahead, ↓ behind,
@@ -255,7 +315,17 @@ export default function (pi: ExtensionAPI) {
 
 					const tps = lastTps !== null ? formatTps(lastTps) : "--t/s";
 					const bracket = formatWindow(window, thinkingLevel, hasReasoning);
+					// Live elapsed time while a request runs, the settled duration of
+					// the last request once idle, or a fixed-width placeholder before
+					// any request has completed.
+					const durationStr =
+						agentStartTs !== null
+							? formatDuration(Date.now() - agentStartTs)
+							: lastRequestMs !== null
+								? formatDuration(lastRequestMs)
+								: "    --";
 					const right =
+						`${durationStr} ` +
 						`${tokensStr} ` +
 						`${modelId || "no-model"}${bracket} | ${tps}`;
 

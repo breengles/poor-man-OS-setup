@@ -1,5 +1,5 @@
 {
-  "defaultProvider": "ollama",
+  "defaultProvider": "picsart",
   "defaultThinkingLevel": "high",
   "hideThinkingBlock": true,
   "theme": "dark",
@@ -13,12 +13,14 @@
   "enableSkillCommands": true,
   "extensions": [
     "extensions/footer-info.ts",
-    "extensions/pi-context.ts"
+    "extensions/pi-context.ts",
+    "extensions/send-cooldown.ts"
   ],
   "packages": [
     "npm:pi-subagents",
     "npm:pi-web-access"
   ],
-  "defaultModel": "gemma4:26b-mlx",
-  "lastChangelogVersion": "0.84.2"
+  "defaultModel": "google/gemma-4-31B-it",
+  "lastChangelogVersion": "0.84.2",
+  "editorPaddingX": 1
 }
