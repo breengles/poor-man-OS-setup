@@ -10,35 +10,14 @@
       },
       "models": [
         {
-          "id": "gemma4:31b-mlx",
-          "name": "gemma4:31b-mlx (31.7B nvfp4, local)",
-          "reasoning": true,
-          "input": [
-            "text"
-          ],
-          "contextWindow": 262144,
-          "maxTokens": 65536,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cacheRead": 0,
-            "cacheWrite": 0
-          },
-          "samplingParams": {
-            "temperature": 1.0,
-            "top_p": 0.95,
-            "top_k": 64
-          }
-        },
-        {
           "id": "gemma4:26b-mlx",
           "name": "gemma4:26b-mlx (26.2B nvfp4, local)",
           "reasoning": true,
           "input": [
             "text"
           ],
-          "contextWindow": 262144,
-          "maxTokens": 65536,
+          "contextWindow": 65536,
+          "maxTokens": 16384,
           "cost": {
             "input": 0,
             "output": 0,
@@ -59,8 +38,8 @@
             "text",
             "image"
           ],
-          "contextWindow": 262144,
-          "maxTokens": 65536,
+          "contextWindow": 65536,
+          "maxTokens": 16384,
           "cost": {
             "input": 0,
             "output": 0,
