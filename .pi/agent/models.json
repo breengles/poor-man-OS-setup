@@ -10,7 +10,7 @@
       },
       "models": [
         {
-          "id": "gemma4:26b",
+          "id": "gemma4:26b-mlx",
           "name": "gemma4:26b-mlx (26.2B nvfp4, local)",
           "reasoning": true,
           "input": [
@@ -31,7 +31,7 @@
           }
         },
         {
-          "id": "qwen3.8:27b",
+          "id": "qwen3.8:27b-mlx",
           "name": "qwen3.8:27b-mlx (27.8B nvfp4, local)",
           "reasoning": true,
           "input": [

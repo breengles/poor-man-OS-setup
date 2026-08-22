@@ -145,25 +145,97 @@ documentation only: ollama's OpenAI shim drops it, so the model's baked-in defau
 Qwen3.8 exposes `reasoning_effort` and ollama's OpenAI endpoint honors it -- unlike Gemma 4, which gates thinking
 behind the `<|think|>` system-prompt token.
 
-Context length is the one value that needs care. Ollama serves `OLLAMA_CONTEXT_LENGTH` tokens and silently truncates
-anything past it, so a larger window declared in `models.json` would quietly drop the head of the conversation instead
-of erroring. `env_vars.sh` pins `OLLAMA_CONTEXT_LENGTH=262144` and `pi_sync_models` caps each declared `contextWindow`
-at that value, so the client and the server always agree. Raising the variable costs KV-cache memory per loaded model.
+Context length is the one value that needs care, and on Apple Silicon it is not set where it looks like it is set.
+Ollama truncates anything past the server's window without erroring, so a larger `contextWindow` in `models.json`
+would quietly drop the head of the conversation. Two numbers have to agree, and each comes from a different place:
 
-The rest of the serving settings live next to it in `env_vars.sh`, tuned for one interactive agent rather than for
-throughput:
+| Number             | Set in                                                       | Read by                                                    |
+| ------------------ | ------------------------------------------------------------ | ---------------------------------------------------------- |
+| client declaration | `OLLAMA_CONTEXT_LENGTH` in `env_vars.sh`                     | `pi_sync_models`, which caps every `contextWindow` at it    |
+| server window      | `context_length` in `~/Library/Application Support/Ollama/db.sqlite` | the ollama server, which Ollama.app spawns          |
 
-| Variable                   | Value  | Why                                                                   |
-| -------------------------- | ------ | --------------------------------------------------------------------- |
-| `OLLAMA_FLASH_ATTENTION`   | `1`    | Cuts attention memory; also the prerequisite for a quantized KV cache |
-| `OLLAMA_KV_CACHE_TYPE`     | `q8_0` | Halves the KV cache, which dominates memory at a 256K window          |
-| `OLLAMA_NUM_PARALLEL`      | `1`    | One request at a time, so a single agent gets the whole window        |
-| `OLLAMA_MAX_LOADED_MODELS` | `1`    | One resident model; a second eviction candidate just thrashes         |
-| `OLLAMA_KEEP_ALIVE`        | `30m`  | Avoids reloading tens of GB between turns of the same session         |
+The app wins on the window. It passes its own `context_length` to the server, overriding `OLLAMA_CONTEXT_LENGTH`, so
+that one export only ever configures `pi_sync_models`.
 
-`q8_0` without flash attention is silently ignored, so those two go together. The macOS Ollama app picks these up from
-the login shell environment; confirm what the running server actually got with
-`grep -m1 'server config' ~/.ollama/logs/server.log`.
+Every other export reaches the server or not depending on how Ollama.app started, because the server is its child and
+inherits its environment. Started as a login item, which is the normal case, the app sees the login environment and
+none of the `.zshrc` exports, so the server runs on its own defaults: that is how it ended up serving a 5m keep-alive
+with flash attention off. Started from a terminal that sourced `env_vars.sh`, the same exports land. Applying an edit
+is therefore one restart from a shell:
+
+```bash
+pkill -f "Ollama.app/Contents/MacOS/Ollama" && open -a Ollama
+```
+
+launchd also caches an environment snapshot per application job, and the snapshot survives an app relaunch. A server
+reporting values that no longer exist anywhere on disk means the snapshot is stale; it clears once the app process is
+gone, which the `pkill` above takes care of. `launchctl setenv OLLAMA_KEEP_ALIVE 10m` is the other way in, and the only
+one that survives a start from the Dock, but launchd forgets it on reboot.
+
+| Variable                   | Value | Why                                                            |
+| -------------------------- | ----- | -------------------------------------------------------------- |
+| `OLLAMA_NUM_PARALLEL`      | `1`   | One request at a time, so a single agent gets the whole window  |
+| `OLLAMA_MAX_LOADED_MODELS` | `1`   | One resident model; a second eviction candidate just thrashes   |
+| `OLLAMA_KEEP_ALIVE`        | `10m` | Keeps the weights and the prefix cache alive between turns      |
+
+#### Reading the live configuration back
+
+Every value above is worth verifying rather than assuming, because none of them come from a file in this repo.
+
+| Question                              | Command                                                                       |
+| ------------------------------------- | ----------------------------------------------------------------------------- |
+| what env the server actually started with | `grep 'server config' ~/.ollama/logs/server.log \| tail -1`               |
+| the window and keep-alive a loaded model got | `ollama ps` (`CONTEXT` and `UNTIL` columns)                            |
+| the same as JSON                      | `curl -s localhost:11434/api/ps \| jq '.models[]'`                            |
+| the window the app will impose next start | `sqlite3 ~/Library/Application\ Support/Ollama/db.sqlite 'select context_length from settings'` |
+| a tag's own ceiling, quant and params | `ollama show qwen3.8:27b-mlx`                                                 |
+| what the last requests really cost    | `grep -E 'peak memory\|speculative decode\|prefix_cache' ~/.ollama/logs/server.log \| tail -5` |
+
+`ollama ps` is the quickest sanity check: a `CONTEXT` that disagrees with `OLLAMA_CONTEXT_LENGTH` means
+`pi_sync_models` is declaring a window the server will silently truncate.
+
+#### What a 36 GiB M3 Pro holds
+
+`qwen3.8:27b-mlx` is a dense 27.8B model with a hybrid attention stack. 48 of its 64 layers use linear attention
+(Gated DeltaNet) with a constant recurrent state, and only the other 16 keep a KV cache that grows with the
+conversation. Peak memory measured at 6K, 18K and 38K tokens is linear in the window:
+
+```
+peak = 19.28 GiB + 176 KB per context token
+```
+
+macOS lets Metal wire down about 76% of unified memory, which is 27.6 of 36 GiB, so the window stops fitting near 49K
+tokens. The declared 65536 is a deliberate overcommit: past the limit MLX serves the overflow from pageable memory and
+generation drops by roughly a third rather than failing, and most sessions never fill the window. `iogpu.wired_limit_mb`
+could raise the ceiling, but it is left at the system default so macOS keeps deciding. A 131072-token window would need
+41.3 GiB, which this machine does not have at any setting.
+
+#### Measured throughput
+
+| Prompt |   Prefill | Generation |      Peak |
+| -----: | --------: | ---------: | --------: |
+|  5 942 |    95 t/s |   18.9 t/s | 20.32 GiB |
+| 18 610 |    90 t/s |   18.5 t/s | 22.58 GiB |
+| 38 319 |    81 t/s |   13.6 t/s | 25.75 GiB |
+
+Generation is bandwidth-bound, prefill is compute-bound, and prefill is the one that hurts: filling the whole 64K
+window takes about a quarter of an hour. Two features make that bearable, and neither has a knob to turn.
+
+- The runner reuses the KV cache of a shared prefix. Repeating a 5 942-token prompt replays it in 0.4s instead of 63s,
+  so a long prefix is paid for once for as long as the model stays resident. That is what the 10m keep-alive buys.
+- MTP speculative decoding is on by default and picks its own draft depth. The `mtp.*` tensors ship inside the
+  `27b-mlx` tag, so no draft model is loaded and no flag turns it on. The server logs `acceptance` and `avg_draft` per
+  request; observed acceptance runs 0.63 to 0.87 at a draft depth of 2 to 6.
+
+#### Settings that do nothing on this path
+
+| Setting                     | Verified                                                                     |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| `OLLAMA_FLASH_ATTENTION`    | The MLX runner ignores it                                                    |
+| `OLLAMA_KV_CACHE_TYPE`      | `q8_0` and `f16` give a byte-identical 22.58 GiB peak and the same t/s        |
+| `num_batch` request option  | 512 and 2048 both prefill at 90 t/s                                          |
+
+All three matter only on the llama.cpp path, which is what a GGUF tag takes. Every MLX tag skips them.
 
 `pi_sync_models` writes through the stow symlinks with `cat >` rather than `mv`, because `mv` would replace the symlink
 with a regular file and detach the deployed config from the repo.
