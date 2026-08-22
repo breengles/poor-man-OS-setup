@@ -48,12 +48,25 @@ sense together), pass the whole batch to a single implementer. Default batch siz
 
 ## Step 3: Execute, one batch at a time
 
-**Dispatch** `spawn_agent(agent_type="implementer", fork_turns="none", task_name=<unit id>, prompt=...)`, then one
+**Dispatch** `spawn_agent(agent_type="implementer", fork_turns="none", task_name=<unit id>, message=...)`, then one
 `wait_agent(timeout_ms=3600000)`. Never poll -- no `list_agents`, no status pings, no repeated short waits; if the wait
-returns a timeout, tell the user and wait again. The prompt carries the unit's full text from the artifact, the specific
+returns a timeout, tell the user and wait again. The message carries the unit's full text from the artifact, the specific
 requirements/design excerpts it references (spec mode) or its cited files and acceptance criteria (todo mode), and the
 project's test command if known. The implementer's role and report format live in its agent file -- do not restate them.
-Dispatch strictly sequentially; never run implementers concurrently.
+
+If that dispatch is rejected **before an agent starts** because the custom `implementer` role is unavailable, do not
+retry the same unavailable role and do not ask the main session to implement. Make one fallback dispatch with
+`agent_type="worker"`, `model="gpt-5.6-terra"`, `reasoning_effort="medium"`, and `fork_turns="none"`. Prepend this to
+the normal unit message:
+
+> You are the fallback implementer for this unit. Read the active `implementer` custom-agent TOML -- the project copy
+> at `.codex/agents/implementer.toml` if present, otherwise `~/.codex/agents/implementer.toml` -- and follow its
+> `developer_instructions` as task constraints. Preserve its ownership boundary, validation duties, prohibitions on
+> commits and tracking-artifact edits, and exact status-report format.
+
+This fallback is equivalent to a fresh implementer for the workflow; label it as a fallback in the final report. If the
+fallback cannot start or cannot read the implementer profile, stop the run as an infrastructure blocker without marking
+the unit `Blocked` or changing the artifact. Dispatch strictly sequentially; never run implementers concurrently.
 
 **Handle the reported STATUS.** `COMPLETE` -> continue. `BLOCKED` -> set Status to `Blocked`, append
 `_Blocked: {reason}_` to the unit's section, drop it from the batch. `NEEDS_CONTEXT` -> re-dispatch once with the
@@ -91,8 +104,8 @@ criteria-verification result. Suggest re-running in a fresh session if units rem
 
 ## Constraints
 
-- Orchestrator only -- all code changes come from `implementer` subagents, each a fresh dispatch with a new context.
-  Never reuse or continue a prior subagent.
+- Orchestrator only -- all code changes come from a fresh `implementer` subagent or the documented fresh `worker`
+  fallback with the implementer profile loaded. Never reuse or continue a prior subagent.
 - Selective staging only. No destructive git (`git checkout .`, `git reset --hard`, etc.).
 - Never commit code without its artifact update, or an artifact update without the code.
 - If an implementer reports the artifact is wrong (an API does not exist, the design is infeasible), block the unit
