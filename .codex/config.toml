@@ -104,6 +104,9 @@ trust_level = "trusted"
 [projects."/Users/artem/projects/data-studio"]
 trust_level = "trusted"
 
+[projects."/Users/artem/projects/data-studio.worktrees"]
+trust_level = "trusted"
+
 [desktop]
 followUpQueueMode = "queue"
 conversationDetailMode = "STEPS_PROSE"
