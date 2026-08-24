@@ -22,6 +22,13 @@ Do not narrate routine actions between tool calls.
 - No Unicode symbols in code or comments -- plain ASCII only.
 - Never use em dashes (`—`); use regular dashes (`-`) instead
 
+1. Write in ASD-STE100, or Simplified Technical English
+2. Follow Zinsser’s four principles of quality writing:
+   a. Simplicity
+   b. Brevity
+   c. Clarity
+   d. Humanity
+
 ## Ultracode mode
 
 Cap the fleet at 3 Opus or 6 Sonnet subagents in flight (count 1 Opus as 2 Sonnet slots).
