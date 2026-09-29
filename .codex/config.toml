@@ -44,8 +44,8 @@ NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunc
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = "Control desktop apps on macOS through Computer Use."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.818.21641"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/artem/.codex/plugins/cache/openai-bundled/browser/26.818.21641/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.818.41509"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/artem/.codex/plugins/cache/openai-bundled/browser/26.818.41509/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
 [mcp_servers.computer-use]
@@ -112,7 +112,6 @@ followUpQueueMode = "queue"
 conversationDetailMode = "STEPS_PROSE"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-08-21T13:55:50Z"
 source_type = "local"
 source = "/Users/artem/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
