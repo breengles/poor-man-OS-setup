@@ -24,6 +24,7 @@
 /\.claude/shell-snapshots
 /\.claude/todos
 /\.claude/history\.jsonl
+/\.claude/skills/synced
 # Under .codex, deploy only AGENTS.md, config files, agents/, and rules/.
 # The negative lookahead excludes all current and future Codex runtime state.
 ^/\.codex/(?!(?:AGENTS\.md|config\.toml|[^/]+\.config\.toml)$|(?:agents|rules)(?:/|$)).+
