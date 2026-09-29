@@ -40,7 +40,9 @@ concretely enough to spot-check, read the code and see whether the symptom survi
 already-resolved and ask before implementing it rather than dispatching an implementer at a non-problem.
 
 Present the queue and confirm before proceeding. With explicit numbers, do those in order; with `all`, do every pending
-unit in order; with neither, ask which and check in after each one.
+unit in order; with neither, ask which and check in after each one. With numbers or `all`, the confirmed queue is the
+whole job: do not end your turn between units to report progress or offer to continue. Put each unit's one-line summary
+in the same message as the next dispatch, and stop only at a Step 3 stop-and-ask.
 
 **Batching is a commit grouping, never concurrent execution.** Batch only consecutive units that are independent --
 `(P)`-marked with compatible boundaries in spec mode, unrelated files in todo mode. Either dispatch one implementer per
@@ -78,10 +80,8 @@ lowercase, ~50 chars, no type prefix; for a batch, one message covering all of i
 Once the run ends, **re-read the acceptance criteria for every completed unit against the code yourself.** Each
 implementer verified against its own reading of its criteria, so a misread criterion is invisible to it -- you are the
 first independent reader. Point at the concrete observable behavior satisfying each criterion, or report the gap. Do not
-fix anything; report and let the user decide.
-
-Then hand off to `/finalize <same path>` to reconcile the docs with what shipped and remove the resolved units. Do not
-purge them yourself.
+fix anything; report and let the user decide. Then hand off to `/finalize <same path>` to reconcile the docs with what
+shipped and remove the resolved units. Do not purge them yourself.
 
 ## Report
 
