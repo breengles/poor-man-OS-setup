@@ -2,81 +2,94 @@
 
 ## Overview
 
-The repository configures **Claude Code** (Anthropic's CLI agent) as the primary AI coding assistant, using
-Claude Opus 4.6 as the primary model, and **pi** (`@earendil-works/pi-coding-agent`) as a second harness that
-runs local models served by ollama. pi reuses Claude Code's skills and its `implementer` agent rather than
-keeping a parallel copy of them.
+The repository configures **Claude Code** (Anthropic's CLI agent) as the primary AI coding assistant, and **pi**
+(`@earendil-works/pi-coding-agent`) as a second harness that runs local models served by ollama. pi reuses Claude
+Code's skills and its `implementer` and `verifier` agents rather than keeping a parallel copy of them.
 
 ## File Structure
 
-| File                        | Description                                                    |
-| --------------------------- | -------------------------------------------------------------- |
-| `CLAUDE.md` (repo root)     | Project-level instructions for Claude Code                     |
-| `.claude/CLAUDE.md`         | Claude Code user-level preferences (stow → `~/.claude/`)       |
-| `.claude/skills/*/SKILL.md` | Claude Code custom slash commands (stow → `~/.claude/skills/`) |
+| File                            | Description                                                             |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| `CLAUDE.md` (repo root)         | Project-level instructions for Claude Code                              |
+| `.claude/CLAUDE.md`             | User-level preferences, loaded in every project                         |
+| `.claude/settings.json`         | MCP servers, plugins, permissions, hooks, status line, per-model effort |
+| `.claude/keybindings.json`      | Claude Code keybindings                                                 |
+| `.claude/statusline-command.sh` | Status line script that `settings.json` runs                            |
+| `.claude/skills/*/SKILL.md`     | Custom slash commands                                                   |
+| `.claude/skills/implement/*.js` | The workflow script that `/implement` runs for its per-unit loop        |
+| `.claude/agents/*.md`           | Custom subagents: `implementer` and `verifier`                          |
 
-Note: `~/.claude/settings.json` (MCP servers, hooks, plugins, permissions) is managed by Claude Code itself and not stow-managed.
-
-## Configuration
-
-Claude Code reads instructions from multiple sources:
-
-- **Project-level:** `CLAUDE.md` in the repo root (structure, code style, git conventions)
-- **User-level preferences:** `.claude/CLAUDE.md` (stow-managed to `~/.claude/CLAUDE.md`)
-- **User-level skills:** `.claude/skills/*/SKILL.md` (stow-managed to `~/.claude/skills/`)
-- **Settings:** `~/.claude/settings.json` (managed by Claude Code — MCP servers, hooks, plugins, permissions)
+Claude Code writes to `settings.json` itself, so its edits land in the repo through the symlink and show up in
+`git status`. `.claude/skills/synced/` holds claude.ai skills that Claude Code syncs down. It is ignored by both stow
+and git.
 
 ## User-Level Preferences (`.claude/CLAUDE.md`)
 
-Cross-project preferences that apply in every Claude Code session:
+Cross-project preferences that apply in every Claude Code session. The file is kept short, because each skill owns its
+own format details.
 
-- **Python**: Always use `uv` (never pip/conda/poetry)
-- **Markdown**: Format with `npx prettier --write --print-width 120` after editing
-- **Git**: No issue IDs (`#N`) in commit messages
-- **GitLab**: Prefer MCP tools, fall back to `glab` CLI
-- **TODO files**: Priority table + detailed sections + resolution order
+- **Response style**: lead with the outcome, plain short sentences, Simplified Technical English, no filler
+- **Ultracode**: at most 3 Opus or 6 Sonnet subagents in flight
+- **Commits**: imperative, lowercase, about 50 characters, no type prefix, no issue IDs
+- **Code comments**: never cite specs, TODO items, or line numbers; cite a `docs/` page or state the reason
+- **Python**: `uv` for everything, Ruff, Pyright in `basic` mode, modern type syntax, `pathlib`
+- **Tests**: add none unless asked, and never weaken existing ones
+- **SLURM**: no heavy work on the login node; submit through `sbatch` or `srun`
 
 ## Slash Commands (Skills)
 
-Custom skills are stow-deployed from `.claude/skills/` to `~/.claude/skills/`:
+| Command           | Description                                                                             |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| `/spec-init`      | Draft a spec directory in one pass: EARS requirements, design, optional research, tasks |
+| `/todo-init`      | Scan the project and seed TODO files by area                                            |
+| `/grill`          | Interview the user in rounds until a plan has no open questions                         |
+| `/implement`      | Implement spec tasks or TODO items one unit at a time; the main session orchestrates    |
+| `/finalize`       | Reconcile the docs with what shipped, remove the resolved artifact, and commit          |
+| `/commit`         | Create commits in the repo's message style, staging selectively                         |
+| `/mr-description` | Write or apply a GitLab merge request title and description                             |
+| `/dataset-readme` | Write an `install.md` for an image dataset                                              |
 
-| Command           | Description                                                            |
-| ----------------- | ---------------------------------------------------------------------- |
-| `/commit`         | Analyze changes, create well-formatted Conventional Commits            |
-| `/todo-init`      | Scan project and create initial TODO files by area                     |
-| `/todo-review`    | Read-only validation of a TODO file before `/todo-implement`           |
-| `/todo-implement` | Implement TODO items via implementer/reviewer subagents (orchestrator) |
-| `/docs-init`      | Generate comprehensive technical documentation                         |
-| `/docs-revise`    | Update existing documentation to match codebase changes                |
+Code review is deliberately not a custom skill. The built-in `/code-review`, `/security-review`, and `/simplify` cover
+it.
 
-### `/commit` Details
+### Tracked work: `/spec-init` and `/todo-init` to `/implement` to `/finalize`
 
-The commit command enforces:
+Specs and TODO files share one pipeline. The artifact is temporary scaffolding: `/finalize` removes it once the work
+ships, and the code plus the docs stay as the record.
 
-- Conventional Commits format
-- Max 72-char subject lines
-- Semantic commit splitting (separate logical changes)
-- Selective `git add` (no `git add .`)
-- No secrets in commits
-- No issue IDs in messages
-- Shows `git log --oneline --name-only` after committing
+- A **spec** is a directory with `requirements.md`, `design.md`, an optional `research.md`, and `tasks.md`. Its units
+  are the sub-tasks in `tasks.md`.
+- A **TODO file** is `todos/<area>.md`: a Priority Summary table, a suggested resolution order, and one detailed
+  section per item. Its units are the items.
 
-### `/todo-init`, `/todo-review`, and `/todo-implement`
+`/spec-init` asks its questions in one message. When the idea is still unclear, `/grill` settles it first.
 
-TODO files follow a structured format in `todos/<area>.md`:
+### `/implement`
 
-1. Priority Summary table (P0/P1/P2) with links to detail sections
-2. Suggested resolution order (pending items, bullet list)
-3. Detailed sections with descriptions and acceptance criteria
+The main session resolves the artifact, finds the test command, and builds the queue. It sends read-only subagents in
+parallel to check that each queued unit is still a real problem. After the user confirms the queue, the main session
+hands the loop to `.claude/skills/implement/implement.workflow.js`. For each unit, the script does these steps in order:
 
-`/todo-init` seeds the file from a codebase scan. `/todo-review` validates format,
-freshness, and item quality without editing. `/todo-implement` runs items one at a
-time through implementer/reviewer subagents; the main session orchestrates and
-commits.
+1. The `implementer` agent (Sonnet) makes the change.
+2. The `verifier` agent (Opus, read-only) checks each acceptance criterion against the code and runs the tests. When
+   it is unsure, it fails the unit.
+3. If the verifier fails the unit, the implementer gets one repair round with the verifier's gaps, on Opus. The
+   verifier then checks again.
+4. A landing agent checks that only the expected files changed, marks the unit `Done` in the artifact, and commits the
+   code and the artifact together.
 
-### `/docs-init` and `/docs-revise`
+Units run one after another, because they share one working tree. The script stops and returns control to the main
+session when a unit needs more context, fails twice, or changes unexpected files. The main session then asks the user.
+It reads only the script's return value, so subagent reports do not fill its context on a long run.
 
-Documentation files live in `docs/<component>.md` with a `docs/README.md` index.
+Claude Code runs the script through its Workflow tool. pi runs the same file through pi-subagents, see
+[Shared skills and agents](#shared-skills-and-agents).
+
+### `/commit`
+
+Subjects are imperative and lowercase, about 50 characters, with no `feat:` or `fix:` prefix and no issue IDs. The
+skill commits only this session's changes, splits separable changes into separate commits, stages files by name, and
+ends with `git log --oneline --name-only`.
 
 ## pi (local-model harness)
 
@@ -90,6 +103,7 @@ from `~/.pi/agent/`, and this repo owns the hand-authored part of that directory
 | `.pi/agent/extensions/footer-info.ts` | Footer: cwd, branch, cost, context use, model, t/s, thinking    |
 | `.pi/agent/extensions/pi-context.ts`  | `/context` command: inspect the live system prompt              |
 | `.pi/agent/agents/implementer.md`     | pi-subagents shim pointing at the Claude `implementer` contract |
+| `.pi/agent/agents/verifier.md`        | pi-subagents shim pointing at the Claude `verifier` contract    |
 | `.pi/web-search.json`                 | pi-web-access settings: workflow and summary model              |
 
 Everything else under `.pi/` is runtime state: `auth.json` and `trust.json` hold credentials and trust decisions,
@@ -103,10 +117,14 @@ git, the same way `.codex/` is handled.
 same files.
 
 `packages: ["npm:pi-subagents"]` supplies the subagent primitive that `/implement` needs, since pi has none built in.
+`/implement` runs its per-unit loop through pi-subagents' `workflowScript`, using the same
+`.claude/skills/implement/implement.workflow.js` that Claude Code's Workflow tool runs. pi has no script-path parameter
+and no `args` global, so the orchestrator sends the text below the script's `// pi:` marker line with
+`const args = <JSON>;` prepended.
 pi's agent frontmatter is close to Claude Code's but not identical: tool names are lowercase (`read`, `write`, `edit`,
 `bash`, `grep`, `find`, `ls`) and Claude model aliases do not resolve. Rather than duplicate the contract,
-`.pi/agent/agents/implementer.md` carries only the pi frontmatter and tells the child to read
-`~/.claude/agents/implementer.md` for the rest. One source of truth, one extra read per dispatch.
+each shim in `.pi/agent/agents/` carries only the pi frontmatter and tells the child to read the matching
+`~/.claude/agents/` file for the rest. One source of truth, one extra read per dispatch.
 
 ### Local models via ollama
 
@@ -149,10 +167,10 @@ Context length is the one value that needs care, and on Apple Silicon it is not 
 Ollama truncates anything past the server's window without erroring, so a larger `contextWindow` in `models.json`
 would quietly drop the head of the conversation. Two numbers have to agree, and each comes from a different place:
 
-| Number             | Set in                                                       | Read by                                                    |
-| ------------------ | ------------------------------------------------------------ | ---------------------------------------------------------- |
-| client declaration | `OLLAMA_CONTEXT_LENGTH` in `env_vars.sh`                     | `pi_sync_models`, which caps every `contextWindow` at it    |
-| server window      | `context_length` in `~/Library/Application Support/Ollama/db.sqlite` | the ollama server, which Ollama.app spawns          |
+| Number             | Set in                                                               | Read by                                                  |
+| ------------------ | -------------------------------------------------------------------- | -------------------------------------------------------- |
+| client declaration | `OLLAMA_CONTEXT_LENGTH` in `env_vars.sh`                             | `pi_sync_models`, which caps every `contextWindow` at it |
+| server window      | `context_length` in `~/Library/Application Support/Ollama/db.sqlite` | the ollama server, which Ollama.app spawns               |
 
 The app wins on the window. It passes its own `context_length` to the server, overriding `OLLAMA_CONTEXT_LENGTH`, so
 that one export only ever configures `pi_sync_models`.
@@ -174,22 +192,22 @@ one that survives a start from the Dock, but launchd forgets it on reboot.
 
 | Variable                   | Value | Why                                                            |
 | -------------------------- | ----- | -------------------------------------------------------------- |
-| `OLLAMA_NUM_PARALLEL`      | `1`   | One request at a time, so a single agent gets the whole window  |
-| `OLLAMA_MAX_LOADED_MODELS` | `1`   | One resident model; a second eviction candidate just thrashes   |
-| `OLLAMA_KEEP_ALIVE`        | `10m` | Keeps the weights and the prefix cache alive between turns      |
+| `OLLAMA_NUM_PARALLEL`      | `1`   | One request at a time, so a single agent gets the whole window |
+| `OLLAMA_MAX_LOADED_MODELS` | `1`   | One resident model; a second eviction candidate just thrashes  |
+| `OLLAMA_KEEP_ALIVE`        | `10m` | Keeps the weights and the prefix cache alive between turns     |
 
 #### Reading the live configuration back
 
 Every value above is worth verifying rather than assuming, because none of them come from a file in this repo.
 
-| Question                              | Command                                                                       |
-| ------------------------------------- | ----------------------------------------------------------------------------- |
-| what env the server actually started with | `grep 'server config' ~/.ollama/logs/server.log \| tail -1`               |
-| the window and keep-alive a loaded model got | `ollama ps` (`CONTEXT` and `UNTIL` columns)                            |
-| the same as JSON                      | `curl -s localhost:11434/api/ps \| jq '.models[]'`                            |
-| the window the app will impose next start | `sqlite3 ~/Library/Application\ Support/Ollama/db.sqlite 'select context_length from settings'` |
-| a tag's own ceiling, quant and params | `ollama show qwen3.8:27b-mlx`                                                 |
-| what the last requests really cost    | `grep -E 'peak memory\|speculative decode\|prefix_cache' ~/.ollama/logs/server.log \| tail -5` |
+| Question                                     | Command                                                                                         |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| what env the server actually started with    | `grep 'server config' ~/.ollama/logs/server.log \| tail -1`                                     |
+| the window and keep-alive a loaded model got | `ollama ps` (`CONTEXT` and `UNTIL` columns)                                                     |
+| the same as JSON                             | `curl -s localhost:11434/api/ps \| jq '.models[]'`                                              |
+| the window the app will impose next start    | `sqlite3 ~/Library/Application\ Support/Ollama/db.sqlite 'select context_length from settings'` |
+| a tag's own ceiling, quant and params        | `ollama show qwen3.8:27b-mlx`                                                                   |
+| what the last requests really cost           | `grep -E 'peak memory\|speculative decode\|prefix_cache' ~/.ollama/logs/server.log \| tail -5`  |
 
 `ollama ps` is the quickest sanity check: a `CONTEXT` that disagrees with `OLLAMA_CONTEXT_LENGTH` means
 `pi_sync_models` is declaring a window the server will silently truncate.
@@ -212,11 +230,11 @@ could raise the ceiling, but it is left at the system default so macOS keeps dec
 
 #### Measured throughput
 
-| Prompt |   Prefill | Generation |      Peak |
-| -----: | --------: | ---------: | --------: |
-|  5 942 |    95 t/s |   18.9 t/s | 20.32 GiB |
-| 18 610 |    90 t/s |   18.5 t/s | 22.58 GiB |
-| 38 319 |    81 t/s |   13.6 t/s | 25.75 GiB |
+| Prompt | Prefill | Generation |      Peak |
+| -----: | ------: | ---------: | --------: |
+|  5 942 |  95 t/s |   18.9 t/s | 20.32 GiB |
+| 18 610 |  90 t/s |   18.5 t/s | 22.58 GiB |
+| 38 319 |  81 t/s |   13.6 t/s | 25.75 GiB |
 
 Generation is bandwidth-bound, prefill is compute-bound, and prefill is the one that hurts: filling the whole 64K
 window takes about a quarter of an hour. Two features make that bearable, and neither has a knob to turn.
@@ -229,11 +247,11 @@ window takes about a quarter of an hour. Two features make that bearable, and ne
 
 #### Settings that do nothing on this path
 
-| Setting                     | Verified                                                                     |
-| --------------------------- | ---------------------------------------------------------------------------- |
-| `OLLAMA_FLASH_ATTENTION`    | The MLX runner ignores it                                                    |
-| `OLLAMA_KV_CACHE_TYPE`      | `q8_0` and `f16` give a byte-identical 22.58 GiB peak and the same t/s        |
-| `num_batch` request option  | 512 and 2048 both prefill at 90 t/s                                          |
+| Setting                    | Verified                                                               |
+| -------------------------- | ---------------------------------------------------------------------- |
+| `OLLAMA_FLASH_ATTENTION`   | The MLX runner ignores it                                              |
+| `OLLAMA_KV_CACHE_TYPE`     | `q8_0` and `f16` give a byte-identical 22.58 GiB peak and the same t/s |
+| `num_batch` request option | 512 and 2048 both prefill at 90 t/s                                    |
 
 All three matter only on the llama.cpp path, which is what a GGUF tag takes. Every MLX tag skips them.
 
@@ -285,31 +303,34 @@ resolves jujutsu bookmarks, and the upstream `/context` shipped alongside a Linu
 
 ## Key Conventions
 
-| Convention             | Detail                                                     |
-| ---------------------- | ---------------------------------------------------------- |
-| Python package manager | `uv` exclusively                                           |
-| Markdown formatting    | Run `npx prettier --write --print-width 120` after editing |
-| Git commit messages    | Conventional Commits, no `#N` references                   |
-| GitLab interaction     | Prefer MCP tools, fall back to `glab` CLI                  |
-| TODO file format       | Priority table + detailed sections + resolution order      |
+| Convention             | Detail                                                        |
+| ---------------------- | ------------------------------------------------------------- |
+| Python package manager | `uv` exclusively                                              |
+| Markdown formatting    | Skills run `npx prettier --write --print-width 120` on output |
+| Git commit messages    | Imperative, lowercase, no type prefix, no `#N` references     |
+| Tracked work           | `/spec-init` or `/todo-init`, then `/implement`, `/finalize`  |
 
 ## Stow Deployment
 
-Claude Code user-level config is stow-managed from this repo:
+Claude Code's user-level config is stow-managed from this repo. `.stowrc` sets `--no-folding`, so stow links each file
+separately. Run `stow .` after adding any file:
 
 ```
-.claude/CLAUDE.md              → ~/.claude/CLAUDE.md
-.claude/skills/commit/         → ~/.claude/skills/commit/
-.claude/skills/todo-init/      → ~/.claude/skills/todo-init/
-.claude/skills/todo-review/    → ~/.claude/skills/todo-review/
-.claude/skills/todo-implement/ → ~/.claude/skills/todo-implement/
-.claude/skills/docs-init/      → ~/.claude/skills/docs-init/
-.claude/skills/docs-revise/    → ~/.claude/skills/docs-revise/
+.claude/CLAUDE.md                → ~/.claude/CLAUDE.md
+.claude/settings.json            → ~/.claude/settings.json
+.claude/keybindings.json         → ~/.claude/keybindings.json
+.claude/statusline-command.sh    → ~/.claude/statusline-command.sh
+.claude/skills/                  → ~/.claude/skills/
+.claude/agents/                  → ~/.claude/agents/
 ```
 
-The `.stow-local-ignore` excludes Claude Code's auto-generated project files (`settings*.json`, `plans/`, `todos/`). The `.gitignore` uses `/.claude/*` with explicit un-ignores for `CLAUDE.md` and `skills/`.
+`.stow-local-ignore` and `.gitignore` both exclude the state that Claude Code writes under `~/.claude/`:
+`settings.local.json`, `backups/`, `cache/`, `debug/`, `plugins/`, `projects/`, `session-env/`, `shell-snapshots/`,
+`todos/`, `history.jsonl`, and `skills/synced/`. Stow also skips `plans/`.
 
-`~/.claude/settings.json` is NOT stow-managed — Claude Code writes to it directly (hooks, plugins, MCP servers, permissions).
+Links made before `.stowrc` existed can still be whole-directory links. On the original Mac, `~/.claude/skills/`,
+`~/.claude/agents/`, and `~/.agents/skills/` are directory links, so new files there show up at once. A fresh machine
+gets per-file links.
 
 ## Dependencies
 

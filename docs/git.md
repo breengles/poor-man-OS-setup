@@ -83,10 +83,10 @@ The `.gitignore` file covers:
 
 ## Commit Conventions
 
-From the project's AGENTS.md:
+From `.claude/CLAUDE.md` and the `/commit` skill:
 
-- **Format**: Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`, `test:`)
-- **Subject line**: Max 72 characters
+- **Format**: imperative mood, lowercase, no type prefix such as `feat:` or `fix:`
+- **Subject line**: about 50 characters, describing what changed and why
 - **No issue IDs**: Never include `#N` in commit messages (GitLab auto-close risk)
 
 ## Dependencies
@@ -101,4 +101,4 @@ From the project's AGENTS.md:
 - **Neovim** provides LazyGit integration (`<leader>gg`) and Diffview (`<leader>gd`)
 - **Cursor/VS Code** has extensive Git settings (auto-fetch, blame, Git Graph)
 - **Shell** sets `$EDITOR=nvim` via aliases
-- **AI tools** have commit conventions defined in `AGENTS.md` and Claude Code slash commands
+- **AI tools** follow the commit conventions in `.claude/CLAUDE.md` and the `/commit` skill
