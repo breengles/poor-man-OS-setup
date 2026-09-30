@@ -41,8 +41,10 @@ for a unit whose prerequisites are still open.
 **Check each queued unit is still real before spending a dispatch on it.** A unit that cites a
 `TODO`/`FIXME`/`HACK`/`XXX` marker, or describes a bug concretely enough to spot-check, may already be fixed. Send one
 read-only subagent per such unit, all at once and at most 6 (Claude Code: `Explore`; pi: `scout` in `runs.all`). Each
-greps for the marker or reads the code and reports whether the problem survives. Flag the ones that look resolved and
-ask before queueing them.
+greps for the marker or reads the code and reports whether the problem survives. For each one that looks resolved,
+ask whether to skip it, queue it anyway, or mark it Done. To mark it Done, set its Status to `Done`, append
+`_Done: already fixed before this run - <evidence>_`, and delete its lines from the resolution order. The next landed
+commit carries that edit; if nothing lands, commit the artifact alone.
 
 Each queue entry is one unit. Merge units into one entry only when they are entangled -- shared files, one refactor,
 or they only make sense together -- so one implementer takes them all and one commit lands them.
