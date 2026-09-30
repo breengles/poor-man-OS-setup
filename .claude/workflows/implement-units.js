@@ -73,6 +73,9 @@ function step(key, agentName, phaseTitle, task, schema, opts) {
 }
 
 const testLine = `Test command: ${args.testCmd || 'none known'}`
+// Fixed text after the orchestrator's `text`, so a stray instruction there cannot make an implementer mark a unit
+// Done before the verifier has passed it.
+const artifactLine = `The land step updates ${args.artifact} after verification. Do not edit it, and do not commit.`
 const list = (items) => (items.length ? items.map((s) => `- ${s}`).join('\n') : '- (none)')
 
 function implementTask(unit, id) {
@@ -83,6 +86,7 @@ function implementTask(unit, id) {
     unit.extraContext ? `\nAdditional context from the orchestrator:\n${unit.extraContext}` : '',
     '',
     testLine,
+    artifactLine,
   ].join('\n')
 }
 
@@ -113,6 +117,7 @@ function repairTask(unit, id, files, gaps) {
     unit.text,
     '',
     testLine,
+    artifactLine,
   ].join('\n')
 }
 
@@ -188,6 +193,7 @@ for (const unit of args.queue) {
 
   const land = await step(`land-${key}`, PI ? 'worker' : null, 'Land', landTask(unit, id, files), LAND, {
     writer: true,
+    model: 'sonnet',
     effort: 'low',
   })
   if (!land || !land.committed) {

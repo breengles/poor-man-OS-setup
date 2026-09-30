@@ -57,8 +57,9 @@ with `all`, every pending unit in order; with neither, ask which.
 Build `args`: `artifact` (path), `testCmd` (string or null), `baseline` (the saved porcelain output), and `queue`, a
 list of `{ids, text, depends}`. `text` carries the unit's full text plus the requirement and design excerpts it
 references (spec mode), or its cited files and acceptance criteria (todo mode). `depends` lists queued unit ids it
-needs. The agent files own the implementer and verifier roles -- do not restate them in `text`. This contract is the
-whole interface, so do not read the script to learn it.
+needs. The agent files own the implementer and verifier roles -- do not restate them in `text`, and never tell the
+implementer there to edit the artifact or commit; only the land step does that, after verification. This contract is
+the whole interface, so do not read the script to learn it.
 
 - **Claude Code:** `Workflow({name: "implement-units", args})`. If the tool cannot find that name, read
   `~/.claude/workflows/implement-units.js` and pass its full text as `script` with the same `args`.
