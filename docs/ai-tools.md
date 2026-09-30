@@ -16,7 +16,7 @@ Code's skills and its `implementer` and `verifier` agents rather than keeping a 
 | `.claude/keybindings.json`      | Claude Code keybindings                                                 |
 | `.claude/statusline-command.sh` | Status line script that `settings.json` runs                            |
 | `.claude/skills/*/SKILL.md`     | Custom slash commands                                                   |
-| `.claude/skills/implement/*.js` | The workflow script that `/implement` runs for its per-unit loop        |
+| `.claude/workflows/*.js`        | Saved workflows: `implement-units`, the per-unit loop of `/implement`   |
 | `.claude/agents/*.md`           | Custom subagents: `implementer` and `verifier`                          |
 
 Claude Code writes to `settings.json` itself, so its edits land in the repo through the symlink and show up in
@@ -68,7 +68,8 @@ ships, and the code plus the docs stay as the record.
 
 The main session resolves the artifact, finds the test command, and builds the queue. It sends read-only subagents in
 parallel to check that each queued unit is still a real problem. After the user confirms the queue, the main session
-hands the loop to `.claude/skills/implement/implement.workflow.js`. For each unit, the script does these steps in order:
+hands the loop to the saved workflow `.claude/workflows/implement-units.js`. For each unit, the script does these steps
+in order:
 
 1. The `implementer` agent (Sonnet) makes the change.
 2. The `verifier` agent (Opus, read-only) checks each acceptance criterion against the code and runs the tests. When
@@ -82,8 +83,12 @@ Units run one after another, because they share one working tree. The script sto
 session when a unit needs more context, fails twice, or changes unexpected files. The main session then asks the user.
 It reads only the script's return value, so subagent reports do not fill its context on a long run.
 
-Claude Code runs the script through its Workflow tool. pi runs the same file through pi-subagents, see
-[Shared skills and agents](#shared-skills-and-agents).
+Claude Code runs the script by name, `Workflow({name: "implement-units", args})`. A saved workflow in
+`~/.claude/workflows/` is available in every project. A `scriptPath` is not: the Workflow tool starts a script only
+from a file the session can already read, and `~/.claude/skills/` is outside the working directory in other repos. If
+the name does not resolve, the skill reads the file and passes its text inline as `script`. Saving the script also
+makes `/implement-units` a slash command, so the script returns an error when it gets no `args.queue`. pi runs the same
+file through pi-subagents, see [Shared skills and agents](#shared-skills-and-agents).
 
 ### `/commit`
 
@@ -118,7 +123,7 @@ same files.
 
 `packages: ["npm:pi-subagents"]` supplies the subagent primitive that `/implement` needs, since pi has none built in.
 `/implement` runs its per-unit loop through pi-subagents' `workflowScript`, using the same
-`.claude/skills/implement/implement.workflow.js` that Claude Code's Workflow tool runs. pi has no script-path parameter
+`~/.claude/workflows/implement-units.js` that Claude Code's Workflow tool runs. pi has no script-path parameter
 and no `args` global, so the orchestrator sends the text below the script's `// pi:` marker line with
 `const args = <JSON>;` prepended.
 pi's agent frontmatter is close to Claude Code's but not identical: tool names are lowercase (`read`, `write`, `edit`,
@@ -322,6 +327,7 @@ separately. Run `stow .` after adding any file:
 .claude/statusline-command.sh    → ~/.claude/statusline-command.sh
 .claude/skills/                  → ~/.claude/skills/
 .claude/agents/                  → ~/.claude/agents/
+.claude/workflows/               → ~/.claude/workflows/
 ```
 
 `.stow-local-ignore` and `.gitignore` both exclude the state that Claude Code writes under `~/.claude/`:

@@ -9,7 +9,8 @@ argument-hint: "<path to spec dir or TODO file> [numbers | all]"
 # implement
 
 You are the **orchestrator**. You do NOT write implementation code. You resolve the target, build and confirm the
-queue, then hand the per-unit loop to `implement.workflow.js` in this skill's directory. For each unit, that script
+queue, then hand the per-unit loop to the saved workflow `implement-units`. Stow deploys it from the dotfiles repo to
+`~/.claude/workflows/implement-units.js`. For each unit, that script
 runs an `implementer`, an independent `verifier`, one repair round if the verifier fails the unit, and a commit. You
 own every step that needs the user: the confirmation, the stops, and the report.
 
@@ -54,14 +55,18 @@ with `all`, every pending unit in order; with neither, ask which.
 Build `args`: `artifact` (path), `testCmd` (string or null), `baseline` (the saved porcelain output), and `queue`, a
 list of `{ids, text, depends}`. `text` carries the unit's full text plus the requirement and design excerpts it
 references (spec mode), or its cited files and acceptance criteria (todo mode). `depends` lists queued unit ids it
-needs. The agent files own the implementer and verifier roles -- do not restate them in `text`.
+needs. The agent files own the implementer and verifier roles -- do not restate them in `text`. This contract is the
+whole interface, so do not read the script to learn it.
 
-- **Claude Code:** `Workflow({scriptPath: "<this skill's directory>/implement.workflow.js", args})`.
-- **pi:** read the script, take everything below its `// pi:` marker line, and prepend `const args = <args JSON>;`.
+- **Claude Code:** `Workflow({name: "implement-units", args})`. If the tool cannot find that name, read
+  `~/.claude/workflows/implement-units.js` and pass its full text as `script` with the same `args`.
+- **pi:** read `~/.claude/workflows/implement-units.js`, take everything below its `// pi:` marker line, and prepend
+  `const args = <args JSON>;`.
   Pass that as `subagent({workflowScript, async: false, mission: false, timeoutMs})`, with `timeoutMs` at 45 minutes
   per queue entry.
 - **Neither tool exists:** run the script's steps yourself, one unit at a time, dispatching the `implementer`,
-  `verifier`, and landing subagents sequentially. Treat the script as the spec. Do not end your turn between units.
+  `verifier`, and landing subagents sequentially. Treat `implement-units.js` as the spec. Do not end your turn
+  between units.
 
 ## Step 4: Handle the result
 

@@ -1,6 +1,6 @@
 export const meta = {
-  name: 'implement',
-  description: 'Implement, verify, and commit tracked units one at a time',
+  name: 'implement-units',
+  description: 'Implement, verify, and commit tracked units one at a time (run it through /implement)',
   phases: [{ title: 'Implement' }, { title: 'Verify' }, { title: 'Land' }],
 }
 // pi: send the text below this line as workflowScript, prefixed with `const args = <args JSON>;`
@@ -10,6 +10,11 @@ export const meta = {
 // because every implementer writes to the same working tree.
 const PI = typeof runs !== 'undefined'
 const say = typeof log === 'function' ? log : console.log
+
+// Saving the script makes it a slash command too, and a bare /implement-units has no queue to run.
+if (!args || !Array.isArray(args.queue)) {
+  return { error: 'no args.queue: start this through the implement skill, which builds the queue' }
+}
 
 const strings = { type: 'array', items: { type: 'string' } }
 const STATUS = {
