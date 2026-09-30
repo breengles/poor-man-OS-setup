@@ -57,7 +57,8 @@ report `BLOCKED` and describe the real problem.
 
 ## Status report
 
-End your response with exactly this block. The orchestrator parses the `- STATUS:` line.
+If a structured output tool is available, return these fields through it. Otherwise end your response with exactly
+this block. The orchestrator parses the `- STATUS:` line.
 
 ```
 ## Status Report
