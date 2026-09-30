@@ -131,6 +131,13 @@
     }
   },
   "awaySummaryEnabled": false,
+  "pluginConfigs": {
+    "agents-md@builtin": {
+      "options": {
+        "instructionFiles": "claude-md-or-agents-md"
+      }
+    }
+  },
   "tui": "fullscreen",
   "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
@@ -150,11 +157,5 @@
       "env": {}
     }
   },
-  "pluginConfigs": {
-    "agents-md@builtin": {
-      "options": {
-        "instructionFiles": "claude-md-or-agents-md"
-      }
-    }
-  }
+  "skipWorkflowUsageWarning": true
 }
