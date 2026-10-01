@@ -110,6 +110,7 @@ autopct
 autostage
 autoupdate
 autouse
+aveline
 avgpool
 avzu
 Backpropagate
@@ -208,6 +209,7 @@ chibi
 Chilingaryan
 chima
 chkp
+chocholate
 chpwd
 chsh
 chuncking
@@ -880,6 +882,7 @@ latexindent
 latexmk
 latlayer
 launchable
+lazur
 lazydev
 lazyvim
 lbet
@@ -1336,6 +1339,7 @@ psycopg
 pthread
 ptime
 pupilcenter
+pureza
 pushdown
 putalpha
 putalphas
@@ -1598,6 +1602,7 @@ Soff
 softedge
 softlight
 softmax
+sorelle
 spacefilm
 spdf
 spdfghiklmnoqrtuvwxyz
