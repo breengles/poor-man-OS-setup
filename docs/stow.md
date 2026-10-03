@@ -30,7 +30,7 @@ This creates symlinks for all files in the repo (minus exclusions) into the pare
 | `^/AGENTS\.md`          | AI agent instructions (repo-level only)     |
 | `/docs`                 | Documentation directory                     |
 | `/misc`                 | Miscellaneous non-config files              |
-| `/todos`                | TODO tracking files                         |
+| `/specs`                | Spec directories for tracked work           |
 | `/.vscode`              | VS Code/Cursor settings (deployed manually) |
 | `/.config/yazi/plugins` | Yazi plugins (installed via `ya pkg`)       |
 

@@ -66,7 +66,7 @@ The repo root mirrors `$HOME`. Running `stow .` creates symlinks:
 ...
 ```
 
-Files excluded from stow: `.git`, `readme.md`, `AGENTS.md`, `docs/`, `misc/`, `todos/`, `.vscode/`, `.config/yazi/plugins/`.
+Files excluded from stow: `.git`, `readme.md`, `AGENTS.md`, `docs/`, `misc/`, `specs/`, `.vscode/`, `.config/yazi/plugins/`.
 
 ### Component Relationships
 
