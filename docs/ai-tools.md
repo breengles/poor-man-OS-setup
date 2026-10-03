@@ -38,16 +38,16 @@ own format details.
 
 ## Slash Commands (Skills)
 
-| Command           | Description                                                                             |
-| ----------------- | --------------------------------------------------------------------------------------- |
-| `/spec-init`      | Draft a spec directory in one pass: EARS requirements, design, optional research, tasks |
-| `/todo-init`      | Scan the project and seed TODO files by area                                            |
-| `/grill`          | Interview the user in rounds until a plan has no open questions                         |
-| `/implement`      | Implement spec tasks or TODO items one unit at a time; the main session orchestrates    |
-| `/finalize`       | Reconcile the docs with what shipped, remove the resolved artifact, and commit          |
-| `/commit`         | Create commits in the repo's message style, staging selectively                         |
-| `/mr-description` | Write or apply a GitLab merge request title and description                             |
-| `/dataset-readme` | Write an `install.md` for an image dataset                                              |
+| Command           | Description                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| `/spec-init`      | Draft a spec directory in one pass: EARS requirements, design, tasks                 |
+| `/todo-init`      | Scan the project and seed TODO files by area                                         |
+| `/grill`          | Interview the user in rounds until a plan has no open questions                      |
+| `/implement`      | Implement spec tasks or TODO items one unit at a time; the main session orchestrates |
+| `/finalize`       | Reconcile the docs with what shipped, remove the resolved artifact, and commit       |
+| `/commit`         | Create commits in the repo's message style, staging selectively                      |
+| `/mr-description` | Write or apply a GitLab merge request title and description                          |
+| `/dataset-readme` | Write an `install.md` for an image dataset                                           |
 
 Code review is deliberately not a custom skill. The built-in `/code-review`, `/security-review`, and `/simplify` cover
 it.
@@ -57,8 +57,9 @@ it.
 Specs and TODO files share one pipeline. The artifact is temporary scaffolding: `/finalize` removes it once the work
 ships, and the code plus the docs stay as the record.
 
-- A **spec** is a directory with `requirements.md`, `design.md`, an optional `research.md`, and `tasks.md`. Its units
-  are the sub-tasks in `tasks.md`.
+- A **spec** is a directory with `requirements.md`, `design.md`, and `tasks.md`. Its units are the sub-tasks in
+  `tasks.md`. Rejected alternatives go in the Decisions section of `design.md`, so they reach implementers with the
+  design excerpts. There is no `research.md`.
 - A **TODO file** is `todos/<area>.md`: a Priority Summary table, a suggested resolution order, and one detailed
   section per item. Its units are the items.
 

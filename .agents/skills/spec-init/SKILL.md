@@ -1,6 +1,6 @@
 ---
 name: spec-init
-description: Bootstrap a new spec at a given path -- requirements (EARS), design, optional research, and tasks -- in one pass
+description: Bootstrap a new spec at a given path -- requirements (EARS), design, and tasks -- in one pass
 ---
 
 # spec-init
@@ -52,22 +52,19 @@ list of every marker with file and line. Do not pause for review -- continue str
 Sections: **Overview** (the shape of the solution); **Architecture** (components and responsibilities -- make boundaries
 explicit, they become task boundaries); **Data flow** (inputs to outputs, calling out async boundaries and external
 I/O); **Data models / interfaces** (concrete type sketches, signatures, API shapes -- no "TBD" on anything affecting a
-requirement); **Build vs. adopt** (per major component, one-line rationale); **Error handling**; **Observability** (only
-as much as the project uses); and **Requirements traceability** (a table mapping every requirement ID to the design
-sections satisfying it).
+requirement); **Decisions** (one line per load-bearing choice: what was chosen, what was rejected, and why -- including
+build vs. adopt for each major component); **Error handling**; **Observability** (only as much as the project uses);
+and **Requirements traceability** (a table mapping every requirement ID to the design sections satisfying it).
+
+There is no separate research file. A rejected alternative belongs in **Decisions**, next to the component it
+constrains, so implementers see it in the design excerpts they receive. A risk belongs in **Open questions** or
+**Error handling**.
 
 No speculative abstractions -- every element traces to a requirement. Prefer concrete over generic: "a `TokenStore`
 protocol with `get(key)` / `set(key, value)`" beats "some storage layer". Respect the project's stack conventions from
 AGENTS.md. Use `[NEEDS CLARIFICATION: ...]` here too.
 
-## Step 4: `research.md` (only if warranted)
-
-Create it only if the design rejected non-trivial alternatives someone might reconsider, rests on load-bearing
-trade-offs, or surfaced risks that do not belong in `requirements.md`. Sections: **Rejected alternatives** (option, why
-considered, why rejected), **Trade-offs** ("we chose X over Y because Z, and we accept cost W"), **Constraints /
-risks**. Otherwise skip it -- no empty stubs.
-
-## Step 5: `tasks.md`
+## Step 4: `tasks.md`
 
 1. **Task Summary table** -- exactly two columns, `Task` and `Status`. `Task` is a markdown link with link text
    `[#N](anchor)`, e.g. `[#1.1](#11-add-token-validation)` -- no descriptions in the cell. `Status` is `Pending`,
@@ -81,8 +78,9 @@ risks**. Otherwise skip it -- no empty stubs.
 
 Order Foundation -> Core -> Integration -> Validation. Size each task at 1-3 hours -- split what is bigger, merge what
 is trivial. **Every requirement ID must appear in at least one `_Requirements:_` line**; cross-check and report orphans.
+Do not seed a `## Notes` section: `$implement` appends it at the end of the file once units start landing.
 
-## Step 6: Wrap up
+## Step 5: Wrap up
 
 Before reporting, check the spec against itself: every requirement ID appears in at least one design section and at
 least one task, no design element exists without a requirement behind it, and no `[NEEDS CLARIFICATION: ...]` marker

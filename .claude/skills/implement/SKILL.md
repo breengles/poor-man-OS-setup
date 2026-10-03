@@ -27,10 +27,9 @@ There is no name-to-path guessing: if the path does not exist, stop and say so r
 similar. Resolve every other path in this skill against the artifact's own location, not the repo root -- a spec at
 `packages/solver/specs/cache/` belongs to `packages/solver`.
 
-Read the artifact in full -- in spec mode also `design.md`, `requirements.md`, and `research.md` if present, in
-parallel. Find the project's test command in CLAUDE.md, AGENTS.md, the README, `package.json` scripts,
-`pyproject.toml`, or a Makefile; if there is none, say so. Save `git status --porcelain` as the baseline of
-pre-existing changes.
+Read the artifact in full -- in spec mode also `design.md` and `requirements.md`, in parallel. Find the project's test
+command in CLAUDE.md, AGENTS.md, the README, `package.json` scripts, `pyproject.toml`, or a Makefile; if there is none,
+say so. Save `git status --porcelain` as the baseline of pre-existing changes.
 
 ## Step 2: Build the queue
 
