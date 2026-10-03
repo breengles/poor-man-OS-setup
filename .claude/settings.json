@@ -89,13 +89,10 @@
       "Bash(git push --force-with-lease *)",
       "Bash(git push * --force-with-lease *)",
       "Bash(git reset --hard *)",
-      "Bash(git checkout -- *)",
       "Bash(git clean *)",
       "Bash(git branch -D *)",
       "Bash(git merge *)",
-      "Bash(glab issue close *)",
       "Bash(glab issue delete *)",
-      "Bash(glab mr close *)",
       "Bash(glab mr delete *)",
       "Bash(glab mr merge *)",
       "Bash(glab repo delete *)",
@@ -141,6 +138,7 @@
   "tui": "fullscreen",
   "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "theme": "auto",
   "editorMode": "normal",
   "inputNeededNotifEnabled": true,
@@ -156,6 +154,5 @@
       ],
       "env": {}
     }
-  },
-  "skipWorkflowUsageWarning": true
+  }
 }
