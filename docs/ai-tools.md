@@ -31,37 +31,34 @@ own format details.
 - **Response style**: lead with the outcome, plain short sentences, Simplified Technical English, no filler
 - **Ultracode**: at most 3 Opus or 6 Sonnet subagents in flight
 - **Commits**: imperative, lowercase, about 50 characters, no type prefix, no issue IDs
-- **Code comments**: never cite specs, TODO items, or line numbers; cite a `docs/` page or state the reason
+- **Code comments**: never cite specs or line numbers; cite a `docs/` page or state the reason
 - **Python**: `uv` for everything, Ruff, Pyright in `basic` mode, modern type syntax, `pathlib`
 - **Tests**: add none unless asked, and never weaken existing ones
 - **SLURM**: no heavy work on the login node; submit through `sbatch` or `srun`
 
 ## Slash Commands (Skills)
 
-| Command           | Description                                                                          |
-| ----------------- | ------------------------------------------------------------------------------------ |
-| `/spec-init`      | Draft a spec directory in one pass: EARS requirements, design, tasks                 |
-| `/todo-init`      | Scan the project and seed TODO files by area                                         |
-| `/grill`          | Interview the user in rounds until a plan has no open questions                      |
-| `/implement`      | Implement spec tasks or TODO items one unit at a time; the main session orchestrates |
-| `/finalize`       | Reconcile the docs with what shipped, remove the resolved artifact, and commit       |
-| `/commit`         | Create commits in the repo's message style, staging selectively                      |
-| `/mr-description` | Write or apply a GitLab merge request title and description                          |
-| `/dataset-readme` | Write an `install.md` for an image dataset                                           |
+| Command           | Description                                                                    |
+| ----------------- | ------------------------------------------------------------------------------ |
+| `/spec-init`      | Draft a spec directory in one pass: EARS requirements, design, tasks           |
+| `/grill`          | Interview the user in rounds until a plan has no open questions                |
+| `/implement`      | Implement spec tasks one unit at a time; the main session orchestrates         |
+| `/finalize`       | Reconcile the docs with what shipped, remove the resolved artifact, and commit |
+| `/commit`         | Create commits in the repo's message style, staging selectively                |
+| `/mr-description` | Write or apply a GitLab merge request title and description                    |
+| `/dataset-readme` | Write an `install.md` for an image dataset                                     |
 
 Code review is deliberately not a custom skill. The built-in `/code-review`, `/security-review`, and `/simplify` cover
 it.
 
-### Tracked work: `/spec-init` and `/todo-init` to `/implement` to `/finalize`
+### Tracked work: `/spec-init` to `/implement` to `/finalize`
 
-Specs and TODO files share one pipeline. The artifact is temporary scaffolding: `/finalize` removes it once the work
-ships, and the code plus the docs stay as the record.
+All tracked work is a spec. The spec is temporary scaffolding: `/finalize` removes it once the work ships, and the code
+plus the docs stay as the record.
 
-- A **spec** is a directory with `requirements.md`, `design.md`, and `tasks.md`. Its units are the sub-tasks in
-  `tasks.md`. Rejected alternatives go in the Decisions section of `design.md`, so they reach implementers with the
-  design excerpts. There is no `research.md`.
-- A **TODO file** is `todos/<area>.md`: a Priority Summary table, a suggested resolution order, and one detailed
-  section per item. Its units are the items.
+A spec is a directory with `requirements.md`, `design.md`, and `tasks.md`. Its units are the sub-tasks in `tasks.md`.
+Rejected alternatives go in the Decisions section of `design.md`, so they reach implementers with the design excerpts.
+There is no `research.md`, and there are no TODO files.
 
 `/spec-init` asks its questions in one message. When the idea is still unclear, `/grill` settles it first.
 
@@ -322,7 +319,7 @@ resolves jujutsu bookmarks, and the upstream `/context` shipped alongside a Linu
 | Python package manager | `uv` exclusively                                              |
 | Markdown formatting    | Skills run `npx prettier --write --print-width 120` on output |
 | Git commit messages    | Imperative, lowercase, no type prefix, no `#N` references     |
-| Tracked work           | `/spec-init` or `/todo-init`, then `/implement`, `/finalize`  |
+| Tracked work           | `/spec-init`, then `/implement`, `/finalize`                  |
 
 ## Stow Deployment
 

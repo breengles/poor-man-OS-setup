@@ -1,9 +1,9 @@
 ---
 name: implement
 description:
-  Implement tracked work at a given path -- spec tasks from a spec directory's `tasks.md`, or items from a TODO file --
-  one unit at a time. A workflow script implements, verifies, and commits each unit; the main session orchestrates only.
-argument-hint: "<path to spec dir or TODO file> [numbers | all]"
+  Implement the tasks of a spec directory's `tasks.md`, one unit at a time. A workflow script implements, verifies, and
+  commits each unit; the main session orchestrates only.
+argument-hint: "<path to spec dir> [numbers | all]"
 ---
 
 # implement
@@ -18,24 +18,22 @@ confirmation, the stops, and the report.
 
 The first argument is a **path**, relative or absolute; anything after it is unit numbers or `all`.
 
-- A **directory** -> spec mode. It must contain `tasks.md`, which is the artifact. Units are its sub-tasks (`1.1`,
-  `2.3`); major numbers (`1.`, `2.`) are grouping headers, not units.
-- A **file** -> todo mode. The file is the artifact. Units are the items in its Priority Summary table.
-- **No path** -> list the spec directories and TODO files you can find and ask which one. Do not auto-pick.
+- A **spec directory** must contain `tasks.md`, which is the artifact. Units are its sub-tasks (`1.1`, `2.3`); major
+  numbers (`1.`, `2.`) are grouping headers, not units.
+- **No path** -> list the spec directories you can find and ask which one. Do not auto-pick.
 
 There is no name-to-path guessing: if the path does not exist, stop and say so rather than searching for something
 similar. Resolve every other path in this skill against the artifact's own location, not the repo root -- a spec at
 `packages/solver/specs/cache/` belongs to `packages/solver`.
 
-Read the artifact in full -- in spec mode also `design.md` and `requirements.md`, in parallel. Find the project's test
-command in CLAUDE.md, AGENTS.md, the README, `package.json` scripts, `pyproject.toml`, or a Makefile; if there is none,
-say so. Save `git status --porcelain` as the baseline of pre-existing changes.
+Read the artifact in full, and `design.md` and `requirements.md` in parallel. Find the project's test command in
+CLAUDE.md, AGENTS.md, the README, `package.json` scripts, `pyproject.toml`, or a Makefile; if there is none, say so.
+Save `git status --porcelain` as the baseline of pre-existing changes.
 
 ## Step 2: Build the queue
 
 Skip units whose Status is `Done`. Skip `Blocked` ones and report the reason from their `_Blocked:_` line. Check
-prerequisites -- `_Depends:_` in spec mode, the "Suggested resolution order" in todo mode -- and warn if the user asked
-for a unit whose prerequisites are still open.
+`_Depends:_` prerequisites, and warn if the user asked for a unit whose prerequisites are still open.
 
 **Check each queued unit is still real before spending a dispatch on it.** A unit that cites a
 `TODO`/`FIXME`/`HACK`/`XXX` marker, or describes a bug concretely enough to spot-check, may already be fixed. Send one
@@ -55,10 +53,10 @@ with `all`, every pending unit in order; with neither, ask which.
 
 Build `args`: `artifact` (path), `testCmd` (string or null), `baseline` (the saved porcelain output), and `queue`, a
 list of `{ids, text, depends}`. `text` carries the unit's full text plus the requirement and design excerpts it
-references (spec mode), or its cited files and acceptance criteria (todo mode). `depends` lists queued unit ids it
-needs. The agent files own the implementer and verifier roles -- do not restate them in `text`, and never tell the
-implementer there to edit the artifact or commit; only the land step does that, after verification. This contract is
-the whole interface, so do not read the script to learn it. Agents read the artifact's `## Notes` section themselves.
+references. `depends` lists queued unit ids it needs. The agent files own the implementer and verifier roles -- do not
+restate them in `text`, and never tell the implementer there to edit the artifact or commit; only the land step does
+that, after verification. This contract is the whole interface, so do not read the script to learn it. Agents read the
+artifact's `## Notes` section themselves.
 
 - **Claude Code:** `Workflow({name: "implement-units", args})`. If the tool cannot find that name, read
   `~/.claude/workflows/implement-units.js` and pass its full text as `script` with the same `args`.
@@ -76,7 +74,7 @@ unless you must debug a stop.
 
 - **blocked:** set each unit's Status to `Blocked`, append `_Blocked: {reason}_` to its section, and append its `notes`
   to the `## Notes` section at the end of the artifact. Leave the edit uncommitted; the next landed commit carries it.
-- **concerns:** in todo mode, file the trackable ones as new items. Otherwise report them.
+- **concerns:** report them.
 - **stopped:** report the unit and the reason, then ask the user. The script stops on missing context, unmet criteria
   or unexpected files after the repair round, a blocked unit with changes in the tree, and a failed commit. Append its
   `notes` that still hold. Write a missing-context answer into the unit's section, or commit it to `design.md` or

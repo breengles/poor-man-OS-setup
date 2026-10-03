@@ -1,8 +1,8 @@
 ---
 name: implement
 description:
-  Implement tracked work at a given path -- spec tasks from a spec directory's `tasks.md`, or items from a TODO file --
-  one unit at a time. Each unit is implemented, verified, and committed; the main session orchestrates only.
+  Implement the tasks of a spec directory's `tasks.md`, one unit at a time. Each unit is implemented, verified, and
+  committed; the main session orchestrates only.
 ---
 
 # implement
@@ -16,24 +16,22 @@ the stops, and the report.
 
 The first argument is a **path**, relative or absolute; anything after it is unit numbers or `all`.
 
-- A **directory** -> spec mode. It must contain `tasks.md`, which is the artifact. Units are its sub-tasks (`1.1`,
-  `2.3`); major numbers (`1.`, `2.`) are grouping headers, not units.
-- A **file** -> todo mode. The file is the artifact. Units are the items in its Priority Summary table.
-- **No path** -> list the spec directories and TODO files you can find and ask which one. Do not auto-pick.
+- A **spec directory** must contain `tasks.md`, which is the artifact. Units are its sub-tasks (`1.1`, `2.3`); major
+  numbers (`1.`, `2.`) are grouping headers, not units.
+- **No path** -> list the spec directories you can find and ask which one. Do not auto-pick.
 
 There is no name-to-path guessing: if the path does not exist, stop and say so rather than searching for something
 similar. Resolve every other path in this skill against the artifact's own location, not the repo root -- a spec at
 `packages/solver/specs/cache/` belongs to `packages/solver`.
 
-Read the artifact in full -- in spec mode also `design.md` and `requirements.md`, in parallel. Find the project's test
-command in AGENTS.md, CLAUDE.md, the README, `package.json` scripts, `pyproject.toml`, or a Makefile; if there is none,
-say so. Save `git status --porcelain` as the baseline of pre-existing changes.
+Read the artifact in full, and `design.md` and `requirements.md` in parallel. Find the project's test command in
+AGENTS.md, CLAUDE.md, the README, `package.json` scripts, `pyproject.toml`, or a Makefile; if there is none, say so.
+Save `git status --porcelain` as the baseline of pre-existing changes.
 
 ## Step 2: Build the queue
 
 Skip units whose Status is `Done`. Skip `Blocked` ones and report the reason from their `_Blocked:_` line. Check
-prerequisites -- `_Depends:_` in spec mode, the "Suggested resolution order" in todo mode -- and warn if the user asked
-for a unit whose prerequisites are still open.
+`_Depends:_` prerequisites, and warn if the user asked for a unit whose prerequisites are still open.
 
 **Check each queued unit is still real before spending a dispatch on it.** A unit that cites a
 `TODO`/`FIXME`/`HACK`/`XXX` marker, or describes a bug concretely enough to spot-check, may already be fixed. Send one
@@ -53,9 +51,8 @@ Codex has no workflow tool, so run the loop yourself, one entry at a time. Dispa
 `spawn_agent(agent_type=<role>, fork_turns="none", task_name=<unit id>, message=...)`, then one
 `wait_agent(timeout_ms=3600000)`. Never poll -- no `list_agents`, no status pings, no repeated short waits; if the wait
 returns a timeout, tell the user and wait again. Each message carries the entry's full unit text plus the requirement
-and design excerpts it references (spec mode) or its cited files and acceptance criteria (todo mode), and the test
-command. The agent files own the roles -- do not restate them. Agents read the artifact's `## Notes` section
-themselves; collect the `NOTES` lines from every report for the entry.
+and design excerpts it references, and the test command. The agent files own the roles -- do not restate them. Agents
+read the artifact's `## Notes` section themselves; collect the `NOTES` lines from every report for the entry.
 
 1. **`implementer`.** `COMPLETE` -> step 2. `BLOCKED` with no changed files -> record it, skip the entries that depend
    on it, and go to the next entry. `NEEDS_CONTEXT`, or `BLOCKED` with changes in the tree -> stop.
@@ -81,7 +78,7 @@ as an infrastructure blocker without changing the artifact.
 
 - **Blocked units:** set each Status to `Blocked`, append `_Blocked: {reason}_` to its section, and append its notes to
   `## Notes`. Leave the edit uncommitted; the next landed commit carries it.
-- **Concerns:** in todo mode, file the trackable ones as new items. Otherwise report them.
+- **Concerns:** report them.
 - **A stop:** report the unit and the reason, then ask the user. Append the unit's notes that still hold. Write a
   missing-context answer into the unit's section, or commit it to `design.md` or `requirements.md` first, because
   step 4 stops on any other changed file. Then restart that entry. Never discard changes yourself.

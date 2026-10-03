@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: Implements a single spec task or TODO item. Dispatched by the implement skill -- do not invoke directly.
+description: Implements a single spec task. Dispatched by the implement skill -- do not invoke directly.
 tools: read, write, edit, bash, grep, find, ls
 ---
 

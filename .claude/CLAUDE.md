@@ -43,7 +43,7 @@ If a task looks like it needs wider fan-out, interview the user about the unclea
 
 ## Code comments
 
-- Never cite tracking artifacts in code: no requirement/unit/item numbers, no paths under `specs/` or `todos/`.
+- Never cite tracking artifacts in code: no requirement/unit/item numbers, no paths under `specs/`.
 - This holds while implementing them, not just afterwards. The artifact is deleted when the work ships, so the citation dies with it.
 - Cite durable surfaces instead: a `docs/` page and section by name, or a named invariant. Never a line number.
 - If the reason lives only in the spec, state the reason in the comment itself.

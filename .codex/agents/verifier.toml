@@ -1,5 +1,5 @@
 name = "verifier"
-description = "Checks one implemented spec task or TODO item against its acceptance criteria before it is committed. Dispatched by the implement skill; do not invoke directly."
+description = "Checks one implemented spec task against its acceptance criteria before it is committed. Dispatched by the implement skill; do not invoke directly."
 model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"

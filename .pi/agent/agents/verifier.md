@@ -1,6 +1,6 @@
 ---
 name: verifier
-description: Checks one implemented spec task or TODO item against its acceptance criteria. Dispatched by the implement skill -- do not invoke directly.
+description: Checks one implemented spec task against its acceptance criteria. Dispatched by the implement skill -- do not invoke directly.
 tools: read, bash, grep, find, ls
 ---
 

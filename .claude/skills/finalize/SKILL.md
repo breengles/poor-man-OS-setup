@@ -2,8 +2,8 @@
 name: finalize
 description:
   Close out shipped tracked work -- reconcile the project docs with the code that actually shipped, then remove the
-  resolved spec directory or TODO items so code plus up-to-date docs remain the source of truth.
-argument-hint: "[<feature> | <area>]"
+  resolved spec directory so code plus up-to-date docs remain the source of truth.
+argument-hint: "[<feature>]"
 ---
 
 # finalize
@@ -11,9 +11,8 @@ argument-hint: "[<feature> | <area>]"
 The implementation is done. **Code is the source of truth and the tracking artifact is disposable scaffolding**, so your
 job is to make the docs match what shipped and then remove the artifact. You never edit source code here.
 
-Resolve `$ARGUMENTS` to a spec directory or a TODO file; with no argument, list the candidates under `specs/` and
-`todos/` and ask. Read the artifact plus the project's doc surface: `docs/` (if it exists), the root `README.md`, and
-`CLAUDE.md`.
+Resolve `$ARGUMENTS` to a spec directory; with no argument, list the candidates under `specs/` and ask. Read the
+artifact plus the project's doc surface: `docs/` (if it exists), the root `README.md`, and `CLAUDE.md`.
 
 ## Step 1: Verify readiness
 
@@ -58,22 +57,9 @@ Keep your context clean -- one line per doc (`docs/api.md: ALIGNED, rewrote auth
 
 ## Step 4: Remove the resolved artifact
 
-The artifact has served its purpose, so remove it without asking. **`git rm` every fully resolved artifact** -- the
-work stays recoverable through history, so no confirmation is needed. Never `rm`, never `rm -rf`, and never leave an
-emptied-out file behind:
-
-```
-git rm -r specs/<feature>/        # spec closed out: the whole directory goes
-git rm todos/<area>.md            # TODO file whose every unit is now resolved
-```
-
-A resolved spec directory and a TODO file with no surviving units are both **always** `git rm`, not an edit. Only a
-TODO file that still has unresolved units is edited in place -- purge the resolved rows, sections, and `## Notes`
-entries tagged with their item numbers, then run `npx prettier --write --print-width 120` on it. If that edit leaves the
-file with nothing but headers, `git rm` it instead.
-
-Skip any unit whose doc cycle stalled at `NEEDS_REVISION` -- those stay. Untracked files under the artifact path are
-not covered by history: leave them in place, `git rm` the tracked ones around them, and report what you left. Never
+The spec has served its purpose, so remove it without asking: `git rm -r specs/<feature>/`. The work stays recoverable
+through history, so no confirmation is needed. Never `rm` and never `rm -rf`. Untracked files under the spec directory
+are not covered by history: leave them in place, `git rm` the tracked ones around them, and report what you left. Never
 force-remove.
 
 ## Step 5: Commit
@@ -89,7 +75,7 @@ Do not commit if the doc cycle stalled at `NEEDS_REVISION` -- report and stop in
 
 Docs updated or created (one line each, or "already current"); the reviewer verdict; what was removed; the commit SHA
 and subject; and any gaps, deferred work, or code/design deviations you noticed -- print those for the user but do
-**not** file them anywhere (suggest a `todos/<area>.md` entry if they want them tracked).
+**not** file them anywhere (suggest a new spec through `/spec-init` if they want them tracked).
 
 ## Constraints
 

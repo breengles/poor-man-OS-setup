@@ -1,8 +1,8 @@
 ---
 name: verifier
 description:
-  Checks one implemented spec task or TODO item against its acceptance criteria before it is committed. Dispatched by
-  the implement skill -- do not invoke directly.
+  Checks one implemented spec task against its acceptance criteria before it is committed. Dispatched by the implement
+  skill -- do not invoke directly.
 tools: Read, Bash, Glob, Grep
 model: opus
 effort: medium

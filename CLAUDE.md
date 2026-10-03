@@ -96,7 +96,7 @@ stow .
 stow -n -v .
 ```
 
-Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `docs/`, `misc/`, `todos/`, `.vscode/`,
+Files excluded from stow are listed in `.stow-local-ignore` (includes `.git`, `docs/`, `misc/`, `specs/`, `.vscode/`,
 and the transient state under `.claude/`, `.codex/`, and `.pi/`).
 
 ## Environment Notes
@@ -120,17 +120,16 @@ and the transient state under `.claude/`, `.codex/`, and `.pi/`).
 
 - **Claude Code user prefs:** `.claude/CLAUDE.md` (stowed to `~/.claude/CLAUDE.md`). Kept deliberately short; each skill
   owns its own format details rather than restating them here.
-- **Claude Code skills:** 8 custom slash commands at `.claude/skills/`, each under 100 lines.
-  - Tracked-work pipeline, shared by specs and TODOs: `spec-init` / `todo-init` create the artifact, `implement` builds
-    it, `finalize` reconciles the docs, removes it, and commits. `grill` (a frontier-rounds interview that settles a
-    fuzzy plan) is the escalation path for `spec-init`'s single-message interview.
+- **Claude Code skills:** 7 custom slash commands at `.claude/skills/`, each under 100 lines.
+  - Spec pipeline: `spec-init` creates the spec, `implement` builds it, `finalize` reconciles the docs, removes it, and
+    commits. `grill` (a frontier-rounds interview that settles a fuzzy plan) is the escalation path for `spec-init`'s
+    single-message interview.
   - Standalone: `commit`, `mr-description`, `dataset-readme`.
   - Deliberately **not** custom skills: code review (built-in `/code-review`, `/security-review`, `/simplify` cover it),
     documentation writing, and conflict resolution — all things Claude does competently without a template.
 - **Claude Code agents:** `.claude/agents/implementer.md` (Sonnet, Write/Edit) and `.claude/agents/verifier.md` (Opus,
-  medium effort, read-only), both dispatched by `implement` for spec tasks and TODO items. The verifier checks one
-  unit's acceptance criteria and runs the tests before its commit. It is not a code reviewer: it never fails a unit on
-  style.
+  medium effort, read-only), both dispatched by `implement` for spec tasks. The verifier checks one unit's acceptance
+  criteria and runs the tests before its commit. It is not a code reviewer: it never fails a unit on style.
 - **`implement` runs its per-unit loop as a saved workflow:** `.claude/workflows/implement-units.js` goes implement ->
   verify (criteria, tests, scope) -> one repair round -> land (artifact update, notes, commit). The artifact's
   `## Notes` section is the run's memory: agents return notes in structured output, and only the land step writes
