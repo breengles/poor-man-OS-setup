@@ -1474,6 +1474,7 @@ romkatv
 rosinality
 rossdraws
 rovib
+rowaddrs
 ROWWISE
 Rozenbaum
 rpath
