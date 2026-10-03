@@ -128,10 +128,11 @@ and the transient state under `.claude/`, `.codex/`, and `.pi/`).
   - Deliberately **not** custom skills: code review (built-in `/code-review`, `/security-review`, `/simplify` cover it),
     documentation writing, and conflict resolution — all things Claude does competently without a template.
 - **Claude Code agents:** `.claude/agents/implementer.md` (Sonnet, Write/Edit) and `.claude/agents/verifier.md` (Opus,
-  read-only), both dispatched by `implement` for spec tasks and TODO items. The verifier checks one unit's acceptance
-  criteria and runs the tests before its commit. It is not a code reviewer: it never fails a unit on style.
+  medium effort, read-only), both dispatched by `implement` for spec tasks and TODO items. The verifier checks one
+  unit's acceptance criteria and runs the tests before its commit. It is not a code reviewer: it never fails a unit on
+  style.
 - **`implement` runs its per-unit loop as a saved workflow:** `.claude/workflows/implement-units.js` goes implement ->
-  verify -> one repair round -> land (scope check, artifact update, commit). The skill calls it by name,
+  verify (criteria, tests, scope) -> one repair round -> land (artifact update, commit). The skill calls it by name,
   `Workflow({name: "implement-units", args})`, because the Workflow tool refuses a `scriptPath` outside the working
   directory, and `~/.claude/skills/` is outside it in every other repo. The same file runs under pi-subagents'
   `workflowScript`. It detects the harness by the `runs` global, and pi gets the text below the `// pi:` marker line

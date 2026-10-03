@@ -139,11 +139,11 @@ copy the shared part across.
   `spec-init` / `todo-init` create the artifact, `implement` builds it, `finalize` reconciles the docs, removes it, and
   commits. `grill` (a frontier-rounds interview that settles a fuzzy plan) is the escalation path for `spec-init`'s
   single-message interview. Standalone: `commit`, `mr-description`, `dataset-readme`.
-- **Agents:** `.claude/agents/implementer.md` (Sonnet, Write/Edit) and `.claude/agents/verifier.md` (Opus, read-only),
-  both dispatched by `implement` for spec tasks and TODO items. The verifier checks one unit's acceptance criteria and
-  runs the tests before its commit. It is not a code reviewer: it never fails a unit on style.
+- **Agents:** `.claude/agents/implementer.md` (Sonnet, Write/Edit) and `.claude/agents/verifier.md` (Opus, medium
+  effort, read-only), both dispatched by `implement` for spec tasks and TODO items. The verifier checks one unit's
+  acceptance criteria and runs the tests before its commit. It is not a code reviewer: it never fails a unit on style.
 - **`implement` runs its per-unit loop as a saved workflow:** `.claude/workflows/implement-units.js` goes implement ->
-  verify -> one repair round -> land (scope check, artifact update, commit). The skill calls it by name,
+  verify (criteria, tests, scope) -> one repair round -> land (artifact update, commit). The skill calls it by name,
   `Workflow({name: "implement-units", args})`, because the Workflow tool refuses a `scriptPath` outside the working
   directory, and `~/.claude/skills/` is outside it in every other repo. The same file runs under pi-subagents'
   `workflowScript`. It detects the harness by the `runs` global, and pi gets the text below the `// pi:` marker line

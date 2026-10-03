@@ -72,12 +72,11 @@ hands the loop to the saved workflow `.claude/workflows/implement-units.js`. For
 in order:
 
 1. The `implementer` agent (Sonnet) makes the change.
-2. The `verifier` agent (Opus, read-only) checks each acceptance criterion against the code and runs the tests. When
-   it is unsure, it fails the unit.
+2. The `verifier` agent (Opus, medium effort, read-only) checks each acceptance criterion against the code and runs the
+   tests. It also checks that only the expected files changed. When it is unsure, it fails the unit.
 3. If the verifier fails the unit, the implementer gets one repair round with the verifier's gaps, on Opus. The
    verifier then checks again.
-4. A landing agent checks that only the expected files changed, marks the unit `Done` in the artifact, and commits the
-   code and the artifact together.
+4. A landing agent marks the unit `Done` in the artifact and commits the code and the artifact together.
 
 Units run one after another, because they share one working tree. The script stops and returns control to the main
 session when a unit needs more context, fails twice, or changes unexpected files. The main session then asks the user.

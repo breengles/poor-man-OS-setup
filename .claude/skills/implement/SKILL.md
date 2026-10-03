@@ -80,8 +80,8 @@ unless you must debug a stop.
   uncommitted; the next landed commit carries it.
 - **concerns:** in todo mode, file the trackable ones as new items. Otherwise report them.
 - **stopped:** report the unit and the reason, then ask the user. The script stops on missing context, unmet criteria
-  after the repair round, a blocked unit with changes in the tree, and unexpected files. For missing context, add
-  `extraContext` to that entry and relaunch. Never discard changes yourself.
+  or unexpected files after the repair round, a blocked unit with changes in the tree, and a failed commit. For
+  missing context, add `extraContext` to that entry and relaunch. Never discard changes yourself.
 
 To continue, relaunch with the entries not yet in `done`. If the user objects to a unit that already landed, dispatch
 a fresh `implementer` with `model: "opus"`, the unit's `text`, and the objection, then relaunch from there.

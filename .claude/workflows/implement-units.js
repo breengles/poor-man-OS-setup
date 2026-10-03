@@ -53,9 +53,8 @@ const LAND = {
     committed: { type: 'boolean' },
     sha: { type: 'string' },
     summary: { type: 'string' },
-    unexpected: strings,
   },
-  required: ['committed', 'summary', 'unexpected'],
+  required: ['committed', 'summary'],
 }
 
 // Writers opt out of pi's inferred acceptance gates: the verifier stage below is the gate.
@@ -100,6 +99,10 @@ function verifyTask(unit, id, files) {
     unit.text,
     '',
     testLine,
+    '',
+    `Scope: the run may change only the files above and ${args.artifact}. These paths were already changed before`,
+    'the run, so ignore them:',
+    args.baseline || '(clean)',
   ].join('\n')
 }
 
@@ -123,19 +126,16 @@ function repairTask(unit, id, files, gaps) {
 
 function landTask(unit, id, files) {
   return [
-    `Land tracked unit ${id}. Do not change source code.`,
+    `Land tracked unit ${id}. Do not change source code. The verifier has already checked the scope of the change.`,
     '',
-    '1. Scope check. Run `git status --porcelain`. Every changed path must be an implementer file below or the',
-    '   artifact, apart from the pre-existing changes in the baseline below. If any other path changed, or none of',
-    '   the implementer files changed, stop here: return committed=false and list those paths in `unexpected`.',
-    `2. Update the artifact ${args.artifact}. For each of ${unit.ids.join(', ')}: set Status to Done, append a`,
+    `1. Update the artifact ${args.artifact}. For each of ${unit.ids.join(', ')}: set Status to Done, append a`,
     '   one-line `_Done: <what shipped>_` note to its detailed section, and delete its lines from the suggested',
     '   resolution order. Then run `npx prettier --write --print-width 120` on the artifact.',
-    '3. Commit. Stage with `git add` on the implementer files and the artifact only, never `-A` or `.`, and never',
+    '2. Commit. Stage with `git add` on the implementer files and the artifact only, never `-A` or `.`, and never',
     '   a baseline path. Write the subject imperative and lowercase, about 50 characters, describing what changed.',
     '   No type prefix such as `fix:`, and no issue IDs.',
     '',
-    'Return committed, the short sha, a one-line summary of what shipped, and `unexpected`.',
+    'Return committed, the short sha, and a one-line summary of what shipped, or of why the commit failed.',
     '',
     'Implementer files:',
     list(files),
@@ -197,7 +197,7 @@ for (const unit of args.queue) {
     effort: 'low',
   })
   if (!land || !land.committed) {
-    return stop(unit, `not committed: ${land ? land.unexpected.join(', ') || land.summary : 'no result'}`)
+    return stop(unit, `not committed: ${land ? land.summary : 'no result'}`)
   }
   done.push({ ids: unit.ids, sha: land.sha, summary: land.summary })
   say(`${id}: ${land.sha} ${land.summary}`)
