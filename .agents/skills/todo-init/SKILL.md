@@ -27,7 +27,7 @@ improvements, and tech debt that slows development; **P2** for minor and cosmeti
 
 ## File format
 
-Three sections, in this order:
+Three sections, in this order, plus one that `$implement` adds later:
 
 1. **Priority Summary table** at the very top -- every open item, highest priority first, with exactly three columns:
    `Task`, `Priority`, `Status`.
@@ -42,6 +42,8 @@ Three sections, in this order:
    item numbers in recommended order with brief rationale per item: `- #5 -- prerequisite for #7`. Open items only.
 3. **Detailed sections** -- one `###` heading per item with a clear description, the context and cited files/lines, and
    acceptance criteria wherever they can be stated.
+4. **Notes** -- never seeded. `$implement` appends a `## Notes` section at the end with run-time facts its agents
+   found, one line each, tagged with the item number: `- [#5 env] the suite needs --no-cov, see pyproject.toml`.
 
 A `Blocked` item stays in the file with a `_Blocked: <reason>_` line appended to its section. Resolved items are
 **removed** entirely by `$finalize` once any affected docs are reconciled -- git history is the record, so there is no

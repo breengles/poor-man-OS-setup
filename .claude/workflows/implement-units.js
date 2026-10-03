@@ -17,6 +17,14 @@ if (!args || !Array.isArray(args.queue)) {
 }
 
 const strings = { type: 'array', items: { type: 'string' } }
+const NOTES = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: { kind: { type: 'string', enum: ['env', 'deviation', 'dead-end'] }, note: { type: 'string' } },
+    required: ['kind', 'note'],
+  },
+}
 const STATUS = {
   type: 'object',
   properties: {
@@ -27,6 +35,7 @@ const STATUS = {
     concerns: strings,
     blocker: { type: 'string' },
     missing: { type: 'string' },
+    notes: NOTES,
   },
   required: ['status', 'files_changed'],
 }
@@ -44,6 +53,7 @@ const VERDICT = {
     },
     tests: { type: 'string' },
     gaps: strings,
+    notes: NOTES,
   },
   required: ['pass', 'criteria', 'gaps'],
 }
@@ -124,18 +134,24 @@ function repairTask(unit, id, files, gaps) {
   ].join('\n')
 }
 
-function landTask(unit, id, files) {
+function landTask(unit, id, files, notes) {
   return [
     `Land tracked unit ${id}. Do not change source code. The verifier has already checked the scope of the change.`,
     '',
     `1. Update the artifact ${args.artifact}. For each of ${unit.ids.join(', ')}: set Status to Done, append a`,
     '   one-line `_Done: <what shipped>_` note to its detailed section, and delete its lines from the suggested',
-    '   resolution order. Then run `npx prettier --write --print-width 120` on the artifact.',
+    '   resolution order. Append the notes below to the `## Notes` section at the end of the artifact, verbatim.',
+    '   Create the section if it is missing, and skip a note that repeats an existing entry. If the section now has',
+    '   more than 40 entries, merge the ones that say the same thing. Then run `npx prettier --write --print-width 120`',
+    '   on the artifact.',
     '2. Commit. Stage with `git add` on the implementer files and the artifact only, never `-A` or `.`, and never',
     '   a baseline path. Write the subject imperative and lowercase, about 50 characters, describing what changed.',
     '   No type prefix such as `fix:`, and no issue IDs.',
     '',
     'Return committed, the short sha, and a one-line summary of what shipped, or of why the commit failed.',
+    '',
+    'Notes:',
+    notes.length ? notes.join('\n') : '- (none)',
     '',
     'Implementer files:',
     list(files),
@@ -150,7 +166,16 @@ const blocked = []
 const concerns = []
 const blockedIds = new Set()
 const result = (stopped) => ({ done, blocked, concerns, stopped })
-const stop = (unit, reason) => result({ ids: unit.ids, reason })
+// Notes travel with the unit: the land step writes them only after the verifier passes it, so a failed attempt
+// cannot plant an unverified fact for later units. Blocked units and stops hand theirs to the main session.
+let notes = []
+function collect(out, id) {
+  for (const n of (out && out.notes) || []) {
+    const line = `- [${id} ${n.kind}] ${n.note}`
+    if (!notes.includes(line)) notes.push(line)
+  }
+}
+const stop = (unit, reason) => result({ ids: unit.ids, reason, notes })
 
 for (const unit of args.queue) {
   const id = unit.ids.join('+')
@@ -163,13 +188,15 @@ for (const unit of args.queue) {
   }
 
   say(`${id}: implementing`)
+  notes = []
   const impl = await step(`impl-${key}`, 'implementer', 'Implement', implementTask(unit, id), STATUS, { writer: true })
   if (!impl) return stop(unit, 'implementer returned no status')
+  collect(impl, id)
   concerns.push(...(impl.concerns || []).map((c) => `${id}: ${c}`))
   if (impl.status === 'NEEDS_CONTEXT') return stop(unit, `needs context: ${impl.missing}`)
   if (impl.status === 'BLOCKED') {
     if (impl.files_changed.length) return stop(unit, `blocked with changes left in the tree: ${impl.blocker}`)
-    blocked.push({ ids: unit.ids, reason: impl.blocker })
+    blocked.push({ ids: unit.ids, reason: impl.blocker, notes })
     unit.ids.forEach((u) => blockedIds.add(u))
     continue
   }
@@ -177,24 +204,27 @@ for (const unit of args.queue) {
   let files = impl.files_changed
   let verdict = await step(`verify-${key}-1`, 'verifier', 'Verify', verifyTask(unit, id, files), VERDICT, {})
   if (!verdict) return stop(unit, 'verifier returned no verdict')
+  collect(verdict, id)
   if (!verdict.pass) {
     say(`${id}: criteria unmet, one repair round`)
     const repair = repairTask(unit, id, files, verdict.gaps)
     const fix = await step(`repair-${key}`, 'implementer', 'Implement', repair, STATUS, { writer: true, model: 'opus' })
+    collect(fix, id)
     if (!fix || fix.status !== 'COMPLETE') {
       return stop(unit, `repair did not complete: ${fix ? fix.blocker || fix.missing : 'no status'}`)
     }
     files = [...new Set([...files, ...fix.files_changed])]
     verdict = await step(`verify-${key}-2`, 'verifier', 'Verify', verifyTask(unit, id, files), VERDICT, {})
+    collect(verdict, id)
     if (!verdict || !verdict.pass) {
       return stop(unit, `criteria still unmet after repair: ${verdict ? verdict.gaps.join('; ') : 'no verdict'}`)
     }
   }
 
-  const land = await step(`land-${key}`, PI ? 'worker' : null, 'Land', landTask(unit, id, files), LAND, {
+  const land = await step(`land-${key}`, PI ? 'worker' : null, 'Land', landTask(unit, id, files, notes), LAND, {
     writer: true,
     model: 'sonnet',
-    effort: 'low',
+    effort: 'medium',
   })
   if (!land || !land.committed) {
     return stop(unit, `not committed: ${land ? land.summary : 'no result'}`)

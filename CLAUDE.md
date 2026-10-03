@@ -132,7 +132,9 @@ and the transient state under `.claude/`, `.codex/`, and `.pi/`).
   unit's acceptance criteria and runs the tests before its commit. It is not a code reviewer: it never fails a unit on
   style.
 - **`implement` runs its per-unit loop as a saved workflow:** `.claude/workflows/implement-units.js` goes implement ->
-  verify (criteria, tests, scope) -> one repair round -> land (artifact update, commit). The skill calls it by name,
+  verify (criteria, tests, scope) -> one repair round -> land (artifact update, notes, commit). The artifact's
+  `## Notes` section is the run's memory: agents return notes in structured output, and only the land step writes
+  them, after verification. The skill calls it by name,
   `Workflow({name: "implement-units", args})`, because the Workflow tool refuses a `scriptPath` outside the working
   directory, and `~/.claude/skills/` is outside it in every other repo. The same file runs under pi-subagents'
   `workflowScript`. It detects the harness by the `runs` global, and pi gets the text below the `// pi:` marker line

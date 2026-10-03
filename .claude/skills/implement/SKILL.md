@@ -10,9 +10,9 @@ argument-hint: "<path to spec dir or TODO file> [numbers | all]"
 
 You are the **orchestrator**. You do NOT write implementation code. You resolve the target, build and confirm the
 queue, then hand the per-unit loop to the saved workflow `implement-units`. Stow deploys it from the dotfiles repo to
-`~/.claude/workflows/implement-units.js`. For each unit, that script
-runs an `implementer`, an independent `verifier`, one repair round if the verifier fails the unit, and a commit. You
-own every step that needs the user: the confirmation, the stops, and the report.
+`~/.claude/workflows/implement-units.js`. For each unit, that script runs an `implementer`, an independent `verifier`,
+one repair round if the verifier fails the unit, and a commit. You own every step that needs the user: the
+confirmation, the stops, and the report.
 
 ## Step 1: Resolve the target
 
@@ -59,14 +59,13 @@ list of `{ids, text, depends}`. `text` carries the unit's full text plus the req
 references (spec mode), or its cited files and acceptance criteria (todo mode). `depends` lists queued unit ids it
 needs. The agent files own the implementer and verifier roles -- do not restate them in `text`, and never tell the
 implementer there to edit the artifact or commit; only the land step does that, after verification. This contract is
-the whole interface, so do not read the script to learn it.
+the whole interface, so do not read the script to learn it. Agents read the artifact's `## Notes` section themselves.
 
 - **Claude Code:** `Workflow({name: "implement-units", args})`. If the tool cannot find that name, read
   `~/.claude/workflows/implement-units.js` and pass its full text as `script` with the same `args`.
 - **pi:** read `~/.claude/workflows/implement-units.js`, take everything below its `// pi:` marker line, and prepend
-  `const args = <args JSON>;`.
-  Pass that as `subagent({workflowScript, async: false, mission: false, timeoutMs})`, with `timeoutMs` at 45 minutes
-  per queue entry.
+  `const args = <args JSON>;`. Pass that as `subagent({workflowScript, async: false, mission: false, timeoutMs})`, with
+  `timeoutMs` at 45 minutes per queue entry.
 - **Neither tool exists:** run the script's steps yourself, one unit at a time, dispatching the `implementer`,
   `verifier`, and landing subagents sequentially. Treat `implement-units.js` as the spec. Do not end your turn
   between units.
@@ -76,12 +75,14 @@ the whole interface, so do not read the script to learn it.
 The workflow returns `{done, blocked, concerns, stopped}`. Read only this value; do not open subagent transcripts
 unless you must debug a stop.
 
-- **blocked:** set each unit's Status to `Blocked` and append `_Blocked: {reason}_` to its section. Leave the edit
-  uncommitted; the next landed commit carries it.
+- **blocked:** set each unit's Status to `Blocked`, append `_Blocked: {reason}_` to its section, and append its `notes`
+  to the `## Notes` section at the end of the artifact. Leave the edit uncommitted; the next landed commit carries it.
 - **concerns:** in todo mode, file the trackable ones as new items. Otherwise report them.
 - **stopped:** report the unit and the reason, then ask the user. The script stops on missing context, unmet criteria
-  or unexpected files after the repair round, a blocked unit with changes in the tree, and a failed commit. For
-  missing context, add `extraContext` to that entry and relaunch. Never discard changes yourself.
+  or unexpected files after the repair round, a blocked unit with changes in the tree, and a failed commit. Append its
+  `notes` that still hold. Write a missing-context answer into the unit's section, or commit it to `design.md` or
+  `requirements.md` first, because the verifier fails other paths. Add it as `extraContext` and relaunch. Never discard
+  changes yourself.
 
 To continue, relaunch with the entries not yet in `done`. If the user objects to a unit that already landed, dispatch
 a fresh `implementer` with `model: "opus"`, the unit's `text`, and the objection, then relaunch from there.

@@ -16,6 +16,10 @@ orchestrator commits the unit only if you pass it.
 You receive the unit's full text with its acceptance criteria, the files the implementer says it changed, the
 project's test command if known, and the paths that were already changed before the run.
 
+The tracking artifact may end with a `## Notes` section: facts that earlier units found. Read it before you run the
+tests, because it may name failures that existed before this change. Treat each entry as a hint. Where an entry
+disagrees with the code, the code wins.
+
 ## Method
 
 1. **Read the criteria before the code.** For each one, state the observable behavior it requires. The implementer may
@@ -37,6 +41,13 @@ the defect.
 
 This is not a code review. Do not fail a unit for style, naming, or design choices that its criteria do not constrain.
 
+## Notes
+
+Report a fact as a note when a later unit would otherwise have to find it again. Use kind `env` for run-time behavior,
+such as a test that fails before this change or a command that needs a flag. Use kind `deviation` when the code now
+differs from the design in a way that later units depend on. State the fact with its evidence in one line. A note never
+replaces a gap: a problem that fails the unit goes in `gaps`.
+
 ## Constraints
 
 Do not edit files. Do not run commands that change the working tree or git state -- no `git add`, `git stash`,
@@ -52,4 +63,5 @@ If a structured output tool is available, return the verdict through it. Otherwi
 - CRITERIA: <one line per criterion: id, met | unmet, evidence>
 - TESTS: <command and result, or "no tests">
 - GAPS: <each unmet criterion or problem, specific enough for an implementer to fix>
+- NOTES: <optional -- one line per note: env | deviation, the fact, its evidence>
 ```

@@ -15,6 +15,11 @@ item), its boundary, and the project's test command if known.
 Treat the working tree as shared state: preserve pre-existing changes and never
 revert work you do not own.
 
+The tracking artifact may end with a `## Notes` section: facts that earlier
+units found. Read it before you build the brief. Treat each entry as a hint;
+where it disagrees with the code, the code wins, and you report the conflict as
+a note.
+
 ## Execution
 
 1. Build a brief. State the observable behavior required, applicable design
@@ -54,6 +59,15 @@ Code quality counts as much as correctness:
 Do not update the tracking artifact, create commits, expand scope, silently work
 around a requirement mismatch, or delete/weaken failing tests.
 
+## Notes
+
+Report a fact as a note when a later unit would otherwise have to find it again.
+Each note has one kind: `env` for run-time behavior such as a command quirk or a
+test that fails before your change; `deviation` when the code now differs from
+the design in a way later units depend on; `dead-end` for an approach you tried
+that failed, and why. State the fact with its evidence in one line. Do not
+report progress, changed files, or follow-ups; CONCERNS carries follow-ups.
+
 End with exactly this block:
 
 ```
@@ -64,6 +78,7 @@ End with exactly this block:
 - CRITERIA_CHECKED: <each criterion or requirement ID verified>
 - TESTS_RUN: <command and result, or no tests>
 - CONCERNS: <optional non-blocking issues or follow-ups>
+- NOTES: <optional, one line per note: env | deviation | dead-end, fact, evidence>
 - BLOCKER: <BLOCKED only: what prevents completion>
 - MISSING: <NEEDS_CONTEXT only: what context is needed>
 ```

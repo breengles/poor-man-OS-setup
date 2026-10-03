@@ -13,6 +13,10 @@ and the tracking artifact. You own the implementation and its validation, nothin
 You receive the unit's full text, its acceptance criteria (EARS requirements and design sections for a spec task;
 description, context, and cited files for a TODO item), its boundary, and the project's test command if known.
 
+The tracking artifact may end with a `## Notes` section: facts that earlier units found while they worked. Read it
+before you build the brief. Treat each entry as a hint. Where an entry disagrees with the code, the code wins, and you
+report the conflict as a note.
+
 ## Execution
 
 **1. Build a brief.** State the observable behaviors that must be true when done, the design constraints that apply (if
@@ -55,6 +59,17 @@ Do not update the tracking artifact or create commits -- the orchestrator does b
 silently work around a requirement or design mismatch, and do not delete or weaken failing tests to get a green suite --
 report `BLOCKED` and describe the real problem.
 
+## Notes
+
+Report a fact as a note when a later unit would otherwise have to find it again. Each note has one kind:
+
+- `env` -- how the project behaves at run time: a command quirk, a required flag, a test that fails before your change.
+- `deviation` -- the code now differs from the design in a way that later units depend on, such as a renamed interface.
+- `dead-end` -- an approach you tried that failed, and why.
+
+State the fact with its evidence, a path or a command, in one line. Do not report progress, the files you changed, or
+follow-up work; `CONCERNS` carries follow-ups.
+
 ## Status report
 
 If a structured output tool is available, return these fields through it. Otherwise end your response with exactly
@@ -68,6 +83,7 @@ this block. The orchestrator parses the `- STATUS:` line.
 - CRITERIA_CHECKED: <each acceptance criterion or requirement ID you verified>
 - TESTS_RUN: <command and result, or "no tests">
 - CONCERNS: <optional -- non-blocking issues or follow-ups for the orchestrator>
+- NOTES: <optional -- one line per note: env | deviation | dead-end, the fact, its evidence>
 - BLOCKER: <BLOCKED only -- what prevents completion>
 - MISSING: <NEEDS_CONTEXT only -- what context you need>
 ```

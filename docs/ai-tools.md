@@ -76,7 +76,16 @@ in order:
    tests. It also checks that only the expected files changed. When it is unsure, it fails the unit.
 3. If the verifier fails the unit, the implementer gets one repair round with the verifier's gaps, on Opus. The
    verifier then checks again.
-4. A landing agent marks the unit `Done` in the artifact and commits the code and the artifact together.
+4. A landing agent (Sonnet, medium effort) marks the unit `Done` in the artifact, appends the unit's notes, and commits
+   the code and the artifact together.
+
+The artifact's `## Notes` section is the run's memory. It holds run-time facts that no other section owns: `env` for
+command quirks and failures that existed before the run, `deviation` for code that left the design in a way later units
+depend on, and `dead-end` for approaches that failed. Decisions go in the spec files, and progress stays in Status and
+`_Done:_` lines. Agents read Notes before they start, and treat entries as hints the code can overrule. They do not edit
+Notes. They return notes in their structured output, the script collects them per unit, and the landing agent writes
+them only after the verifier passes the unit. So a failed attempt cannot plant an unverified fact. `/finalize` moves
+lasting notes into the docs, then removes them with the artifact.
 
 Units run one after another, because they share one working tree. The script stops and returns control to the main
 session when a unit needs more context, fails twice, or changes unexpected files. The main session then asks the user.

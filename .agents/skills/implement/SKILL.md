@@ -55,7 +55,8 @@ Codex has no workflow tool, so run the loop yourself, one entry at a time. Dispa
 `wait_agent(timeout_ms=3600000)`. Never poll -- no `list_agents`, no status pings, no repeated short waits; if the wait
 returns a timeout, tell the user and wait again. Each message carries the entry's full unit text plus the requirement
 and design excerpts it references (spec mode) or its cited files and acceptance criteria (todo mode), and the test
-command. The agent files own the roles -- do not restate them.
+command. The agent files own the roles -- do not restate them. Agents read the artifact's `## Notes` section
+themselves; collect the `NOTES` lines from every report for the entry.
 
 1. **`implementer`.** `COMPLETE` -> step 2. `BLOCKED` with no changed files -> record it, skip the entries that depend
    on it, and go to the next entry. `NEEDS_CONTEXT`, or `BLOCKED` with changes in the tree -> stop.
@@ -64,9 +65,10 @@ command. The agent files own the roles -- do not restate them.
    verifier's gaps. Then a fresh `verifier`. Still failing -> stop.
 4. **Land it yourself.** Check that `git status --porcelain` shows only the implementer's files and the artifact beyond
    the baseline; anything else -> stop. Set each unit's Status to `Done`, append a one-line `_Done: <what shipped>_`
-   note to its section, delete its lines from the suggested resolution order, and run
-   `npx prettier --write --print-width 120 <artifact>`. Stage only those files with `git add` and commit: imperative,
-   lowercase, ~50 chars, no type prefix, no issue IDs.
+   note to its section, and delete its lines from the suggested resolution order. Append the entry's notes, minus
+   repeats, to the `## Notes` section at the end of the artifact as `- [<unit id> <kind>] <fact>`; past 40 entries,
+   merge the ones that say the same thing. Run `npx prettier --write --print-width 120 <artifact>`. Stage only those
+   files with `git add` and commit: imperative, lowercase, ~50 chars, no type prefix, no issue IDs.
 
 Keep one line per entry (`1.1: 3 files, abc1234`) and drop the full agent report. Do not end your turn between entries.
 
@@ -78,11 +80,12 @@ as an infrastructure blocker without changing the artifact.
 
 ## Step 4: Handle the result
 
-- **Blocked units:** set each Status to `Blocked` and append `_Blocked: {reason}_` to its section. Leave the edit
-  uncommitted; the next landed commit carries it.
+- **Blocked units:** set each Status to `Blocked`, append `_Blocked: {reason}_` to its section, and append its notes to
+  `## Notes`. Leave the edit uncommitted; the next landed commit carries it.
 - **Concerns:** in todo mode, file the trackable ones as new items. Otherwise report them.
-- **A stop:** report the unit and the reason, then ask the user. For missing context, get it and restart that entry.
-  Never discard changes yourself.
+- **A stop:** report the unit and the reason, then ask the user. Append the unit's notes that still hold. Write a
+  missing-context answer into the unit's section, or commit it to `design.md` or `requirements.md` first, because
+  step 4 stops on any other changed file. Then restart that entry. Never discard changes yourself.
 
 If the user objects to a unit that already landed, dispatch a fresh `implementer` with `model="gpt-5.6-sol"`,
 `reasoning_effort="high"`, the unit's text, and the objection, then continue from there.

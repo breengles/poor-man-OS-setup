@@ -24,7 +24,9 @@ deliberately descoped units, but ask the user to confirm explicitly first.
 ## Step 2: Find what shipped, and which docs should describe it
 
 Read-only. Run `git log --oneline` over the artifact path and over the source paths the units touched, and read the
-`_Done:_` notes. Map which modules the work added or changed, and therefore which docs _should_ cover them.
+`_Done:_` notes and the `## Notes` section. Map which modules the work added or changed, and therefore which docs
+_should_ cover them. A `deviation` note marks a place where the code left the design. An `env` note that will outlive
+the artifact, such as a required test flag, puts `CLAUDE.md` or the matching doc in scope.
 
 Doc scope is the in-scope `docs/*.md` for those modules, plus `README.md` / `CLAUDE.md` if user-facing setup, commands,
 or architecture changed. Add a doc that ought to exist but does not as "missing". Many units (internal refactors,
@@ -42,10 +44,10 @@ Otherwise you orchestrate -- **you do not edit docs yourself**:
 
 1. **Dispatch doc-updaters** (`Agent({subagent_type: "general-purpose", model: "opus"})`), one per doc when the files
    are independent (sequentially) or one combined updater when they are entangled. Each prompt gives the doc path(s),
-   the specific gap, the `_Done:_` notes and the code paths that changed, and an instruction to **read the real code**
-   -- `design.md` is only a hint and may have drifted from what shipped. The updater removes stale content, covers new
-   behavior, fixes examples, runs `npx prettier --write --print-width 120` on what it touches, and edits **only**
-   documentation -- never source code.
+   the specific gap, the `_Done:_` notes, the matching `## Notes` entries, the code paths that changed, and an
+   instruction to **read the real code** -- `design.md` is only a hint and may have drifted from what shipped. The
+   updater removes stale content, covers new behavior, fixes examples, runs `npx prettier --write --print-width 120` on
+   what it touches, and edits **only** documentation -- never source code.
 2. **Dispatch one opus reviewer** once the updaters return. It reads code and docs independently, edits nothing, and
    returns **ALIGNED** or **NEEDS_REVISION** with specific findings.
 3. **ALIGNED** -> continue. **NEEDS_REVISION** -> dispatch a fresh updater with those findings only and re-review,
@@ -66,9 +68,9 @@ git rm todos/<area>.md            # TODO file whose every unit is now resolved
 ```
 
 A resolved spec directory and a TODO file with no surviving units are both **always** `git rm`, not an edit. Only a
-TODO file that still has unresolved units is edited in place -- purge the resolved rows and sections, then run
-`npx prettier --write --print-width 120` on it. If that edit leaves the file with nothing but headers, `git rm` it
-instead.
+TODO file that still has unresolved units is edited in place -- purge the resolved rows, sections, and `## Notes`
+entries tagged with their item numbers, then run `npx prettier --write --print-width 120` on it. If that edit leaves the
+file with nothing but headers, `git rm` it instead.
 
 Skip any unit whose doc cycle stalled at `NEEDS_REVISION` -- those stay. Untracked files under the artifact path are
 not covered by history: leave them in place, `git rm` the tracked ones around them, and report what you left. Never
