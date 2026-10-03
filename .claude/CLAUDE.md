@@ -22,7 +22,7 @@ Do not narrate routine actions between tool calls.
 - No Unicode symbols in code or comments -- plain ASCII only.
 - Never use em dashes (`—`); use regular dashes (`-`) instead
 
-1. Write in ASD-STE100, or Simplified Technical English
+1. Write in ASD-STE100
 2. Follow Zinsser’s four principles of quality writing:
    a. Simplicity
    b. Brevity
