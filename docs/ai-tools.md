@@ -4,7 +4,7 @@
 
 The repository configures **Claude Code** (Anthropic's CLI agent) as the primary AI coding assistant, and **pi**
 (`@earendil-works/pi-coding-agent`) as a second harness that runs local models served by ollama. pi reuses Claude
-Code's skills and its `implementer` and `verifier` agents rather than keeping a parallel copy of them.
+Code's skills and its `implementer` agent rather than keeping a parallel copy of them.
 
 ## File Structure
 
@@ -17,7 +17,7 @@ Code's skills and its `implementer` and `verifier` agents rather than keeping a 
 | `.claude/statusline-command.sh` | Status line script that `settings.json` runs                            |
 | `.claude/skills/*/SKILL.md`     | Custom slash commands                                                   |
 | `.claude/workflows/*.js`        | Saved workflows: `implement-units`, the per-unit loop of `/implement`   |
-| `.claude/agents/*.md`           | Custom subagents: `implementer` and `verifier`                          |
+| `.claude/agents/*.md`           | Custom subagent: `implementer`                                          |
 
 Claude Code writes to `settings.json` itself, so its edits land in the repo through the symlink and show up in
 `git status`. `.claude/skills/synced/` holds claude.ai skills that Claude Code syncs down. It is ignored by both stow
@@ -69,25 +69,22 @@ parallel to check that each queued unit is still a real problem. After the user 
 hands the loop to the saved workflow `.claude/workflows/implement-units.js`. For each unit, the script does these steps
 in order:
 
-1. The `implementer` agent (Sonnet) makes the change.
-2. The `verifier` agent (Opus, medium effort, read-only) checks each acceptance criterion against the code and runs the
-   tests. It also checks that only the expected files changed. When it is unsure, it fails the unit.
-3. If the verifier fails the unit, the implementer gets one repair round with the verifier's gaps, on Opus. The
-   verifier then checks again.
-4. A landing agent (Sonnet, medium effort) marks the unit `Done` in the artifact, appends the unit's notes, and commits
-   the code and the artifact together.
+1. The `implementer` agent (Opus, medium effort) makes the change. It checks each acceptance criterion itself and runs
+   the tests. No separate verifier runs.
+2. A landing agent (Sonnet, medium effort) checks that only the expected files changed, then marks the unit `Done` in
+   the artifact, appends the unit's notes, and commits the code and the artifact together.
 
 The artifact's `## Notes` section is the run's memory. It holds run-time facts that no other section owns: `env` for
 command quirks and failures that existed before the run, `deviation` for code that left the design in a way later units
 depend on, and `dead-end` for approaches that failed. Decisions go in the spec files, and progress stays in Status and
 `_Done:_` lines. Agents read Notes before they start, and treat entries as hints the code can overrule. They do not edit
 Notes. They return notes in their structured output, the script collects them per unit, and the landing agent writes
-them only after the verifier passes the unit. So a failed attempt cannot plant an unverified fact. `/finalize` moves
-lasting notes into the docs, then removes them with the artifact.
+them only when it commits the unit. So a stopped attempt cannot plant a fact. `/finalize` moves lasting notes into the
+docs, then removes them with the artifact.
 
 Units run one after another, because they share one working tree. The script stops and returns control to the main
-session when a unit needs more context, fails twice, or changes unexpected files. The main session then asks the user.
-It reads only the script's return value, so subagent reports do not fill its context on a long run.
+session when a unit needs more context, changes unexpected files, or fails to commit. The main session then asks the
+user. It reads only the script's return value, so subagent reports do not fill its context on a long run.
 
 Claude Code runs the script by name, `Workflow({name: "implement-units", args})`. A saved workflow in
 `~/.claude/workflows/` is available in every project. A `scriptPath` is not: the Workflow tool starts a script only
@@ -114,7 +111,6 @@ from `~/.pi/agent/`, and this repo owns the hand-authored part of that directory
 | `.pi/agent/extensions/footer-info.ts` | Footer: cwd, branch, cost, context use, model, t/s, thinking    |
 | `.pi/agent/extensions/pi-context.ts`  | `/context` command: inspect the live system prompt              |
 | `.pi/agent/agents/implementer.md`     | pi-subagents shim pointing at the Claude `implementer` contract |
-| `.pi/agent/agents/verifier.md`        | pi-subagents shim pointing at the Claude `verifier` contract    |
 | `.pi/web-search.json`                 | pi-web-access settings: workflow and summary model              |
 
 Everything else under `.pi/` is runtime state: `auth.json` and `trust.json` hold credentials and trust decisions,

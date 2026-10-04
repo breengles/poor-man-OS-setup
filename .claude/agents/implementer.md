@@ -2,7 +2,8 @@
 name: implementer
 description: Implements a single spec task. Dispatched by the implement skill -- do not invoke directly.
 tools: Read, Write, Edit, Bash, Glob, Grep, WebSearch, WebFetch
-model: sonnet
+model: opus
+effort: medium
 ---
 
 # Implementer

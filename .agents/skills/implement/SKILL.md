@@ -1,16 +1,15 @@
 ---
 name: implement
 description:
-  Implement the tasks of a spec directory's `tasks.md`, one unit at a time. Each unit is implemented, verified, and
-  committed; the main session orchestrates only.
+  Implement the tasks of a spec directory's `tasks.md`, one unit at a time. Each unit is implemented and committed;
+  the main session orchestrates only.
 ---
 
 # implement
 
 You are the **orchestrator**. You do NOT write implementation code. You resolve the target, build and confirm the
-queue, then run the per-unit loop. For each unit, that loop runs an `implementer`, an independent `verifier`, one
-repair round if the verifier fails the unit, and a commit. You own every step that needs the user: the confirmation,
-the stops, and the report.
+queue, then run the per-unit loop. For each unit, that loop runs an `implementer`, then a scope check and a commit.
+You own every step that needs the user: the confirmation, the stops, and the report.
 
 ## Step 1: Resolve the target
 
@@ -51,15 +50,12 @@ Codex has no workflow tool, so run the loop yourself, one entry at a time. Dispa
 `spawn_agent(agent_type=<role>, fork_turns="none", task_name=<unit id>, message=...)`, then one
 `wait_agent(timeout_ms=3600000)`. Never poll -- no `list_agents`, no status pings, no repeated short waits; if the wait
 returns a timeout, tell the user and wait again. Each message carries the entry's full unit text plus the requirement
-and design excerpts it references, and the test command. The agent files own the roles -- do not restate them. Agents
+and design excerpts it references, and the test command. The agent file owns the role -- do not restate it. Agents
 read the artifact's `## Notes` section themselves; collect the `NOTES` lines from every report for the entry.
 
 1. **`implementer`.** `COMPLETE` -> step 2. `BLOCKED` with no changed files -> record it, skip the entries that depend
    on it, and go to the next entry. `NEEDS_CONTEXT`, or `BLOCKED` with changes in the tree -> stop.
-2. **`verifier`**, also given the files the implementer reports. `PASS: true` -> step 4.
-3. **One repair round:** a fresh `implementer` with `model="gpt-5.6-sol"`, `reasoning_effort="high"`, and the
-   verifier's gaps. Then a fresh `verifier`. Still failing -> stop.
-4. **Land it yourself.** Check that `git status --porcelain` shows only the implementer's files and the artifact beyond
+2. **Land it yourself.** Check that `git status --porcelain` shows only the implementer's files and the artifact beyond
    the baseline; anything else -> stop. Set each unit's Status to `Done`, append a one-line `_Done: <what shipped>_`
    note to its section, and delete its lines from the suggested resolution order. Append the entry's notes, minus
    repeats, to the `## Notes` section at the end of the artifact as `- [<unit id> <kind>] <fact>`; past 40 entries,
@@ -81,10 +77,10 @@ as an infrastructure blocker without changing the artifact.
 - **Concerns:** report them.
 - **A stop:** report the unit and the reason, then ask the user. Append the unit's notes that still hold. Write a
   missing-context answer into the unit's section, or commit it to `design.md` or `requirements.md` first, because
-  step 4 stops on any other changed file. Then restart that entry. Never discard changes yourself.
+  step 2 stops on any other changed file. Then restart that entry. Never discard changes yourself.
 
-If the user objects to a unit that already landed, dispatch a fresh `implementer` with `model="gpt-5.6-sol"`,
-`reasoning_effort="high"`, the unit's text, and the objection, then continue from there.
+If the user objects to a unit that already landed, dispatch a fresh `implementer` with the unit's text and the
+objection, then continue from there.
 
 ## Report
 

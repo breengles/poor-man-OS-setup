@@ -1,7 +1,7 @@
 export const meta = {
   name: 'implement-units',
-  description: 'Implement, verify, and commit tracked units one at a time (run it through /implement)',
-  phases: [{ title: 'Implement' }, { title: 'Verify' }, { title: 'Land' }],
+  description: 'Implement and commit tracked units one at a time (run it through /implement)',
+  phases: [{ title: 'Implement' }, { title: 'Land' }],
 }
 // pi: send the text below this line as workflowScript, prefixed with `const args = <args JSON>;`
 
@@ -39,24 +39,6 @@ const STATUS = {
   },
   required: ['status', 'files_changed'],
 }
-const VERDICT = {
-  type: 'object',
-  properties: {
-    pass: { type: 'boolean' },
-    criteria: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: { id: { type: 'string' }, met: { type: 'boolean' }, evidence: { type: 'string' } },
-        required: ['id', 'met', 'evidence'],
-      },
-    },
-    tests: { type: 'string' },
-    gaps: strings,
-    notes: NOTES,
-  },
-  required: ['pass', 'criteria', 'gaps'],
-}
 const LAND = {
   type: 'object',
   properties: {
@@ -67,11 +49,11 @@ const LAND = {
   required: ['committed', 'summary'],
 }
 
-// Writers opt out of pi's inferred acceptance gates: the verifier stage below is the gate.
+// Writers opt out of pi's inferred acceptance gates: the implementer runs the tests and checks the criteria itself.
 function step(key, agentName, phaseTitle, task, schema, opts) {
   if (PI) {
     const params = { agent: agentName, task, outputSchema: schema, context: 'fresh' }
-    if (opts.writer) params.acceptance = { level: 'none', reason: 'the implement workflow verifies each unit itself' }
+    if (opts.writer) params.acceptance = { level: 'none', reason: 'the implementer validates its own unit' }
     return runs.run(key, params).then((r) => (r && r.ok ? r.structuredOutput || null : null))
   }
   const o = { label: key, phase: phaseTitle, schema }
@@ -83,8 +65,8 @@ function step(key, agentName, phaseTitle, task, schema, opts) {
 
 const testLine = `Test command: ${args.testCmd || 'none known'}`
 // Fixed text after the orchestrator's `text`, so a stray instruction there cannot make an implementer mark a unit
-// Done before the verifier has passed it.
-const artifactLine = `The land step updates ${args.artifact} after verification. Do not edit it, and do not commit.`
+// Done before the land step.
+const artifactLine = `The land step updates ${args.artifact} after you finish. Do not edit it, and do not commit.`
 const list = (items) => (items.length ? items.map((s) => `- ${s}`).join('\n') : '- (none)')
 
 function implementTask(unit, id) {
@@ -99,52 +81,19 @@ function implementTask(unit, id) {
   ].join('\n')
 }
 
-function verifyTask(unit, id, files) {
-  return [
-    `Verify tracked unit ${id} from ${args.artifact} against its acceptance criteria.`,
-    '',
-    'Files the implementer reports changing:',
-    list(files),
-    '',
-    unit.text,
-    '',
-    testLine,
-    '',
-    `Scope: the run may change only the files above and ${args.artifact}. These paths were already changed before`,
-    'the run, so ignore them:',
-    args.baseline || '(clean)',
-  ].join('\n')
-}
-
-function repairTask(unit, id, files, gaps) {
-  return [
-    `An independent verifier found that tracked unit ${id} does not meet its acceptance criteria yet.`,
-    'Fix only these gaps. The rest of the change stands.',
-    '',
-    'Gaps:',
-    list(gaps),
-    '',
-    'Files changed so far:',
-    list(files),
-    '',
-    unit.text,
-    '',
-    testLine,
-    artifactLine,
-  ].join('\n')
-}
-
 function landTask(unit, id, files, notes) {
   return [
-    `Land tracked unit ${id}. Do not change source code. The verifier has already checked the scope of the change.`,
+    `Land tracked unit ${id}. Do not change source code.`,
     '',
-    `1. Update the artifact ${args.artifact}. For each of ${unit.ids.join(', ')}: set Status to Done, append a`,
+    '1. Check the scope. Run `git status --porcelain`. Every path in it must be an implementer file, the artifact, or a',
+    '   baseline path. If any other path changed, do not commit: return committed false and name each such path.',
+    `2. Update the artifact ${args.artifact}. For each of ${unit.ids.join(', ')}: set Status to Done, append a`,
     '   one-line `_Done: <what shipped>_` note to its detailed section, and delete its lines from the suggested',
     '   resolution order. Append the notes below to the `## Notes` section at the end of the artifact, verbatim.',
     '   Create the section if it is missing, and skip a note that repeats an existing entry. If the section now has',
     '   more than 40 entries, merge the ones that say the same thing. Then run `npx prettier --write --print-width 120`',
     '   on the artifact.',
-    '2. Commit. Stage with `git add` on the implementer files and the artifact only, never `-A` or `.`, and never',
+    '3. Commit. Stage with `git add` on the implementer files and the artifact only, never `-A` or `.`, and never',
     '   a baseline path. Write the subject imperative and lowercase, about 50 characters, describing what changed.',
     '   No type prefix such as `fix:`, and no issue IDs.',
     '',
@@ -166,8 +115,8 @@ const blocked = []
 const concerns = []
 const blockedIds = new Set()
 const result = (stopped) => ({ done, blocked, concerns, stopped })
-// Notes travel with the unit: the land step writes them only after the verifier passes it, so a failed attempt
-// cannot plant an unverified fact for later units. Blocked units and stops hand theirs to the main session.
+// Notes travel with the unit: the land step writes them only when it commits the unit, so a stopped attempt
+// cannot plant a fact for later units. Blocked units and stops hand theirs to the main session.
 let notes = []
 function collect(out, id) {
   for (const n of (out && out.notes) || []) {
@@ -201,26 +150,7 @@ for (const unit of args.queue) {
     continue
   }
 
-  let files = impl.files_changed
-  let verdict = await step(`verify-${key}-1`, 'verifier', 'Verify', verifyTask(unit, id, files), VERDICT, {})
-  if (!verdict) return stop(unit, 'verifier returned no verdict')
-  collect(verdict, id)
-  if (!verdict.pass) {
-    say(`${id}: criteria unmet, one repair round`)
-    const repair = repairTask(unit, id, files, verdict.gaps)
-    const fix = await step(`repair-${key}`, 'implementer', 'Implement', repair, STATUS, { writer: true, model: 'opus' })
-    collect(fix, id)
-    if (!fix || fix.status !== 'COMPLETE') {
-      return stop(unit, `repair did not complete: ${fix ? fix.blocker || fix.missing : 'no status'}`)
-    }
-    files = [...new Set([...files, ...fix.files_changed])]
-    verdict = await step(`verify-${key}-2`, 'verifier', 'Verify', verifyTask(unit, id, files), VERDICT, {})
-    collect(verdict, id)
-    if (!verdict || !verdict.pass) {
-      return stop(unit, `criteria still unmet after repair: ${verdict ? verdict.gaps.join('; ') : 'no verdict'}`)
-    }
-  }
-
+  const files = impl.files_changed
   const land = await step(`land-${key}`, PI ? 'worker' : null, 'Land', landTask(unit, id, files, notes), LAND, {
     writer: true,
     model: 'sonnet',
