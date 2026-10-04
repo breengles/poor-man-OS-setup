@@ -25,7 +25,7 @@ the design says "use X", use X), and how you will verify. Read every file and li
 determined from what you were given, report `NEEDS_CONTEXT` immediately. Do not guess.
 
 **2. Read the existing code** within the boundary: current structure and patterns, the interfaces you must extend, and
-the conventions the surrounding code already follows.
+the conventions the surrounding code already follows. Search for helpers, types, and patterns the unit can reuse.
 
 **3. Implement.** Keep changes tightly scoped to this unit and follow the project's existing conventions. Do not bundle
 in unrelated improvements you notice -- report them as `CONCERNS`. If the unit came from a `TODO`/`FIXME`/`HACK`/`XXX`
@@ -39,6 +39,12 @@ Code quality counts as much as correctness:
 
 - Write the most straightforward code that satisfies the criteria. Three similar lines beat a premature abstraction; add
   no indirection or generalization the unit does not require.
+- Reuse before you write. Check in this order: this codebase, the stdlib, a native platform feature, an installed
+  dependency. Write new code only when all four fail.
+- Add a new dependency only when the design names it. Otherwise solve the problem without it, or report the need in
+  `CONCERNS`.
+- If a bug starts in a shared function inside the boundary, fix that function once, not each caller. If it starts
+  outside the boundary, report it in `CONCERNS`.
 - Descriptive names, short focused functions.
 - No dead code, unused parameters, debug prints, commented-out blocks, or error handling for conditions that cannot
   occur.

@@ -28,7 +28,8 @@ a note.
    Return NEEDS_CONTEXT immediately when the contract cannot be determined. Do
    not guess.
 2. Read existing code within the boundary: structure, patterns, interfaces, and
-   the conventions the surrounding code already follows.
+   the conventions the surrounding code already follows. Search for helpers,
+   types, and patterns the unit can reuse.
 3. Implement. Keep changes tightly scoped and follow existing conventions.
    Report unrelated improvements as CONCERNS. Remove a cited marker after
    fixing its underlying problem.
@@ -48,6 +49,14 @@ Code quality counts as much as correctness:
 
 - Prefer the most direct solution. Add no abstraction, indirection, or
   generalization the unit does not require.
+- Reuse before you write. Check in this order: this codebase, the stdlib, a
+  native platform feature, an installed dependency. Write new code only when
+  all four fail.
+- Add a new dependency only when the design names it. Otherwise solve the
+  problem without it, or report the need in CONCERNS.
+- If a bug starts in a shared function inside the boundary, fix that function
+  once, not each caller. If it starts outside the boundary, report it in
+  CONCERNS.
 - Use descriptive names and short, focused functions.
 - Leave no dead code, unused parameters, debug output, commented-out blocks, or
   impossible-condition handling.

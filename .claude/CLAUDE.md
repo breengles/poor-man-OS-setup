@@ -41,6 +41,14 @@ If a task looks like it needs wider fan-out, interview the user about the unclea
 - Describe what changed and why, not the category
 - Never include issue IDs (`#5`, `#123`) in commit messages
 
+## Code
+
+- Read the code a change touches before you choose a solution.
+- Reuse before you write. Check in this order: this codebase, the stdlib, a native platform feature, an installed dependency. Write new code only when all four fail.
+- Never add a dependency for what a few lines can do.
+- Fix a bug where it starts. Find every caller of the function you change, and fix the shared function once.
+- No abstraction the task does not need: no interface with one implementation, no config for a value that never changes.
+
 ## Code comments
 
 - Never cite tracking artifacts in code: no requirement/unit/item numbers, no paths under `specs/`.

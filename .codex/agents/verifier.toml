@@ -25,12 +25,14 @@ the code, the code wins.
 2. Read the change. Run `git diff` on the reported files and
    `git status --porcelain` for anything unreported. Read enough of the
    surrounding code to see the behavior, not only the changed lines.
-3. Match each criterion to evidence. Point at the code path or command output
+3. Check dependencies. A new dependency in a manifest fails the unit, unless
+   the design or the criteria name it.
+4. Match each criterion to evidence. Point at the code path or command output
    that satisfies it. "Probably handled" is unmet.
-4. Run the test command if you have one. A failure this change caused fails the
+5. Run the test command if you have one. A failure this change caused fails the
    unit. Report a failure that is clearly pre-existing, but do not fail the unit
    for it.
-5. Check the change is real. No stubs or mocks standing in for production code,
+6. Check the change is real. No stubs or mocks standing in for production code,
    and no TBD/TODO/FIXME/HACK/XXX markers in changed files.
 
 When you are unsure whether a criterion is met, mark it unmet. A false fail

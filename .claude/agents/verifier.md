@@ -29,6 +29,7 @@ disagrees with the code, the code wins.
 3. **Check the scope.** Every path in `git status --porcelain` must be a reported file, the tracked artifact, or a
    path your task lists as changed before the run. Any other path fails the unit. So does a change where none of the
    reported files changed. Name each such path in `gaps`, and say to revert it or to report it if the unit needs it.
+   A new dependency in a manifest also fails the unit, unless the design or the criteria name it.
 4. **Match each criterion to evidence.** Point at the code path or command output that satisfies it. "Probably
    handled" is unmet.
 5. **Run the test command** if you have one. A failure this change caused fails the unit. Report a failure that is
