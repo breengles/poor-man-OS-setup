@@ -4,7 +4,7 @@
 
 The repository configures **Claude Code** (Anthropic's CLI agent) as the primary AI coding assistant, and **pi**
 (`@earendil-works/pi-coding-agent`) as a second harness that runs local models served by ollama. pi reuses Claude
-Code's skills and its `implementer` agent rather than keeping a parallel copy of them.
+Code's skills and its `implementer` and `reviewer` agents rather than keeping a parallel copy of them.
 
 ## File Structure
 
@@ -17,7 +17,7 @@ Code's skills and its `implementer` agent rather than keeping a parallel copy of
 | `.claude/statusline-command.sh` | Status line script that `settings.json` runs                            |
 | `.claude/skills/*/SKILL.md`     | Custom slash commands                                                   |
 | `.claude/workflows/*.js`        | Saved workflows: `implement-units`, the per-unit loop of `/implement`   |
-| `.claude/agents/*.md`           | Custom subagent: `implementer`                                          |
+| `.claude/agents/*.md`           | Custom subagents: `implementer` and `reviewer`                          |
 
 Claude Code writes to `settings.json` itself, so its edits land in the repo through the symlink and show up in
 `git status`. `.claude/skills/synced/` holds claude.ai skills that Claude Code syncs down. It is ignored by both stow
@@ -43,6 +43,7 @@ own format details.
 | `/spec-init`      | Draft a spec directory in one pass: EARS requirements, design, tasks           |
 | `/grill`          | Interview the user in rounds until a plan has no open questions                |
 | `/implement`      | Implement spec tasks one unit at a time; the main session orchestrates         |
+| `/review-spec`    | Review every change a spec shipped with one Opus subagent, before `/finalize`  |
 | `/finalize`       | Reconcile the docs with what shipped, remove the resolved artifact, and commit |
 | `/commit`         | Create commits in the repo's message style, staging selectively                |
 | `/mr-description` | Write or apply a GitLab merge request title and description                    |
@@ -93,6 +94,15 @@ the name does not resolve, the skill reads the file and passes its text inline a
 makes `/implement-units` a slash command, so the script returns an error when it gets no `args.queue`. pi runs the same
 file through pi-subagents, see [Shared skills and agents](#shared-skills-and-agents).
 
+### `/review-spec`
+
+`/implement` commits each unit without an independent check, so the user runs `/review-spec <spec>` by hand once the
+units have landed. The skill finds the commits that changed `tasks.md` together with code outside the spec. It hands
+them to the `reviewer` agent (Opus, high effort, read-only). The reviewer reads the spec and every commit, matches each
+requirement to evidence in the code, and looks hardest for bugs at the seams between units. It runs the tests and
+returns a verdict with findings ranked by severity. The skill reports them and fixes nothing. A finding the user wants
+fixed goes to a fresh `implementer`. Run it before `/finalize`, because `/finalize` removes the spec.
+
 ### `/commit`
 
 Subjects are imperative and lowercase, about 50 characters, with no `feat:` or `fix:` prefix and no issue IDs. The
@@ -111,6 +121,7 @@ from `~/.pi/agent/`, and this repo owns the hand-authored part of that directory
 | `.pi/agent/extensions/footer-info.ts` | Footer: cwd, branch, cost, context use, model, t/s, thinking    |
 | `.pi/agent/extensions/pi-context.ts`  | `/context` command: inspect the live system prompt              |
 | `.pi/agent/agents/implementer.md`     | pi-subagents shim pointing at the Claude `implementer` contract |
+| `.pi/agent/agents/reviewer.md`        | pi-subagents shim pointing at the Claude `reviewer` contract    |
 | `.pi/web-search.json`                 | pi-web-access settings: workflow and summary model              |
 
 Everything else under `.pi/` is runtime state: `auth.json` and `trust.json` hold credentials and trust decisions,
