@@ -493,6 +493,8 @@ efficientnet
 egood
 eigenbasis
 eigendecomposition
+eigenpair
+eigenpairs
 eigenproblem
 eigensolutions
 eigensolve
@@ -693,6 +695,7 @@ headnode
 heatmaps
 heghine
 Hellmann
+hermiticity
 Heteronuclear
 Heun
 hfds
@@ -1728,6 +1731,7 @@ tmax
 tmin
 TMPDIR
 tobytes
+todense
 todowrite
 tomlkit
 toolsai
@@ -1806,6 +1810,7 @@ unshuffle
 unshuffled
 unsloth
 unsqueeze
+unsymmetrized
 unwarp
 upcasting
 updown
