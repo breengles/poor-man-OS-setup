@@ -91,7 +91,6 @@
       "Bash(git reset --hard *)",
       "Bash(git clean *)",
       "Bash(git branch -D *)",
-      "Bash(git merge *)",
       "Bash(glab issue delete *)",
       "Bash(glab mr delete *)",
       "Bash(glab mr merge *)",
