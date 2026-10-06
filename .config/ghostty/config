@@ -29,3 +29,6 @@ keybind = alt+shift+l=goto_split:right
 # macos
 macos-option-as-alt = true
 quit-after-last-window-closed = true
+
+# ssh
+shell-integration-features = ssh-terminfo,ssh-env
