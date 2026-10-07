@@ -12,13 +12,12 @@
 | [#2.4](#24-arpy-collect-verdicts-and-stop-conditions)    | Done    |
 | [#2.5](#25-arpy-new-smoke-and-note)                      | Done    |
 | [#3.1](#31-autoresearch-propose-workflow)                | Done    |
-| [#3.2](#32-autoresearch-skill)                           | Pending |
+| [#3.2](#32-autoresearch-skill)                           | Done    |
 | [#4.1](#41-documentation-and-stow)                       | Pending |
 | [#4.2](#42-end-to-end-check-with-stubbed-slurm)          | Pending |
 
 ## Suggested Resolution Order
 
-- 3.2 -- skill, ties `ar.py` and the workflow together
 - 4.1 -- docs once the interfaces are final
 - 4.2 -- end-to-end check of the deterministic path
 
@@ -210,6 +209,7 @@ Create `.claude/skills/autoresearch/SKILL.md`, under 100 lines.
 
 _Requirements: 1.1, 1.2, 1.7, 1.8, 3.8, 4.1, 4.2, 6.2, 6.3, 6.4, 6.8_
 _Depends: 1.2, 3.1_
+_Done: SKILL.md ships init, tick, status, stop, and baseline subcommands_
 
 ### 4.1 Documentation and stow
 
@@ -272,3 +272,5 @@ _Boundary: Validation_
 - [2.5 env] To test smoke without SLURM, put a fake `sbatch` script that prints a job id (e.g. `echo 4242`) first on PATH. ar.py's submit() calls `sbatch --parsable` and parses stdout.
 - [3.1 env] Workflow scripts use top-level return, so `node --check` rejects them. To parse-check one, strip `export` from the meta line and wrap the body in `new AsyncFunction('args', 'agent', src)` in node.
 - [3.1 deviation] autoresearch-propose.js needs every design arg. It calls args.scope.join(), so scope must be an array. It returns {error} with no other keys when args.slots is missing or below 1.
+- [3.2 deviation] SKILL.md adds a `baseline <campaign>` subcommand beyond init/tick/status/stop. It reruns the Baseline section, and the tick report points the user to it when the baseline experiment crashed. Docs in 4.1 should list it.
+- [3.2 deviation] The baseline experiment always has the hypothesis `baseline: unchanged champion commit`. The tick finds it in `ar.py status` output by the `baseline:` prefix (.claude/skills/autoresearch/SKILL.md).
