@@ -46,8 +46,9 @@ const LAND = {
     sha: { type: 'string' },
     summary: { type: 'string' },
   },
-  required: ['committed', 'summary'],
+  required: ['committed', 'sha', 'summary'],
 }
+const SHA = /^[0-9a-f]{7,40}$/
 
 // Writers opt out of pi's inferred acceptance gates: the implementer runs the tests and checks the criteria itself.
 function step(key, agentName, phaseTitle, task, schema, opts) {
@@ -97,7 +98,8 @@ function landTask(unit, id, files, notes) {
     '   a baseline path. Write the subject imperative and lowercase, about 50 characters, describing what changed.',
     '   No type prefix such as `fix:`, and no issue IDs.',
     '',
-    'Return committed, the short sha, and a one-line summary of what shipped, or of why the commit failed.',
+    'Return committed, the short sha from `git rev-parse --short HEAD` (empty if nothing was committed), and a',
+    'one-line summary of what shipped, or of why the commit failed.',
     '',
     'Notes:',
     notes.length ? notes.join('\n') : '- (none)',
@@ -158,6 +160,10 @@ for (const unit of args.queue) {
   })
   if (!land || !land.committed) {
     return stop(unit, `not committed: ${land ? land.summary : 'no result'}`)
+  }
+  // A commit claim without a hash cannot be checked, so the main session must confirm it in git.
+  if (!SHA.test(land.sha || '')) {
+    return stop(unit, `land claimed a commit without a valid sha (${JSON.stringify(land.sha)}): ${land.summary}`)
   }
   done.push({ ids: unit.ids, sha: land.sha, summary: land.summary })
   say(`${id}: ${land.sha} ${land.summary}`)
