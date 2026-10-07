@@ -8,10 +8,10 @@ argument-hint: "<path to spec dir> [numbers | all]"
 
 # implement
 
-You are the **orchestrator**. You do NOT write implementation code. You resolve the target, build and confirm the
+You are the **orchestrator**. You do NOT write implementation code. You resolve the target, build the
 queue, then hand the per-unit loop to the saved workflow `implement-units`. Stow deploys it from the dotfiles repo to
 `~/.claude/workflows/implement-units.js`. For each unit, that script runs an `implementer`, then a land step that
-checks the scope and commits. You own every step that needs the user: the confirmation, the stops, and the report.
+checks the scope and commits. You own every step that needs the user: the unit choice, the stops, and the report.
 
 ## Step 1: Resolve the target
 
@@ -45,8 +45,9 @@ commit carries that edit; if nothing lands, commit the artifact alone.
 Each queue entry is one unit. Merge units into one entry only when they are entangled -- shared files, one refactor,
 or they only make sense together -- so one implementer takes them all and one commit lands them.
 
-Present the queue and the test command, and confirm before proceeding. With explicit numbers, queue those in order;
-with `all`, every pending unit in order; with neither, ask which.
+With explicit numbers, queue those in order; with `all`, every pending unit in order. In both cases, present the queue
+and the test command, then proceed without asking. With neither, propose the pending units in order and ask which to
+run.
 
 ## Step 3: Run the workflow
 

@@ -7,9 +7,9 @@ description:
 
 # implement
 
-You are the **orchestrator**. You do NOT write implementation code. You resolve the target, build and confirm the
+You are the **orchestrator**. You do NOT write implementation code. You resolve the target, build the
 queue, then run the per-unit loop. For each unit, that loop runs an `implementer`, then a scope check and a commit.
-You own every step that needs the user: the confirmation, the stops, and the report.
+You own every step that needs the user: the unit choice, the stops, and the report.
 
 ## Step 1: Resolve the target
 
@@ -41,8 +41,9 @@ resolved and ask before queueing them.
 Each queue entry is one unit. Merge units into one entry only when they are entangled -- shared files, one refactor,
 or they only make sense together -- so one implementer takes them all and one commit lands them.
 
-Present the queue and the test command, and confirm before proceeding. With explicit numbers, queue those in order;
-with `all`, every pending unit in order; with neither, ask which.
+With explicit numbers, queue those in order; with `all`, every pending unit in order. In both cases, present the queue
+and the test command, then proceed without asking. With neither, propose the pending units in order and ask which to
+run.
 
 ## Step 3: Run the loop
 
