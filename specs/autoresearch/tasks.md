@@ -9,7 +9,7 @@
 | [#2.1](#21-arpy-slurm-layer)                             | Done    |
 | [#2.2](#22-arpy-mlflow-reader)                           | Done    |
 | [#2.3](#23-arpy-collect-job-transitions-and-submissions) | Done    |
-| [#2.4](#24-arpy-collect-verdicts-and-stop-conditions)    | Pending |
+| [#2.4](#24-arpy-collect-verdicts-and-stop-conditions)    | Done    |
 | [#2.5](#25-arpy-new-smoke-and-note)                      | Pending |
 | [#3.1](#31-autoresearch-propose-workflow)                | Pending |
 | [#3.2](#32-autoresearch-skill)                           | Pending |
@@ -18,7 +18,6 @@
 
 ## Suggested Resolution Order
 
-- 2.4 -- builds on the transitions in 2.3
 - 2.5 -- the build-side commands the workflow calls
 - 3.1 -- workflow, needs the `ar.py` commands it calls
 - 3.2 -- skill, ties `ar.py` and the workflow together
@@ -146,6 +145,8 @@ The second half of `collect`.
 - [ ] Pending verdicts resolve in finish order once the baseline is known.
 - [ ] Only refs under `autoresearch/<campaign>/` move.
 
+_Done: ar.py collect judges verdicts, moves the champion branch, and applies draining and finished stop conditions_
+
 _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.9, 3.10, 6.9_
 _Depends: 2.3_
 
@@ -261,3 +262,6 @@ _Boundary: Validation_
 - [2.3 deviation] ar.py remove_worktrees runs after the ledger save, on every terminal experiment whose worktrees/<exp> dir still exists. A git failure becomes a 'worktree-remove-failed' event and the next tick retries, so 2.5's smoke crash path does not need its own removal.
 - [2.3 deviation] ar.py now has TERMINAL_STATUSES, submit_job(path, exp, kind, resubmitted) -> Job (submits experiments/<exp>/<kind>.sbatch in worktrees/<exp>), and finish(exp, status, reason, events), which sets finished_at. 2.5 smoke can reuse submit_job.
 - [2.3 env] Event dicts look like {exp, event, ...}, where event is smoke-passed, resubmitted, running, worktree-remove-failed, or a terminal status with a reason.
+- [2.4 deviation] ar.py cmd_collect returns {state, champion:{exp,commit,metric}, free_slots, building, events}. The new verdict events are baseline, pending, champion, discard, and champion-move-failed. The new campaign events have no exp key: draining (with a reason) and finished.
+- [2.4 deviation] ar.py has BUSY_STATUSES = (building, smoke, waiting, running), plus the helpers judge(config, ledger), update_state(config, ledger), plateau_count(ledger), and beats(metric, champion_metric, config). The finish order is a sort on finished_at.
+- [2.4 env] `git branch -f` on a branch that is checked out in a worktree fails with 'cannot force update the branch ... used by worktree at ...'. ar.py turns this into a champion-move-failed event (verified in a scratch repo).

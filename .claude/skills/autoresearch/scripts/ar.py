@@ -32,6 +32,7 @@ LOCK_POLL_SECONDS = 0.5
 # The name becomes a directory and a git ref component, so keep it to safe characters.
 CAMPAIGN_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 TERMINAL_STATUSES = {"done", "crashed", "smoke_failed", "abandoned"}
+BUSY_STATUSES = ("building", "smoke", "waiting", "running")
 
 
 class ArError(Exception):
@@ -517,6 +518,86 @@ def collect_jobs(path: Path, config: Config, ledger: Ledger) -> list[dict]:
     return events
 
 
+def beats(metric: float, champion_metric: float, config: Config) -> bool:
+    """True if metric improves on champion_metric by more than min_delta in the configured direction."""
+    improvement = champion_metric - metric if config.direction == "min" else metric - champion_metric
+    # 1.0 - 0.99 is 0.010000000000000009 in floats, so an improvement equal to min_delta must not count as more.
+    return improvement > config.min_delta and not math.isclose(improvement, config.min_delta)
+
+
+def judge(config: Config, ledger: Ledger) -> list[dict]:
+    """Give every unjudged done experiment a verdict in finish order, and move the champion branch on a win.
+
+    The baseline experiment runs the unchanged champion commit, so while the champion has no metric, the first done
+    experiment on that commit supplies it. A failed branch move stops judging, so the next tick retries in order.
+
+    Returns:
+        One event per verdict, plus one for a failed branch move.
+    """
+    unjudged = sorted(
+        (e for e in ledger.experiments if e.status == "done" and e.verdict in (None, "pending")),
+        key=lambda e: e.finished_at or "",
+    )
+    champion = ledger.champion
+    events: list[dict] = []
+    if champion.metric is None:
+        baseline = next((e for e in unjudged if e.commit == champion.commit), None)
+        if baseline:
+            champion.exp, champion.metric = baseline.id, baseline.metric
+            baseline.verdict = "champion"
+            events.append({"exp": baseline.id, "event": "baseline", "metric": baseline.metric})
+            unjudged.remove(baseline)
+
+    for exp in unjudged:
+        assert exp.metric is not None and exp.commit is not None  # done implies both
+        if champion.metric is None:
+            if exp.verdict is None:
+                exp.verdict = "pending"
+                events.append({"exp": exp.id, "event": "pending", "metric": exp.metric})
+        elif beats(exp.metric, champion.metric, config):
+            try:
+                git("branch", "-f", champion_branch(ledger.campaign), exp.commit)
+            except ArError as exc:
+                events.append({"exp": exp.id, "event": "champion-move-failed", "reason": str(exc)})
+                break
+            ledger.history.append(champion)
+            champion = Champion(exp=exp.id, commit=exp.commit, metric=exp.metric, since=now())
+            ledger.champion = champion
+            exp.verdict = "champion"
+            events.append({"exp": exp.id, "event": "champion", "metric": exp.metric})
+        else:
+            exp.verdict = "discard"
+            events.append({"exp": exp.id, "event": "discard", "metric": exp.metric})
+    return events
+
+
+def plateau_count(ledger: Ledger) -> int:
+    """Count the discarded experiments, in finish order, since the last champion verdict."""
+    count = 0
+    for exp in sorted(ledger.experiments, key=lambda e: e.finished_at or ""):
+        if exp.verdict == "champion":
+            count = 0
+        elif exp.verdict == "discard":
+            count += 1
+    return count
+
+
+def update_state(config: Config, ledger: Ledger) -> list[dict]:
+    """Drain an active campaign at a stop condition, and finish a draining one once every experiment has ended."""
+    events = []
+    if ledger.state == "active":
+        if config.max_experiments is not None and len(ledger.experiments) >= config.max_experiments:
+            ledger.state = "draining"
+            events.append({"event": "draining", "reason": f"max_experiments {config.max_experiments} reached"})
+        elif config.plateau is not None and plateau_count(ledger) >= config.plateau:
+            ledger.state = "draining"
+            events.append({"event": "draining", "reason": f"plateau of {config.plateau} without a new champion"})
+    if ledger.state == "draining" and all(e.status in TERMINAL_STATUSES for e in ledger.experiments):
+        ledger.state = "finished"
+        events.append({"event": "finished"})
+    return events
+
+
 def remove_worktrees(path: Path, ledger: Ledger) -> list[dict]:
     """Remove the worktree of every ended experiment and keep its branch. A failure is reported and retried next tick."""
     root = (path / "worktrees").resolve()
@@ -536,10 +617,22 @@ def cmd_collect(args: argparse.Namespace) -> dict:
     path = campaign_dir(args.campaign)
     ledger_path = path / "ledger.json"
     ledger = Ledger.load(ledger_path)
-    events = collect_jobs(path, load_config(path / "campaign.toml"), ledger)
+    config = load_config(path / "campaign.toml")
+    events = collect_jobs(path, config, ledger)
+    events += judge(config, ledger)
+    events += update_state(config, ledger)
     ledger.save(ledger_path)
     events += remove_worktrees(path, ledger)
-    return {"state": ledger.state, "events": events}
+    count = {status: sum(e.status == status for e in ledger.experiments) for status in BUSY_STATUSES}
+    champion = ledger.champion
+    return {
+        "state": ledger.state,
+        "champion": {"exp": champion.exp, "commit": champion.commit, "metric": champion.metric},
+        # Smoke jobs take no max_parallel slot, but they count here so the tick does not build more than slots can run.
+        "free_slots": config.max_parallel - sum(count.values()),
+        "building": count["building"],
+        "events": events,
+    }
 
 
 # Commands that change campaign files run under the campaign lock. init takes the lock itself, because the campaign
