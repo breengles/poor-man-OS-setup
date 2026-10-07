@@ -133,7 +133,9 @@ experiment when it ends.
 Campaign state goes to `<repo>/.autoresearch/<campaign>/`, which `init` adds to `.git/info/exclude`. Experiments live on
 `autoresearch/<campaign>/<exp-id>` branches, and the best one is `autoresearch/<campaign>/champion`.
 
-**Start.** Run `/autoresearch init <campaign>` from the project root. One question round sets the goal and metric, the
+**Start.** First make the project's training code log its hyperparameters and config to MLflow as run params, and
+let it set MLflow run tags. `init` stops when either is missing. Then run `/autoresearch init <campaign>` from the
+project root. One question round sets the goal and metric, the
 scope globs, the reference sbatch script and MLflow database, and the limits. Without a baseline MLflow run ID, the
 skill builds a baseline experiment from the champion code. It then prints permission rules for the project's
 `.claude/settings.local.json`. Add them, open a tmux session on the login node, and run

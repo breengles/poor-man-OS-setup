@@ -19,8 +19,9 @@ The first argument is the subcommand. The second is the campaign name. Ask for a
 
 ## init
 
-1. Skim the repo for defaults: sbatch scripts, the MLflow database path, logged metric names, and the code the change
-   should touch.
+1. Check the prerequisites: the training code logs its hyperparameters and config to MLflow as run params, and can
+   set MLflow run tags. If it cannot, stop and tell the user to add this first. Then skim the repo for defaults:
+   sbatch scripts, the MLflow database path, logged metric names, and the code the change should touch.
 2. Ask **one** `AskUserQuestion` call with four questions. Each option is a complete drafted value, and "Other" lets
    the user type their own:
    - Goal and metric: `goal`, `metric`, `direction` (`min` or `max`), `aggregate` (`last`, `min`, or `max`),
@@ -52,8 +53,7 @@ Then start the loop in a tmux session on the login node: `/loop /autoresearch ti
 Without a baseline metric, `ar.py` judges no experiment. Dispatch **one** builder agent with the campaign values and:
 
 1. Run `ar.py new <campaign> --baseline --hypothesis "baseline: the champion code" --json` -> `{exp, worktree, dir}`.
-2. Change no code, but every run must log its hyperparameters and config to MLflow as run params. If the project does
-   not, add that logging in scope and commit it. If that needs a file outside `scope`, return an error.
+2. Change no code and make no commit.
 3. Write `<dir>/smoke.sbatch` and `<dir>/full.sbatch` from `reference_sbatch`, with no hyperparameter override. They
    set only SLURM resources, the `smoke_hint` shrink, param logging, the MLflow tags `autoresearch.campaign=<campaign>`,
    `autoresearch.exp=<exp>`, and `autoresearch.kind=smoke|full` through the project's own tag mechanism, and the
