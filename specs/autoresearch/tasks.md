@@ -11,14 +11,13 @@
 | [#2.3](#23-arpy-collect-job-transitions-and-submissions) | Done    |
 | [#2.4](#24-arpy-collect-verdicts-and-stop-conditions)    | Done    |
 | [#2.5](#25-arpy-new-smoke-and-note)                      | Done    |
-| [#3.1](#31-autoresearch-propose-workflow)                | Pending |
+| [#3.1](#31-autoresearch-propose-workflow)                | Done    |
 | [#3.2](#32-autoresearch-skill)                           | Pending |
 | [#4.1](#41-documentation-and-stow)                       | Pending |
 | [#4.2](#42-end-to-end-check-with-stubbed-slurm)          | Pending |
 
 ## Suggested Resolution Order
 
-- 3.1 -- workflow, needs the `ar.py` commands it calls
 - 3.2 -- skill, ties `ar.py` and the workflow together
 - 4.1 -- docs once the interfaces are final
 - 4.2 -- end-to-end check of the deterministic path
@@ -189,6 +188,7 @@ Create `.claude/workflows/autoresearch-propose.js`, in the style of `implement-u
 
 _Requirements: 4.3, 4.4, 4.6, 4.7, 4.10, 6.5_
 _Depends: 2.5_
+_Done: autoresearch-propose.js ships with guard, propose, judge, and chunked build phases_
 
 ### 3.2 /autoresearch skill
 
@@ -270,3 +270,5 @@ _Boundary: Validation_
 - [2.5 deviation] ar.py new runs `git branch <branch> <champion>` and then `git worktree add <dir> <branch>`, and deletes the branch if worktree add fails. IDs are f"e{next_id:04d}".
 - [2.5 deviation] ar.py note folds whitespace in --text to single spaces, so the entry stays on one line. It returns {note, added}.
 - [2.5 env] To test smoke without SLURM, put a fake `sbatch` script that prints a job id (e.g. `echo 4242`) first on PATH. ar.py's submit() calls `sbatch --parsable` and parses stdout.
+- [3.1 env] Workflow scripts use top-level return, so `node --check` rejects them. To parse-check one, strip `export` from the meta line and wrap the body in `new AsyncFunction('args', 'agent', src)` in node.
+- [3.1 deviation] autoresearch-propose.js needs every design arg. It calls args.scope.join(), so scope must be an array. It returns {error} with no other keys when args.slots is missing or below 1.
