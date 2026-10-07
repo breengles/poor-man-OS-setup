@@ -10,7 +10,7 @@
 | [#2.2](#22-arpy-mlflow-reader)                           | Done    |
 | [#2.3](#23-arpy-collect-job-transitions-and-submissions) | Done    |
 | [#2.4](#24-arpy-collect-verdicts-and-stop-conditions)    | Done    |
-| [#2.5](#25-arpy-new-smoke-and-note)                      | Pending |
+| [#2.5](#25-arpy-new-smoke-and-note)                      | Done    |
 | [#3.1](#31-autoresearch-propose-workflow)                | Pending |
 | [#3.2](#32-autoresearch-skill)                           | Pending |
 | [#4.1](#41-documentation-and-stow)                       | Pending |
@@ -18,7 +18,6 @@
 
 ## Suggested Resolution Order
 
-- 2.5 -- the build-side commands the workflow calls
 - 3.1 -- workflow, needs the `ar.py` commands it calls
 - 3.2 -- skill, ties `ar.py` and the workflow together
 - 4.1 -- docs once the interfaces are final
@@ -167,6 +166,7 @@ _Depends: 2.3_
 _Requirements: 4.5, 4.8, 4.9, 4.12, 6.9_
 _Depends: 1.1, 2.1_
 _Boundary: BuildCommands_
+_Done: ar.py new, smoke, and note ship, with scope check and crash handling_
 
 ### 3.1 autoresearch-propose workflow
 
@@ -265,3 +265,8 @@ _Boundary: Validation_
 - [2.4 deviation] ar.py cmd_collect returns {state, champion:{exp,commit,metric}, free_slots, building, events}. The new verdict events are baseline, pending, champion, discard, and champion-move-failed. The new campaign events have no exp key: draining (with a reason) and finished.
 - [2.4 deviation] ar.py has BUSY_STATUSES = (building, smoke, waiting, running), plus the helpers judge(config, ledger), update_state(config, ledger), plateau_count(ledger), and beats(metric, champion_metric, config). The finish order is a sort on finished_at.
 - [2.4 env] `git branch -f` on a branch that is checked out in a worktree fails with 'cannot force update the branch ... used by worktree at ...'. ar.py turns this into a champion-move-failed event (verified in a scratch repo).
+- [2.5 deviation] ar.py smoke reports every crash (out-of-scope, missing script, submit-failed) by saving the ledger first and then raising ArError(reason), so main() prints {"error": reason} and exits 1. Success returns {job}.
+- [2.5 deviation] ar.py has out_of_scope(paths, scope) -> list[str] and glob_regex(glob). '*' and '?' stop at '/', '**' crosses it, and '**/' also matches zero dirs. smoke diffs with `git diff -z --name-only --no-renames parent head`.
+- [2.5 deviation] ar.py new runs `git branch <branch> <champion>` and then `git worktree add <dir> <branch>`, and deletes the branch if worktree add fails. IDs are f"e{next_id:04d}".
+- [2.5 deviation] ar.py note folds whitespace in --text to single spaces, so the entry stays on one line. It returns {note, added}.
+- [2.5 env] To test smoke without SLURM, put a fake `sbatch` script that prints a job id (e.g. `echo 4242`) first on PATH. ar.py's submit() calls `sbatch --parsable` and parses stdout.

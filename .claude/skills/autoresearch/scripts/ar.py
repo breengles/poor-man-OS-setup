@@ -420,13 +420,6 @@ def cmd_status(args: argparse.Namespace) -> dict:
     }
 
 
-def _not_implemented(args: argparse.Namespace) -> dict:
-    raise ArError(f"'{args.command}' is not implemented yet")
-
-
-cmd_new = cmd_smoke = cmd_note = _not_implemented
-
-
 def submit_job(path: Path, exp: Experiment, kind: str, resubmitted: bool) -> Job:
     """Submit experiments/<exp>/<kind>.sbatch in the experiment's worktree and record the job."""
     exp_dir = path / "experiments" / exp.id
@@ -611,6 +604,102 @@ def remove_worktrees(path: Path, ledger: Ledger) -> list[dict]:
         except ArError as exc:
             events.append({"exp": exp.id, "event": "worktree-remove-failed", "reason": str(exc)})
     return events
+
+
+def cmd_new(args: argparse.Namespace) -> dict:
+    path = campaign_dir(args.campaign)
+    ledger_path = path / "ledger.json"
+    ledger = Ledger.load(ledger_path)
+    exp_id = f"e{ledger.next_id:04d}"
+    branch = f"autoresearch/{args.campaign}/{exp_id}"
+    worktree = path / "worktrees" / exp_id
+    commit = ledger.champion.commit
+    git("branch", branch, commit)
+    try:
+        git("worktree", "add", str(worktree), branch)
+    except ArError:
+        git("branch", "-D", branch)
+        raise
+    exp_dir = path / "experiments" / exp_id
+    exp_dir.mkdir(parents=True, exist_ok=True)
+    ledger.experiments.append(
+        Experiment(
+            id=exp_id,
+            hypothesis=args.hypothesis,
+            parent=commit,
+            branch=branch,
+            commit=None,
+            status="building",
+            verdict=None,
+            metric=None,
+            run_id=None,
+            reason=None,
+            jobs=[],
+            created_at=now(),
+            finished_at=None,
+        )
+    )
+    ledger.next_id += 1
+    ledger.save(ledger_path)
+    return {"exp": exp_id, "worktree": str(worktree), "dir": str(exp_dir)}
+
+
+def glob_regex(glob: str) -> str:
+    """Translate a scope glob to a regex. '*' and '?' stop at '/', '**' crosses it, and '**/' also matches no dirs."""
+    parts = {"**/": "(?:.*/)?", "**": ".*", "*": "[^/]*", "?": "[^/]"}
+    return "".join(parts.get(token, re.escape(token)) for token in re.split(r"(\*\*/?|\*|\?)", glob))
+
+
+def out_of_scope(paths: list[str], scope: list[str]) -> list[str]:
+    pattern = re.compile("|".join(glob_regex(g) for g in scope))
+    return [p for p in paths if not pattern.fullmatch(p)]
+
+
+def cmd_smoke(args: argparse.Namespace) -> dict:
+    path = campaign_dir(args.campaign)
+    ledger_path = path / "ledger.json"
+    ledger = Ledger.load(ledger_path)
+    config = load_config(path / "campaign.toml")
+    exp = next((e for e in ledger.experiments if e.id == args.exp), None)
+    if exp is None:
+        raise ArError(f"no experiment {args.exp!r} in campaign {args.campaign!r}")
+    if exp.status != "building":
+        raise ArError(f"experiment {exp.id} is {exp.status}, not building")
+
+    head = git("rev-parse", exp.branch)
+    # -z keeps unusual file names unquoted, and --no-renames lists both sides of a rename.
+    changed = [p for p in git("diff", "-z", "--name-only", "--no-renames", exp.parent, head).split("\0") if p]
+    outside = out_of_scope(changed, config.scope)
+    script = path / "experiments" / exp.id / "smoke.sbatch"
+    if outside:
+        reason = f"out-of-scope: {', '.join(outside)}"
+    elif not script.is_file():
+        reason = f"missing script: {script}"
+    else:
+        exp.commit = head
+        try:
+            job = submit_job(path, exp, "smoke", resubmitted=False)
+        except SlurmError as exc:
+            reason = f"submit-failed: {exc}"
+        else:
+            exp.status = "smoke"
+            ledger.save(ledger_path)
+            return {"job": job.job_id}
+    # The crash must reach the ledger before main() reports the error. collect removes the worktree.
+    finish(exp, "crashed", reason, [])
+    ledger.save(ledger_path)
+    raise ArError(reason)
+
+
+def cmd_note(args: argparse.Namespace) -> dict:
+    notes = campaign_dir(args.campaign) / "notes.md"
+    # One fact per line, so a multi-line text is folded onto one line.
+    line = f"- [{args.kind}] {' '.join(args.text.split())}"
+    lines = notes.read_text().splitlines() if notes.exists() else []
+    added = line not in lines
+    if added:
+        notes.write_text("".join(f"{entry}\n" for entry in [*lines, line]))
+    return {"note": line, "added": added}
 
 
 def cmd_collect(args: argparse.Namespace) -> dict:
