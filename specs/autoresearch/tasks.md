@@ -2,23 +2,21 @@
 
 ## Task Summary
 
-| Task                                                     | Status  |
-| -------------------------------------------------------- | ------- |
-| [#1.1](#11-arpy-skeleton-config-ledger-and-lock)         | Done    |
-| [#1.2](#12-arpy-init-stop-and-status)                    | Done    |
-| [#2.1](#21-arpy-slurm-layer)                             | Done    |
-| [#2.2](#22-arpy-mlflow-reader)                           | Done    |
-| [#2.3](#23-arpy-collect-job-transitions-and-submissions) | Done    |
-| [#2.4](#24-arpy-collect-verdicts-and-stop-conditions)    | Done    |
-| [#2.5](#25-arpy-new-smoke-and-note)                      | Done    |
-| [#3.1](#31-autoresearch-propose-workflow)                | Done    |
-| [#3.2](#32-autoresearch-skill)                           | Done    |
-| [#4.1](#41-documentation-and-stow)                       | Done    |
-| [#4.2](#42-end-to-end-check-with-stubbed-slurm)          | Pending |
+| Task                                                     | Status |
+| -------------------------------------------------------- | ------ |
+| [#1.1](#11-arpy-skeleton-config-ledger-and-lock)         | Done   |
+| [#1.2](#12-arpy-init-stop-and-status)                    | Done   |
+| [#2.1](#21-arpy-slurm-layer)                             | Done   |
+| [#2.2](#22-arpy-mlflow-reader)                           | Done   |
+| [#2.3](#23-arpy-collect-job-transitions-and-submissions) | Done   |
+| [#2.4](#24-arpy-collect-verdicts-and-stop-conditions)    | Done   |
+| [#2.5](#25-arpy-new-smoke-and-note)                      | Done   |
+| [#3.1](#31-autoresearch-propose-workflow)                | Done   |
+| [#3.2](#32-autoresearch-skill)                           | Done   |
+| [#4.1](#41-documentation-and-stow)                       | Done   |
+| [#4.2](#42-end-to-end-check-with-stubbed-slurm)          | Done   |
 
 ## Suggested Resolution Order
-
-- 4.2 -- end-to-end check of the deterministic path
 
 ## Detailed Tasks
 
@@ -241,6 +239,7 @@ A manual check in a scratch git repo. It adds no test files to this repo.
 _Requirements: 2.3, 2.6, 2.7, 3.1, 3.4, 3.9_
 _Depends: 2.4, 2.5_
 _Boundary: Validation_
+_Done: walked campaign c1 through all 8 statuses with stub sbatch/sacct and a fixture MLflow db; no ar.py change needed_
 
 ## Notes
 
@@ -276,3 +275,6 @@ _Boundary: Validation_
 - [3.2 deviation] The baseline experiment always has the hypothesis `baseline: unchanged champion commit`. The tick finds it in `ar.py status` output by the `baseline:` prefix (.claude/skills/autoresearch/SKILL.md).
 - [4.1 env] On this server ~/.claude/skills -> ../poor-man-OS-setup/.claude/skills is a directory link (ls -ld ~/.claude/skills), so new skill files appear without stow. ~/.claude/workflows/ gets per-file links.
 - [4.1 env] Running ruff in the repo leaves a .ruff_cache/ that `stow .` links into $HOME, because .stow-local-ignore does not exclude it (stow -n -v . showed LINK: .ruff_cache/...). Delete it before stow.
+- [4.2 env] 4.2 walk summary: one campaign c1 (max_parallel=2, scope src/**, min) went init -> baseline e0001 + e0002 improvement + e0003 out-of-scope crash + e0004 smoke FAILED -> smoke_failed + e0005 waiting -> e0001 NODE_FAIL resubmitted -> e0002 done pending -> baseline 1.0 then e0002 0.8 champion -> e0006 abandoned (created_at backdated) -> e0005 NODE_FAIL then PREEMPTED crashed -> stop -> finished. All 8 statuses seen, champion branch = e0002 head, refs outside autoresearch/c1/ unchanged. No ar.py change needed. Script: scratchpad e2e/walk.sh.
+- [4.2 env] Simulate a stale build for the abandoned path by rewriting created_at in .autoresearch/<c>/ledger.json to a past ISO time; build_timeout_hours must be > 0 so it cannot be set to zero.
+- [4.2 env] A stub sacct must take ids from the '-j a,b,c' argument and print 'id|STATE' lines; ids it omits read as PENDING (ar.py states()).
