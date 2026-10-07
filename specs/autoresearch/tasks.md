@@ -7,7 +7,7 @@
 | [#1.1](#11-arpy-skeleton-config-ledger-and-lock)         | Done    |
 | [#1.2](#12-arpy-init-stop-and-status)                    | Done    |
 | [#2.1](#21-arpy-slurm-layer)                             | Done    |
-| [#2.2](#22-arpy-mlflow-reader)                           | Pending |
+| [#2.2](#22-arpy-mlflow-reader)                           | Done    |
 | [#2.3](#23-arpy-collect-job-transitions-and-submissions) | Pending |
 | [#2.4](#24-arpy-collect-verdicts-and-stop-conditions)    | Pending |
 | [#2.5](#25-arpy-new-smoke-and-note)                      | Pending |
@@ -18,7 +18,6 @@
 
 ## Suggested Resolution Order
 
-- 2.2 -- MLflow reader, independent of SLURM
 - 2.3 -- needs both readers
 - 2.4 -- builds on the transitions in 2.3
 - 2.5 -- the build-side commands the workflow calls
@@ -103,6 +102,8 @@ _Done: ar.py slurm(), submit(), states(), classify(), and SlurmError_
 _Requirements: 2.2, 2.4, 2.9, 2.10_
 _Depends: 1.1_
 _Boundary: MlflowReader_
+
+_Done: ar.py Mlflow class with find_run(), metric(), and MlflowError_
 
 ### 2.3 ar.py collect: job transitions and submissions
 
@@ -251,3 +252,6 @@ _Boundary: Validation_
 - [2.1 deviation] ar.py SLURM API: slurm(*args)->stdout, submit(script, worktree, out_dir)->job_id, states(job_ids)->dict covering every requested id (unseen ids -> 'PENDING', empty list -> {} without calling sacct), classify(state)->'pending'|'ok'|'cluster-failure'|'failure'.
 - [2.1 deviation] ar.py SlurmError subclasses ArError and str(exc) is just the first stderr line (e.g. 'sbatch: error: ...'), so collect can build f'submit-failed: {exc}' and an uncaught sacct failure exits 1 via main().
 - [2.1 env] System python3 lacks tomllib, so importing ar.py for ad-hoc checks needs `uv run --python 3.11 --no-project python ...`.
+- [2.2 deviation] ar.py MLflow API is a class, not free functions: Mlflow(db).find_run(campaign, exp, kind) -> str | None and Mlflow(db).metric(run_id, key, aggregate) -> float | None. Open it once per collect with config.mlflow_db.
+- [2.2 deviation] ar.py MlflowError(ArError) is raised for open and query failures. Mlflow() connects eagerly, so a missing file fails at construction, and a non-database file fails at the first query.
+- [2.2 deviation] ar.py Mlflow.find_run skips runs with lifecycle_stage='deleted'. Mlflow.metric also treats +-sys.float_info.max as infinite, because MLflow's SQL store saves +-inf as those values.

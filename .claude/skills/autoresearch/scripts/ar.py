@@ -14,7 +14,9 @@ through this script. Run from the project root:
 import argparse
 import fcntl
 import json
+import math
 import re
+import sqlite3
 import subprocess
 import sys
 import time
@@ -290,6 +292,63 @@ def classify(state: str) -> str:
     return "pending"
 
 
+class MlflowError(ArError):
+    """The MLflow database could not be opened or queried."""
+
+
+MLFLOW_BUSY_TIMEOUT_SECONDS = 30
+# MLflow's SQL store saves +-inf as +-sys.float_info.max, so that value means an infinite metric.
+MLFLOW_INF = sys.float_info.max
+
+
+class Mlflow:
+    """Read-only access to an MLflow SQLite tracking database."""
+
+    def __init__(self, db: str) -> None:
+        # mode=ro makes SQLite refuse every write, and as_uri() escapes '?' and '#' in the path.
+        uri = f"{Path(db).resolve().as_uri()}?mode=ro"
+        try:
+            self.conn = sqlite3.connect(uri, uri=True, timeout=MLFLOW_BUSY_TIMEOUT_SECONDS)
+        except sqlite3.Error as exc:
+            raise MlflowError(f"cannot open MLflow database {db}: {exc}") from None
+        self.db = db
+
+    def _query(self, sql: str, params: tuple) -> list[tuple]:
+        try:
+            return self.conn.execute(sql, params).fetchall()
+        except sqlite3.Error as exc:
+            raise MlflowError(f"cannot read MLflow database {self.db}: {exc}") from None
+
+    def find_run(self, campaign: str, exp: str, kind: str) -> str | None:
+        """Return the newest live run tagged with this campaign, experiment, and kind."""
+        rows = self._query(
+            """
+            SELECT r.run_uuid FROM runs r
+            JOIN tags c ON c.run_uuid = r.run_uuid AND c.key = 'autoresearch.campaign' AND c.value = ?
+            JOIN tags e ON e.run_uuid = r.run_uuid AND e.key = 'autoresearch.exp' AND e.value = ?
+            JOIN tags k ON k.run_uuid = r.run_uuid AND k.key = 'autoresearch.kind' AND k.value = ?
+            WHERE r.lifecycle_stage != 'deleted'
+            ORDER BY r.start_time DESC
+            LIMIT 1
+            """,
+            (campaign, exp, kind),
+        )
+        return rows[0][0] if rows else None
+
+    def metric(self, run_id: str, key: str, aggregate: str) -> float | None:
+        """Aggregate the finite values of a metric as last, min, or max. Returns None if there is none."""
+        rows = self._query(
+            "SELECT value FROM metrics WHERE run_uuid = ? AND key = ? AND is_nan = 0 ORDER BY step, timestamp",
+            (run_id, key),
+        )
+        values = [v for (v,) in rows if math.isfinite(v) and abs(v) < MLFLOW_INF]
+        if not values:
+            return None
+        if aggregate == "last":
+            return values[-1]
+        return min(values) if aggregate == "min" else max(values)
+
+
 def now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
@@ -315,9 +374,12 @@ def cmd_init(args: argparse.Namespace) -> dict:
         raise ArError(f"campaign directory {path} already exists")
     if git("branch", "--list", branch):
         raise ArError(f"branch {branch} already exists")
-    load_config(args.config)
+    config = load_config(args.config)
+    baseline_metric = None
     if args.baseline:
-        raise ArError("--baseline needs the MLflow reader, which is not implemented yet")
+        baseline_metric = Mlflow(config.mlflow_db).metric(args.baseline, config.metric, config.aggregate)
+        if baseline_metric is None:
+            raise ArError(f"baseline run {args.baseline} has no finite value of {config.metric}")
 
     commit = git("rev-parse", "HEAD")
     git("branch", branch, commit)
@@ -326,7 +388,9 @@ def cmd_init(args: argparse.Namespace) -> dict:
     with campaign_lock(path):
         (path / "campaign.toml").write_text(args.config.read_text())
         ledger = Ledger(
-            campaign=args.campaign, state="active", champion=Champion(exp=None, commit=commit, metric=None, since=now())
+            campaign=args.campaign,
+            state="active",
+            champion=Champion(exp=None, commit=commit, metric=baseline_metric, since=now()),
         )
         ledger.save(path / "ledger.json")
     return {"campaign": args.campaign, "dir": str(path), "branch": branch, "champion": asdict(ledger.champion)}
