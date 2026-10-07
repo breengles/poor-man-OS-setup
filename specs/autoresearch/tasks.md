@@ -5,7 +5,7 @@
 | Task                                                     | Status  |
 | -------------------------------------------------------- | ------- |
 | [#1.1](#11-arpy-skeleton-config-ledger-and-lock)         | Done    |
-| [#1.2](#12-arpy-init-stop-and-status)                    | Pending |
+| [#1.2](#12-arpy-init-stop-and-status)                    | Done    |
 | [#2.1](#21-arpy-slurm-layer)                             | Pending |
 | [#2.2](#22-arpy-mlflow-reader)                           | Pending |
 | [#2.3](#23-arpy-collect-job-transitions-and-submissions) | Pending |
@@ -18,7 +18,6 @@
 
 ## Suggested Resolution Order
 
-- 1.2 -- small, makes a campaign creatable and visible early
 - 2.1 -- SLURM layer, independent of MLflow
 - 2.2 -- MLflow reader, independent of SLURM
 - 2.3 -- needs both readers
@@ -65,6 +64,8 @@ _Requirements: 6.1, 6.7_
 - [ ] `.git/info/exclude` holds `.autoresearch/` once after two campaigns.
 - [ ] `git status` is clean after `init`.
 - [ ] `stop` sets `draining`; `status` prints it.
+
+_Done: ar.py init, stop, and status commands_
 
 _Requirements: 1.3, 1.4, 1.5, 1.6, 3.7, 6.6_
 _Depends: 1.1_
@@ -244,3 +245,6 @@ _Boundary: Validation_
 - [1.1 env] Run ruff on ar.py with `--target-version py311`. Without it, ruff treats tomllib as third-party and reports I001, because there is no pyproject to set the target.
 - [1.1 deviation] ar.py main() takes the campaign lock for collect, new, smoke, note, and stop through LOCKED_COMMANDS and existing_campaign(). Handlers for these commands must not lock again. init must call campaign_lock(path) itself after it creates the directory.
 - [1.1 deviation] Handlers have the signature `(args: argparse.Namespace) -> dict` and raise ArError for user errors. main() prints the dict through emit() as JSON or key: value lines, or prints {"error": msg} with exit 1. --json works before or after the subcommand.
+- [1.2 deviation] ar.py emit() text mode now prints list values as 'key:' plus one indented line per item, and dict values as space-separated k=v pairs. Handlers can return nested dicts and lists and get readable text with no extra formatting code.
+- [1.2 deviation] ar.py now has git(*args) -> str, which runs in repo_root() and raises ArError with stderr. It also has now() for ISO 8601 UTC timestamps and champion_branch(campaign). Reuse them in new, smoke, and collect.
+- [1.2 env] init runs from a linked worktree and creates .autoresearch/ in that worktree's root, because repo_root() uses --show-toplevel. The exclude entry still goes to the shared .git/info/exclude.

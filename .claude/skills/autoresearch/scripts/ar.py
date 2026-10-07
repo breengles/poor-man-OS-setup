@@ -22,6 +22,7 @@ import tomllib
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
 
 LOCK_TIMEOUT_SECONDS = 60
@@ -219,11 +220,83 @@ def campaign_lock(path: Path) -> Iterator[None]:
             fcntl.flock(handle, fcntl.LOCK_UN)
 
 
+def git(*args: str) -> str:
+    """Run git in the repository root and return its stripped stdout."""
+    proc = subprocess.run(["git", *args], cwd=repo_root(), capture_output=True, text=True)
+    if proc.returncode != 0:
+        raise ArError(f"git {' '.join(args)} failed: {proc.stderr.strip()}")
+    return proc.stdout.strip()
+
+
+def now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def champion_branch(campaign: str) -> str:
+    return f"autoresearch/{campaign}/champion"
+
+
+def exclude_autoresearch() -> None:
+    """Add .autoresearch/ to the exclude file once. --git-path finds the shared file also from a linked worktree."""
+    exclude = repo_root() / git("rev-parse", "--git-path", "info/exclude")
+    lines = exclude.read_text().splitlines() if exclude.exists() else []
+    if ".autoresearch/" in lines:
+        return
+    exclude.parent.mkdir(parents=True, exist_ok=True)
+    exclude.write_text("".join(f"{line}\n" for line in [*lines, ".autoresearch/"]))
+
+
+def cmd_init(args: argparse.Namespace) -> dict:
+    path = campaign_dir(args.campaign)
+    branch = champion_branch(args.campaign)
+    if path.exists():
+        raise ArError(f"campaign directory {path} already exists")
+    if git("branch", "--list", branch):
+        raise ArError(f"branch {branch} already exists")
+    load_config(args.config)
+    if args.baseline:
+        raise ArError("--baseline needs the MLflow reader, which is not implemented yet")
+
+    commit = git("rev-parse", "HEAD")
+    git("branch", branch, commit)
+    path.mkdir(parents=True)
+    exclude_autoresearch()
+    with campaign_lock(path):
+        (path / "campaign.toml").write_text(args.config.read_text())
+        ledger = Ledger(
+            campaign=args.campaign, state="active", champion=Champion(exp=None, commit=commit, metric=None, since=now())
+        )
+        ledger.save(path / "ledger.json")
+    return {"campaign": args.campaign, "dir": str(path), "branch": branch, "champion": asdict(ledger.champion)}
+
+
+def cmd_stop(args: argparse.Namespace) -> dict:
+    ledger_path = campaign_dir(args.campaign) / "ledger.json"
+    ledger = Ledger.load(ledger_path)
+    ledger.state = "draining"
+    ledger.save(ledger_path)
+    return {"campaign": args.campaign, "state": ledger.state}
+
+
+def cmd_status(args: argparse.Namespace) -> dict:
+    ledger = Ledger.load(existing_campaign(args.campaign) / "ledger.json")
+    champion = ledger.champion
+    return {
+        "campaign": ledger.campaign,
+        "state": ledger.state,
+        "champion": {"exp": champion.exp, "commit": champion.commit, "metric": champion.metric},
+        "experiments": [
+            {"id": e.id, "status": e.status, "verdict": e.verdict, "metric": e.metric, "hypothesis": e.hypothesis}
+            for e in ledger.experiments
+        ],
+    }
+
+
 def _not_implemented(args: argparse.Namespace) -> dict:
     raise ArError(f"'{args.command}' is not implemented yet")
 
 
-cmd_init = cmd_collect = cmd_new = cmd_smoke = cmd_note = cmd_stop = cmd_status = _not_implemented
+cmd_collect = cmd_new = cmd_smoke = cmd_note = _not_implemented
 
 # Commands that change campaign files run under the campaign lock. init takes the lock itself, because the campaign
 # directory does not exist before it runs.
@@ -258,12 +331,23 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _text(value: object) -> str:
+    if isinstance(value, dict):
+        return " ".join(f"{k}={v}" for k, v in value.items())
+    return str(value)
+
+
 def emit(result: dict, as_json: bool) -> None:
     if as_json:
         print(json.dumps(result, indent=2))
     else:
         for key, value in result.items():
-            print(f"{key}: {value}")
+            if isinstance(value, list):
+                print(f"{key}:")
+                for item in value:
+                    print(f"  {_text(item)}")
+            else:
+                print(f"{key}: {_text(value)}")
 
 
 def main() -> int:
