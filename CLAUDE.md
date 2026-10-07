@@ -28,7 +28,7 @@ framework, and no CI/CD pipeline.
   CLAUDE.md                # User-level Claude Code preferences (stowed to ~/.claude/)
   skills/                  # Custom slash commands (see "AI Agent Configuration" below)
   agents/                  # Custom agent definitions (implementer.md, reviewer.md)
-  workflows/               # Saved Claude Code workflows (implement-units.js, run by the implement skill)
+  workflows/               # Saved Claude Code workflows (implement-units.js, autoresearch-propose.js)
   settings.json            # Claude Code settings (stowed to ~/.claude/settings.json)
 .codex/
   AGENTS.md                # User-level Codex preferences (stowed to ~/.codex/)
@@ -120,12 +120,12 @@ and the transient state under `.claude/`, `.codex/`, and `.pi/`).
 
 - **Claude Code user prefs:** `.claude/CLAUDE.md` (stowed to `~/.claude/CLAUDE.md`). Kept deliberately short; each skill
   owns its own format details rather than restating them here.
-- **Claude Code skills:** 8 custom slash commands at `.claude/skills/`, each under 100 lines.
+- **Claude Code skills:** 9 custom slash commands at `.claude/skills/`, each under 100 lines.
   - Spec pipeline: `spec-init` creates the spec, `implement` builds it, `review-spec` reviews everything it shipped,
     `finalize` reconciles the docs, removes it, and commits. The user runs `review-spec` by hand; `implement` never
     calls it. `grill` (a frontier-rounds interview that settles a fuzzy plan) is the escalation path for `spec-init`'s
     single-message interview.
-  - Standalone: `commit`, `mr-description`, `dataset-readme`.
+  - Standalone: `commit`, `mr-description`, `dataset-readme`, `autoresearch`.
   - Deliberately **not** custom skills: code review (built-in `/code-review`, `/security-review`, `/simplify` cover it),
     documentation writing, and conflict resolution — all things Claude does competently without a template.
 - **Claude Code agents:** `.claude/agents/implementer.md` (Opus, medium effort, Write/Edit), dispatched by `implement`
@@ -139,6 +139,11 @@ and the transient state under `.claude/`, `.codex/`, and `.pi/`).
   outside the working directory, and `~/.claude/skills/` is outside it in every other repo. The same file runs under
   pi-subagents' `workflowScript`. It detects the harness by the `runs` global, and pi gets the text below the `// pi:`
   marker line with `const args = ...;` prepended. pi rejects nested async functions, so keep helpers returning promises.
+- **`autoresearch` runs a campaign in short ticks under `/loop`:** each tick runs `ar.py collect`, then starts the saved
+  workflow `.claude/workflows/autoresearch-propose.js` when slots are free (3 proposers, 1 judge, builders in chunks of
+  3). The helper `.claude/skills/autoresearch/scripts/ar.py` (a `uv run --script` file, stdlib only, Python 3.11+) owns
+  every status change, champion pick, git ref, `sbatch` call, and MLflow read. State lives in the target project under
+  `.autoresearch/<campaign>/`, and only `ar.py` writes `ledger.json`. See `docs/ai-tools.md` for start, watch, and stop.
 - **Claude Code settings:** `.claude/settings.json` (stowed to `~/.claude/settings.json` — contains MCP servers,
   plugins, permissions, effort level). Claude Code writes to this file directly, so edits land in the repo and show up
   in `git status`.

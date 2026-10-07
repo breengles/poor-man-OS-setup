@@ -13,12 +13,11 @@
 | [#2.5](#25-arpy-new-smoke-and-note)                      | Done    |
 | [#3.1](#31-autoresearch-propose-workflow)                | Done    |
 | [#3.2](#32-autoresearch-skill)                           | Done    |
-| [#4.1](#41-documentation-and-stow)                       | Pending |
+| [#4.1](#41-documentation-and-stow)                       | Done    |
 | [#4.2](#42-end-to-end-check-with-stubbed-slurm)          | Pending |
 
 ## Suggested Resolution Order
 
-- 4.1 -- docs once the interfaces are final
 - 4.2 -- end-to-end check of the deterministic path
 
 ## Detailed Tasks
@@ -224,6 +223,7 @@ _Done: SKILL.md ships init, tick, status, stop, and baseline subcommands_
 
 _Requirements: 7.1, 7.2_
 _Depends: 3.2_
+_Done: CLAUDE.md and docs/ai-tools.md document the autoresearch skill, workflow, and ar.py_
 
 ### 4.2 (P) End-to-end check with stubbed SLURM
 
@@ -274,3 +274,5 @@ _Boundary: Validation_
 - [3.1 deviation] autoresearch-propose.js needs every design arg. It calls args.scope.join(), so scope must be an array. It returns {error} with no other keys when args.slots is missing or below 1.
 - [3.2 deviation] SKILL.md adds a `baseline <campaign>` subcommand beyond init/tick/status/stop. It reruns the Baseline section, and the tick report points the user to it when the baseline experiment crashed. Docs in 4.1 should list it.
 - [3.2 deviation] The baseline experiment always has the hypothesis `baseline: unchanged champion commit`. The tick finds it in `ar.py status` output by the `baseline:` prefix (.claude/skills/autoresearch/SKILL.md).
+- [4.1 env] On this server ~/.claude/skills -> ../poor-man-OS-setup/.claude/skills is a directory link (ls -ld ~/.claude/skills), so new skill files appear without stow. ~/.claude/workflows/ gets per-file links.
+- [4.1 env] Running ruff in the repo leaves a .ruff_cache/ that `stow .` links into $HOME, because .stow-local-ignore does not exclude it (stow -n -v . showed LINK: .ruff_cache/...). Delete it before stow.

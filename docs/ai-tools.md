@@ -16,7 +16,7 @@ Code's skills and its `implementer` and `reviewer` agents rather than keeping a 
 | `.claude/keybindings.json`      | Claude Code keybindings                                                 |
 | `.claude/statusline-command.sh` | Status line script that `settings.json` runs                            |
 | `.claude/skills/*/SKILL.md`     | Custom slash commands                                                   |
-| `.claude/workflows/*.js`        | Saved workflows: `implement-units`, the per-unit loop of `/implement`   |
+| `.claude/workflows/*.js`        | Saved workflows: `implement-units` and `autoresearch-propose`           |
 | `.claude/agents/*.md`           | Custom subagents: `implementer` and `reviewer`                          |
 
 Claude Code writes to `settings.json` itself, so its edits land in the repo through the symlink and show up in
@@ -48,6 +48,7 @@ own format details.
 | `/commit`         | Create commits in the repo's message style, staging selectively                |
 | `/mr-description` | Write or apply a GitLab merge request title and description                    |
 | `/dataset-readme` | Write an `install.md` for an image dataset                                     |
+| `/autoresearch`   | Run a campaign: agents build code changes, SLURM trains them, best one wins    |
 
 Code review is deliberately not a custom skill. The built-in `/code-review`, `/security-review`, and `/simplify` cover
 it.
@@ -108,6 +109,47 @@ fixed goes to a fresh `implementer`. Run it before `/finalize`, because `/finali
 Subjects are imperative and lowercase, about 50 characters, with no `feat:` or `fix:` prefix and no issue IDs. The
 skill commits only this session's changes, splits separable changes into separate commits, stages files by name, and
 ends with `git log --oneline --name-only`.
+
+### `/autoresearch`
+
+A campaign searches over code changes to one project. Agents propose and build changes, SLURM trains them, and the best
+result becomes the champion. One training run can take a week, so the state lives on disk in the project and short
+ticks move it forward. Three files make it up:
+
+- `.claude/skills/autoresearch/SKILL.md`: the campaign driver. It never edits project code.
+- `.claude/skills/autoresearch/scripts/ar.py`: a `uv run --script` helper with no dependencies. It owns every status
+  change, champion pick, git ref, `sbatch` call, and MLflow read.
+- `.claude/workflows/autoresearch-propose.js`: 3 proposers, 1 judge, and builders in chunks of 3. Each builder edits
+  code in its own worktree, writes `smoke.sbatch` and `full.sbatch`, and submits the smoke job.
+
+Campaign state goes to `<repo>/.autoresearch/<campaign>/`, which `init` adds to `.git/info/exclude`. Experiments live on
+`autoresearch/<campaign>/<exp-id>` branches, and the best one is `autoresearch/<campaign>/champion`.
+
+**Start.** Run `/autoresearch init <campaign>` from the project root. One question round sets the goal and metric, the
+scope globs, the reference sbatch script and MLflow database, and the limits. Without a baseline MLflow run ID, the
+skill builds a baseline experiment from the unchanged champion commit. It then prints permission rules for the
+project's `.claude/settings.local.json`. Add them, open a tmux session on the login node, and run
+`/loop /autoresearch tick <campaign>`. Each tick collects SLURM and MLflow results and starts new experiments when slots
+are free. Then it schedules the next tick: 20 minutes ahead while a smoke job runs, else 60 minutes.
+
+**Watch.** Each tick prints a report of at most 10 lines. `/autoresearch status <campaign>` prints the campaign state,
+the champion, and one line per experiment. SLURM logs are in `.autoresearch/<campaign>/experiments/<exp-id>/`. In the
+MLflow UI, filter by the tag `autoresearch.campaign`. Add steering for the proposers to
+`.autoresearch/<campaign>/notes.md`. If the baseline experiment crashed, later results stay `pending`, so fix the cause
+and run `/autoresearch baseline <campaign>`.
+
+**Stop.** `/autoresearch stop <campaign>` sets the campaign to `draining`. Running jobs finish, and no new experiment
+starts. The campaign becomes `finished` when nothing is in flight, and the loop then stops itself. A campaign also
+drains when it reaches `max_experiments` or `plateau`. To stop at once, end the `/loop` and `scancel` the jobs.
+
+Open questions:
+
+- Can compute nodes reach the Anthropic API? If they can, a SLURM job with `--dependency=afterany` can start each tick,
+  and the loop no longer needs a live tmux session. `/loop` in tmux works without it.
+- `ar.py` reads the MLflow SQLite tables `runs`, `tags`, and `metrics` directly. Check these names against the
+  cluster's MLflow version before the first campaign.
+- `ar.py` reads job states through `sacct`. Check that `sacct` works on the cluster, because some clusters disable
+  SLURM accounting.
 
 ## pi (local-model harness)
 
