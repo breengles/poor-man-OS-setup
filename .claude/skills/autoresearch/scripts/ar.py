@@ -24,13 +24,14 @@ import tomllib
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 LOCK_TIMEOUT_SECONDS = 60
 LOCK_POLL_SECONDS = 0.5
 # The name becomes a directory and a git ref component, so keep it to safe characters.
 CAMPAIGN_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+TERMINAL_STATUSES = {"done", "crashed", "smoke_failed", "abandoned"}
 
 
 class ArError(Exception):
@@ -422,7 +423,124 @@ def _not_implemented(args: argparse.Namespace) -> dict:
     raise ArError(f"'{args.command}' is not implemented yet")
 
 
-cmd_collect = cmd_new = cmd_smoke = cmd_note = _not_implemented
+cmd_new = cmd_smoke = cmd_note = _not_implemented
+
+
+def submit_job(path: Path, exp: Experiment, kind: str, resubmitted: bool) -> Job:
+    """Submit experiments/<exp>/<kind>.sbatch in the experiment's worktree and record the job."""
+    exp_dir = path / "experiments" / exp.id
+    job_id = submit(exp_dir / f"{kind}.sbatch", path / "worktrees" / exp.id, exp_dir)
+    job = Job(kind=kind, job_id=job_id, resubmitted=resubmitted, state=None)
+    exp.jobs.append(job)
+    return job
+
+
+def finish(exp: Experiment, status: str, reason: str | None, events: list[dict]) -> None:
+    exp.status = status
+    exp.reason = reason
+    exp.finished_at = now()
+    events.append({"exp": exp.id, "event": status, "reason": reason})
+
+
+def collect_jobs(path: Path, config: Config, ledger: Ledger) -> list[dict]:
+    """Apply finished SLURM jobs to the ledger, abandon stale builds, and submit waiting full jobs.
+
+    Every sacct and MLflow read happens before the first change to the ledger, so a reader error leaves it untouched.
+
+    Returns:
+        One event per status change or submission.
+    """
+    # The last job of a smoke or running experiment is its only job that can still change state.
+    active = [(exp, exp.jobs[-1]) for exp in ledger.experiments if exp.status in ("smoke", "running")]
+    seen = states([job.job_id for _, job in active])
+    completed = [(exp, job) for exp, job in active if classify(seen[job.job_id]) == "ok"]
+    runs: dict[str, tuple[str | None, float | None]] = {}
+    if completed:
+        mlflow = Mlflow(config.mlflow_db)
+        for exp, job in completed:
+            run_id = mlflow.find_run(ledger.campaign, exp.id, job.kind)
+            runs[exp.id] = (run_id, mlflow.metric(run_id, config.metric, config.aggregate) if run_id else None)
+
+    events: list[dict] = []
+    for exp, job in active:
+        job.state = seen[job.job_id]
+        outcome = classify(job.state)
+        log = path / "experiments" / exp.id / f"slurm-{job.job_id}.out"
+        if outcome == "pending":
+            continue
+        if outcome == "cluster-failure" and not job.resubmitted:
+            try:
+                new_job = submit_job(path, exp, job.kind, resubmitted=True)
+            except SlurmError as exc:
+                finish(exp, "crashed", f"submit-failed: {exc}", events)
+                continue
+            events.append({"exp": exp.id, "event": "resubmitted", "kind": job.kind, "job": new_job.job_id})
+        elif outcome == "ok":
+            run_id, metric = runs[exp.id]
+            if job.kind == "smoke" and metric is not None:
+                exp.status = "waiting"
+                events.append({"exp": exp.id, "event": "smoke-passed"})
+            elif job.kind == "smoke":
+                finish(exp, "smoke_failed", f"{'metric-missing' if run_id else 'run-missing'}; log: {log}", events)
+            else:
+                exp.run_id = run_id
+                exp.metric = metric
+                if metric is not None:
+                    finish(exp, "done", None, events)
+                else:
+                    finish(exp, "crashed", "metric-missing", events)
+        elif job.kind == "smoke":
+            finish(exp, "smoke_failed", f"{job.state}; log: {log}", events)
+        else:
+            finish(exp, "crashed", job.state, events)
+
+    stale = datetime.now(timezone.utc) - timedelta(hours=config.build_timeout_hours)
+    for exp in ledger.experiments:
+        if exp.status == "building" and datetime.fromisoformat(exp.created_at) < stale:
+            finish(exp, "abandoned", f"building for over {config.build_timeout_hours}h", events)
+
+    # Only full jobs take a max_parallel slot. The ledger lists experiments in creation order, so the oldest go first.
+    running = sum(exp.status == "running" for exp in ledger.experiments)
+    for exp in ledger.experiments:
+        if running >= config.max_parallel:
+            break
+        if exp.status != "waiting":
+            continue
+        try:
+            job = submit_job(path, exp, "full", resubmitted=False)
+        except SlurmError as exc:
+            finish(exp, "crashed", f"submit-failed: {exc}", events)
+            continue
+        exp.status = "running"
+        running += 1
+        events.append({"exp": exp.id, "event": "running", "job": job.job_id})
+    return events
+
+
+def remove_worktrees(path: Path, ledger: Ledger) -> list[dict]:
+    """Remove the worktree of every ended experiment and keep its branch. A failure is reported and retried next tick."""
+    root = (path / "worktrees").resolve()
+    events = []
+    for exp in ledger.experiments:
+        worktree = (root / exp.id).resolve()
+        if exp.status not in TERMINAL_STATUSES or worktree.parent != root or not worktree.exists():
+            continue
+        try:
+            git("worktree", "remove", "--force", str(worktree))
+        except ArError as exc:
+            events.append({"exp": exp.id, "event": "worktree-remove-failed", "reason": str(exc)})
+    return events
+
+
+def cmd_collect(args: argparse.Namespace) -> dict:
+    path = campaign_dir(args.campaign)
+    ledger_path = path / "ledger.json"
+    ledger = Ledger.load(ledger_path)
+    events = collect_jobs(path, load_config(path / "campaign.toml"), ledger)
+    ledger.save(ledger_path)
+    events += remove_worktrees(path, ledger)
+    return {"state": ledger.state, "events": events}
+
 
 # Commands that change campaign files run under the campaign lock. init takes the lock itself, because the campaign
 # directory does not exist before it runs.
