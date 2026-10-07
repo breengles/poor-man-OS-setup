@@ -228,6 +228,68 @@ def git(*args: str) -> str:
     return proc.stdout.strip()
 
 
+class SlurmError(ArError):
+    """sbatch or sacct failed. The message is the first line of its stderr."""
+
+
+# Terminal SLURM states outside these sets are the change's fault. Any state not listed here is still in progress.
+OK_STATES = {"COMPLETED"}
+CLUSTER_FAILURE_STATES = {"NODE_FAIL", "PREEMPTED", "BOOT_FAIL"}
+FAILURE_STATES = {"FAILED", "TIMEOUT", "OUT_OF_MEMORY", "CANCELLED", "DEADLINE", "REVOKED", "SPECIAL_EXIT"}
+
+
+def slurm(*args: str) -> str:
+    """Run a SLURM command and return its stdout.
+
+    Raises:
+        SlurmError: if the command is missing or exits non-zero.
+    """
+    try:
+        proc = subprocess.run(args, capture_output=True, text=True)
+    except FileNotFoundError:
+        raise SlurmError(f"{args[0]}: command not found") from None
+    if proc.returncode != 0:
+        lines = proc.stderr.strip().splitlines()
+        raise SlurmError(lines[0] if lines else f"{args[0]} exited with code {proc.returncode}")
+    return proc.stdout
+
+
+def submit(script: Path, worktree: Path, out_dir: Path) -> str:
+    """Submit a job that runs in the worktree and writes its output to out_dir. Returns the job ID."""
+    # SLURM resolves a relative --output against --chdir, so the output path must be absolute.
+    output = out_dir.resolve() / "slurm-%j.out"
+    out = slurm("sbatch", "--parsable", f"--chdir={worktree.resolve()}", f"--output={output}", str(script.resolve()))
+    # --parsable prints "jobid;cluster" on multi-cluster setups.
+    return out.strip().split(";")[0]
+
+
+def states(job_ids: list[str]) -> dict[str, str]:
+    """Read the SLURM state of every job in one sacct call.
+
+    A job that sacct does not list yet was just submitted, so it counts as PENDING.
+    """
+    if not job_ids:
+        return {}
+    out = slurm("sacct", "-n", "-P", "-X", "-j", ",".join(job_ids), "-o", "JobID,State")
+    found = {}
+    for line in out.splitlines():
+        job_id, state = line.split("|", 1)
+        # "CANCELLED by 123" -> "CANCELLED"
+        found[job_id] = state.split()[0]
+    return {job_id: found.get(job_id, "PENDING") for job_id in job_ids}
+
+
+def classify(state: str) -> str:
+    """Map a SLURM state to pending, ok, cluster-failure, or failure."""
+    if state in OK_STATES:
+        return "ok"
+    if state in CLUSTER_FAILURE_STATES:
+        return "cluster-failure"
+    if state in FAILURE_STATES:
+        return "failure"
+    return "pending"
+
+
 def now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 

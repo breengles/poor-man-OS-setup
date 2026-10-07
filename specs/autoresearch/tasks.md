@@ -6,7 +6,7 @@
 | -------------------------------------------------------- | ------- |
 | [#1.1](#11-arpy-skeleton-config-ledger-and-lock)         | Done    |
 | [#1.2](#12-arpy-init-stop-and-status)                    | Done    |
-| [#2.1](#21-arpy-slurm-layer)                             | Pending |
+| [#2.1](#21-arpy-slurm-layer)                             | Done    |
 | [#2.2](#22-arpy-mlflow-reader)                           | Pending |
 | [#2.3](#23-arpy-collect-job-transitions-and-submissions) | Pending |
 | [#2.4](#24-arpy-collect-verdicts-and-stop-conditions)    | Pending |
@@ -18,7 +18,6 @@
 
 ## Suggested Resolution Order
 
-- 2.1 -- SLURM layer, independent of MLflow
 - 2.2 -- MLflow reader, independent of SLURM
 - 2.3 -- needs both readers
 - 2.4 -- builds on the transitions in 2.3
@@ -86,6 +85,7 @@ _Depends: 1.1_
 _Requirements: 2.1, 2.9, 5.4, 5.5, 6.5_
 _Depends: 1.1_
 _Boundary: SlurmLayer_
+_Done: ar.py slurm(), submit(), states(), classify(), and SlurmError_
 
 ### 2.2 (P) ar.py MLflow reader
 
@@ -248,3 +248,6 @@ _Boundary: Validation_
 - [1.2 deviation] ar.py emit() text mode now prints list values as 'key:' plus one indented line per item, and dict values as space-separated k=v pairs. Handlers can return nested dicts and lists and get readable text with no extra formatting code.
 - [1.2 deviation] ar.py now has git(*args) -> str, which runs in repo_root() and raises ArError with stderr. It also has now() for ISO 8601 UTC timestamps and champion_branch(campaign). Reuse them in new, smoke, and collect.
 - [1.2 env] init runs from a linked worktree and creates .autoresearch/ in that worktree's root, because repo_root() uses --show-toplevel. The exclude entry still goes to the shared .git/info/exclude.
+- [2.1 deviation] ar.py SLURM API: slurm(*args)->stdout, submit(script, worktree, out_dir)->job_id, states(job_ids)->dict covering every requested id (unseen ids -> 'PENDING', empty list -> {} without calling sacct), classify(state)->'pending'|'ok'|'cluster-failure'|'failure'.
+- [2.1 deviation] ar.py SlurmError subclasses ArError and str(exc) is just the first stderr line (e.g. 'sbatch: error: ...'), so collect can build f'submit-failed: {exc}' and an uncaught sacct failure exits 1 via main().
+- [2.1 env] System python3 lacks tomllib, so importing ar.py for ad-hoc checks needs `uv run --python 3.11 --no-project python ...`.
