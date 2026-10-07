@@ -79,6 +79,8 @@ class Experiment:
     jobs: list[Job]
     created_at: str
     finished_at: str | None
+    # A ledger written before this field existed has no baseline experiment flagged, so it defaults to False.
+    baseline: bool = False
 
 
 @dataclass
@@ -414,7 +416,14 @@ def cmd_status(args: argparse.Namespace) -> dict:
         "state": ledger.state,
         "champion": {"exp": champion.exp, "commit": champion.commit, "metric": champion.metric},
         "experiments": [
-            {"id": e.id, "status": e.status, "verdict": e.verdict, "metric": e.metric, "hypothesis": e.hypothesis}
+            {
+                "id": e.id,
+                "status": e.status,
+                "verdict": e.verdict,
+                "metric": e.metric,
+                "baseline": e.baseline,
+                "hypothesis": e.hypothesis,
+            }
             for e in ledger.experiments
         ],
     }
@@ -521,8 +530,8 @@ def beats(metric: float, champion_metric: float, config: Config) -> bool:
 def judge(config: Config, ledger: Ledger) -> list[dict]:
     """Give every unjudged done experiment a verdict in finish order, and move the champion branch on a win.
 
-    The baseline experiment runs the unchanged champion commit, so while the champion has no metric, the first done
-    experiment on that commit supplies it. A failed branch move stops judging, so the next tick retries in order.
+    While the champion has no metric, the first done experiment that `new --baseline` created supplies it. A failed
+    branch move stops judging, so the next tick retries in order.
 
     Returns:
         One event per verdict, plus one for a failed branch move.
@@ -534,7 +543,7 @@ def judge(config: Config, ledger: Ledger) -> list[dict]:
     champion = ledger.champion
     events: list[dict] = []
     if champion.metric is None:
-        baseline = next((e for e in unjudged if e.commit == champion.commit), None)
+        baseline = next((e for e in unjudged if e.baseline), None)
         if baseline:
             champion.exp, champion.metric = baseline.id, baseline.metric
             baseline.verdict = "champion"
@@ -610,6 +619,9 @@ def cmd_new(args: argparse.Namespace) -> dict:
     path = campaign_dir(args.campaign)
     ledger_path = path / "ledger.json"
     ledger = Ledger.load(ledger_path)
+    config = load_config(path / "campaign.toml")
+    if config.max_experiments is not None and len(ledger.experiments) >= config.max_experiments:
+        raise ArError(f"campaign {args.campaign!r} has reached max_experiments {config.max_experiments}")
     exp_id = f"e{ledger.next_id:04d}"
     branch = f"autoresearch/{args.campaign}/{exp_id}"
     worktree = path / "worktrees" / exp_id
@@ -637,6 +649,7 @@ def cmd_new(args: argparse.Namespace) -> dict:
             jobs=[],
             created_at=now(),
             finished_at=None,
+            baseline=args.baseline,
         )
     )
     ledger.next_id += 1
@@ -655,23 +668,40 @@ def out_of_scope(paths: list[str], scope: list[str]) -> list[str]:
     return [p for p in paths if not pattern.fullmatch(p)]
 
 
+def building_experiment(ledger: Ledger, exp_id: str) -> Experiment:
+    """Return the experiment with this ID.
+
+    Raises:
+        ArError: if there is no such experiment or it is not building.
+    """
+    exp = next((e for e in ledger.experiments if e.id == exp_id), None)
+    if exp is None:
+        raise ArError(f"no experiment {exp_id!r} in campaign {ledger.campaign!r}")
+    if exp.status != "building":
+        raise ArError(f"experiment {exp.id} is {exp.status}, not building")
+    return exp
+
+
 def cmd_smoke(args: argparse.Namespace) -> dict:
     path = campaign_dir(args.campaign)
     ledger_path = path / "ledger.json"
     ledger = Ledger.load(ledger_path)
     config = load_config(path / "campaign.toml")
-    exp = next((e for e in ledger.experiments if e.id == args.exp), None)
-    if exp is None:
-        raise ArError(f"no experiment {args.exp!r} in campaign {args.campaign!r}")
-    if exp.status != "building":
-        raise ArError(f"experiment {exp.id} is {exp.status}, not building")
+    exp = building_experiment(ledger, args.exp)
 
+    # The job runs in the worktree, so an uncommitted edit would train without a scope check and never reach a commit.
+    # Ignored files do not show here. Each status line is "XY path"; split() also copes with git() stripping the
+    # leading space of the first line.
+    status = git("-C", str(path / "worktrees" / exp.id), "status", "--porcelain")
+    dirty = [line.split(maxsplit=1)[1] for line in status.splitlines()]
     head = git("rev-parse", exp.branch)
     # -z keeps unusual file names unquoted, and --no-renames lists both sides of a rename.
     changed = [p for p in git("diff", "-z", "--name-only", "--no-renames", exp.parent, head).split("\0") if p]
     outside = out_of_scope(changed, config.scope)
     script = path / "experiments" / exp.id / "smoke.sbatch"
-    if outside:
+    if dirty:
+        reason = f"dirty-worktree: {', '.join(dirty)}"
+    elif outside:
         reason = f"out-of-scope: {', '.join(outside)}"
     elif not script.is_file():
         reason = f"missing script: {script}"
@@ -689,6 +719,16 @@ def cmd_smoke(args: argparse.Namespace) -> dict:
     finish(exp, "crashed", reason, [])
     ledger.save(ledger_path)
     raise ArError(reason)
+
+
+def cmd_abandon(args: argparse.Namespace) -> dict:
+    ledger_path = campaign_dir(args.campaign) / "ledger.json"
+    ledger = Ledger.load(ledger_path)
+    exp = building_experiment(ledger, args.exp)
+    # collect removes the worktree, as for any other ended experiment.
+    finish(exp, "abandoned", args.reason, [])
+    ledger.save(ledger_path)
+    return {"exp": exp.id, "status": exp.status, "reason": exp.reason}
 
 
 def cmd_note(args: argparse.Namespace) -> dict:
@@ -713,12 +753,15 @@ def cmd_collect(args: argparse.Namespace) -> dict:
     ledger.save(ledger_path)
     events += remove_worktrees(path, ledger)
     count = {status: sum(e.status == status for e in ledger.experiments) for status in BUSY_STATUSES}
+    # Smoke jobs take no max_parallel slot, but they count here so the tick does not build more than slots can run.
+    free_slots = config.max_parallel - sum(count.values())
+    if config.max_experiments is not None:
+        free_slots = min(free_slots, config.max_experiments - len(ledger.experiments))
     champion = ledger.champion
     return {
         "state": ledger.state,
         "champion": {"exp": champion.exp, "commit": champion.commit, "metric": champion.metric},
-        # Smoke jobs take no max_parallel slot, but they count here so the tick does not build more than slots can run.
-        "free_slots": config.max_parallel - sum(count.values()),
+        "free_slots": max(free_slots, 0),
         "building": count["building"],
         "events": events,
     }
@@ -726,7 +769,7 @@ def cmd_collect(args: argparse.Namespace) -> dict:
 
 # Commands that change campaign files run under the campaign lock. init takes the lock itself, because the campaign
 # directory does not exist before it runs.
-LOCKED_COMMANDS = {"collect", "new", "smoke", "note", "stop"}
+LOCKED_COMMANDS = {"collect", "new", "smoke", "abandon", "note", "stop"}
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -747,8 +790,13 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument("--config", required=True, type=Path, help="campaign.toml to validate and copy")
     init.add_argument("--baseline", help="MLflow run ID whose metric becomes the champion metric")
     add("collect", cmd_collect, "update jobs, verdicts, and submissions")
-    add("new", cmd_new, "start an experiment from the champion").add_argument("--hypothesis", required=True)
+    new = add("new", cmd_new, "start an experiment from the champion")
+    new.add_argument("--hypothesis", required=True)
+    new.add_argument("--baseline", action="store_true", help="mark the experiment as the campaign's baseline")
     add("smoke", cmd_smoke, "check scope and submit the smoke job").add_argument("exp")
+    abandon = add("abandon", cmd_abandon, "end a building experiment whose builder gave up")
+    abandon.add_argument("exp")
+    abandon.add_argument("--reason", required=True)
     note = add("note", cmd_note, "append a fact to notes.md")
     note.add_argument("--kind", required=True, choices=("env", "dead-end"))
     note.add_argument("--text", required=True)

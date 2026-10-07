@@ -120,15 +120,23 @@ ticks move it forward. Three files make it up:
 - `.claude/skills/autoresearch/scripts/ar.py`: a `uv run --script` helper with no dependencies. It owns every status
   change, champion pick, git ref, `sbatch` call, and MLflow read.
 - `.claude/workflows/autoresearch-propose.js`: 3 proposers, 1 judge, and builders in chunks of 3. Each builder edits
-  code in its own worktree, writes `smoke.sbatch` and `full.sbatch`, and submits the smoke job.
+  code in its own worktree, writes `smoke.sbatch` and `full.sbatch`, and submits the smoke job. When a builder fails,
+  the workflow abandons its experiment at once, so the next tick can build again.
+
+Every change of an experiment is in a commit on its branch, in files that match `scope`. `ar.py smoke` crashes an
+experiment whose worktree has uncommitted or untracked files. The sbatch scripts set only resources, the smoke shrink,
+the MLflow tags, the checkpoint directory, and MLflow param logging, with no hyperparameter override. Every run logs
+its hyperparameters and config to MLflow as run params, so you can compare the settings of experiments in the MLflow
+UI. Checkpoints go to `.autoresearch/<campaign>/experiments/<exp-id>/`, because `ar.py` removes the worktree of an
+experiment when it ends.
 
 Campaign state goes to `<repo>/.autoresearch/<campaign>/`, which `init` adds to `.git/info/exclude`. Experiments live on
 `autoresearch/<campaign>/<exp-id>` branches, and the best one is `autoresearch/<campaign>/champion`.
 
 **Start.** Run `/autoresearch init <campaign>` from the project root. One question round sets the goal and metric, the
 scope globs, the reference sbatch script and MLflow database, and the limits. Without a baseline MLflow run ID, the
-skill builds a baseline experiment from the unchanged champion commit. It then prints permission rules for the
-project's `.claude/settings.local.json`. Add them, open a tmux session on the login node, and run
+skill builds a baseline experiment from the champion code. It then prints permission rules for the project's
+`.claude/settings.local.json`. Add them, open a tmux session on the login node, and run
 `/loop /autoresearch tick <campaign>`. Each tick collects SLURM and MLflow results and starts new experiments when slots
 are free. Then it schedules the next tick: 20 minutes ahead while a smoke job runs, else 60 minutes.
 

@@ -49,20 +49,20 @@ Then start the loop in a tmux session on the login node: `/loop /autoresearch ti
 
 ## Baseline
 
-Without a baseline metric, `ar.py` judges no experiment. Dispatch **one** builder agent. Give it the campaign values and
-these steps:
+Without a baseline metric, `ar.py` judges no experiment. Dispatch **one** builder agent with the campaign values and:
 
-1. Run `ar.py new <campaign> --hypothesis "baseline: unchanged champion commit" --json`. It returns
-   `{exp, worktree, dir}`.
-2. Make no code change and no commit.
-3. Write `<dir>/smoke.sbatch` and `<dir>/full.sbatch` from `reference_sbatch`. Both set the MLflow tags
-   `autoresearch.campaign=<campaign>`, `autoresearch.exp=<exp>`, and `autoresearch.kind=smoke` or `full`, through the
-   mechanism the project already has for run tags. The smoke script follows `smoke_hint`. Leave out `--chdir` and
-   `--output`, because `ar.py` sets them.
+1. Run `ar.py new <campaign> --baseline --hypothesis "baseline: the champion code" --json` -> `{exp, worktree, dir}`.
+2. Change no code, but every run must log its hyperparameters and config to MLflow as run params. If the project does
+   not, add that logging in scope and commit it. If that needs a file outside `scope`, return an error.
+3. Write `<dir>/smoke.sbatch` and `<dir>/full.sbatch` from `reference_sbatch`, with no hyperparameter override. They
+   set only SLURM resources, the `smoke_hint` shrink, param logging, the MLflow tags `autoresearch.campaign=<campaign>`,
+   `autoresearch.exp=<exp>`, and `autoresearch.kind=smoke|full` through the project's own tag mechanism, and the
+   checkpoint and output directory: the absolute `<dir>`, because `ar.py` removes the worktree. No `--chdir`/`--output`.
 4. Run `ar.py smoke <campaign> <exp> --json` and return its result.
 5. Run no training, tests, or project code: this is a login node. Never touch `ledger.json` or a git ref.
 
-Report the experiment ID and the smoke job ID.
+If the builder fails while its experiment is `building`, run `ar.py abandon <campaign> <exp> --reason <error>` and
+`ar.py note <campaign> --kind env --text <fact>`. Report the experiment ID and the smoke job ID.
 
 ## tick
 
@@ -77,8 +77,8 @@ Report the experiment ID and the smoke job ID.
    text as `script`. Wait for its completion notification. It returns `{built, failed, rejected}`.
 4. Run `ar.py status <campaign> --json` once to see the experiments.
 5. Report in **at most 10 lines**: a new champion and its metric, finished and failed experiments with reasons, built
-   and rejected experiments, and the next tick time. When the champion metric is still null and the experiment with the
-   `baseline:` hypothesis ended in a state other than `done`, say so. Later results stay `pending` until the user runs
+   and rejected experiments, and the next tick time. When the champion metric is still null and the experiment with
+   `baseline: true` ended in a state other than `done`, say so. Later results stay `pending` until the user runs
    `/autoresearch baseline <campaign>` again.
 6. Under `/loop`, call `ScheduleWakeup`: 20 minutes ahead when any experiment has status `smoke`, else 60 minutes.
    When `state` is `finished`, call it with `stop: true` instead, and print the full `ar.py status` output as the

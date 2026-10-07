@@ -32,7 +32,7 @@ Campaign state, in the target project:
   ledger.json            # all state; only ar.py writes it
   notes.md               # steering by the user, facts from builders
   lock                   # flock target
-  experiments/<exp-id>/  # smoke.sbatch, full.sbatch, slurm-<jobid>.out
+  experiments/<exp-id>/  # smoke.sbatch, full.sbatch, slurm-<jobid>.out, checkpoints and training output
   worktrees/<exp-id>/    # git worktree, removed when the experiment ends
 ```
 
@@ -54,6 +54,7 @@ Git refs: `autoresearch/<campaign>/champion` and one `autoresearch/<campaign>/<e
     Workflow autoresearch-propose (async; tick waits for its notification)
       3 proposers (parallel) -> judge -> builders (3 at a time)
         builder: ar.py new -> edit + commit in worktree -> write sbatch scripts -> ar.py smoke
+      1 cleanup agent (Sonnet), only if a builder failed: ar.py abandon for each experiment still building
   print <= 10 line report, schedule the next wakeup (20 or 60 min)
 ```
 
@@ -67,8 +68,10 @@ building -> smoke -> waiting -> running -> done
    |          |         \________/  \
    |          |                      -> crashed
    |          -> smoke_failed
-   -> abandoned            (also: building -> crashed on out-of-scope or submit failure)
+   -> abandoned            (also: building -> crashed on dirty worktree, out-of-scope, or submit failure)
 ```
+
+`building -> abandoned` happens when the builder fails, through `ar.py abandon`, or after `build_timeout_hours`.
 
 `smoke -> running` skips `waiting` when a slot is free. Terminal states: `done`, `crashed`, `smoke_failed`, `abandoned`.
 
@@ -117,6 +120,7 @@ class Experiment:
     jobs: list[Job]
     created_at: str           # ISO 8601, set by ar.py
     finished_at: str | None
+    baseline: bool = False    # set by `new --baseline`; a ledger without the field loads as False
 
 @dataclass
 class Champion:
@@ -141,23 +145,43 @@ Run as `uv run --script ~/.claude/skills/autoresearch/scripts/ar.py <command> ..
 header pins `requires-python = ">=3.11"` for `tomllib` and declares no dependencies. Each command prints JSON with
 `--json`, and text without it.
 
-| Command                                              | Effect                                                                                            |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `init <campaign> --config <toml> [--baseline <run>]` | Validate config, create the directory, the exclude entry, the champion branch, and the ledger.    |
-| `collect <campaign>`                                 | The tick's deterministic part. Returns `{state, champion, free_slots, building, events}`.         |
-| `new <campaign> --hypothesis <text>`                 | Allocate an ID, create the branch and worktree from the champion. Returns `{exp, worktree, dir}`. |
-| `smoke <campaign> <exp>`                             | Scope check, record the commit, submit `smoke.sbatch`. Returns `{job}` or `{error}`.              |
-| `note <campaign> --kind env\|dead-end --text <text>` | Append one line to `notes.md`, skipping exact repeats.                                            |
-| `stop <campaign>`                                    | Set the state to `draining`.                                                                      |
-| `status <campaign>`                                  | Print the campaign state, the champion, and one line per experiment.                              |
+| Command                                              | Effect                                                                                                                                                           |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `init <campaign> --config <toml> [--baseline <run>]` | Validate config, create the directory, the exclude entry, the champion branch, and the ledger.                                                                   |
+| `collect <campaign>`                                 | The tick's deterministic part. Returns `{state, champion, free_slots, building, events}`.                                                                        |
+| `new <campaign> --hypothesis <text> [--baseline]`    | Allocate an ID, create the branch and worktree from the champion. `--baseline` marks the baseline. Refuses at `max_experiments`. Returns `{exp, worktree, dir}`. |
+| `smoke <campaign> <exp>`                             | Clean-worktree check, scope check, record the commit, submit `smoke.sbatch`. Returns `{job}` or `{error}`.                                                       |
+| `abandon <campaign> <exp> --reason <text>`           | Mark a `building` experiment `abandoned` with the reason. Refuses any other status.                                                                              |
+| `note <campaign> --kind env\|dead-end --text <text>` | Append one line to `notes.md`, skipping exact repeats.                                                                                                           |
+| `stop <campaign>`                                    | Set the state to `draining`.                                                                                                                                     |
+| `status <campaign>`                                  | Print the campaign state, the champion, and one line per experiment with its `baseline` flag.                                                                    |
 
 `free_slots = max_parallel - running - waiting - building - smoke`. Smoke jobs do not use a `max_parallel` slot. They
-count here so that the tick does not build more experiments than the slots can run.
+count here so that the tick does not build more experiments than the slots can run. When `max_experiments` is set,
+`free_slots` is also at most `max_experiments - len(experiments)`. It is never below 0.
+
+While the champion has no metric, `judge` takes it from the first `done` experiment with `baseline` set. It does not
+compare commits, because the baseline can carry a commit that only adds MLflow param logging.
 
 ### Job submission
 
 `sbatch --parsable --chdir <worktree> --output <campaign>/experiments/<exp>/slurm-%j.out <script>`. The builder writes
 the scripts. `ar.py` sets the working directory and the output path, so a script cannot write outside the campaign.
+
+Every change of an experiment is in a commit on its branch, in files that match `scope`. The scripts set only these:
+SLURM resources, the smoke shrink from `smoke_hint`, the MLflow tags, the checkpoint and output directory, and MLflow
+param logging. They set no hyperparameter override. The checkpoint and output directory is the absolute path of
+`<campaign>/experiments/<exp>/`, because `ar.py` removes the worktree when the experiment ends.
+
+Before it submits the smoke job, `smoke` runs `git status --porcelain` in the worktree. Any output means that the job
+would train code that is not in the commit and not scope-checked. Ignored files do not show, so they do not count.
+
+### MLflow params
+
+Every smoke and full run logs its hyperparameters and config to MLflow as run params, so the settings of each
+experiment are visible and comparable in MLflow. The builder uses the project's param logging. If the project has none,
+the builder adds it as a change in scope. If that needs a file outside `scope`, the builder reports an `env` note and
+returns an error. Proposers can read the params of past runs from the MLflow database. `ar.py` does not read params.
 
 ### MLflow lookup
 
@@ -179,9 +203,14 @@ metric from `metrics` where `is_nan = 0`, and aggregate by `aggregate`. A value 
 }
 ```
 
-It returns `{built: [{exp, job}], failed: [{exp, reason}], rejected: [hypothesis]}`. Proposers return
+It returns `{built: [{exp, job}], failed: [{exp, hypothesis, reason}], rejected: [hypothesis]}`. Proposers return
 `{proposals: [{hypothesis, change, files, rationale}]}`. The judge returns `{picked: [index], rejected: [{index, reason}]}`.
 Builders return `{exp, job, error, notes: [{kind, note}]}`, and they report notes through `ar.py note` themselves.
+
+When any builder fails, the workflow runs one Sonnet cleanup agent after the last builder. The agent finds each failed
+experiment that is still `building`, by `exp` or, when the builder returned nothing, by `hypothesis`, and runs
+`ar.py abandon` on it. The failed builder does not do this, because it cannot be trusted to. Otherwise an experiment
+left `building` blocks every tick until `build_timeout_hours`.
 
 ## Decisions
 
@@ -207,6 +236,10 @@ Builders return `{exp, job, error, notes: [{kind, note}]}`, and they report note
   plus a finite target metric in a run with the right tags. The tag check also proves that the tags reach MLflow.
 - **Builders write their own sbatch scripts.** The user asked for this. Each experiment needs its own MLflow tags, and
   the builder bases the scripts on `reference_sbatch`.
+- **Every change in a scoped commit, no overrides in sbatch.** A hyperparameter set on the command line skips the scope
+  check and is not in the champion commit. Rejected: overrides in the scripts.
+- **Checkpoints in the campaign directory.** The worktree goes away when the experiment ends. Rejected: checkpoints in
+  the worktree, which `git worktree remove --force` deletes.
 - **Three proposers and one judge.** Tokens are cheap and GPU-days are expensive. Three Opus proposers plus builders in
   chunks of three fit the fleet cap of three Opus agents in flight.
 - **Resubmit once, only for cluster failures.** `NODE_FAIL`, `PREEMPTED`, and `BOOT_FAIL` are not the change's fault.
@@ -225,8 +258,11 @@ Builders return `{exp, job, error, notes: [{kind, note}]}`, and they report note
 | `sacct` fails or the MLflow DB is locked | `collect` exits non-zero and writes nothing. The tick reports it and waits for the next tick.      |
 | `ledger.json` does not parse             | Every command stops with the path. The user repairs it by hand. `ar.py` never rewrites it blindly. |
 | `sbatch` fails at smoke or full submit   | The experiment becomes `crashed` with reason `submit-failed: <stderr first line>`.                 |
-| Builder returns null or the session dies | The experiment stays `building`, then becomes `abandoned` after `build_timeout_hours`.             |
+| Builder returns an error or null         | The workflow's cleanup agent runs `ar.py abandon`. The experiment becomes `abandoned`.             |
+| The session dies during a build          | The experiment stays `building`, then becomes `abandoned` after `build_timeout_hours`.             |
+| Dirty worktree at smoke                  | `crashed`, reason `dirty-worktree: <paths>`. No job.                                               |
 | Out-of-scope paths in the commits        | `crashed`, reason `out-of-scope: <paths>`. No job.                                                 |
+| `new` at `max_experiments`               | `new` exits with an error and records nothing.                                                     |
 | Second lock holder                       | The second `ar.py` call waits up to 60 seconds, then exits with an error.                          |
 | `git worktree add` or `branch` fails     | `new` exits with an error and records nothing.                                                     |
 
@@ -245,6 +281,7 @@ Builders return `{exp, job, error, notes: [{kind, note}]}`, and they report note
 | 1.1, 1.2    | Architecture (skill), `campaign.toml`                    |
 | 1.3-1.6     | `ar.py` command line (`init`), Decisions (exclude)       |
 | 1.7, 1.8    | Architecture (skill), Data flow                          |
+| 1.9         | `ledger.json` (`baseline`), `ar.py` command line (`new`) |
 | 2.1         | Data flow, Job submission                                |
 | 2.2, 2.3    | MLflow lookup, Decisions (smoke), status machine         |
 | 2.4, 2.5    | MLflow lookup, status machine                            |
@@ -254,6 +291,7 @@ Builders return `{exp, job, error, notes: [{kind, note}]}`, and they report note
 | 2.10        | MLflow lookup                                            |
 | 3.1-3.4     | Decisions (champion rule, tree), `ledger.json`           |
 | 3.5-3.10    | `ledger.json` (state), `campaign.toml`, `ar.py` (`stop`) |
+| 3.11, 3.12  | `ar.py` command line (`new`, free slots), Error handling |
 | 4.1, 4.2    | Data flow, `ar.py` command line (free slots)             |
 | 4.3, 4.4    | Workflow interface, Decisions (three proposers)          |
 | 4.5         | `ar.py` command line (`new`)                             |
@@ -262,6 +300,10 @@ Builders return `{exp, job, error, notes: [{kind, note}]}`, and they report note
 | 4.10        | Decisions (three proposers)                              |
 | 4.11        | Error handling, `campaign.toml`                          |
 | 4.12        | `ar.py` command line (`note`)                            |
+| 4.13, 4.14  | MLflow params                                            |
+| 4.15        | Job submission, Decisions (checkpoints)                  |
+| 4.16        | Job submission, status machine, Error handling           |
+| 4.17, 4.18  | Workflow interface, `ar.py` command line (`abandon`)     |
 | 5.1-5.3     | Data flow, `ar.py` command line (free slots)             |
 | 5.4, 5.5    | Job submission                                           |
 | 6.1         | Error handling (lock), campaign state layout             |

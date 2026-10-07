@@ -6,7 +6,8 @@ export const meta = {
 
 // One run per tick. ar.py owns the ledger, every status change, and every git ref under the campaign. Agents only
 // propose, edit code in an experiment worktree, and write sbatch scripts. The fleet cap is three Opus agents in
-// flight: three proposers, then one judge, then builders three at a time.
+// flight: three proposers, then one judge, then builders three at a time, then one Sonnet agent that abandons the
+// experiments of failed builders.
 
 // Saving the script makes it a slash command too, and a bare /autoresearch-propose has no campaign to work on.
 if (!args || !Number.isInteger(args.slots) || args.slots < 1) {
@@ -69,8 +70,9 @@ const BUILD = {
   },
   required: ['notes'],
 }
+const ABANDONED = { type: 'object', properties: { abandoned: strings }, required: ['abandoned'] }
 
-const run = (task, label, phase, schema) => agent(task, { label, phase, schema, model: 'opus' })
+const run = (task, label, phase, schema, model = 'opus') => agent(task, { label, phase, schema, model })
 
 const campaignLines = [
   `Campaign: ${args.campaign}`,
@@ -103,6 +105,8 @@ function proposeTask(angle) {
     `2. ${args.campaignDir}/notes.md: user steering and facts that builders learned. Follow the steering.`,
     `3. The champion code in scope: \`git -C ${args.repo} show ${CHAMPION}:<path>\` and`,
     `   \`git -C ${args.repo} ls-tree -r --name-only ${CHAMPION}\`.`,
+    `4. If the exact settings of a past run matter, read its MLflow params. The database is \`mlflow_db\` in`,
+    `   ${args.campaignDir}/campaign.toml. Open it read-only, and find runs by the tag autoresearch.exp=<exp>.`,
     '',
     'Consider combining finished winners that are not in the champion lineage. A winner is a done experiment with',
     'verdict champion, or with a metric close to the champion. It is outside the lineage when',
@@ -140,6 +144,23 @@ function judgeTask(proposals) {
   ].join('\n')
 }
 
+function abandonTask(failures) {
+  return [
+    'You clean up after failed builders of an autoresearch campaign. Run only the commands below.',
+    '',
+    `1. Run \`${AR} status ${args.campaign} --json\`.`,
+    '2. For each failure below, find the experiment with status `building` whose id is `exp`. When `exp` is null,',
+    '   find the one with status `building` whose hypothesis is `hypothesis`. Skip a failure with no such experiment.',
+    `3. For each experiment you found, run \`${AR} abandon ${args.campaign} <exp> --reason <reason> --json\`, with the`,
+    '   reason of its failure shell-quoted.',
+    '',
+    'Change no file and no git ref. Return the IDs that you abandoned.',
+    '',
+    'Failures:',
+    JSON.stringify(failures, null, 2),
+  ].join('\n')
+}
+
 function buildTask(proposal) {
   return [
     'You build one experiment for an autoresearch campaign and submit its smoke job.',
@@ -154,15 +175,24 @@ function buildTask(proposal) {
     'Steps:',
     `1. Run \`${AR} new ${args.campaign} --hypothesis <hypothesis> --json\`, with the hypothesis shell-quoted. It returns`,
     '   {exp, worktree, dir}. If it fails, stop and return the error.',
-    '2. Make the change in the worktree. Change only files that match the scope globs. ar.py crashes the experiment',
-    '   and submits no job when a commit touches any other path.',
+    '2. Make the change in the worktree. Put every part of the change in files that match the scope globs. ar.py',
+    '   crashes the experiment and submits no job when a commit touches any other path.',
+    '   Every run must log its hyperparameters and config to MLflow as run params. Use the logging the project has.',
+    '   If it has none, add it as part of the change. If that needs a file outside the scope, report the fact as an',
+    '   env note (step 6) and return an error.',
     '3. Commit in the worktree with `git -C <worktree> commit`, on the experiment branch that is checked out there.',
     '   Write the subject imperative and lowercase, about 50 characters, with no type prefix such as `feat:`.',
-    '4. Write <dir>/smoke.sbatch and <dir>/full.sbatch, based on the reference sbatch script. Both must set the MLflow',
-    `   tags autoresearch.campaign=${args.campaign}, autoresearch.exp=<exp>, and autoresearch.kind=smoke or full,`,
-    '   through the mechanism the project already has for run tags. Read the training code to find it. The smoke',
-    '   script follows the smoke hint. The full script keeps the reference resources. Leave out --chdir and --output:',
-    '   ar.py sets them, so the job runs in the worktree and logs to <dir>.',
+    '   Commit every edit: ar.py crashes the experiment when the worktree has uncommitted or untracked files.',
+    '4. Write <dir>/smoke.sbatch and <dir>/full.sbatch, based on the reference sbatch script. The scripts set only',
+    '   these, and no hyperparameter override:',
+    '   - SLURM resources. The full script keeps the reference resources.',
+    '   - In the smoke script only, the shrink from the smoke hint.',
+    `   - The MLflow tags autoresearch.campaign=${args.campaign}, autoresearch.exp=<exp>, and autoresearch.kind=smoke`,
+    '     or full, through the mechanism the project already has for run tags. Read the training code to find it.',
+    '   - The training checkpoint and output directory, set to <dir> (absolute). ar.py removes the worktree when the',
+    '     experiment ends, so checkpoints in the worktree would be lost.',
+    '   - The switch that turns on MLflow param logging, if the project needs one.',
+    '   Leave out --chdir and --output: ar.py sets them, so the job runs in the worktree and logs to <dir>.',
     `5. Run \`${AR} smoke ${args.campaign} <exp> --json\`. It returns {job}, or an error.`,
     `6. For each fact that later builders need, run \`${AR} note ${args.campaign} --kind env|dead-end --text <fact>\`.`,
     '   Use env for how the project or cluster behaves, and dead-end for an approach that failed and why.',
@@ -199,11 +229,19 @@ for (let start = 0; start < picked.length; start += CHUNK) {
   const outs = await Promise.all(chunk.map((i) => run(buildTask(proposals[i]), `build-${i}`, 'Build', BUILD)))
   outs.forEach((out, n) => {
     const hypothesis = proposals[chunk[n]].hypothesis
-    // A builder that returns nothing leaves its experiment building; ar.py collect abandons it after the timeout.
-    if (!out) failed.push({ exp: null, reason: `builder returned no result: ${hypothesis}` })
-    else if (out.error || !out.job) failed.push({ exp: out.exp || null, reason: out.error || 'no job submitted' })
-    else built.push({ exp: out.exp, job: out.job })
+    if (!out) {
+      failed.push({ exp: null, hypothesis, reason: 'builder returned no result' })
+    } else if (out.error || !out.job) {
+      failed.push({ exp: out.exp || null, hypothesis, reason: out.error || 'no job submitted' })
+    } else {
+      built.push({ exp: out.exp, job: out.job })
+    }
   })
 }
+
+// An experiment left building blocks the next tick until build_timeout_hours, so abandon it now. The builder that
+// failed cannot be trusted to do it. ar.py refuses an experiment that is no longer building, such as one that smoke
+// already crashed.
+if (failed.length) await run(abandonTask(failed), 'abandon', 'Build', ABANDONED, 'sonnet')
 
 return { built, failed, rejected }

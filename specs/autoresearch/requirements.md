@@ -54,10 +54,13 @@ current HEAD.
 champion metric.
 
 1.7 Where the user gives no baseline run ID, the `/autoresearch` skill shall create a first experiment that runs the
-unchanged champion commit.
+champion code and is marked as the baseline.
 
 1.8 When init finishes, the `/autoresearch` skill shall print the permission rules that an unattended loop needs and the
 `/loop` command that starts it.
+
+1.9 When the user creates an experiment with `--baseline`, the `ar.py` helper shall mark the experiment as the baseline
+in the ledger.
 
 ## 2. Collecting results
 
@@ -100,8 +103,9 @@ experiment's commit and append the previous champion to the ledger's champion hi
 
 3.3 When a `done` experiment does not beat the champion, the `ar.py` helper shall set its verdict to `discard`.
 
-3.4 While no champion metric exists, the `ar.py` helper shall set the verdict of `done` experiments to `pending` and
-judge them in finish order once the baseline metric arrives.
+3.4 While no champion metric exists, the `ar.py` helper shall take the champion metric from the first `done` experiment
+that is marked as the baseline, set the verdict of other `done` experiments to `pending`, and judge them in finish
+order once the baseline metric arrives.
 
 3.5 When the number of created experiments reaches the maximum experiment count, the `ar.py` helper shall set the
 campaign state to `draining`.
@@ -120,6 +124,12 @@ to `finished`.
 3.10 Where the maximum experiment count or the plateau count is blank in `campaign.toml`, the `ar.py` helper shall not
 apply that stop condition.
 
+3.11 If the number of created experiments has reached the maximum experiment count, the `ar.py` helper shall refuse to
+create an experiment.
+
+3.12 Where a maximum experiment count is set, the `ar.py` helper shall report no more free slots than the number of
+experiments that the count still allows.
+
 ## 4. Proposing and building experiments
 
 4.1 When a tick finds the campaign `active` with free slots, the `/autoresearch` skill shall start the
@@ -137,11 +147,13 @@ proposals and rejects a proposal that repeats a past experiment's hypothesis.
 4.5 When the judge picks a proposal, the `ar.py` helper shall create the branch `autoresearch/<campaign>/<exp-id>` and a
 worktree from the current champion commit, and record the experiment as `building`.
 
-4.6 The builder agent shall change only files that match the campaign's scope globs, in the experiment's worktree, and
-commit the change on the experiment branch.
+4.6 The builder agent shall put every change of the experiment in files that match the campaign's scope globs, in the
+experiment's worktree, and commit the change on the experiment branch.
 
 4.7 The builder agent shall write a smoke sbatch script and a full sbatch script for the experiment, based on the
 reference sbatch script, that set the MLflow tags `autoresearch.campaign`, `autoresearch.exp`, and `autoresearch.kind`.
+The scripts shall set only SLURM resources, the smoke shrink from the smoke-run guidance, the MLflow tags, the checkpoint
+directory, and MLflow param logging. They shall set no hyperparameter override.
 
 4.8 When the builder agent finishes, the `ar.py` helper shall check that the experiment's commits change only paths in
 scope, then submit the smoke job and mark the experiment `smoke`.
@@ -155,6 +167,24 @@ with reason `out-of-scope` and submit no job.
 `abandoned` and remove its worktree.
 
 4.12 When a builder agent reports an environment fact or a dead end, the `ar.py` helper shall append it to `notes.md`.
+
+4.13 The builder agent shall make every smoke and full run log its hyperparameters and config to MLflow as run params.
+Where the project logs no run params, the builder agent shall add the logging as a change in scope.
+
+4.14 If the param logging needs a change outside the scope, the builder agent shall report it as an `env` note and
+return an error.
+
+4.15 The builder agent shall set the training checkpoint and output directory, in the sbatch scripts, to the absolute
+path of the experiment's directory in the campaign.
+
+4.16 If the experiment's worktree has uncommitted changes or untracked files that git does not ignore, the `ar.py`
+helper shall mark the experiment `crashed` with reason `dirty-worktree` and the paths, and submit no job.
+
+4.17 If a builder agent returns an error or no result while its experiment is `building`, the `autoresearch-propose`
+workflow shall mark the experiment `abandoned` through the `ar.py` helper.
+
+4.18 If the user asks the `ar.py` helper to abandon an experiment that is not `building`, the helper shall refuse and
+change nothing.
 
 ## 5. Submitting full runs
 
