@@ -1,6 +1,7 @@
 .DS_Store
 
 \.git
+\.ruff_cache
 ^/readme.*
 ^/LICENSE.*
 ^/COPYING
