@@ -4,7 +4,7 @@
 
 | Task                                                     | Status  |
 | -------------------------------------------------------- | ------- |
-| [#1.1](#11-arpy-skeleton-config-ledger-and-lock)         | Pending |
+| [#1.1](#11-arpy-skeleton-config-ledger-and-lock)         | Done    |
 | [#1.2](#12-arpy-init-stop-and-status)                    | Pending |
 | [#2.1](#21-arpy-slurm-layer)                             | Pending |
 | [#2.2](#22-arpy-mlflow-reader)                           | Pending |
@@ -18,7 +18,6 @@
 
 ## Suggested Resolution Order
 
-- 1.1 -- foundation, every `ar.py` command needs it
 - 1.2 -- small, makes a campaign creatable and visible early
 - 2.1 -- SLURM layer, independent of MLflow
 - 2.2 -- MLflow reader, independent of SLURM
@@ -47,6 +46,8 @@ Create `.claude/skills/autoresearch/scripts/ar.py` as a `uv run --script` file.
 - [ ] An invalid `campaign.toml` reports every bad key in one message.
 - [ ] A second writer waits for the lock and fails after 60 seconds.
 - [ ] The file imports only standard library modules.
+
+_Done: ar.py skeleton with config validation, ledger dataclasses, and flock lock_
 
 _Requirements: 6.1, 6.7_
 
@@ -236,3 +237,10 @@ A manual check in a scratch git repo. It adds no test files to this repo.
 _Requirements: 2.3, 2.6, 2.7, 3.1, 3.4, 3.9_
 _Depends: 2.4, 2.5_
 _Boundary: Validation_
+
+## Notes
+
+- [1.1 env] UV_NO_SYNC=1 is set in this shell, so every `uv run --script ar.py` prints a harmless `--no-sync is a no-op` warning on stderr. Filter it when you parse output.
+- [1.1 env] Run ruff on ar.py with `--target-version py311`. Without it, ruff treats tomllib as third-party and reports I001, because there is no pyproject to set the target.
+- [1.1 deviation] ar.py main() takes the campaign lock for collect, new, smoke, note, and stop through LOCKED_COMMANDS and existing_campaign(). Handlers for these commands must not lock again. init must call campaign_lock(path) itself after it creates the directory.
+- [1.1 deviation] Handlers have the signature `(args: argparse.Namespace) -> dict` and raise ArError for user errors. main() prints the dict through emit() as JSON or key: value lines, or prints {"error": msg} with exit 1. --json works before or after the subcommand.
