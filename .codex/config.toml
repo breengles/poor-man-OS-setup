@@ -116,12 +116,10 @@ source_type = "local"
 source = "/Users/artem/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-08-20T09:54:11Z"
 source_type = "local"
 source = "/Users/artem/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.claude-cowork]
-last_updated = "2026-08-21T13:41:05Z"
 source_type = "local"
 source = "/Users/artem/.codex/plugins/cache/claude-cowork"
 
