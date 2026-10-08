@@ -18,6 +18,7 @@ export GRADIO_TEMP_DIR="$HOME/gradio_tmp"
 [ ! -d "$GRADIO_TEMP_DIR" ] && mkdir -p "$GRADIO_TEMP_DIR"
 
 export STARSHIP_CONFIG="$HOME/.config/starship.toml"
+export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml"
 
 export PCPCTL_FEATURE_FLAGS=jobs
 
