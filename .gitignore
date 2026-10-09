@@ -30,6 +30,7 @@ __pycache__
 /.claude/todos
 /.claude/history.jsonl
 /.claude/skills/synced
+/.claude/skills/.trash
 # Codex writes credentials, databases, caches, sessions, packages, and plugins
 # beside its durable configuration. Track only the configuration allowlist.
 /.codex/*
