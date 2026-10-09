@@ -89,3 +89,8 @@ code or raise it.
 Never run compute-intensive work on the login node -- it is shared and intended
 only for editing and job submission. Submit real work through `sbatch` or
 `srun`. Use `scalar100q` by default.
+
+`/tmp` is local to each node, so a compute node cannot see the login node's
+`/tmp`. Put job scripts, inputs, outputs, and logs on the shared filesystem,
+for example under `$HOME` or the project directory.
+This includes any scratch directory under `/tmp`, so never point a job at one.

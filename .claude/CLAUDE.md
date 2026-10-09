@@ -96,3 +96,6 @@ Never delete or weaken pre-existing coverage unprompted -- if a change makes a t
 
 Never run compute-intensive work on the login node -- it is shared, and meant for editing and job submission only.
 Submit real work via `sbatch` / `srun`. Default partition: `scalar100q`.
+`/tmp` is local to each node, so a compute node cannot see the login node's `/tmp`.
+Put job scripts, inputs, outputs, and logs on the shared filesystem, such as `$HOME` or the project directory.
+This includes your scratchpad: it lives under `/tmp`, so never point a job at it.
