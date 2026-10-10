@@ -41,8 +41,8 @@ Permission rules for `.claude/settings.local.json` in the project, so the loop r
 ```json
 "allow": [
   "Bash(uv run --script ~/.claude/skills/autoresearch/scripts/ar.py *)",
-  "Bash(cd *)", "Bash(git *)", "Bash(ls *)", "Bash(cat *)",
-  "Edit(/.autoresearch/**)", "Write(/.autoresearch/**)", "Workflow"
+  "Bash(cd *)", "Bash(git *)", "Bash(ls *)", "Bash(cat *)", "Bash(sacct *)", "Bash(seff *)", "Bash(tail *)",
+  "Edit(/.autoresearch/**)", "Write(/.autoresearch/**)", "Workflow", "Agent(slurm-triage)"
 ]
 ```
 
@@ -75,8 +75,9 @@ If the builder fails while its experiment is `building`, run `ar.py abandon <cam
    (absolute), `slots: free_slots`, `goal`, `metric`, `direction`, `minDelta`, `scope` (an array), `referenceSbatch`,
    and `smokeHint`. If the tool cannot find the name, read `~/.claude/workflows/autoresearch-propose.js` and pass its
    text as `script`. Wait for its completion notification. It returns `{built, failed, rejected}`.
-4. Run `ar.py status <campaign> --json` once to see the experiments.
-5. Report in **at most 10 lines**: a new champion and its metric, finished and failed experiments with reasons, built
+4. Run `ar.py status <campaign> --json` once. Send **one** `slurm-triage` agent the `<campaignDir>/experiments/<exp>/`
+   of each failed run. Pass each `environment` or `cluster` cause to `ar.py note <campaign> --kind env --text <cause>`.
+5. Report in **at most 10 lines**: a new champion and its metric, finished and failed experiments with causes, built
    and rejected experiments, and the next tick time. When the champion metric is still null and the experiment with
    `baseline: true` ended in a state other than `done`, say so. Later results stay `pending` until the user runs
    `/autoresearch baseline <campaign>` again.
