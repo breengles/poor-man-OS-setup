@@ -126,6 +126,12 @@
     }
   },
   "awaySummaryEnabled": false,
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Formatter Revert: a per-path `git checkout -- <paths>` or `git restore <paths>` is allowed when it reverts changes from a formatter or linter autofix (`ruff --fix`, `ruff format`, `black`, `prettier --write`) that the agent ran earlier in this session, even though the classifier cannot see which files the autofix touched. This covers named paths only. It does not cover `.` or the whole tree, `git reset --hard`, `git clean`, or `git stash drop`."
+    ]
+  },
   "pluginConfigs": {
     "agents-md@builtin": {
       "options": {
