@@ -30,8 +30,10 @@ continue.
 
 ## Step 3: Dispatch the reviewer
 
-Dispatch one `reviewer` with the spec path, the commit list, and the test command. The agent file owns the role and
-pins Opus at high effort -- do not restate the method in the prompt.
+Dispatch one `reviewer` with the spec path, the commit list, and the test command. If the caller reports a passing test
+run at a sha, and `git diff --quiet <sha> HEAD -- . ':!<spec dir>'` shows no change since, send that result in place of
+the test command, so the reviewer does not run the suite again. The agent file owns the role and pins Opus at high
+effort -- do not restate the method in the prompt.
 
 - **Claude Code:** `Agent({subagent_type: "reviewer", prompt})`.
 - **pi:** `subagent({agent: "reviewer", task})`.

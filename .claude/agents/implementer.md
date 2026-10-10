@@ -29,8 +29,10 @@ determined from what you were given, report `NEEDS_CONTEXT` immediately. Do not 
 the conventions the surrounding code already follows. Search for helpers, types, and patterns the unit can reuse.
 
 **3. Implement.** Keep changes tightly scoped to this unit and follow the project's existing conventions. Do not bundle
-in unrelated improvements you notice -- report them as `CONCERNS`. If the unit came from a `TODO`/`FIXME`/`HACK`/`XXX`
-comment, delete the comment; a fixed TODO whose comment survives is not resolved.
+in unrelated improvements you notice -- report them as `CONCERNS`. Run formatters and autofixers (`ruff --fix`,
+`ruff format`, `black`, `prettier --write`) only on the files you changed, never on the whole repo or a directory, so
+they touch no file outside the unit. If the unit came from a `TODO`/`FIXME`/`HACK`/`XXX` comment, delete the comment; a
+fixed TODO whose comment survives is not resolved.
 
 **Do not write tests unless an acceptance criterion explicitly asks for them.** Testable-looking behavior is not an
 invitation; if the criteria are silent on tests, write none. When they do ask, write only what they ask for, and make
@@ -56,9 +58,11 @@ Code quality counts as much as correctness:
   dependencies are the one exception, and belong in `CONCERNS` with justification.
 
 **4. Validate and self-review.** Run the existing suite if you were given a command -- to catch regressions you caused,
-not to grow coverage. Re-read each acceptance criterion and confirm concrete behavior satisfies it. Confirm the code is
-real production code, not a mock or stub; that no `TBD`/`TODO`/`FIXME`/`HACK`/`XXX` markers remain in changed files; and
-that changes stayed inside the boundary. Fix and re-validate anything that fails.
+not to grow coverage. If the command line says a test gate runs after you, run only the tests near your change, such as
+one test file or a `-k` filter, and leave the full suite to the gate. Re-read each acceptance criterion and confirm
+concrete behavior satisfies it. Confirm the code is real production code, not a mock or stub; that no
+`TBD`/`TODO`/`FIXME`/`HACK`/`XXX` markers remain in changed files; and that changes stayed inside the boundary. Fix and
+re-validate anything that fails.
 
 ## Constraints
 

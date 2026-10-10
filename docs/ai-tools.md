@@ -17,7 +17,7 @@ Code's skills and its `implementer` and `reviewer` agents rather than keeping a 
 | `.claude/statusline-command.sh` | Status line script that `settings.json` runs                            |
 | `.claude/skills/*/SKILL.md`     | Custom slash commands                                                   |
 | `.claude/workflows/*.js`        | Saved workflows: `implement-units` and `autoresearch-propose`           |
-| `.claude/agents/*.md`           | Custom subagents: `implementer` and `reviewer`                          |
+| `.claude/agents/*.md`           | Custom subagents: `implementer`, `reviewer`, and five Haiku helpers     |
 
 Claude Code writes to `settings.json` itself, so its edits land in the repo through the symlink and show up in
 `git status`. `.claude/skills/synced/` holds claude.ai skills that Claude Code syncs down. It is ignored by both stow
@@ -71,9 +71,14 @@ parallel to check that each queued unit is still a real problem. After the user 
 hands the loop to the saved workflow `.claude/workflows/implement-units.js`. For each unit, the script does these steps
 in order:
 
-1. The `implementer` agent (Opus, medium effort) makes the change. It checks each acceptance criterion itself and runs
-   the tests. No separate verifier runs.
-2. A landing agent (Sonnet, medium effort) checks that only the expected files changed, then marks the unit `Done` in
+1. The `implementer` agent (Opus, medium effort) makes the change. It checks each acceptance criterion itself. With a
+   test command, it runs only the tests near its change and leaves the full suite to step 2. It never runs git
+   commands that change the tree or history. No verifier reviews its code.
+2. When there is a test command, the `test-runner` agent (Haiku) runs the suite again, because nothing else checks
+   the implementer's own test report. On a failure, a fresh `implementer` gets the failures for one repair round, and
+   `test-runner` runs once more. If the tests still fail, the run stops before the commit. Failures that an `env` note
+   names as pre-existing do not count, and come back as concerns.
+3. A landing agent (Sonnet, medium effort) checks that only the expected files changed, then marks the unit `Done` in
    the artifact, appends the unit's notes, and commits the code and the artifact together.
 
 The artifact's `## Notes` section is the run's memory. It holds run-time facts that no other section owns: `env` for
@@ -97,10 +102,11 @@ file through pi-subagents, see [Shared skills and agents](#shared-skills-and-age
 
 ### `/review-spec`
 
-`/implement` commits each unit without an independent check, so the user runs `/review-spec <spec>` by hand once the
-units have landed. The skill finds the commits that changed `tasks.md` together with code outside the spec. It hands
+`/implement` commits each unit without an independent code review. So when an `/implement` run ends without a stop
+and no unit is `Pending`, it runs `/review-spec` on the spec by itself. You can also run `/review-spec <spec>` by
+hand. The skill finds the commits that changed `tasks.md` together with code outside the spec. It hands
 them to the `reviewer` agent (Opus, high effort, read-only). The reviewer reads the spec and every commit, matches each
-requirement to evidence in the code, and looks hardest for bugs at the seams between units. It runs the tests and
+requirement to evidence in the code, and looks hardest for bugs at the seams between units. It runs the tests, unless `/implement` hands over a passing gate run for the same code, and
 returns a verdict with findings ranked by severity. The skill reports them and fixes nothing. A finding the user wants
 fixed goes to a fresh `implementer`. Run it before `/finalize`, because `/finalize` removes the spec.
 
@@ -122,6 +128,10 @@ ticks move it forward. Three files make it up:
 - `.claude/workflows/autoresearch-propose.js`: 3 proposers, 1 judge, and builders in chunks of 3. Each builder edits
   code in its own worktree, writes `smoke.sbatch` and `full.sbatch`, and submits the smoke job. When a builder fails,
   the workflow abandons its experiment at once, so the next tick can build again.
+
+When `collect` reports a failed smoke or full run, the tick sends one `slurm-triage` agent to read the SLURM logs.
+The tick report names the cause, and a cause in the environment or cluster becomes an `env` note for later
+proposers.
 
 Every change of an experiment is in a commit on its branch, in files that match `scope`. `ar.py smoke` crashes an
 experiment whose worktree has uncommitted or untracked files. The sbatch scripts set only resources, the smoke shrink,
@@ -161,20 +171,45 @@ Open questions:
 - `ar.py` reads job states through `sacct`. Check that `sacct` works on the cluster, because some clusters disable
   SLURM accounting.
 
+## Haiku Subagents
+
+Five agents in `.claude/agents/` run on Haiku 5.5, which costs about a twentieth of Sonnet 5.5. Each one only reads
+and reports, and each report quotes its evidence, so the caller can act without re-reading files. None of them edits
+code, because Haiku is weak at code edits, review, and judgement calls.
+
+| Agent           | What it does                                                         | Who calls it                   |
+| --------------- | -------------------------------------------------------------------- | ------------------------------ |
+| `Explore`       | Searches the codebase. Every claim cites `path:line`                 | Any session; `/implement`      |
+| `slurm-triage`  | Reads `sacct` and the job logs, and names one cause per failed job   | `/autoresearch` tick; any time |
+| `test-runner`   | Runs tests or linters, and returns only the failures, verbatim       | `/implement` gate; any session |
+| `ci-triage`     | Reads failed GitLab CI jobs through `glab`, and says rerun or fix    | Any session                    |
+| `docs-verifier` | Marks each doc claim verified, refuted, or unverifiable against code | `/finalize` doc triage         |
+
+`Explore.md` overrides the built-in `Explore` agent, which otherwise inherits the session's Opus. `/implement` sends
+it to check that a queued unit is still a real problem, and the user confirms each result. In `/finalize`,
+`docs-verifier` replaces the main session's own doc-against-code comparison. The Opus reviewer after the doc
+updaters stays, so it still catches what Haiku misses in the docs that were updated.
+
+`slurm-triage` and `test-runner` know about the shared login node. `slurm-triage` never submits or cancels a job, and
+`test-runner` refuses GPU or long suites there.
+
 ## pi (local-model harness)
 
 pi is a second agent CLI, installed from npm as `@earendil-works/pi-coding-agent`. It reads its global configuration
 from `~/.pi/agent/`, and this repo owns the hand-authored part of that directory.
 
-| File                                  | Description                                                     |
-| ------------------------------------- | --------------------------------------------------------------- |
-| `.pi/agent/settings.json`             | Provider, thinking level, skills path, extensions, packages     |
-| `.pi/agent/models.json`               | The `ollama` provider and its model list (generated, see below) |
-| `.pi/agent/extensions/footer-info.ts` | Footer: cwd, branch, cost, context use, model, t/s, thinking    |
-| `.pi/agent/extensions/pi-context.ts`  | `/context` command: inspect the live system prompt              |
-| `.pi/agent/agents/implementer.md`     | pi-subagents shim pointing at the Claude `implementer` contract |
-| `.pi/agent/agents/reviewer.md`        | pi-subagents shim pointing at the Claude `reviewer` contract    |
-| `.pi/web-search.json`                 | pi-web-access settings: workflow and summary model              |
+| File                                  | Description                                                       |
+| ------------------------------------- | ----------------------------------------------------------------- |
+| `.pi/agent/settings.json`             | Provider, thinking level, skills path, extensions, packages       |
+| `.pi/agent/models.json`               | The `ollama` provider and its model list (generated, see below)   |
+| `.pi/agent/extensions/footer-info.ts` | Footer: cwd, branch, cost, context use, model, t/s, thinking      |
+| `.pi/agent/extensions/pi-context.ts`  | `/context` command: inspect the live system prompt                |
+| `.pi/agent/agents/implementer.md`     | pi-subagents shim pointing at the Claude `implementer` contract   |
+| `.pi/agent/agents/reviewer.md`        | pi-subagents shim pointing at the Claude `reviewer` contract      |
+| `.pi/agent/agents/docs-verifier.md`   | pi-subagents shim pointing at the Claude `docs-verifier` contract |
+| `.pi/agent/agents/test-runner.md`     | pi-subagents shim pointing at the Claude `test-runner` contract   |
+| `.pi/agent/agents/slurm-triage.md`    | pi-subagents shim pointing at the Claude `slurm-triage` contract  |
+| `.pi/web-search.json`                 | pi-web-access settings: workflow and summary model                |
 
 Everything else under `.pi/` is runtime state: `auth.json` and `trust.json` hold credentials and trust decisions,
 `sessions/` holds transcripts, and `models-store.json` is a fetched catalog. All of it is excluded from both stow and

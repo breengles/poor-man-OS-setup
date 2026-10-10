@@ -34,24 +34,28 @@ dead-code removal, added tests) change no documented behavior at all -- if none 
 If the project has no `docs/` directory, confirm with the user that `README.md` / `CLAUDE.md` are the whole doc surface
 before continuing.
 
-## Step 3: Reconcile the docs (orchestrated, opus subagents)
+## Step 3: Reconcile the docs (orchestrated subagents)
 
 Compare the shipped **code** against each in-scope doc and announce a one-line verdict per file: `current`,
-`stale: <the specific gap>`, or `missing`. If everything is current, skip to Step 4.
+`stale: <the specific gap>`, or `missing`. Do not read the docs against the code yourself: dispatch one
+`docs-verifier` agent per existing doc, all at once and at most 6, or one agent for several small docs. Give each the
+doc path, the code paths the units touched, and the `_Done:_` notes. Its refuted and missing lines are the gap. If
+everything is current, skip to Step 4.
 
 Otherwise you orchestrate -- **you do not edit docs yourself**:
 
-1. **Dispatch doc-updaters** (`Agent({subagent_type: "general-purpose", model: "opus"})`), one per doc when the files
-   are independent (sequentially) or one combined updater when they are entangled. Each prompt gives the doc path(s),
-   the specific gap, the `_Done:_` notes, the matching `## Notes` entries, the code paths that changed, and an
+1. **Dispatch doc-updaters** (`Agent({subagent_type: "general-purpose", model: "sonnet"})`), one per doc when the files
+   are independent (all at once, at most 6) or one combined updater when they are entangled. Each prompt gives the doc
+   path(s), the specific gap, the `_Done:_` notes, the matching `## Notes` entries, the code paths that changed, and an
    instruction to **read the real code** -- `design.md` is only a hint and may have drifted from what shipped. The
    updater removes stale content, covers new behavior, fixes examples, runs `npx prettier --write --print-width 120` on
    what it touches, and edits **only** documentation -- never source code.
 2. **Dispatch one opus reviewer** once the updaters return. It reads code and docs independently, edits nothing, and
    returns **ALIGNED** or **NEEDS_REVISION** with specific findings.
 3. **ALIGNED** -> continue. **NEEDS_REVISION** -> dispatch a fresh updater with those findings only and re-review,
-   **maximum 2 rounds**. Still not aligned after 2 rounds: stop, report the outstanding gaps, and **do not remove the
-   artifact**. It stays until the docs can be aligned; the user fixes them manually and re-runs.
+   **maximum 2 rounds**, counted across the whole run. Still not aligned after 2 rounds: stop, report the outstanding
+   gaps, and **do not remove the artifact**. It stays until the docs can be aligned; the user fixes them manually and
+   re-runs.
 
 Keep your context clean -- one line per doc (`docs/api.md: ALIGNED, rewrote auth section`).
 

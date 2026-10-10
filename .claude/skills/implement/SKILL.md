@@ -10,8 +10,9 @@ argument-hint: "<path to spec dir> [numbers | all]"
 
 You are the **orchestrator**. You do NOT write implementation code. You resolve the target, build the
 queue, then hand the per-unit loop to the saved workflow `implement-units`. Stow deploys it from the dotfiles repo to
-`~/.claude/workflows/implement-units.js`. For each unit, that script runs an `implementer`, then a land step that
-checks the scope and commits. You own every step that needs the user: the unit choice, the stops, and the report.
+`~/.claude/workflows/implement-units.js`. For each unit, that script runs an `implementer`, then a `test-runner`
+when there is a test command, with one repair round on a failure, then a land step that checks the scope and commits.
+You own every step that needs the user: the unit choice, the stops, and the report.
 
 ## Step 1: Resolve the target
 
@@ -63,31 +64,31 @@ themselves.
 - **pi:** read `~/.claude/workflows/implement-units.js`, take everything below its `// pi:` marker line, and prepend
   `const args = <args JSON>;`. Pass that as `subagent({workflowScript, async: false, mission: false, timeoutMs})`, with
   `timeoutMs` at 45 minutes per queue entry.
-- **Neither tool exists:** run the script's steps yourself, one unit at a time, dispatching the `implementer` and
-  landing subagents sequentially. Treat `implement-units.js` as the spec. Do not end your turn
-  between units.
+- **Neither tool exists:** run the script's steps yourself, one unit at a time, dispatching the `implementer`,
+  `test-runner`, and land agents in order. Treat `implement-units.js` as the spec. Do not end your turn between units.
 
 ## Step 4: Handle the result
 
-The workflow returns `{done, blocked, concerns, stopped}`. Read only this value; do not open subagent transcripts
+The workflow returns `{done, blocked, concerns, stopped, tests}`. Read only this value; do not open subagent transcripts
 unless you must debug a stop.
 
 - **blocked:** set each unit's Status to `Blocked`, append `_Blocked: {reason}_` to its section, and append its `notes`
   to the `## Notes` section at the end of the artifact. Leave the edit uncommitted; the next landed commit carries it.
 - **concerns:** report them.
 - **stopped:** report the unit and the reason, then ask the user. The script stops on missing context, a blocked unit
-  with changes in the tree, unexpected changed files, and a failed commit. Append its `notes` that still hold. Write a
-  missing-context answer into the unit's section, or commit it to `design.md` or `requirements.md` first, because the
-  land step stops on other changed paths. Add it as `extraContext` and relaunch. Never discard
-  changes yourself.
+  with changes in the tree, tests that still fail after the repair round, unexpected changed files, and a failed commit.
+  Append its `notes` that still hold. Write a missing-context answer into the unit's section, or commit it to
+  `design.md` or `requirements.md` first, because the land step stops on other changed paths. Add it as `extraContext`
+  and relaunch. Never discard changes yourself.
 
 To continue, relaunch with the entries not yet in `done`. If the user objects to a unit that already landed, dispatch
 a fresh `implementer` with the unit's `text` and the objection, then relaunch from there.
 
 ## Report
 
-Completed units with commit hashes; blocked units with reasons; the stop, if any; count still pending; follow-ups
-filed. Suggest `/finalize <path>` once nothing is pending. Do not purge units yourself.
+Completed units with commit hashes; blocked units with reasons; the stop, if any; count still pending; follow-ups filed.
+Do not purge units yourself. When the run did not stop and no unit is `Pending`, invoke the `review-spec` skill on the
+spec without asking, pass it `tests` (the last passing test run), and follow it to its own report.
 
 ## Constraints
 

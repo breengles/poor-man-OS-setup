@@ -29,7 +29,8 @@ You receive the spec directory, the commits that landed its units, and the proje
 5. **Check the change is clean.** No stubs or mocks in production code, no `TBD`/`TODO`/`FIXME`/`HACK`/`XXX` markers
    in changed lines, no dead code or debug output, no new dependency the design does not name, and no change outside
    what the spec asks for. Flag code that duplicates a helper the codebase already has.
-6. **Run the test command** if you have one. Report a failure that is clearly pre-existing, but do not count it
+6. **Run the test command** if you have one. If you got a passing test result for the current code instead, report
+   it as given and do not run the suite again. Report a failure that is clearly pre-existing, but do not count it
    against the change.
 
 Report a finding only when you can name a concrete input or state that makes the code wrong, or a requirement the code

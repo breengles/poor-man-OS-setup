@@ -1,7 +1,7 @@
 export const meta = {
   name: 'implement-units',
   description: 'Implement and commit tracked units one at a time (run it through /implement)',
-  phases: [{ title: 'Implement' }, { title: 'Land' }],
+  phases: [{ title: 'Implement' }, { title: 'Test' }, { title: 'Land' }],
 }
 // pi: send the text below this line as workflowScript, prefixed with `const args = <args JSON>;`
 
@@ -49,6 +49,31 @@ const LAND = {
   required: ['committed', 'sha', 'summary'],
 }
 const SHA = /^[0-9a-f]{7,40}$/
+const CAUSES = ['assertion', 'import-or-env', 'missing-data', 'timeout', 'flaky', 'needs-gpu', 'pre-existing', 'other']
+const TESTS = {
+  type: 'object',
+  properties: {
+    result: { type: 'string', enum: ['PASS', 'FAIL', 'BLOCKED', 'ERROR'] },
+    command: { type: 'string' },
+    counts: { type: 'string' },
+    reason: { type: 'string' },
+    failures: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          test: { type: 'string' },
+          location: { type: 'string' },
+          cause: { type: 'string', enum: CAUSES },
+          likely_cause: { type: 'string' },
+          excerpt: { type: 'string' },
+        },
+        required: ['test', 'cause', 'excerpt'],
+      },
+    },
+  },
+  required: ['result', 'command'],
+}
 
 // Writers opt out of pi's inferred acceptance gates: the implementer runs the tests and checks the criteria itself.
 function step(key, agentName, phaseTitle, task, schema, opts) {
@@ -64,7 +89,9 @@ function step(key, agentName, phaseTitle, task, schema, opts) {
   return agent(task, o)
 }
 
-const testLine = `Test command: ${args.testCmd || 'none known'}`
+const testLine = args.testCmd
+  ? `Test command: ${args.testCmd}. Run only the tests near your change: a test gate runs the full suite after you.`
+  : 'Test command: none known'
 // Fixed text after the orchestrator's `text`, so a stray instruction there cannot make an implementer mark a unit
 // Done before the land step.
 const artifactLine = `The land step updates ${args.artifact} after you finish. Do not edit it, and do not commit.`
@@ -76,6 +103,50 @@ function implementTask(unit, id) {
     '',
     unit.text,
     unit.extraContext ? `\nAdditional context from the orchestrator:\n${unit.extraContext}` : '',
+    '',
+    testLine,
+    artifactLine,
+  ].join('\n')
+}
+
+function testTask() {
+  return [
+    `Run the full test suite once and report the result. Test command: ${args.testCmd}`,
+    `Mark a failure pre-existing only when an \`env\` entry in the \`## Notes\` section of ${args.artifact} names that`,
+    'test or says the suite failed before this run.',
+  ].join('\n')
+}
+
+// The failures that block the unit. Pre-existing ones do not, and a failed run with no details counts as one failure.
+function gateFailures(t) {
+  if (t.result === 'PASS' || t.result === 'BLOCKED') return []
+  const all = t.failures || []
+  const reason = t.reason || `${t.result} with no failure details`
+  if (!all.length) return [{ test: t.command, cause: 'other', excerpt: reason }]
+  return all.filter((f) => f.cause !== 'pre-existing')
+}
+
+const formatFailures = (fs) =>
+  fs
+    .map((f) => {
+      const head = `- ${f.test}${f.location ? ` (${f.location})` : ''} [${f.cause}]`
+      return `${head}${f.likely_cause ? `: ${f.likely_cause}` : ''}\n  ${String(f.excerpt).split('\n').join('\n  ')}`
+    })
+    .join('\n')
+
+function repairTask(unit, id, files, failures) {
+  return [
+    `Repair tracked unit ${id} from ${args.artifact}. An earlier implementer finished it, then an independent test run`,
+    'failed. Fix the code so these tests pass. If a failure is not caused by this unit, do not work around it: report',
+    'BLOCKED with the evidence.',
+    '',
+    'Failures:',
+    formatFailures(failures),
+    '',
+    'Files the earlier implementer changed:',
+    list(files),
+    '',
+    unit.text,
     '',
     testLine,
     artifactLine,
@@ -116,7 +187,9 @@ const done = []
 const blocked = []
 const concerns = []
 const blockedIds = new Set()
-const result = (stopped) => ({ done, blocked, concerns, stopped })
+// tests: the last gate that passed, if no unit landed after it, so review-spec can skip a second full run.
+let tests = null
+const result = (stopped) => ({ done, blocked, concerns, stopped, tests })
 // Notes travel with the unit: the land step writes them only when it commits the unit, so a stopped attempt
 // cannot plant a fact for later units. Blocked units and stops hand theirs to the main session.
 let notes = []
@@ -152,7 +225,33 @@ for (const unit of args.queue) {
     continue
   }
 
-  const files = impl.files_changed
+  // An independent test run, because the implementer's own test report is not checked. One repair round, then stop.
+  let files = impl.files_changed
+  let gate = null
+  if (args.testCmd) {
+    say(`${id}: testing`)
+    gate = await step(`test-${key}`, 'test-runner', 'Test', testTask(), TESTS, {})
+    if (!gate) return stop(unit, 'test-runner returned no result')
+    let failing = gateFailures(gate)
+    if (failing.length) {
+      say(`${id}: ${failing.length} failing, repairing`)
+      const task = repairTask(unit, id, files, failing)
+      const fix = await step(`fix-${key}`, 'implementer', 'Implement', task, STATUS, { writer: true })
+      if (!fix) return stop(unit, 'repair implementer returned no status')
+      collect(fix, id)
+      concerns.push(...(fix.concerns || []).map((c) => `${id}: ${c}`))
+      files = [...new Set([...files, ...fix.files_changed])]
+      if (fix.status !== 'COMPLETE') return stop(unit, `repair ${fix.status}: ${fix.blocker || fix.missing}`)
+      gate = await step(`retest-${key}`, 'test-runner', 'Test', testTask(), TESTS, {})
+      if (!gate) return stop(unit, 'test-runner returned no result after the repair')
+      failing = gateFailures(gate)
+      if (failing.length) return stop(unit, `tests still fail after one repair:\n${formatFailures(failing)}`)
+    }
+    if (gate.result === 'BLOCKED') concerns.push(`${id}: tests not gated: ${gate.reason || 'test-runner refused'}`)
+    const old = (gate.failures || []).filter((f) => f.cause === 'pre-existing').map((f) => f.test)
+    if (old.length) concerns.push(`${id}: pre-existing test failures: ${old.join(', ')}`)
+  }
+
   const land = await step(`land-${key}`, PI ? 'worker' : null, 'Land', landTask(unit, id, files, notes), LAND, {
     writer: true,
     model: 'sonnet',
@@ -166,6 +265,7 @@ for (const unit of args.queue) {
     return stop(unit, `land claimed a commit without a valid sha (${JSON.stringify(land.sha)}): ${land.summary}`)
   }
   done.push({ ids: unit.ids, sha: land.sha, summary: land.summary })
+  tests = gate && gate.result !== 'BLOCKED' ? { sha: land.sha, command: gate.command, counts: gate.counts || '' } : null
   say(`${id}: ${land.sha} ${land.summary}`)
 }
 
