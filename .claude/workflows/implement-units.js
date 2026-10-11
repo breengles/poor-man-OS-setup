@@ -187,6 +187,9 @@ const done = []
 const blocked = []
 const concerns = []
 const blockedIds = new Set()
+// The progress UI counts agents, and one unit takes 2 to 5 of them, so each log line leads with landed units instead.
+const total = args.queue.reduce((n, u) => n + u.ids.length, 0)
+const progress = () => `[${done.reduce((n, d) => n + d.ids.length, 0)}/${total} done]`
 // tests: the last gate that passed, if no unit landed after it, so review-spec can skip a second full run.
 let tests = null
 const result = (stopped) => ({ done, blocked, concerns, stopped, tests })
@@ -211,7 +214,7 @@ for (const unit of args.queue) {
     continue
   }
 
-  say(`${id}: implementing`)
+  say(`${progress()} ${id}: implementing`)
   notes = []
   const impl = await step(`impl-${key}`, 'implementer', 'Implement', implementTask(unit, id), STATUS, { writer: true })
   if (!impl) return stop(unit, 'implementer returned no status')
@@ -229,12 +232,12 @@ for (const unit of args.queue) {
   let files = impl.files_changed
   let gate = null
   if (args.testCmd) {
-    say(`${id}: testing`)
+    say(`${progress()} ${id}: testing`)
     gate = await step(`test-${key}`, 'test-runner', 'Test', testTask(), TESTS, {})
     if (!gate) return stop(unit, 'test-runner returned no result')
     let failing = gateFailures(gate)
     if (failing.length) {
-      say(`${id}: ${failing.length} failing, repairing`)
+      say(`${progress()} ${id}: ${failing.length} failing, repairing`)
       const task = repairTask(unit, id, files, failing)
       const fix = await step(`fix-${key}`, 'implementer', 'Implement', task, STATUS, { writer: true })
       if (!fix) return stop(unit, 'repair implementer returned no status')
@@ -266,7 +269,7 @@ for (const unit of args.queue) {
   }
   done.push({ ids: unit.ids, sha: land.sha, summary: land.summary })
   tests = gate && gate.result !== 'BLOCKED' ? { sha: land.sha, command: gate.command, counts: gate.counts || '' } : null
-  say(`${id}: ${land.sha} ${land.summary}`)
+  say(`${progress()} ${id}: ${land.sha} ${land.summary}`)
 }
 
 return result(null)
