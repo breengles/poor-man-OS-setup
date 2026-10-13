@@ -46,18 +46,20 @@ commit carries that edit; if nothing lands, commit the artifact alone.
 Each queue entry is one unit. Merge units into one entry only when they are entangled -- shared files, one refactor,
 or they only make sense together -- so one implementer takes them all and one commit lands them.
 
-With explicit numbers, queue those in order; with `all`, every pending unit in order. In both cases, present the queue
-and the test command, then proceed without asking. With neither, propose the pending units in order and ask which to
-run.
+With explicit numbers, queue those in order; with `all`, every pending unit in order. In both cases, present the queue,
+the test command and the units that skip the test gate, then proceed without asking. With neither, propose the pending
+units in order and ask which to run.
 
 ## Step 3: Run the workflow
 
 Build `args`: `artifact` (path), `testCmd` (string or null), `baseline` (the saved porcelain output), and `queue`, a
-list of `{ids, text, depends}`. `text` carries the unit's full text plus the requirement and design excerpts it
-references. `depends` lists queued unit ids it needs. The agent file owns the implementer role -- do not restate it
-in `text`, and never tell the implementer there to edit the artifact or commit; only the land step does that. This
-contract is the whole interface, so do not read the script to learn it. Agents read the artifact's `## Notes` section
-themselves.
+list of `{ids, text, depends, test}`. `text` carries the unit's full text plus the requirement and design excerpts it
+references. `depends` lists queued unit ids it needs. `test` defaults to true, which runs the full suite after the unit.
+Set it to false when the unit cannot change a test result: it edits only docs or prose that no test reads, or it only
+verifies and changes no file. Such a unit skips the test gate and keeps the last passing run as `tests`. The agent file
+owns the implementer role -- do not restate it in `text`, and never tell the implementer there to edit the artifact or
+commit; only the land step does that. This contract is the whole interface, so do not read the script to learn it.
+Agents read the artifact's `## Notes` section themselves.
 
 - **Claude Code:** `Workflow({name: "implement-units", args})`. If the tool cannot find that name, read
   `~/.claude/workflows/implement-units.js` and pass its full text as `script` with the same `args`.

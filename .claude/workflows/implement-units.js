@@ -89,9 +89,14 @@ function step(key, agentName, phaseTitle, task, schema, opts) {
   return agent(task, o)
 }
 
-const testLine = args.testCmd
-  ? `Test command: ${args.testCmd}. Run only the tests near your change: a test gate runs the full suite after you.`
-  : 'Test command: none known'
+// The orchestrator sets `test: false` on a unit that cannot affect the tests, such as a docs-only change.
+const gated = (unit) => Boolean(args.testCmd) && unit.test !== false
+const testLine = (unit) =>
+  !args.testCmd
+    ? 'Test command: none known'
+    : gated(unit)
+      ? `Test command: ${args.testCmd}. Run only the tests near your change: a test gate runs the full suite after you.`
+      : `Test command: ${args.testCmd}. No test gate runs after you. If you change code, run the tests it affects.`
 // Fixed text after the orchestrator's `text`, so a stray instruction there cannot make an implementer mark a unit
 // Done before the land step.
 const artifactLine = `The land step updates ${args.artifact} after you finish. Do not edit it, and do not commit.`
@@ -104,7 +109,7 @@ function implementTask(unit, id) {
     unit.text,
     unit.extraContext ? `\nAdditional context from the orchestrator:\n${unit.extraContext}` : '',
     '',
-    testLine,
+    testLine(unit),
     artifactLine,
   ].join('\n')
 }
@@ -148,7 +153,7 @@ function repairTask(unit, id, files, failures) {
     '',
     unit.text,
     '',
-    testLine,
+    testLine(unit),
     artifactLine,
   ].join('\n')
 }
@@ -231,7 +236,8 @@ for (const unit of args.queue) {
   // An independent test run, because the implementer's own test report is not checked. One repair round, then stop.
   let files = impl.files_changed
   let gate = null
-  if (args.testCmd) {
+  if (args.testCmd && !gated(unit)) say(`${progress()} ${id}: no test gate (orchestrator choice)`)
+  if (gated(unit)) {
     say(`${progress()} ${id}: testing`)
     gate = await step(`test-${key}`, 'test-runner', 'Test', testTask(), TESTS, {})
     if (!gate) return stop(unit, 'test-runner returned no result')
@@ -268,7 +274,9 @@ for (const unit of args.queue) {
     return stop(unit, `land claimed a commit without a valid sha (${JSON.stringify(land.sha)}): ${land.summary}`)
   }
   done.push({ ids: unit.ids, sha: land.sha, summary: land.summary })
-  tests = gate && gate.result !== 'BLOCKED' ? { sha: land.sha, command: gate.command, counts: gate.counts || '' } : null
+  // A unit that the orchestrator excluded from the gate keeps the last passing run.
+  if (gate) tests = gate.result !== 'BLOCKED' ? { sha: land.sha, command: gate.command, counts: gate.counts || '' } : null
+  else if (!args.testCmd) tests = null
   say(`${progress()} ${id}: ${land.sha} ${land.summary}`)
 }
 
