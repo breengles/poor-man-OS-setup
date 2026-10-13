@@ -1,7 +1,6 @@
 export const meta = {
   name: 'implement-units',
   description: 'Implement and commit tracked units one at a time (run it through /implement)',
-  phases: [{ title: 'Implement' }, { title: 'Test' }, { title: 'Land' }],
 }
 // pi: send the text below this line as workflowScript, prefixed with `const args = <args JSON>;`
 
@@ -209,6 +208,10 @@ function collect(out, id) {
 }
 const stop = (unit, reason) => result({ ids: unit.ids, reason, notes })
 
+// One progress group per unit, not per stage. phase() shows a group as soon as it is called, so the whole queue is
+// visible before the first agent starts. pi has no phase().
+if (typeof phase === 'function') for (const unit of args.queue) phase(unit.ids.join('+'))
+
 for (const unit of args.queue) {
   const id = unit.ids.join('+')
   const key = id.replace(/[^A-Za-z0-9._-]/g, '-')
@@ -221,7 +224,7 @@ for (const unit of args.queue) {
 
   say(`${progress()} ${id}: implementing`)
   notes = []
-  const impl = await step(`impl-${key}`, 'implementer', 'Implement', implementTask(unit, id), STATUS, { writer: true })
+  const impl = await step(`impl-${key}`, 'implementer', id, implementTask(unit, id), STATUS, { writer: true })
   if (!impl) return stop(unit, 'implementer returned no status')
   collect(impl, id)
   concerns.push(...(impl.concerns || []).map((c) => `${id}: ${c}`))
@@ -239,19 +242,19 @@ for (const unit of args.queue) {
   if (args.testCmd && !gated(unit)) say(`${progress()} ${id}: no test gate (orchestrator choice)`)
   if (gated(unit)) {
     say(`${progress()} ${id}: testing`)
-    gate = await step(`test-${key}`, 'test-runner', 'Test', testTask(), TESTS, {})
+    gate = await step(`test-${key}`, 'test-runner', id, testTask(), TESTS, {})
     if (!gate) return stop(unit, 'test-runner returned no result')
     let failing = gateFailures(gate)
     if (failing.length) {
       say(`${progress()} ${id}: ${failing.length} failing, repairing`)
       const task = repairTask(unit, id, files, failing)
-      const fix = await step(`fix-${key}`, 'implementer', 'Implement', task, STATUS, { writer: true })
+      const fix = await step(`fix-${key}`, 'implementer', id, task, STATUS, { writer: true })
       if (!fix) return stop(unit, 'repair implementer returned no status')
       collect(fix, id)
       concerns.push(...(fix.concerns || []).map((c) => `${id}: ${c}`))
       files = [...new Set([...files, ...fix.files_changed])]
       if (fix.status !== 'COMPLETE') return stop(unit, `repair ${fix.status}: ${fix.blocker || fix.missing}`)
-      gate = await step(`retest-${key}`, 'test-runner', 'Test', testTask(), TESTS, {})
+      gate = await step(`retest-${key}`, 'test-runner', id, testTask(), TESTS, {})
       if (!gate) return stop(unit, 'test-runner returned no result after the repair')
       failing = gateFailures(gate)
       if (failing.length) return stop(unit, `tests still fail after one repair:\n${formatFailures(failing)}`)
@@ -261,7 +264,7 @@ for (const unit of args.queue) {
     if (old.length) concerns.push(`${id}: pre-existing test failures: ${old.join(', ')}`)
   }
 
-  const land = await step(`land-${key}`, PI ? 'worker' : null, 'Land', landTask(unit, id, files, notes), LAND, {
+  const land = await step(`land-${key}`, PI ? 'worker' : null, id, landTask(unit, id, files, notes), LAND, {
     writer: true,
     model: 'sonnet',
     effort: 'medium',
