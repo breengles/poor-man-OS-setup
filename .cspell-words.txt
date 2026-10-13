@@ -274,6 +274,7 @@ cond
 conda
 conds
 conftest
+conftests
 conlist
 controldir
 controlnet
@@ -1476,6 +1477,7 @@ roboto
 romkatv
 rosinality
 rossdraws
+roundoff
 rovib
 rowaddrs
 ROWWISE
