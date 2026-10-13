@@ -208,10 +208,8 @@ function collect(out, id) {
 }
 const stop = (unit, reason) => result({ ids: unit.ids, reason, notes })
 
-// One progress group per unit, not per stage. phase() shows a group as soon as it is called, so the whole queue is
-// visible before the first agent starts. pi has no phase().
-if (typeof phase === 'function') for (const unit of args.queue) phase(unit.ids.join('+'))
-
+// Each unit's agents share one progress group named by the unit id. The panel shows a group only once its first
+// agent starts, so units appear one at a time.
 for (const unit of args.queue) {
   const id = unit.ids.join('+')
   const key = id.replace(/[^A-Za-z0-9._-]/g, '-')
