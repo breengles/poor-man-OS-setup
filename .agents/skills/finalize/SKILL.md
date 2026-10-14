@@ -50,9 +50,8 @@ Otherwise you orchestrate -- **you do not edit docs yourself**:
    **only** documentation -- never source code.
 2. **Dispatch one Sol/high reviewer** once the updaters return, on the same `spawn_agent` settings. It reads code and
    docs independently, edits nothing, and returns **ALIGNED** or **NEEDS_REVISION** with specific findings.
-3. **ALIGNED** -> continue. **NEEDS_REVISION** -> dispatch a fresh updater with those findings only and re-review,
-   **maximum 2 rounds**. Still not aligned after 2 rounds: stop, report the outstanding gaps, and **do not remove the
-   artifact**. It stays until the docs can be aligned; the user fixes them manually and re-runs.
+3. **ALIGNED** -> continue. **NEEDS_REVISION** -> dispatch one fresh updater with those findings only, then continue.
+   Do not review again: one review and one fix round is the whole cycle.
 
 Keep your context clean -- one line per doc (`docs/api.md: ALIGNED, rewrote auth section`).
 
@@ -70,13 +69,12 @@ skill so the message follows the repo's convention; a subject like `finalize <fe
 only the doc changes and the artifact removal. If unrelated changes are in the working tree, stage the finalize paths
 explicitly and leave the rest alone.
 
-Do not commit if the doc cycle stalled at `NEEDS_REVISION` -- report and stop instead.
-
 ## Step 6: Report
 
-Docs updated or created (one line each, or "already current"); the reviewer verdict; what was removed; the commit SHA
-and subject; and any gaps, deferred work, or code/design deviations you noticed -- print those for the user but do
-**not** file them anywhere (suggest a new spec through `$spec-init` if they want them tracked).
+Docs updated or created (one line each, or "already current"); the reviewer verdict, and on `NEEDS_REVISION` the
+findings the fix round addressed, which no one reviewed again; what was removed; the commit SHA and subject; and any
+gaps, deferred work, or code/design deviations you noticed -- print those for the user but do **not** file them anywhere
+(suggest a new spec through `$spec-init` if they want them tracked).
 
 ## Constraints
 
