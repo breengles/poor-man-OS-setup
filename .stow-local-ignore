@@ -27,6 +27,8 @@
 /\.claude/history\.jsonl
 /\.claude/skills/synced
 /\.claude/skills/\.trash
+/\.claude/skills/hf-cli
+/\.agents/skills/hf-cli
 # Under .codex, deploy only AGENTS.md, config files, agents/, and rules/.
 # The negative lookahead excludes all current and future Codex runtime state.
 ^/\.codex/(?!(?:AGENTS\.md|config\.toml|[^/]+\.config\.toml)$|(?:agents|rules)(?:/|$)).+

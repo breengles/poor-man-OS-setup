@@ -31,6 +31,9 @@ __pycache__
 /.claude/history.jsonl
 /.claude/skills/synced
 /.claude/skills/.trash
+# Installed by the hf CLI, not authored here.
+/.claude/skills/hf-cli
+/.agents/skills/hf-cli
 # Codex writes credentials, databases, caches, sessions, packages, and plugins
 # beside its durable configuration. Track only the configuration allowlist.
 /.codex/*
