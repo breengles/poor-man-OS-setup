@@ -120,12 +120,12 @@ and the transient state under `.claude/`, `.codex/`, and `.pi/`).
 
 - **Claude Code user prefs:** `.claude/CLAUDE.md` (stowed to `~/.claude/CLAUDE.md`). Kept deliberately short; each skill
   owns its own format details rather than restating them here.
-- **Claude Code skills:** 9 custom slash commands at `.claude/skills/`, each under 100 lines.
+- **Claude Code skills:** 10 custom slash commands at `.claude/skills/`, each under 100 lines.
   - Spec pipeline: `spec-init` creates the spec, `implement` builds it, `review-spec` reviews everything it shipped,
     `finalize` reconciles the docs, removes it, and commits. `implement` runs `review-spec` itself once no unit is
     pending; the user can also run it by hand. `grill` (a frontier-rounds interview that settles a fuzzy plan) is the
     escalation path for `spec-init`'s single-message interview.
-  - Standalone: `commit`, `mr-description`, `dataset-readme`, `autoresearch`.
+  - Standalone: `commit`, `mr-description`, `dataset-readme`, `autoresearch`, `report`.
   - Deliberately **not** custom skills: code review (built-in `/code-review`, `/security-review`, `/simplify` cover it),
     documentation writing, and conflict resolution — all things Claude does competently without a template.
 - **Claude Code agents:** `.claude/agents/implementer.md` (Opus, medium effort, Write/Edit), dispatched by `implement`

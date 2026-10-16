@@ -49,6 +49,7 @@ own format details.
 | `/mr-description` | Write or apply a GitLab merge request title and description                    |
 | `/dataset-readme` | Write an `install.md` for an image dataset                                     |
 | `/autoresearch`   | Run a campaign: agents build code changes, SLURM trains them, best one wins    |
+| `/report`         | Build an interactive report: an Artifact, or a local HTML file if sensitive    |
 
 Code review is deliberately not a custom skill. The built-in `/code-review`, `/security-review`, and `/simplify` cover
 it.
@@ -115,6 +116,18 @@ fixed goes to a fresh `implementer`. Run it before `/finalize`, because `/finali
 Subjects are imperative and lowercase, about 50 characters, with no `feat:` or `fix:` prefix and no issue IDs. The
 skill commits only this session's changes, splits separable changes into separate commits, stages files by name, and
 ends with `git log --oneline --name-only`.
+
+### `/report`
+
+The skill gathers the facts first, then classifies them before it writes any HTML. A page is sensitive when it holds
+data about real people, secrets, internal infrastructure, business data from company systems, or anything the user
+called private. A sensitive page becomes a local HTML file, and so does any run with `--local`. All other pages become
+a published Artifact. A sensitive report is never published, even if the user asks later in the session.
+
+The local file is self-contained and makes no network request, so it opens offline and leaks nothing through a
+referrer. It goes to `~/reports/<date>-<slug>.html` with mode `600`, outside any git repository, so a later commit
+cannot pick it up. Both kinds of page render from one embedded JSON block and have sortable, filterable, or
+expandable views.
 
 ### `/autoresearch`
 
